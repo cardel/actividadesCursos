@@ -114,7 +114,7 @@ jobs:
             -Dsonar.host.url=http://localhost:9000 \
             -Dsonar.token=${{ steps.sonar.outputs.token }} \
             -Dsonar.projectKey=actividades \
-            -Dsonar.projectName=Actividades interactivas \
+            "-Dsonar.projectName=Actividades interactivas" \
             -Dsonar.sources=. \
             -Dsonar.exclusions=comun/volver.js \
             -Dsonar.scm.disabled=true
