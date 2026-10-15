@@ -1,0 +1,141 @@
+name: calidad
+
+# Dos analisis sobre el mismo codigo, que miran cosas distintas:
+#
+#   codacy    agrupa linters por lenguaje (ESLint para el JS, Stylelint para el
+#             CSS, entre otros) y entrega SARIF, que GitHub muestra en la
+#             pestana Security con el hallazgo sobre la linea que lo produjo.
+#   sonarqube levanta un servidor propio para la corrida y escanea contra el.
+#             No hay cuenta ni token guardado, a cambio el panel muere con el
+#             job: lo que queda es el resumen que este workflow escribe.
+#
+# Los dos corren en Docker, que es lo que hay en la maquina de desarrollo, asi
+# que una corrida local reproduce lo que hace el CI.
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+concurrency:
+  group: calidad-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  codacy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # --allow-network-requests queda fuera a proposito: el analisis no manda
+      # el codigo a ningun sitio, corre entero en el contenedor.
+      - name: analizar con codacy
+        run: |
+          docker run --rm \
+            -v "$PWD:/src" \
+            -w /src \
+            codacy/codacy-analysis-cli:latest \
+            analyze --directory /src --format sarif --output /src/codacy.sarif \
+            --max-allowed-issues 2147483647
+
+      # upload-sarif falla si el archivo no trae ningun run, que es lo que pasa
+      # cuando ninguna herramienta encontro nada que decir.
+      - name: hay hallazgos que subir
+        id: sarif
+        run: |
+          if [ -s codacy.sarif ] && [ "$(jq '.runs | length' codacy.sarif)" != "0" ]; then
+            echo "subir=si" >> "$GITHUB_OUTPUT"
+            jq -r '"Hallazgos de Codacy: \(reduce .runs[] as $r (0; . + ($r.results | length)))"' codacy.sarif >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "subir=no" >> "$GITHUB_OUTPUT"
+            echo "Codacy no encontro nada." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: publicar en Security
+        if: steps.sarif.outputs.subir == 'si'
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: codacy.sarif
+
+  sonarqube:
+    runs-on: ubuntu-latest
+    services:
+      sonarqube:
+        image: sonarqube:community
+        ports:
+          - 9000:9000
+        env:
+          # El contenedor comprueba limites del kernel pensados para produccion
+          # (vm.max_map_count entre ellos) que en un runner no se pueden tocar.
+          SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # SonarQube calcula la antiguedad de cada linea con el historial; con
+          # un checkout superficial lo marca todo como codigo nuevo.
+          fetch-depth: 0
+
+      - name: esperar a que arranque
+        run: |
+          for i in $(seq 1 90); do
+            estado=$(curl -fsS http://localhost:9000/api/system/status 2>/dev/null | jq -r .status || echo ARRANCANDO)
+            if [ "$estado" = "UP" ]; then echo "arriba en ${i}0s"; exit 0; fi
+            sleep 10
+          done
+          echo "SonarQube no respondio UP en 15 minutos" >&2
+          exit 1
+
+      # SonarQube exige cambiar la contrasena de fabrica antes de dejar usar la
+      # API. El servidor se tira al terminar el job, asi que esta solo vive aqui.
+      - name: token de la corrida
+        id: sonar
+        run: |
+          clave="ci-$(head -c 16 /dev/urandom | base64 | tr -dc 'A-Za-z0-9')x1"
+          curl -fsS -u admin:admin -X POST \
+            "http://localhost:9000/api/users/change_password" \
+            -d "login=admin&previousPassword=admin&password=$clave" > /dev/null
+          token=$(curl -fsS -u "admin:$clave" -X POST \
+            "http://localhost:9000/api/user_tokens/generate?name=corrida-${{ github.run_id }}" | jq -r .token)
+          echo "::add-mask::$token"
+          echo "token=$token" >> "$GITHUB_OUTPUT"
+          echo "::add-mask::$clave"
+          echo "clave=$clave" >> "$GITHUB_OUTPUT"
+
+      - name: escanear
+        run: |
+          docker run --rm --network host \
+            -v "$PWD:/usr/src" \
+            sonarsource/sonar-scanner-cli:latest \
+            -Dsonar.host.url=http://localhost:9000 \
+            -Dsonar.token=${{ steps.sonar.outputs.token }} \
+            -Dsonar.projectKey=actividades \
+            -Dsonar.projectName=Actividades interactivas \
+            -Dsonar.sources=. \
+            -Dsonar.exclusions=comun/volver.js \
+            -Dsonar.scm.disabled=true
+
+      # El panel se va con el contenedor: lo que sobrevive es esto.
+      - name: resumen de lo encontrado
+        run: |
+          sleep 15   # la cola de analisis del servidor termina despues del scanner
+          curl -fsS -u "${{ steps.sonar.outputs.token }}:" \
+            "http://localhost:9000/api/issues/search?componentKeys=actividades&ps=500" \
+            -o incidencias.json
+          echo "## SonarQube" >> "$GITHUB_STEP_SUMMARY"
+          jq -r '"Incidencias: \(.total)"' incidencias.json >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Severidad | Regla | Archivo | Linea | Mensaje |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---|---|---|---:|---|" >> "$GITHUB_STEP_SUMMARY"
+          jq -r '.issues[:60][] | "| \(.severity) | \(.rule) | \(.component | sub("^actividades:";"")) | \(.line // "") | \(.message | gsub("\\|";"/")) |"' \
+            incidencias.json >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: sonarqube-incidencias
+          path: incidencias.json
