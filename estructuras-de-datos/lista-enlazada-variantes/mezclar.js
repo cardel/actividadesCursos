@@ -181,6 +181,11 @@ if (typeof module !== "undefined") {
     function iguales(a, b) {
       return a.length === b.length && a.every(function (x, i) { return x === b[i]; });
     }
+    // Sort sin comparador ordena por texto, asi que los valores que escriba el
+    // estudiante se compararian como cadenas.
+    function ordenado(xs) {
+      return xs.slice().sort(function (x, y) { return x - y; });
+    }
     var logradas = { mitades: false, total: false, razon: false };
     function revisar() {
       if (logradas.mitades && logradas.total && logradas.razon) {
@@ -205,7 +210,7 @@ if (typeof module !== "undefined") {
       } else if (iguales(p, [7, 3]) && iguales(s, [8, 1, 5, 2])) {
         ver.className = "veredicto mal";
         ver.textContent = "El lento arranca en la cabeza y el rápido un nodo adelante, así que el lento alcanza a dar dos pasos: queda en el tercer nodo, no en el segundo.";
-      } else if (p.length === 3 && s.length === 3 && iguales(p.concat(s).slice().sort(), R.primera.concat(R.segunda).slice().sort())) {
+      } else if (p.length === 3 && s.length === 3 && iguales(ordenado(p.concat(s)), ordenado(R.primera.concat(R.segunda)))) {
         ver.className = "veredicto mal";
         ver.textContent = "Los tamaños están bien, pero partir no reordena nada: las dos mitades conservan el orden en que venían los nodos.";
       } else {
