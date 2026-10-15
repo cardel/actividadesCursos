@@ -1,53 +1,16 @@
-# Ejercicios · PFC · Listas y ordenamiento
+# Ejercicios · PFC · Ordenamiento y alto orden
 
-Doce ejercicios para recorrer en el navegador, organizados por los temas de la
-sesión y en su mismo orden: primero las listas y lo que se construye con
-ellas, después las tuplas, el ordenamiento por mezclas y las funciones de alto
-orden. Ninguno muestra nada antes de que usted produzca algo: hay trazas que
-se llenan paso a paso, valores que hay que predecir antes de verlos y patrones
-entre los que hay que escoger. Lo que se compara en cada caso salió de correr
-el código de la sesión.
+Ocho ejercicios para recorrer en el navegador, en el orden de la sesión:
+primero las tuplas, que permiten avanzar dos recorridos a la vez; después el
+ordenamiento por mezclas, y al final las funciones que ya traen el recorrido
+hecho. Ninguno muestra nada antes de que usted produzca algo: hay trazas que
+se llenan paso a paso, valores que hay que predecir antes de verlos y
+patrones entre los que hay que escoger. Lo que se compara en cada caso salió
+de correr el código de la sesión.
 
-La idea que los atraviesa es que una lista se define por sus dos
-constructores, `Nil` y `::`, y que toda función que la recorra tiene un caso
-por cada uno. Lo que cambia es quién escribe el recorrido: usted con
-recursión, o `map`, `filter` y `fold`, que ya lo traen hecho.
-
-## Construir y descomponer listas
-
-### [construir](construir.html){ target=_blank rel=noopener }
-
-`1 :: 2 :: 3 :: Nil` se arma de derecha a izquierda, porque `::` asocia por la
-derecha. El paso a paso lo muestra naciendo desde `Nil` y después descompone
-una lista de frutas con `head`, `tail` e `isEmpty`. El contador de la última
-línea deja ver cuántas veces se llega a `isEmpty` sobre la lista vacía.
-
-## Reconocimiento de patrones con listas
-
-### [patrones](patrones.html){ target=_blank rel=noopener }
-
-Los cuatro patrones del `match` están en el orden en que los escribe la
-sesión, y el ejercicio da una lista concreta y pregunta cuál la captura. El
-punto está en que `x :: Nil` y `x :: y :: Nil` son casos de uno y de dos
-elementos, mientras `x :: xs` toma cualquier lista no vacía: por eso el orden
-en que se escriben decide cuál gana.
-
-## Funciones recursivas sobre listas
-
-### [reversa](reversa.html){ target=_blank rel=noopener }
-
-`reversa` es recursión lineal: en cada marco queda pendiente un `++ List(x)`
-que solo se resuelve al desarmar la pila. La traza cuenta las celdas que
-recorre la concatenación, y ahí se ve de dónde sale el costo cuadrático con
-una lista de cuatro elementos.
-
-## Ordenamiento por inserción
-
-### [insercion](insercion.html){ target=_blank rel=noopener }
-
-Antes de cada paso usted dice en qué posición va a quedar el elemento que se
-inserta, y después lo comprueba. `insertar` recorre la parte ya ordenada hasta
-hallar su sitio, y `iSort` la llama una vez por elemento.
+Lo que cambia frente a los ejercicios de listas es quién escribe el recorrido.
+Allá lo escribía usted con recursión; aquí lo traen `map`, `filter` y `fold`,
+y queda por decidir cuál de los tres sirve para cada cosa.
 
 ## Tuplas en reconocimiento de patrones
 

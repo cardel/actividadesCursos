@@ -361,18 +361,18 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`tipos`](pfc/funciones-de-alto-orden/tipos.html) | qué tipo tiene cada expresión |
 |  | [`traza`](pfc/funciones-de-alto-orden/traza.html) | la tabla de suma antes de correrla |
 |  | [`trazaRota`](pfc/funciones-de-alto-orden/trazaRota.html) | encuentre el paso equivocado |
-| `listas-y-ordenamiento` | [`construir`](pfc/listas-y-ordenamiento/construir.html) | Nil, :: y las tres operaciones básicas |
-|  | [`empaquetar`](pfc/listas-y-ordenamiento/empaquetar.html) | la traza con span, paso a paso |
-|  | [`insercion`](pfc/listas-y-ordenamiento/insercion.html) | en qué posición queda el elemento que se inserta |
-|  | [`mapFilter`](pfc/listas-y-ordenamiento/mapFilter.html) | prediga las dos listas de salida |
-|  | [`merge`](pfc/listas-y-ordenamiento/merge.html) | prediga cuál cabeza sale en cada paso |
-|  | [`msort`](pfc/listas-y-ordenamiento/msort.html) | dividir, ordenar cada mitad y mezclar |
-|  | [`patrones`](pfc/listas-y-ordenamiento/patrones.html) | qué caso del match corresponde con la lista |
-|  | [`polimorfico`](pfc/listas-y-ordenamiento/polimorfico.html) | msort para cualquier tipo |
-|  | [`reduceFold`](pfc/listas-y-ordenamiento/reduceFold.html) | elija el valor de cada expresión |
-|  | [`reversa`](pfc/listas-y-ordenamiento/reversa.html) | la concatenación que queda pendiente en cada marco |
-|  | [`reversaFold`](pfc/listas-y-ordenamiento/reversaFold.html) | el acumulador que crece por el frente |
-|  | [`sumarVec`](pfc/listas-y-ordenamiento/sumarVec.html) | la traza de la suma de vectores |
+| `listas` | [`construir`](pfc/listas/construir.html) | Nil, :: y las tres operaciones básicas |
+|  | [`insercion`](pfc/listas/insercion.html) | en qué posición queda el elemento que se inserta |
+|  | [`patrones`](pfc/listas/patrones.html) | qué caso del match corresponde con la lista |
+|  | [`reversa`](pfc/listas/reversa.html) | la concatenación que queda pendiente en cada marco |
+| `ordenamiento-y-alto-orden` | [`empaquetar`](pfc/ordenamiento-y-alto-orden/empaquetar.html) | la traza con span, paso a paso |
+|  | [`mapFilter`](pfc/ordenamiento-y-alto-orden/mapFilter.html) | prediga las dos listas de salida |
+|  | [`merge`](pfc/ordenamiento-y-alto-orden/merge.html) | prediga cuál cabeza sale en cada paso |
+|  | [`msort`](pfc/ordenamiento-y-alto-orden/msort.html) | dividir, ordenar cada mitad y mezclar |
+|  | [`polimorfico`](pfc/ordenamiento-y-alto-orden/polimorfico.html) | msort para cualquier tipo |
+|  | [`reduceFold`](pfc/ordenamiento-y-alto-orden/reduceFold.html) | elija el valor de cada expresión |
+|  | [`reversaFold`](pfc/ordenamiento-y-alto-orden/reversaFold.html) | el acumulador que crece por el frente |
+|  | [`sumarVec`](pfc/ordenamiento-y-alto-orden/sumarVec.html) | la traza de la suma de vectores |
 | `recursion-de-cola-y-procesos` | [`acumulador`](pfc/recursion-de-cola-y-procesos/acumulador.html) | el resultado viaja en un parámetro |
 |  | [`agotar`](pfc/recursion-de-cola-y-procesos/agotar.html) | qué se acaba primero |
 |  | [`arbol`](pfc/recursion-de-cola-y-procesos/arbol.html) | partir el problema en dos |
