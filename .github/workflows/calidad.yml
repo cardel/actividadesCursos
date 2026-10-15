@@ -32,19 +32,33 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      # --allow-network-requests queda fuera a proposito: el analisis no manda
-      # el codigo a ningun sitio, corre entero en el contenedor.
+      # Codacy lanza cada linter en SU PROPIO contenedor, hermano de este. Por
+      # eso necesita el socket de Docker y que la ruta del codigo sea la misma
+      # dentro y fuera: el hermano recibe la ruta del anfitrion y tiene que
+      # poder abrirla. Montandolo en /src las herramientas arrancan y fallan
+      # una por una ("Failed analysis for eslint-8", y asi con las quince),
+      # el SARIF sale vacio y el job termina en verde sin haber analizado nada.
       - name: analizar con codacy
         run: |
           docker run --rm \
-            -v "$PWD:/src" \
-            -w /src \
+            -e CODACY_CODE="$PWD" \
+            -v "$PWD":"$PWD" \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v /tmp:/tmp \
             codacy/codacy-analysis-cli:latest \
-            analyze --directory /src --format sarif --output /src/codacy.sarif \
-            --max-allowed-issues 2147483647
+            analyze --directory "$PWD" --format sarif --output "$PWD/codacy.sarif" \
+            --max-allowed-issues 2147483647 2>&1 | tee codacy.log
 
-      # upload-sarif falla si el archivo no trae ningun run, que es lo que pasa
-      # cuando ninguna herramienta encontro nada que decir.
+          # El CLI sale 0 aunque no haya corrido ni una herramienta.
+          if grep -q "Failed analysis for" codacy.log; then
+            echo "Herramientas que no arrancaron:" >&2
+            grep -o "Failed analysis for .*" codacy.log | sort -u >&2
+            exit 1
+          fi
+
+      # upload-sarif falla si el archivo no trae ningun run. Con las quince
+      # herramientas corriendo y nada que reportar, el CLI deja el archivo
+      # vacio: no hay nada que subir y tampoco es un fallo.
       - name: hay hallazgos que subir
         id: sarif
         run: |
