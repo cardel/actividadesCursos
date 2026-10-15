@@ -1,10 +1,9 @@
 # Ejercicios · FLP · Proceso del interpretador
 
-Clase 4 — del texto al resultado: el proceso completo del interpretador
-(29 de septiembre). Cada enlace abre una actividad que se trabaja directo en
-el navegador, sin instalar nada. Esta sesión es de entender qué hace cada
-pieza, así que casi todo es analizar y predecir: las respuestas muestran su
-razón, se acierte o no.
+Del texto al resultado: el proceso completo del interpretador. Cada enlace
+abre una actividad que se trabaja directo en el navegador, sin instalar nada.
+Esta sesión es de entender qué hace cada pieza, así que casi todo es analizar
+y predecir: las respuestas muestran su razón, se acierte o no.
 
 El lenguaje es el de la sesión —números, variables, las primitivas `+`, `-`,
 `*`, `/`, `add1` y `sub1`, y `let`— con el ambiente inicial de dos eslabones:

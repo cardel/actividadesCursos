@@ -1,9 +1,9 @@
 # Ejercicios · Estructuras de Datos · Implementaciones y quicksort
 
-Clase 19 — ejercicios sobre las implementaciones y quicksort (14 de octubre).
-Cada enlace abre una actividad que se trabaja directo en el navegador, en el
-mismo orden de los temas de la sesión. Los programas y los arreglos no son los
-de la sesión: mismo tema, ronda nueva.
+Ejercicios sobre las implementaciones y quicksort. Cada enlace abre una
+actividad que se trabaja directo en el navegador, en el mismo orden de los
+temas de la sesión. Los programas y los arreglos no son los de la sesión:
+mismo tema, ronda nueva.
 
 ## Las tres implementaciones enlazadas
 

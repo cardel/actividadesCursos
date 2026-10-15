@@ -130,9 +130,9 @@ Los cuatro de las diapositivas, con el enunciado y el enlace de envío:
   <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=2938>.
   La ciudad es fuertemente conexa si Tarjan saca un solo componente.
 
-## De las clases anteriores
+## De los temas anteriores
 
 Las dos formas de la búsqueda en profundidad se practican en la
-[página de la clase 6](../representaciones-y-recorridos/index.md); el orden topológico con Kahn, en
-la [de la clase 8](../orden-topologico-kahn/index.md), y Kosaraju, en la
-[de la clase 9](../conectividad/index.md).
+[página de representaciones y recorridos](../representaciones-y-recorridos/index.md); el
+[orden topológico con Kahn](../orden-topologico-kahn/index.md) y el
+[algoritmo de Kosaraju](../conectividad/index.md), cada uno en la suya.

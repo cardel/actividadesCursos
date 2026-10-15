@@ -1,10 +1,9 @@
 # Ejercicios · FLP · Procedimientos y alcance estatico
 
-Clase 5 — condicionales, procedimientos y alcance estático (6 de octubre).
-Cada enlace abre una actividad que se trabaja directo en el navegador, sin
-instalar nada. La sesión es de entender qué hace el interpretador, así que
-casi todo es analizar y predecir: las respuestas muestran su razón, se
-acierte o no.
+Condicionales, procedimientos y alcance estático. Cada enlace abre una
+actividad que se trabaja directo en el navegador, sin instalar nada. La sesión
+es de entender qué hace el interpretador, así que casi todo es analizar y
+predecir: las respuestas muestran su razón, se acierte o no.
 
 Los programas están escritos como los recibe el interpretador del curso:
 `+(y,11)`, `if >(x,4) then 1 else 2`, `let x = -(y,1) in add1(x)`,

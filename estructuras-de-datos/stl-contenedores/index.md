@@ -1,9 +1,8 @@
 # Ejercicios · Estructuras de Datos · Stl contenedores
 
-Clase 13 — la STL de C++ (19 de septiembre). Cada enlace abre una
-actividad que se trabaja directo en el navegador, en el mismo orden de
-los temas de la sesión. Los programas no son los de la sesión: mismo
-tema, ronda nueva.
+La STL de C++. Cada enlace abre una actividad que se trabaja directo
+en el navegador, en el mismo orden de los temas de la sesión. Los
+programas no son los de la sesión: mismo tema, ronda nueva.
 
 ## vector
 

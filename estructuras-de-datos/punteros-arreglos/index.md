@@ -1,8 +1,8 @@
 # Ejercicios · Estructuras de Datos · Punteros arreglos
 
-Clase 8 — punteros, arreglos y arreglos bidimensionales (2 de septiembre).
-Cada enlace abre una actividad que se trabaja directo en el navegador, con
-los dibujos de memoria de la clase al frente.
+Punteros, arreglos y arreglos bidimensionales. Cada enlace abre una
+actividad que se trabaja directo en el navegador, con los dibujos de
+memoria de la clase al frente.
 
 ## [aritmetica](aritmetica.html){ target=_blank rel=noopener }
 

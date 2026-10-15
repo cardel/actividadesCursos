@@ -1,9 +1,8 @@
 # Ejercicios · Estructuras de Datos · Abstraccion tad
 
-Clase 10 — abstracción de datos y tipos abstractos de datos (9 de
-septiembre). Cada enlace abre una actividad que se trabaja directo en el
-navegador. Los programas no son los de la sesión: mismo tema, ronda
-nueva.
+Abstracción de datos y tipos abstractos de datos. Cada enlace abre una
+actividad que se trabaja directo en el navegador. Los programas no son
+los de la sesión: mismo tema, ronda nueva.
 
 ## [caja](caja.html){ target=_blank rel=noopener }
 

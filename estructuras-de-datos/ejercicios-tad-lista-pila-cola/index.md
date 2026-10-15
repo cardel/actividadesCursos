@@ -1,9 +1,9 @@
 # Ejercicios · Estructuras de Datos · Ejercicios tad lista pila cola
 
-Clase 12 — ejercicios con los TAD Lista, Pila y Cola (18 de septiembre).
-Cada enlace abre una actividad que se trabaja directo en el navegador,
-en el mismo orden de los temas de la sesión. Los programas no son los de
-la sesión: mismo tema, ronda nueva.
+Ejercicios con los TAD Lista, Pila y Cola. Cada enlace abre una
+actividad que se trabaja directo en el navegador, en el mismo orden de
+los temas de la sesión. Los programas no son los de la sesión: mismo
+tema, ronda nueva.
 
 ## Con una pila
 

@@ -1,11 +1,11 @@
 # Ejercicios · Infra · Profiling linux
 
-Clase 6 — Herramientas de profiling en Linux (13 y 15 de octubre). Los apartados
-van en el orden de la sesión y todos se resuelven en el navegador. Casi todos
-parten de la misma pareja de programas: dos versiones que suman la misma matriz
-de 10.000 × 10.000 enteros y se diferencian en el orden de dos índices. Esa
-pareja atraviesa la sesión entera, medida cada vez con otra herramienta. Antes
-de ver un número hay que escribirlo, y cada respuesta equivocada dice por qué no.
+Herramientas de profiling en Linux. Los apartados van en el orden de la sesión
+y todos se resuelven en el navegador. Casi todos parten de la misma pareja de
+programas: dos versiones que suman la misma matriz de 10.000 × 10.000 enteros y
+se diferencian en el orden de dos índices. Esa pareja atraviesa la sesión
+entera, medida cada vez con otra herramienta. Antes de ver un número hay que
+escribirlo, y cada respuesta equivocada dice por qué no.
 
 ## Motivación: ¿por qué perfilar?
 

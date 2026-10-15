@@ -130,10 +130,10 @@ sobre casos pequeños. Un `assert` que revienta señala dónde está mal el
 invariante, aunque el programa entregue la respuesta correcta por
 casualidad.
 
-## De las clases anteriores
+## De los temas anteriores
 
 Los ejercicios de invariantes de ciclo y de divide y vencerás siguen
-disponibles en la [página de la clase 2](../recursion/index.md) —`sumar` y
+disponibles en la [página de recursión](../recursion/index.md): `sumar` y
 `factorial` para la pareja $I_0$, $I_1$ clásica, `mezclar` y `ordenar` para
-el esquema recursivo—, y los de búsqueda binaria y bisección en la
-[página de la clase 3](../busqueda-binaria/index.md).
+el esquema recursivo. La [búsqueda binaria y la bisección](../busqueda-binaria/index.md)
+tienen su propia página.

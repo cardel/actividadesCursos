@@ -1,9 +1,8 @@
 # Ejercicios · FLP · Tad y ambientes
 
-Clase 2 — estrategias para representar datos: TAD y ambientes (15 de
-septiembre). Cada enlace abre una actividad que se trabaja directo en el
-navegador, sin instalar nada. Los ejemplos no son los de la sesión: mismo
-tema, ronda nueva.
+Estrategias para representar datos: TAD y ambientes. Cada enlace abre una
+actividad que se trabaja directo en el navegador, sin instalar nada. Los
+ejemplos no son los de la sesión: mismo tema, ronda nueva.
 
 Van en el orden en que la sesión ve los temas, dos por tema: una de analizar
 y una de escribir código. En las de analizar cada respuesta muestra su razón,

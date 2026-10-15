@@ -1,9 +1,8 @@
 # Ejercicios · Estructuras de Datos · Paso por referencia
 
-Clase 9 — paso de parámetros por referencia y repaso de POO (4 de
-septiembre). Cada enlace abre una actividad que se trabaja directo en el
-navegador. Los programas no son los de la sesión: mismo tema, ronda
-nueva.
+Paso de parámetros por referencia y repaso de POO. Cada enlace abre una
+actividad que se trabaja directo en el navegador. Los programas no son
+los de la sesión: mismo tema, ronda nueva.
 
 ## [trazas](trazas.html){ target=_blank rel=noopener }
 

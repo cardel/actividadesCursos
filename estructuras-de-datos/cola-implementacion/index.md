@@ -1,9 +1,8 @@
 # Ejercicios · Estructuras de Datos · Cola implementacion
 
-Clase 18 — el TAD Cola por dentro (9 de octubre). Cada enlace abre una
-actividad que se trabaja directo en el navegador, en el mismo orden de los
-temas de la sesión. Los programas no son los de la sesión: mismo tema, ronda
-nueva.
+El TAD Cola por dentro. Cada enlace abre una actividad que se trabaja
+directo en el navegador, en el mismo orden de los temas de la sesión. Los
+programas no son los de la sesión: mismo tema, ronda nueva.
 
 ## La cola que ya tienen
 

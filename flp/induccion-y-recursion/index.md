@@ -1,9 +1,8 @@
 # Ejercicios · FLP · Induccion y recursion
 
-Clase 1 — inducción y recursión: especificación de datos y de programas (8 de
-septiembre). Cada enlace abre una actividad que se trabaja directo en el
-navegador, sin instalar nada. Los ejemplos no son los de la sesión: mismo
-tema, ronda nueva.
+Inducción y recursión: especificación de datos y de programas. Cada enlace
+abre una actividad que se trabaja directo en el navegador, sin instalar nada.
+Los ejemplos no son los de la sesión: mismo tema, ronda nueva.
 
 Son siete, en el orden en que la sesión ve los temas. Las dos primeras se
 alcanzan en clase; las demás quedan para volver sobre el tema, y entre las

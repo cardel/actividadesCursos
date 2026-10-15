@@ -1,10 +1,9 @@
 # Ejercicios · Infra · Introduccion programacion paralela
 
-Clase 1 — introducción a la programación paralela, ley de Amdahl y localidad
-de caché (8 y 10 de septiembre). Los apartados van en el orden de la clase.
-Los que se abren en el navegador no piden instalar nada; los de papel no toman
-más de media hora y sirven para fijar las cuentas antes de medir en la
-máquina.
+Introducción a la programación paralela, ley de Amdahl y localidad de caché.
+Los apartados van en el orden de la clase. Los que se abren en el navegador no
+piden instalar nada; los de papel no toman más de media hora y sirven para
+fijar las cuentas antes de medir en la máquina.
 
 ## Introducción a los sistemas de cómputo paralelo
 

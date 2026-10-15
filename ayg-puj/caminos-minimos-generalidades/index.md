@@ -4,7 +4,7 @@ Cinco ejercicios para el navegador, organizados por los temas de la sesión y en
 el mismo orden. Ninguno usa los grafos de las diapositivas ni los de sus
 ejercicios propuestos: los temas y las técnicas son los mismos, los grafos y
 los pesos son otros. Las implementaciones de Bellman-Ford-Moore y sus
-actividades están en la [página de ejercicios de la clase 13](../bellman-ford-moore/index.md).
+actividades están en la [página de ejercicios de Bellman-Ford-Moore](../bellman-ford-moore/index.md).
 
 ## Las dos versiones del problema
 
@@ -91,9 +91,9 @@ diapositivas.
    grafo tiene al menos un ciclo alcanzable desde $s$?
 
 
-## De las clases anteriores
+## De los temas anteriores
 
 La amplitud y sus dos formas de recorrer se practican en la
-[página de la clase 6](../representaciones-y-recorridos/index.md); el orden topológico, que se usa
-más adelante para los caminos en grafos acíclicos, en la
-[de la clase 10](../orden-topologico-dfs-low/index.md).
+[página de representaciones y recorridos](../representaciones-y-recorridos/index.md); el orden
+topológico, que se usa más adelante para los caminos en grafos acíclicos, en la
+[de orden topológico con la profundidad](../orden-topologico-dfs-low/index.md).

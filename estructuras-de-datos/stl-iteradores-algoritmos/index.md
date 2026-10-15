@@ -1,9 +1,9 @@
 # Ejercicios · Estructuras de Datos · Stl iteradores algoritmos
 
-Clase 14 — iteradores y algoritmos de la STL (23 de septiembre). Cada
-enlace abre una actividad que se trabaja directo en el navegador, en el
-mismo orden de los temas de la sesión. Los programas no son los de la
-sesión: mismo tema, ronda nueva.
+Iteradores y algoritmos de la STL. Cada enlace abre una actividad que
+se trabaja directo en el navegador, en el mismo orden de los temas de
+la sesión. Los programas no son los de la sesión: mismo tema, ronda
+nueva.
 
 ## Un iterador es un puntero que sabe recorrer
 

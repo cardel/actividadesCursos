@@ -7,8 +7,8 @@ diapositivas.
 ## Recuento
 
 Los dos recorridos y su costo se practican en la
-[página de la clase 6](../representaciones-y-recorridos/index.md): `profundidad`, `amplitud` y
-`costo`.
+[página de representaciones y recorridos](../representaciones-y-recorridos/index.md): `profundidad`,
+`amplitud` y `costo`.
 
 ## Grafos implícitos: Jaimico y el café
 
@@ -145,8 +145,7 @@ Estos ejercicios entran en el material del parcial.
   El laberinto de Jaimico con las minas descritas por filas; con
   $1000 \times 1000$ celdas la amplitud cabe y la profundidad recursiva no.
 
-## De las clases anteriores
+## De los temas anteriores
 
-Los ejercicios de representaciones y recorridos están en la
-[página de la clase 6](../representaciones-y-recorridos/index.md); los de invariantes, en la
-[de la clase 4](../invariantes/index.md).
+Los ejercicios de [representaciones y recorridos](../representaciones-y-recorridos/index.md)
+están en su propia página, y los de [invariantes](../invariantes/index.md), en la suya.

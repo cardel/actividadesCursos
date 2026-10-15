@@ -168,9 +168,9 @@ diapositivas.
    cuántos no envían ninguna, y pruebe su respuesta sobre el sitio de quince
    páginas del último ejercicio interactivo.
 
-## De las clases anteriores
+## De los temas anteriores
 
 Las dos formas de la búsqueda en profundidad y su costo, que los algoritmos de
 hoy reutilizan sin cambiarles una línea, se practican en la
-[página de la clase 6](../representaciones-y-recorridos/index.md); el orden por finalización y el
-cálculo que lo produce, en la [de la clase 8](../orden-topologico-kahn/index.md).
+[página de representaciones y recorridos](../representaciones-y-recorridos/index.md); el orden por
+finalización y el cálculo que lo produce, en la [de orden topológico con Kahn](../orden-topologico-kahn/index.md).

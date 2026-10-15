@@ -1,9 +1,8 @@
 # Ejercicios · Estructuras de Datos · Lista enlazada variantes
 
-Clase 16 — variantes de la lista enlazada y merge sort (2 de octubre). Cada
-enlace abre una actividad que se trabaja directo en el navegador, en el mismo
-orden de los temas de la sesión. Los programas no son los de la sesión: mismo
-tema, ronda nueva.
+Variantes de la lista enlazada y merge sort. Cada enlace abre una actividad
+que se trabaja directo en el navegador, en el mismo orden de los temas de la
+sesión. Los programas no son los de la sesión: mismo tema, ronda nueva.
 
 ## El nodo que mira atrás
 

@@ -61,9 +61,9 @@ significa cada veredicto que no sea *Accepted*.
 - Enunciado: <https://onlinejudge.org/external/103/10341.pdf>
 - Enviar: <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=1282>
 
-## De la clase anterior
+## De los temas anteriores
 
 Los ejercicios de invariantes de ciclo y de divide y vencerás siguen
-disponibles en la [página de la clase 2](../recursion/index.md): `sumar` y
+disponibles en la [página de recursión](../recursion/index.md): `sumar` y
 `factorial` para la pareja $I_0$, $I_1$ clásica, y `mezclar` y `ordenar`
 para el esquema recursivo.

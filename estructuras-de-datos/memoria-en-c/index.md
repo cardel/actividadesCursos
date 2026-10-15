@@ -1,8 +1,8 @@
 # Ejercicios · Estructuras de Datos · Memoria en c
 
-Clase 7 — manejo de memoria en C (28 de agosto). Cada enlace abre una
-actividad que se trabaja directo en el navegador: prediga antes de ejecutar
-y recorra el código paso a paso viendo cómo cambia cada variable.
+Manejo de memoria en C. Cada enlace abre una actividad que se trabaja
+directo en el navegador: prediga antes de ejecutar y recorra el código paso
+a paso viendo cómo cambia cada variable.
 
 ## [punteros](punteros.html){ target=_blank rel=noopener }
 

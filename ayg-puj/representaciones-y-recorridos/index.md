@@ -163,9 +163,9 @@ Estos ejercicios entran en el material del parcial.
    alcanzarse están dominados por $v$. Con $n \leq 100$ los $n$ recorridos
    sobre matriz caben de sobra.
 
-## De las clases anteriores
+## De los temas anteriores
 
-Los ejercicios de invariantes están en la
-[página de la clase 4](../invariantes/index.md), los de búsqueda binaria y
-bisección en la [de la clase 3](../busqueda-binaria/index.md), y los de invariantes de
-ciclo y divide y vencerás en la [de la clase 2](../recursion/index.md).
+Los ejercicios de [invariantes](../invariantes/index.md) están en su propia
+página, los de [búsqueda binaria y bisección](../busqueda-binaria/index.md) en
+la suya, y los de invariantes de ciclo y divide y vencerás en la
+[página de recursión](../recursion/index.md).

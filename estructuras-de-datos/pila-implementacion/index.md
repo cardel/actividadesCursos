@@ -1,9 +1,8 @@
 # Ejercicios · Estructuras de Datos · Pila implementacion
 
-Clase 17 — el TAD Pila por dentro (7 de octubre). Cada enlace abre una
-actividad que se trabaja directo en el navegador, en el mismo orden de los
-temas de la sesión. Los programas no son los de la sesión: mismo tema, ronda
-nueva.
+El TAD Pila por dentro. Cada enlace abre una actividad que se trabaja
+directo en el navegador, en el mismo orden de los temas de la sesión. Los
+programas no son los de la sesión: mismo tema, ronda nueva.
 
 ## La pila que ya tienen
 

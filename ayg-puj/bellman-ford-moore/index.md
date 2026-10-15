@@ -98,8 +98,8 @@ Los tres de las diapositivas, con el enunciado y el enlace de envío:
   <https://onlinejudge.org/external/3/321.pdf>, envío en
   <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=257>.
 
-## De las clases anteriores
+## De los temas anteriores
 
 Los caminos de a lo sumo $k$ aristas y la relajación se practican en la
-[página de la clase 12](../caminos-minimos-generalidades/index.md); los grafos implícitos, de
-donde salen los grafos de estado, en la [de la clase 7](../grafos-implicitos/index.md).
+[página de caminos mínimos](../caminos-minimos-generalidades/index.md). Los grafos de estado
+salen de los [grafos implícitos](../grafos-implicitos/index.md), que tienen su propia página.

@@ -1,8 +1,8 @@
 # Ejercicios · Estructuras de Datos · Notacion o
 
-Clase 6 — la notación O (26 de agosto). Cada enlace abre una actividad que
-se trabaja directo en el navegador: proponga su respuesta antes de comprobar
-y deje que la retroalimentación le diga por dónde ajustar.
+La notación O. Cada enlace abre una actividad que se trabaja directo en el
+navegador: proponga su respuesta antes de comprobar y deje que la
+retroalimentación le diga por dónde ajustar.
 
 ## [testigos](testigos.html){ target=_blank rel=noopener }
 

@@ -1,8 +1,8 @@
 # Ejercicios · FLP · Datatypes y arboles sintaxis abstracta
 
-Clase 3 — datatypes y árboles de sintaxis abstracta (22 de septiembre). Cada
-enlace abre una actividad que se trabaja directo en el navegador, sin instalar
-nada. Los ejemplos no son los de la sesión: mismo tema, ronda nueva.
+Datatypes y árboles de sintaxis abstracta. Cada enlace abre una actividad que
+se trabaja directo en el navegador, sin instalar nada. Los ejemplos no son los
+de la sesión: mismo tema, ronda nueva.
 
 Van en el orden en que la sesión ve los temas, y en cada tema hay de analizar
 y de escribir. En las de analizar cada respuesta muestra su razón, se acierte

@@ -1,9 +1,9 @@
 # Ejercicios · Infra · Profiling python avx
 
-Clase 3 — profiling en Python e instrucciones AVX (22 y 24 de septiembre). Los
-apartados van en el orden de la clase y todos se resuelven en el navegador.
-Cada uno toma las cifras que se midieron en la sesión y las deja mover: antes
-de ver un número toca escribirlo, y cada respuesta equivocada dice por qué no.
+Profiling en Python e instrucciones AVX. Los apartados van en el orden de la
+clase y todos se resuelven en el navegador. Cada uno toma las cifras que se
+midieron en la sesión y las deja mover: antes de ver un número toca escribirlo,
+y cada respuesta equivocada dice por qué no.
 
 ## Introducción al perfilado
 

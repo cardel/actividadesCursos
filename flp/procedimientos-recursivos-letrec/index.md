@@ -1,8 +1,8 @@
 # Ejercicios · FLP · Procedimientos recursivos letrec
 
-Clase 6 — procedimientos recursivos y `letrec` (13 de octubre). Cada enlace
-abre una actividad que se trabaja directo en el navegador, sin instalar nada.
-Las secciones siguen las de la sesión y en su mismo orden.
+Procedimientos recursivos y `letrec`. Cada enlace abre una actividad que se
+trabaja directo en el navegador, sin instalar nada. Las secciones siguen las
+de la sesión y en su mismo orden.
 
 Los programas están escritos como los recibe el interpretador del curso:
 `letrec fact(n) = if ==(n,0) then 1 else *(n, (fact sub1(n))) in (fact 5)`.

@@ -173,8 +173,8 @@ propusieron en clase.
   lleva `Case #` y una línea en blanco después de cada caso; se copia del
   enunciado letra por letra.
 
-## De las clases anteriores
+## De los temas anteriores
 
 Los recorridos y su costo, que el algoritmo de hoy reutiliza, se practican en
-la [página de la clase 6](../representaciones-y-recorridos/index.md); los grafos implícitos, en la
-[de la clase 7](../grafos-implicitos/index.md).
+la [página de representaciones y recorridos](../representaciones-y-recorridos/index.md); los
+[grafos implícitos](../grafos-implicitos/index.md), en la suya.

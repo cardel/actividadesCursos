@@ -1,9 +1,9 @@
 # Ejercicios · Infra · Hilos y procesos python
 
-Clase 4 — hilos y procesos en Python (29 de septiembre y 1 de octubre). Los
-apartados van en el orden de la clase y todos se resuelven en el navegador.
-Cada uno parte de una medición de la sesión y la deja mover: antes de ver un
-número hay que escribirlo, y cada respuesta equivocada dice por qué no.
+Hilos y procesos en Python. Los apartados van en el orden de la clase y todos
+se resuelven en el navegador. Cada uno parte de una medición de la sesión y la
+deja mover: antes de ver un número hay que escribirlo, y cada respuesta
+equivocada dice por qué no.
 
 ## Conceptos fundamentales
 

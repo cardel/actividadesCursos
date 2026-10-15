@@ -1,9 +1,9 @@
 # Ejercicios · Estructuras de Datos · Contenedores list deque stack queue
 
-Clase 20 — contenedores `list`, `deque`, `stack` y `queue` (16 de octubre).
-Cada enlace abre una actividad que se trabaja directo en el navegador, en el
-mismo orden de los temas de la sesión. Los programas y los valores no son los
-de la sesión: mismo tema, ronda nueva.
+Contenedores `list`, `deque`, `stack` y `queue`. Cada enlace abre una
+actividad que se trabaja directo en el navegador, en el mismo orden de los
+temas de la sesión. Los programas y los valores no son los de la sesión:
+mismo tema, ronda nueva.
 
 ## Lo que ya está construido
 

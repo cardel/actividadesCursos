@@ -1,8 +1,7 @@
 # Ejercicios · Series Temporales · Autocorrelacion
 
-Semana del 16 y 17 de octubre, sesiones 3 y 4: estacionariedad,
-diferenciación, ACF y PACF. Cada enlace abre una actividad que se trabaja
-en el navegador, sin instalar nada.
+Estacionariedad, diferenciación, ACF y PACF. Cada enlace abre una actividad
+que se trabaja en el navegador, sin instalar nada.
 
 Cada actividad empieza con la serie de análisis: su gráfica, un resumen
 con los atípicos, el promedio de cada mes, la tabla completa de datos y
@@ -13,7 +12,7 @@ cuando las preguntas quedan resueltas. Cada respuesta muestra su razón, se
 acierte o no. Las gráficas y los números salen del cálculo en la página
 sobre la serie del curso, con los cuatro meses sin dato de 2019 rellenos por
 interpolación lineal, como en los notebooks. Los valores p de la prueba ADF
-son la excepción: vienen de statsmodels y se calcularon en la sesión 3.
+son la excepción: vienen de statsmodels y se calcularon fuera de la página.
 
 ## La correlación con el pasado
 
@@ -58,5 +57,5 @@ Bartlett, que es la que dibuja statsmodels en el notebook.
 
 Un AR(1) simulado con el ruido fijo y un deslizador para φ entre −0,99 y
 0,99. La ACF decae despacio o alterna de signo según φ, y la
-PACF deja una sola barra fuera de la banda, en k = 1. Es la firma que se
-busca en la identificación por correlogramas de la sesión 4.
+PACF deja una sola barra fuera de la banda, en k = 1. Es la firma que se busca
+en la identificación por correlogramas.

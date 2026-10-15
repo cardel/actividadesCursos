@@ -1,9 +1,9 @@
 # Ejercicios · Estructuras de Datos · Tad lista pila cola
 
-Clase 11 — TAD Lista, Pila y Cola: contrato y ejemplos de uso (16 de
-septiembre). Cada enlace abre una actividad que se trabaja directo en el
-navegador, en el mismo orden de los temas de la sesión. Los programas no
-son los de la sesión: mismo tema, ronda nueva.
+TAD Lista, Pila y Cola: contrato y ejemplos de uso. Cada enlace abre una
+actividad que se trabaja directo en el navegador, en el mismo orden de
+los temas de la sesión. Los programas no son los de la sesión: mismo
+tema, ronda nueva.
 
 ## Tres maneras de guardar muchos
 

@@ -1,10 +1,10 @@
 # Ejercicios · Infra · Estrategias de paralelizacion
 
-Clase 2 — estrategias de paralelización: descomposición, granularidad y
-balanceo (15 y 17 de septiembre). Los apartados van en el orden de la clase y
-todos se resuelven en el navegador, sin instalar nada. Cada uno reproduce el
-código que se midió en la sesión: lo que cambia es que aquí el reparto se ve
-tarea por tarea, y antes de ver un número toca escribirlo.
+Estrategias de paralelización: descomposición, granularidad y balanceo. Los
+apartados van en el orden de la clase y todos se resuelven en el navegador, sin
+instalar nada. Cada uno reproduce el código que se midió en la sesión: lo que
+cambia es que aquí el reparto se ve tarea por tarea, y antes de ver un número
+toca escribirlo.
 
 ## La pregunta antes del código
 

@@ -1,9 +1,8 @@
 # Ejercicios · Estructuras de Datos · Lista enlazada
 
-Clase 15 — la lista enlazada (30 de septiembre). Cada enlace abre una
-actividad que se trabaja directo en el navegador, en el mismo orden de los
-temas de la sesión. Los programas no son los de la sesión: mismo tema, ronda
-nueva.
+La lista enlazada. Cada enlace abre una actividad que se trabaja directo en
+el navegador, en el mismo orden de los temas de la sesión. Los programas no
+son los de la sesión: mismo tema, ronda nueva.
 
 ## Lo que cuesta correr elementos
 

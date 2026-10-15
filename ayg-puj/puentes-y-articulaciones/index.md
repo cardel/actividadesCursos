@@ -203,10 +203,10 @@ Los tres de las diapositivas, con el enunciado y el enlace de envío:
   Pide la lista de puentes ordenada, con el extremo menor primero. Sirve para
   probar la primera de las tres pasadas por separado antes de armar el árbol.
 
-## De las clases anteriores
+## De los temas anteriores
 
 Los puntos de articulación y los puentes se presentan en la
-[página de la clase 10](../orden-topologico-dfs-low/index.md), junto con el valor `low` y el
-algoritmo de Tarjan; las dos formas de la búsqueda en profundidad se practican
-en la [de la clase 6](../representaciones-y-recorridos/index.md), y el orden topológico, en la
-[de la clase 8](../orden-topologico-kahn/index.md).
+[página de orden topológico con la profundidad](../orden-topologico-dfs-low/index.md), junto con
+el valor `low` y el algoritmo de Tarjan; las dos formas de la búsqueda en
+profundidad se practican en la [de representaciones y recorridos](../representaciones-y-recorridos/index.md),
+y el orden topológico, en la [de Kahn](../orden-topologico-kahn/index.md).
