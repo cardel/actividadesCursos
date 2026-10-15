@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: fact (clase 2, invariantes de ciclo). */
+/* Ejercicio interactivo: fact (invariantes de ciclo). */
 var EJERCICIO = (function () {
   var CODIGO = [
     { txt: "def fact(N):",          num: null },

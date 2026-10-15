@@ -1,5 +1,5 @@
-/* Ejercicio interactivo: leer un enunciado y decidir por donde se corta
-   (clase 11). Cada enunciado se desarma en cuatro decisiones: quienes son los
+/* Ejercicio interactivo: leer un enunciado y decidir por donde se corta. Cada
+   enunciado se desarma en cuatro decisiones: quienes son los
    vertices, si lo que se quita es un vertice o una arista, cual comparacion lo
    decide y hasta donde hay que llegar. Cada opcion equivocada explica que se
    confundio. */

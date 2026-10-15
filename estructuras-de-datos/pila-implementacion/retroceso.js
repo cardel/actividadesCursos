@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: el recorrido con retroceso de UVa 732 (clase 17). */
+/* Ejercicio interactivo: el recorrido con retroceso de UVa 732. */
 var EJERCICIO = (function () {
   var ENTRADA = "sala";
   var SALIDA = "alas";

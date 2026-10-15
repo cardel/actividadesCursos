@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: agregar sin recorrer (clase 15). */
+/* Ejercicio interactivo: agregar sin recorrer. */
 var EJERCICIO = (function () {
   var LISTA = [2, 5, 1];
   var NUEVO = 7;

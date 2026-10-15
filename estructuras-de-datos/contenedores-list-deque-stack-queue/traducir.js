@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: del TAD construido a mano al contenedor de la biblioteca (clase 20). */
+/* Ejercicio interactivo: del TAD construido a mano al contenedor de la biblioteca. */
 var EJERCICIO = (function () {
   /* Cada linea: la version con los TAD del curso, la de la biblioteca y lo que hace. */
   var PROGRAMA = [

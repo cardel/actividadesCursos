@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: lo que costó cada solución (clase 12). */
+/* Ejercicio interactivo: lo que costó cada solución. */
 var EJERCICIO = (function () {
   /* La papa caliente: pases del frente al final que hace ultimo(n, k). */
   function pasesPapa(n, k) { return (n - 1) * (k - 1); }

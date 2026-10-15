@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: Bellman-Ford en C++ (clase 13).
+/* Ejercicio interactivo: Bellman-Ford en C++.
    La simulacion de bfm1.cpp, bfm2.cpp y bfm4.cpp vive en bfm-lib.js y
    reproduce la funcion bellmanFord de cada archivo, linea por linea. */
 var LIB = (typeof module !== "undefined") ? require("./bfm-lib.js") : { BFM: BFM, DIB: DIB };

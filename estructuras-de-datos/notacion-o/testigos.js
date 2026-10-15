@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: cazar testigos (clase 6, notacion O). */
+/* Ejercicio interactivo: cazar testigos (notacion O). */
 var EJERCICIO = (function () {
   /* T(n) = a*n + b, cota c*n. La pareja (c, k) sirve cuando la
      desigualdad a*n + b <= c*n vale para todo n >= k. */

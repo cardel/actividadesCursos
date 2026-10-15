@@ -1,5 +1,5 @@
 /* Ejercicio interactivo: decidir cuales listas son ordenes topologicos de
-   un grafo (clase 8). Sin simulacion: la comprobacion revisa cada flecha. */
+   un grafo. Sin simulacion: la comprobacion revisa cada flecha. */
 var EJERCICIO = (function () {
   /* Devuelve null si el orden es topologico, o la primera arista (u, v)
      con u despues de v, o con alguien faltante o repetido. */

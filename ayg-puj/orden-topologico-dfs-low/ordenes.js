@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: cuales listas son ordenes topologicos (clase 10).
+/* Ejercicio interactivo: cuales listas son ordenes topologicos.
    Los tiempos d y f son los de la funcion tiempos del codigo de la clase
    (el reloj avanza al entrar y al salir, de 1 a 2|V|). */
 /* Dibujo de grafos dirigidos en SVG, con nombres de vertice y anotaciones. */

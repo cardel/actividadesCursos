@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: TAD Lista (clase 11). */
+/* Ejercicio interactivo: TAD Lista. */
 var EJERCICIO = (function () {
   var OPERACIONES = [["agregar", 4], ["agregar", 6], ["insertar", 0, 2], ["asignar", 2, 9], ["eliminar", 1], ["insertar", 2, 5]];
   /* Llamadas sobre <2 9 5>: cumple o viola la precondicion. */

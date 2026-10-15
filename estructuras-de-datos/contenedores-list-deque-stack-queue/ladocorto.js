@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: cuántos elementos corre insert y erase en deque y vector (clase 20).
+/* Ejercicio interactivo: cuántos elementos corre insert y erase en deque y vector.
    La regla es la de la biblioteca de GCC: con n elementos, insert en la posición p
    corre los p de adelante si p < n / 2 y los n - p de atrás en otro caso; erase en p
    corre los p de adelante si p < n / 2 y los n - p - 1 de atrás en otro caso.

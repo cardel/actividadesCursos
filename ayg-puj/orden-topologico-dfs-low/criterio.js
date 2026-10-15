@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: el criterio de articulacion y de puente (clase 10).
+/* Ejercicio interactivo: el criterio de articulacion y de puente.
    Cada escenario trae el grafo, el arbol de la profundidad que produce
    cortes (vecinos de menor a mayor, raiz en el 0) y los numeros que decide
    la comparacion. La verdad se calcula con los mismos valores d y low que

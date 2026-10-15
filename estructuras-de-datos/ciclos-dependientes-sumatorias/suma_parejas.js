@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: suma_parejas (clase 4). */
+/* Ejercicio interactivo: suma_parejas. */
 var EJERCICIO = (function () {
   var CODIGO = [
     { txt: "int suma_parejas(int datos[], int n) {",       num: null },

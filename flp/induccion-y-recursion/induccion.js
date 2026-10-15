@@ -1,4 +1,4 @@
-/* Especificación inductiva de datos (clase 1). Cada bloque presenta un
+/* Especificación inductiva de datos. Cada bloque presenta un
    conjunto definido por reglas y pide decidir la pertenencia de valores
    concretos; la razón de cada caso nombra la regla que decide. */
 var BLOQUES = (function () {

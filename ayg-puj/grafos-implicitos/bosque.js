@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: UVa 10977, Enchanted Forest (clase 7). El peligro
+/* Ejercicio interactivo: UVa 10977, Enchanted Forest. El peligro
    no viene listado: se calcula con la distancia euclidiana a cada
    Jigglypuff, y despues la amplitud va de (1, 1) a (R, C). */
 var EJERCICIO = (function () {

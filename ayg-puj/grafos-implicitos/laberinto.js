@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: la cuadricula como grafo implicito (clase 7).
+/* Ejercicio interactivo: la cuadricula como grafo implicito.
    BFS sobre un laberinto sin construir la lista de adyacencia. */
 var EJERCICIO = (function () {
   var CODIGO = [

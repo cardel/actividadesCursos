@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: la caja del TAD (clase 10). */
+/* Ejercicio interactivo: la caja del TAD. */
 var EJERCICIO = (function () {
   /* Casos y respuestas correctas de cada carta. */
   var CASOS = {

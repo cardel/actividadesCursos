@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: dosMayores (clase 4, varias variables a la vez). */
+/* Ejercicio interactivo: dosMayores (varias variables a la vez). */
 var EJERCICIO = (function () {
   var CODIGO = [
     { txt: "def dosMayores(A):",          num: null },

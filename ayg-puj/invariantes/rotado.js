@@ -1,5 +1,5 @@
 /* Ejercicio interactivo: posicionDelMinimo en un arreglo rotado
-   (clase 4, variantes de la busqueda binaria). */
+   (variantes de la busqueda binaria). */
 var EJERCICIO = (function () {
   var CODIGO = [
     { txt: "def posicionDelMinimo(A):",  num: null },

@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: TAD Pila (clase 11). */
+/* Ejercicio interactivo: TAD Pila. */
 var EJERCICIO = (function () {
   var OPERACIONES = [["apilar", 5], ["apilar", 2], ["tope"], ["desapilar"], ["apilar", 7], ["apilar", 4], ["desapilar"], ["tope"]];
   var CONTAR = { pila: [4, 9, 4, 4, 1], x: 4 };

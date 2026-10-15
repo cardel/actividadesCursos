@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: el algoritmo de Tarjan paso a paso (clase 10).
+/* Ejercicio interactivo: el algoritmo de Tarjan paso a paso.
    La simulacion reproduce en_blanco, sacar_componente, descubrir, tarjan,
    tarjan_desde y tarjan_con_pila tal como estan en el codigo de la clase, linea por linea. */
 /* Dibujo de grafos dirigidos en SVG, con nombres de vertice y anotaciones. */

@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: paso de parametros (clase 9). */
+/* Ejercicio interactivo: paso de parametros. */
 var EJERCICIO = (function () {
   /* Estado inicial de main y respuesta correcta por version. */
   var INICIAL = { x: 2, y: 10, z: 4 };

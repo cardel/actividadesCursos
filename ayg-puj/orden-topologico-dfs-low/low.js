@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: el valor low de cada vertice en el algoritmo de Tarjan (clase 10).
+/* Ejercicio interactivo: el valor low de cada vertice en el algoritmo de Tarjan.
    La traza reproduce la version recursiva de tarjan: d y low se actualizan como en
    visit, y solo las flechas hacia vertices que siguen en la pila bajan low. */
 /* Dibujo de grafos dirigidos en SVG, con nombres de vertice y anotaciones. */

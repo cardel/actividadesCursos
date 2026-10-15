@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: merge sort sobre la lista enlazada (clase 16). */
+/* Ejercicio interactivo: merge sort sobre la lista enlazada. */
 var EJERCICIO = (function () {
   var LISTA = [7, 3, 8, 1, 5, 2];
   var LINEAS_PARTIR = [

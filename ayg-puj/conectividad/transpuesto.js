@@ -1,5 +1,5 @@
-/* Ejercicio interactivo: el grafo transpuesto y el grafo de componentes
-   (clase 9). Todo se calcula con el codigo de la clase: grafo_transpuesto,
+/* Ejercicio interactivo: el grafo transpuesto y el grafo de componentes. Todo
+   se calcula con el codigo de la clase: grafo_transpuesto,
    orden_por_finalizacion y kosaraju. */
 var EJERCICIO = (function () {
   function transpuesto(G) {

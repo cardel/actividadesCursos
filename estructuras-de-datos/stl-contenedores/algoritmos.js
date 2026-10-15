@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: los primeros algoritmos (clase 13). */
+/* Ejercicio interactivo: los primeros algoritmos. */
 var EJERCICIO = (function () {
   var PERSONAS = [["Rosa", 21], ["Iván", 19], ["Elena", 21], ["Omar", 19], ["Beto", 23]];
   /* Valores verificados con g++: binary_search sobre {6, 3, 9, 2, 7} sin ordenar. */

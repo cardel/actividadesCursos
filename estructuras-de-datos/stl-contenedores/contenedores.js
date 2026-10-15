@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: stack y queue (clase 13). */
+/* Ejercicio interactivo: stack y queue. */
 var EJERCICIO = (function () {
   var PROGRAMA = [["push", 4], ["push", 7], ["pop"], ["push", 2]];
   var CORRESPONDENCIA = { apilar: "push", desapilar: "pop", tope: "top", frente: "front", vacia: "empty" };

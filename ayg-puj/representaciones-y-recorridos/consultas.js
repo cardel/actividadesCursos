@@ -1,5 +1,5 @@
-/* Ejercicio interactivo: la misma pregunta sobre las cuatro representaciones
-   (clase 6). Se calculan los grados de todos los vertices. */
+/* Ejercicio interactivo: la misma pregunta sobre las cuatro representaciones.
+   Se calculan los grados de todos los vertices. */
 var EJERCICIO = (function () {
   var H1 = [[2, 3], [2, 5], [0, 1, 3, 4], [0, 2], [2, 5], [1, 4]];
 

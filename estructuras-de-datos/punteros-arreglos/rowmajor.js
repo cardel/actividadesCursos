@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: la tabla en una sola calle (clase 8). */
+/* Ejercicio interactivo: la tabla en una sola calle. */
 var EJERCICIO = (function () {
   var BASE = 4000;
   var FILAS = 3;

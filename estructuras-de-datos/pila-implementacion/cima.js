@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: la pila directa sobre nodos (clase 17). */
+/* Ejercicio interactivo: la pila directa sobre nodos. */
 var EJERCICIO = (function () {
   var PILA = [5, 1, 8];
   var VALOR = 3;

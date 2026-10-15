@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: el algoritmo de Kosaraju paso a paso (clase 9).
+/* Ejercicio interactivo: el algoritmo de Kosaraju paso a paso.
    La simulacion reproduce orden_por_finalizacion, grafo_transpuesto y
    asignar tal como estan en el codigo de la clase, linea por linea. */
 var EJERCICIO = (function () {

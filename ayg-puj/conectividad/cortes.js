@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: puntos de articulacion y puentes (clase 9).
+/* Ejercicio interactivo: puntos de articulacion y puentes.
    Las respuestas se obtienen quitando la pieza y volviendo a contar
    componentes con componentes_conexos, que es la definicion misma. */
 var EJERCICIO = (function () {

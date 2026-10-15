@@ -1,4 +1,4 @@
-/* Ejercicio interactivo final (clase 10): la red de fibra de un campus, quince
+/* Ejercicio interactivo final: la red de fibra de un campus, quince
    edificios y veinte enlaces. Los calculos salen del codigo de la clase:
    cortes y cortes_con_pila, y se contrastan con quitar la pieza y contar
    componentes, que es la definicion. */

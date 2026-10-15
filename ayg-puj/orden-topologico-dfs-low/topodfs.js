@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: orden topologico con la busqueda en profundidad (clase 10).
+/* Ejercicio interactivo: orden topologico con la busqueda en profundidad.
    La simulacion reproduce topo_aux, orden_topologico_dfs, topo_aux_con_pila y
    orden_topologico_dfs_con_pila tal como estan en el codigo de la clase, linea por linea. */
 /* Dibujo de grafos dirigidos en SVG, con nombres de vertice y anotaciones. */

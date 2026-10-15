@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: la traza de punteros (clase 7). */
+/* Ejercicio interactivo: la traza de punteros. */
 var EJERCICIO = (function () {
   var CODIGO = [
     { txt: "int x = 3;",       num: 1 },

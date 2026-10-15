@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: string (clase 13). */
+/* Ejercicio interactivo: string. */
 var EJERCICIO = (function () {
   var CASOS = [
     { id: "reves", texto: "alReves(\"anilina\") == \"anilina\"", tipo: "bool" },

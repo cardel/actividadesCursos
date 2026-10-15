@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: los tres contratos, juntos (clase 11). */
+/* Ejercicio interactivo: los tres contratos, juntos. */
 var EJERCICIO = (function () {
   /* meter, quitar y ver: el mismo programa bajo dos disciplinas. */
   var PROGRAMA = [["meter", 5], ["meter", 8], ["quitar"], ["meter", 3], ["ver"]];

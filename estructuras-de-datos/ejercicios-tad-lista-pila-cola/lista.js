@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: con una lista (clase 12). */
+/* Ejercicio interactivo: con una lista. */
 var EJERCICIO = (function () {
   var CASOS = {
     repetidos: [2, 2, 2, 5, 5, 9],

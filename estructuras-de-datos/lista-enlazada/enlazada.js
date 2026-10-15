@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: insertar en la lista enlazada (clase 15). */
+/* Ejercicio interactivo: insertar en la lista enlazada. */
 var EJERCICIO = (function () {
   var LISTA = [5, 2, 7];
   var POSICION = 2;

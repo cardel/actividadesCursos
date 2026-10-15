@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: las candidatas a capital, SPOJ CAPCITY (clase 11).
+/* Ejercicio interactivo: las candidatas a capital, SPOJ CAPCITY.
    Una ciudad es candidata cuando se alcanza desde todas las demas, y eso pasa
    exactamente cuando su componente fuertemente conexo es el sumidero de la
    condensacion. Con dos sumideros no hay candidatas. Los numeros salen de

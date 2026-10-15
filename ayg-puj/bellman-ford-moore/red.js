@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: la red, corrida con bfm5.cpp (clase 13).
+/* Ejercicio interactivo: la red, corrida con bfm5.cpp.
    La simulacion vive en bfm-lib.js y reproduce bellmanFordOpt linea por linea. */
 var LIB = (typeof module !== "undefined") ? require("./bfm-lib.js") : { BFM: BFM, DIB: DIB };
 

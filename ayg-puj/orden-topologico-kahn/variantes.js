@@ -1,5 +1,5 @@
 /* Ejercicio interactivo: Kahn con cola, con pila y con la fuente mas
-   pequena (clase 8). Las tres versiones sobre el mismo grafo, y las tres
+   pequena. Las tres versiones sobre el mismo grafo, y las tres
    devuelven un orden topologico distinto. */
 var EJERCICIO = (function () {
   function codigoDe(version) {

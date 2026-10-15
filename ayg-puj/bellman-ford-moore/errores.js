@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: cuatro lineas cambiadas en el C++ del titular (clase 13).
+/* Ejercicio interactivo: cuatro lineas cambiadas en el C++ del titular.
    Las simulaciones viven en bfm-lib.js; cada caso corre la version cambiada y la
    de referencia sobre el mismo grafo. */
 var LIB = (typeof module !== "undefined") ? require("./bfm-lib.js") : { BFM: BFM, DIB: DIB };

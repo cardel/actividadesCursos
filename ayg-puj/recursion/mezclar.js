@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: mezclar (clase 2, divide y venceras). */
+/* Ejercicio interactivo: mezclar (divide y venceras). */
 var EJERCICIO = (function () {
   var CODIGO = [
     { txt: "def mezclar(lista, ini, mitad, fin):",      num: null },

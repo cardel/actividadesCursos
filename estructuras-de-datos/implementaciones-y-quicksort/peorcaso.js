@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: cuál entrada es el peor caso y qué pivote lo evita (clase 19). */
+/* Ejercicio interactivo: cuál entrada es el peor caso y qué pivote lo evita. */
 var EJERCICIO = (function () {
   var ENTRADAS = {
     a: [6, 21, 12, 15, 18, 9, 3],

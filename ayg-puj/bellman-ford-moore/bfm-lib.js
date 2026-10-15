@@ -1,4 +1,4 @@
-/* Piezas comunes de los ejercicios de la clase 13: el dibujo de grafos, el
+/* Piezas comunes de los ejercicios del tema: el dibujo de grafos, el
    texto exacto de bfm1.cpp a bfm5.cpp (la funcion bellmanFord de cada archivo,
    con la numeracion de linea del archivo) y la simulacion de cada version,
    linea por linea. Cada pagina trae sus grafos y su interfaz. */

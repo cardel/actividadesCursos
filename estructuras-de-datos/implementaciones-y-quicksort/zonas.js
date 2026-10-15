@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: qué está mal en cada estado anotado de particionar (clase 19). */
+/* Ejercicio interactivo: qué está mal en cada estado anotado de particionar. */
 var EJERCICIO = (function () {
   var ORIGINAL = [6, 1, 7, 3, 8, 2, 4];
   var INI = 0;

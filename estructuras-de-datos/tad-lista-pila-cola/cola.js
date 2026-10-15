@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: TAD Cola (clase 11). */
+/* Ejercicio interactivo: TAD Cola. */
 var EJERCICIO = (function () {
   var OPERACIONES = [["encolar", 3], ["encolar", 6], ["desencolar"], ["encolar", 1], ["frente"], ["encolar", 8], ["desencolar"], ["frente"]];
   var ROTAR = { cola: [4, 7, 1, 9], k: 3 };

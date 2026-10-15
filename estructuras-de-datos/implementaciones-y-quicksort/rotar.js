@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: rotar la cola de nodos en Θ(1) (clase 19). */
+/* Ejercicio interactivo: rotar la cola de nodos en Θ(1). */
 var EJERCICIO = (function () {
   var COLA = [8, 3, 6, 1];
   var VECES = 3;

@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: el tiempo medido de vaciar por el frente (clase 20).
+/* Ejercicio interactivo: el tiempo medido de vaciar por el frente.
    Cifras de una corrida de medir20.cpp: clock(), g++ -Wall -Wextra sin optimizar,
    AMD Ryzen 5 3600. Tres corridas difirieron en menos del 10 % en las cifras
    mayores de 0,01 s. */

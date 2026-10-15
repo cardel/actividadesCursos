@@ -1,5 +1,5 @@
 /* Ejercicio interactivo: los dos tiempos de la busqueda en profundidad y el
-   orden por finalizacion (clase 9). La simulacion reproduce la funcion
+   orden por finalizacion. La simulacion reproduce la funcion
    tiempos del codigo de la clase, linea por linea. */
 var EJERCICIO = (function () {
   var BLANCO = 0, GRIS = 1, NEGRO = 2;

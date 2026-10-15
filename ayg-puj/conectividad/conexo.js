@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: clasificar un grafo por su conectividad (clase 9).
+/* Ejercicio interactivo: clasificar un grafo por su conectividad.
    Sin paso a paso: las respuestas se calculan con el codigo de la clase,
    componentes_conexos para el caso no dirigido y kosaraju para el dirigido. */
 var EJERCICIO = (function () {

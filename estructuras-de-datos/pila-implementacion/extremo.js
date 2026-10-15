@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: el extremo que se nombra tope (clase 17). */
+/* Ejercicio interactivo: el extremo que se nombra tope. */
 var EJERCICIO = (function () {
   var N = 50;
   var TAMANOS = [10, 20, 50];

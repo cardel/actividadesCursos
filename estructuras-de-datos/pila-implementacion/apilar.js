@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: la pila sobre la lista enlazada (clase 17). */
+/* Ejercicio interactivo: la pila sobre la lista enlazada. */
 var EJERCICIO = (function () {
   var OPERACIONES = [
     { nombre: "apilar(4)", clase: "apilar", valor: 4 },

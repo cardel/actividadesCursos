@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: el iterador como puntero (clase 14). */
+/* Ejercicio interactivo: el iterador como puntero. */
 var EJERCICIO = (function () {
   var V = [4, 8, 1, 6, 3];
 

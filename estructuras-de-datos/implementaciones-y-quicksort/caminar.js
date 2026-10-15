@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: sumar los elementos de la lista, la pila y la cola (clase 19). */
+/* Ejercicio interactivo: sumar los elementos de la lista, la pila y la cola. */
 var EJERCICIO = (function () {
   var N = 12;
 

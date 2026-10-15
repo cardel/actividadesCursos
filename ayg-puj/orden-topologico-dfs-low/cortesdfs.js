@@ -1,5 +1,5 @@
 /* Ejercicio interactivo: puntos de articulacion y puentes con una sola
-   busqueda en profundidad (clase 10). La simulacion reproduce, linea por
+   busqueda en profundidad. La simulacion reproduce, linea por
    linea, marcados, descubrir, revisar_hijo, cortes_aux y cortes (recursiva)
    y cortes_desde con cortes_con_pila (pila explicita). */
 var EJERCICIO = (function () {

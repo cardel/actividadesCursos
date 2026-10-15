@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: busqueda binaria (clase 3). */
+/* Ejercicio interactivo: busqueda binaria. */
 var EJERCICIO = (function () {
   var CODIGO = [
     { txt: "def buscar(lista, v):",                num: null },

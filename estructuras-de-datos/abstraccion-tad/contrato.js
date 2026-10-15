@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: el contrato vigilado (clase 10). */
+/* Ejercicio interactivo: el contrato vigilado. */
 var EJERCICIO = (function () {
   /* Datos y respuestas de las tres cartas. */
   var ASSERT = { h: 26, m: 0, condicion: "h >= 0 && h < 24" };

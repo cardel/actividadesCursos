@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: ordenarBurbuja (clase 4, ciclos anidados). */
+/* Ejercicio interactivo: ordenarBurbuja (ciclos anidados). */
 var EJERCICIO = (function () {
   var CODIGO = [
     { txt: "def ordenarBurbuja(A):",       num: null },

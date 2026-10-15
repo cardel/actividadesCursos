@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: tres maneras de guardar muchos (clase 11). */
+/* Ejercicio interactivo: tres maneras de guardar muchos. */
 var EJERCICIO = (function () {
   /* Escenarios y la disciplina que les corresponde. */
   var ESCENARIOS = [

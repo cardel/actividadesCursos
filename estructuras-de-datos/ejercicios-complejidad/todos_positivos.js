@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: todos_positivos (clase 5). */
+/* Ejercicio interactivo: todos_positivos. */
 var EJERCICIO = (function () {
   var CODIGO = [
     { txt: "int todos_positivos(int datos[], int n) {", num: null },

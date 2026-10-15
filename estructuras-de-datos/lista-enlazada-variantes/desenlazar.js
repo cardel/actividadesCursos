@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: desenlazar en la lista doblemente enlazada (clase 16). */
+/* Ejercicio interactivo: desenlazar en la lista doblemente enlazada. */
 var EJERCICIO = (function () {
   var LISTA = [3, 9, 1, 6];
   var LIMITE = 8;

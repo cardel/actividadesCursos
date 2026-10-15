@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: stack y queue sobre distintos contenedores (clase 20). */
+/* Ejercicio interactivo: stack y queue sobre distintos contenedores. */
 var EJERCICIO = (function () {
   /* El programa de la primera tarjeta, simulado con arreglos. */
   function correr() {

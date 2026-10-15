@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: llegar a la posicion por el lado corto (clase 16). */
+/* Ejercicio interactivo: llegar a la posicion por el lado corto. */
 var EJERCICIO = (function () {
   var N = 12;
   var P = 10;

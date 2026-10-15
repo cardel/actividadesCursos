@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: un iterador de list a traves de insert y erase (clase 20). */
+/* Ejercicio interactivo: un iterador de list a traves de insert y erase. */
 var EJERCICIO = (function () {
   var INICIAL = [5, 2, 8, 3];
 

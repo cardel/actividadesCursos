@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: lo que cobra cada forma de tener una pila (clase 17). */
+/* Ejercicio interactivo: lo que cobra cada forma de tener una pila. */
 var EJERCICIO = (function () {
   var CAPACIDAD = 500;
   var INTENTOS = 20000;

@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: lo que cobra cada cola (clase 18). */
+/* Ejercicio interactivo: lo que cobra cada cola. */
 var EJERCICIO = (function () {
   var N = 40;
 

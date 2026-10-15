@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: el ultimo al vaciar la cola de nodos (clase 18). */
+/* Ejercicio interactivo: el ultimo al vaciar la cola de nodos. */
 var EJERCICIO = (function () {
   var LINEAS_ROTO = [
     "void encolar(Elemento e) {",

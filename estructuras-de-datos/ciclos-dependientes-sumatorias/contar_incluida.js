@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: contar_incluida (clase 4). */
+/* Ejercicio interactivo: contar_incluida. */
 var EJERCICIO = (function () {
   var CODIGO = [
     { txt: "int contar_incluida(int n) {",        num: null },

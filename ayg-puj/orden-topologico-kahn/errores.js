@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: tres fallas en el algoritmo de Kahn (clase 8).
+/* Ejercicio interactivo: tres fallas en el algoritmo de Kahn.
    Cada version corre sobre el mismo grafo y se compara con la correcta.
    Ninguna da error al ejecutar: las tres devuelven una lista. */
 var EJERCICIO = (function () {

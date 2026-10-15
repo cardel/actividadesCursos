@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: que jugadas de UVa 732 se pueden y que fallan (clase 17). */
+/* Ejercicio interactivo: que jugadas de UVa 732 se pueden y que fallan. */
 var EJERCICIO = (function () {
   var CASO1 = ["nido", "odin"];
   var CANDIDATAS1 = {

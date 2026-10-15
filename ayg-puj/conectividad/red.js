@@ -1,4 +1,4 @@
-/* Ejercicio interactivo final (clase 9): quince paginas enlazadas, y todo lo
+/* Ejercicio interactivo final: quince paginas enlazadas, y todo lo
    de la sesion sobre el mismo grafo. Los calculos salen del codigo de la
    clase: componentes_conexos sobre el no dirigido subyacente y kosaraju
    sobre el dirigido. */

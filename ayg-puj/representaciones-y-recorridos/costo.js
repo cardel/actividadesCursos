@@ -1,5 +1,4 @@
-/* Ejercicio interactivo: el costo de recorrer, segun la representacion
-   (clase 6). */
+/* Ejercicio interactivo: el costo de recorrer, segun la representacion. */
 var EJERCICIO = (function () {
   /* Operaciones que hace un recorrido completo sobre cada representacion.
      V vertices, E aristas no dirigidas (cada una da dos entradas en la

@@ -1,5 +1,5 @@
 /* Ejercicio interactivo: las marcas de la busqueda en profundidad
-   (clase 8, ejercicio 1). Cada vertice pasa por tres colores y recibe dos
+   (ejercicio 1). Cada vertice pasa por tres colores y recibe dos
    marcas de tiempo; toparse con un vertice gris es lo que delata un ciclo.
    Las dos versiones, recursiva y con pila explicita, dan las mismas marcas. */
 var EJERCICIO = (function () {

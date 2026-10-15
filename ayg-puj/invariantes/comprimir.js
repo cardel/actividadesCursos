@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: comprimir (clase 4, cuando la salida es una lista). */
+/* Ejercicio interactivo: comprimir (cuando la salida es una lista). */
 var EJERCICIO = (function () {
   var CODIGO = [
     { txt: "def comprimir(A):",     num: null },

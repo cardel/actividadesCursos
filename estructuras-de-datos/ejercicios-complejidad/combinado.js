@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: combinado (clase 5). */
+/* Ejercicio interactivo: combinado. */
 var EJERCICIO = (function () {
   var CODIGO = [
     { txt: "int combinado(int datos[], int n) {",             num: null },

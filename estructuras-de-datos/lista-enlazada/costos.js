@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: lo que cobra cada operacion (clase 15). */
+/* Ejercicio interactivo: lo que cobra cada operacion. */
 var EJERCICIO = (function () {
   var N = 20;
 

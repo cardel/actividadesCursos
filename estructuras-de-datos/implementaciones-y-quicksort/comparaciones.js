@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: comparaciones y profundidad de quicksort (clase 19). */
+/* Ejercicio interactivo: comparaciones y profundidad de quicksort. */
 var EJERCICIO = (function () {
   var ENTRADAS = {
     ordenado: [2, 5, 8, 11, 14, 17],

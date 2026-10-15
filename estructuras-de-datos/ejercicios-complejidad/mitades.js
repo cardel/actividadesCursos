@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: mitades (clase 5). */
+/* Ejercicio interactivo: mitades. */
 var EJERCICIO = (function () {
   var CODIGO = [
     { txt: "int mitades(int n) {",                num: null },

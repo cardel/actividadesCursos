@@ -1,5 +1,5 @@
-/* Ejercicio interactivo: el recorrido que sube de influencia, Interplanetary
-   (clase 11). Tarjan marca los puentes; el etiquetado que no los cruza da los
+/* Ejercicio interactivo: el recorrido que sube de influencia, Interplanetary.
+   Tarjan marca los puentes; el etiquetado que no los cruza da los
    componentes 2-arista-conexos y la influencia de cada uno; el recorrido desde
    el planeta de arranque cruza un puente solo hacia un componente de mas
    influencia. La simulacion reproduce bridgesAux, getCCAux y dfs de

@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: cuantas secuencias imprime UVa 732 (clase 17). */
+/* Ejercicio interactivo: cuantas secuencias imprime UVa 732. */
 var EJERCICIO = (function () {
   var PRIMERO = ["banana", "ananab"];
   var FAMILIA = [["nana", "nana"], ["nanana", "nanana"], ["nananana", "nananana"]];

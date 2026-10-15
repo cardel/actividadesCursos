@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: concatenar dos colas de nodos (clase 19). */
+/* Ejercicio interactivo: concatenar dos colas de nodos. */
 var EJERCICIO = (function () {
   var C = [5, 2];
   var D = [9, 4, 7];

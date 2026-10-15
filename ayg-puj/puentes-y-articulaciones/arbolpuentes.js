@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: el arbol de puentes paso a paso (clase 11).
+/* Ejercicio interactivo: el arbol de puentes paso a paso.
    Las tres pasadas de contraer: los puentes con Tarjan, el etiquetado que no
    cruza puentes y la contraccion. La simulacion reproduce etiquetar,
    componentes y arbol_de_puentes de arbol_de_puentes.py, en la version

@@ -1,4 +1,4 @@
-/* Tarjetas comunes de los ejercicios interactivos (clase 20).
+/* Tarjetas comunes de los ejercicios interactivos.
    Cada pagina arma una especificacion y llama Tarjetas.montar(spec).
    Tipos de tarjeta:
      respuesta  campos que se escriben y se comparan con lo esperado

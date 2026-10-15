@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: valores contra direcciones (clase 7). */
+/* Ejercicio interactivo: valores contra direcciones. */
 var EJERCICIO = (function () {
   var CODIGO = [
     { txt: "int a = 10;",      num: 1 },

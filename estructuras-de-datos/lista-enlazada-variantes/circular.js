@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: insertar y eliminar en la lista circular doble (clase 16). */
+/* Ejercicio interactivo: insertar y eliminar en la lista circular doble. */
 var EJERCICIO = (function () {
   var INICIAL = [4, 7, 2];
   var LIMITE = 9;

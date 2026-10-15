@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: lower_bound, unique y accumulate (clase 14). */
+/* Ejercicio interactivo: lower_bound, unique y accumulate. */
 var EJERCICIO = (function () {
   var ORDENADO = [2, 4, 4, 4, 9, 11];
   var CONSULTAS = [4, 5, 11, 12];

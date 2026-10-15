@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: los ejercicios con la biblioteca (clase 14). */
+/* Ejercicio interactivo: los ejercicios con la biblioteca. */
 var EJERCICIO = (function () {
   var A = [1, 2, 5, 8, 9, 12];
   var B = [2, 3, 5, 9, 10];

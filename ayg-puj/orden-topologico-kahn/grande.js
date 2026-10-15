@@ -1,5 +1,5 @@
-/* Ejercicio interactivo: el algoritmo de Kahn sobre un grafo grande
-   (clase 8). Catorce modulos de un proyecto y sus dependencias; la misma
+/* Ejercicio interactivo: el algoritmo de Kahn sobre un grafo grande. Catorce
+   modulos de un proyecto y sus dependencias; la misma
    funcion kahn de la clase, sin cambiar una linea. */
 var EJERCICIO = (function () {
   var CODIGO = [

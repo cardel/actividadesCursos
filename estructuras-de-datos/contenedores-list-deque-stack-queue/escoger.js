@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: escoger el contenedor por las operaciones (clase 20). */
+/* Ejercicio interactivo: escoger el contenedor por las operaciones. */
 var EJERCICIO = (function () {
   var OPS = [
     { op: "vector", texto: "<code>vector</code>" },

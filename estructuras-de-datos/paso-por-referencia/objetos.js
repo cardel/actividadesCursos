@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: repaso de POO con la clase Cuenta (clase 9). */
+/* Ejercicio interactivo: repaso de POO con la clase Cuenta. */
 var EJERCICIO = (function () {
   /* Reglas de la clase: consignar exige monto positivo; retirar exige
      monto positivo que no supere el saldo. */

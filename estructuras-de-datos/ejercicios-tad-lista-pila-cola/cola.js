@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: con una cola (clase 12). */
+/* Ejercicio interactivo: con una cola. */
 var EJERCICIO = (function () {
   var CASOS = { cartas: { n: 7 }, papa: { n: 6, k: 4 } };
 

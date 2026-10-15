@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: relajar una arista (clase 12).
+/* Ejercicio interactivo: relajar una arista.
    La simulacion reproduce el pseudocodigo de RELAJAR del deck, linea por linea. */
 /* Dibujo de grafos en SVG, con nombres de vertice, pesos y anotaciones. */
 var DIB = (function () {

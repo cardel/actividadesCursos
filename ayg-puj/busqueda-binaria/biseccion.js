@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: biseccion continua (clase 3). */
+/* Ejercicio interactivo: biseccion continua. */
 var EJERCICIO = (function () {
   var CODIGO = [
     { txt: "def biseccion(v, a, b, eps):",         num: null },

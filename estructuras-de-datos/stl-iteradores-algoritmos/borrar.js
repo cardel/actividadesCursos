@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: borrar mientras se recorre (clase 14). */
+/* Ejercicio interactivo: borrar mientras se recorre. */
 var EJERCICIO = (function () {
   var V = [-2, 5, -1, -3, 7, 0, -4];
 

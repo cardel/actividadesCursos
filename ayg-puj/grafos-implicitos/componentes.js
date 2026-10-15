@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: contar componentes conexos y su tamano (clase 7).
+/* Ejercicio interactivo: contar componentes conexos y su tamano.
    El recorrido interno viene en dos versiones, con pila y recursivo. */
 var EJERCICIO = (function () {
   var CODIGO = [

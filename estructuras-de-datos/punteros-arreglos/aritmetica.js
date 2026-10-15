@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: aritmetica de punteros (clase 8). */
+/* Ejercicio interactivo: aritmetica de punteros. */
 var EJERCICIO = (function () {
   var BASE = 2000;
   var VALORES = [2, 4, 6, 8, 10];

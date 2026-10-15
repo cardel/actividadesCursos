@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: el algoritmo de Kahn paso a paso (clase 8).
+/* Ejercicio interactivo: el algoritmo de Kahn paso a paso.
    La simulacion reproduce la funcion kahn de la clase, linea por linea. */
 var EJERCICIO = (function () {
   var CODIGO = [

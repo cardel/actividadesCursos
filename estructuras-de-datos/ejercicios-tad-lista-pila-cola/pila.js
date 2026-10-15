@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: con una pila (clase 12). */
+/* Ejercicio interactivo: con una pila. */
 var EJERCICIO = (function () {
   /* Cadenas de la carta de parentesis y expresiones de la postfija. */
   var CADENAS = ["{[()]}(", "([{}])", "{(})"];

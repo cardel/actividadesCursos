@@ -1,5 +1,5 @@
 /* Ejercicio interactivo: low, puntos de articulacion y puentes sobre un grafo
-   no dirigido con la profundidad ya corrida (clase 11). La traza reproduce
+   no dirigido con la profundidad ya corrida. La traza reproduce
    puentes_aux de arbol_de_puentes.py: cada vecino viene con el identificador
    de su arista y la de entrada se excluye comparando i != entrada. */
 var EJERCICIO = (function () {

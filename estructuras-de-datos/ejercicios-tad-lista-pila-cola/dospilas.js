@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: una cola hecha con dos pilas (clase 12). */
+/* Ejercicio interactivo: una cola hecha con dos pilas. */
 var EJERCICIO = (function () {
   /* La secuencia de operaciones de la carta. */
   var OPERACIONES = [

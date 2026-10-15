@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: lo que cobra cada implementacion de la lista (clase 16). */
+/* Ejercicio interactivo: lo que cobra cada implementacion de la lista. */
 var EJERCICIO = (function () {
   var DATOS = [4, 7, 2];
   var NUEVO = 5;

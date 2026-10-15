@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: cuando el vertice no es la celda (clase 7).
+/* Ejercicio interactivo: cuando el vertice no es la celda.
    La misma cuadricula recorrida marcando la celda y marcando el estado. */
 var EJERCICIO = (function () {
   var CODIGO_CELDA = [

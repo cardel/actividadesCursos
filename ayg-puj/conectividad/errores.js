@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: tres fallas en Kosaraju (clase 9). Las tres corren
+/* Ejercicio interactivo: tres fallas en Kosaraju. Las tres corren
    sobre el mismo grafo y ninguna da error: todas devuelven una lista de
    listas, y hay que mirarla para darse cuenta. */
 var EJERCICIO = (function () {

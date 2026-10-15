@@ -1,5 +1,5 @@
 /* Ejercicio interactivo: profundidades en el arbol de la busqueda en
-   profundidad (clase 6). */
+   profundidad. */
 var EJERCICIO = (function () {
   var CODIGO = [
     { txt: "def profundidades(G, s):",       num: null },

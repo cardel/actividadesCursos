@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: el valor paloma de cada vertice, UVa 10765 (clase 11).
+/* Ejercicio interactivo: el valor paloma de cada vertice, UVa 10765.
    El valor de v es en cuantos componentes queda la red al quitarlo: uno por
    cada subarbol que se desprende, mas el pedazo que se queda con el padre. La
    raiz no tiene padre, asi que su valor es el numero de hijos. Los numeros

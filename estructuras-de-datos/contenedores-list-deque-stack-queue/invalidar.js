@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: qué sigue valiendo después de cada operación (clase 20).
+/* Ejercicio interactivo: qué sigue valiendo después de cada operación.
    Las respuestas siguen las reglas de invalidación de la biblioteca (cppreference,
    secciones de vector, deque y list); el programa de prueba en C++ comprueba las
    direcciones de memoria en los casos donde se pueden observar. */

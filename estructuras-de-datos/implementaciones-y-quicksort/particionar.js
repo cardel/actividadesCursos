@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: particionar paso a paso (clase 19). */
+/* Ejercicio interactivo: particionar paso a paso. */
 var EJERCICIO = (function () {
   var ARREGLO = [3, 8, 1, 6, 9, 2, 5];
   var LINEAS = [

@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: dónde cae cada elemento de un deque de bloques (clase 20).
+/* Ejercicio interactivo: dónde cae cada elemento de un deque de bloques.
    Modelo del ejercicio: bloques de B casillas y un mapa de punteros a bloques.
    - Vacío: un bloque en la ranura del medio del mapa, ini = 0.
    - El elemento i está en la ranura primera + (ini + i) / B, casilla (ini + i) % B.

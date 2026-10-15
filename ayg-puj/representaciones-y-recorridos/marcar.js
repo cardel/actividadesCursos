@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: por que hace falta la marca de visitados (clase 6). */
+/* Ejercicio interactivo: por que hace falta la marca de visitados. */
 var EJERCICIO = (function () {
   var CODIGO = [
     { txt: "def recorrer(G, s, marcar, limite):", num: null },

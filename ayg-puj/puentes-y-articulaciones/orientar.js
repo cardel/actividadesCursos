@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: orientar las calles de una ciudad, UVa 610 (clase 11).
+/* Ejercicio interactivo: orientar las calles de una ciudad, UVa 610.
    La simulacion reproduce linea por linea descubrir, orientar_aux con orientar
    (recursiva) y orientar_desde con orientar_con_pila (pila explicita), tal como
    estan en uva610_street_directions.py. Las intersecciones van de 1 a n. */

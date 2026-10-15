@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: particionar y quicksort sobre un arreglo propio (clase 19). */
+/* Ejercicio interactivo: particionar y quicksort sobre un arreglo propio. */
 var EJERCICIO = (function () {
   var MAXIMO = 12;
   var LINEAS = [

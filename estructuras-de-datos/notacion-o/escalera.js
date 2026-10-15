@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: la escalera de clases (clase 6, notacion O). */
+/* Ejercicio interactivo: la escalera de clases (notacion O). */
 var EJERCICIO = (function () {
   var COSTOS = [
     { id: "a", txt: "4n + 7", esperada: "n" },

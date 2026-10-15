@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: caminos mas cortos sin pesos con la busqueda en amplitud (clase 12).
+/* Ejercicio interactivo: caminos mas cortos sin pesos con la busqueda en amplitud.
    La simulacion reproduce ssspBFS del titular (bfs.py) y una funcion camino, linea por linea. */
 /* Dibujo de grafos en SVG, con nombres de vertice, pesos y anotaciones. */
 var DIB = (function () {

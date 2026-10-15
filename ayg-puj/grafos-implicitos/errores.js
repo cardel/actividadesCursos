@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: tres errores sobre cuadriculas (clase 7).
+/* Ejercicio interactivo: tres errores sobre cuadriculas.
    Cada caso corre la version con el error y la correcta sobre el mismo
    laberinto y muestra las dos salidas. */
 var EJERCICIO = (function () {

@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: los cuatro errores que mas cuestan (clase 6).
+/* Ejercicio interactivo: los cuatro errores que mas cuestan.
    Cada caso corre las dos versiones y muestra la diferencia. */
 var EJERCICIO = (function () {
   var ARISTAS = [[0, 2], [0, 3], [1, 2], [1, 5], [2, 3], [2, 4], [4, 5]];

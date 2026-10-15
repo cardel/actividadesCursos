@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: ordenar por mezcla, nivel por nivel (clase 2). */
+/* Ejercicio interactivo: ordenar por mezcla, nivel por nivel. */
 var EJERCICIO = (function () {
   var DATOS = {
     4: [5, 2, 7, 1],

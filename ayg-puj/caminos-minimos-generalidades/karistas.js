@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: caminos mas cortos de a lo sumo k aristas (clase 12).
+/* Ejercicio interactivo: caminos mas cortos de a lo sumo k aristas.
    Cada fila se calcula solo a partir de la anterior, con copia por fila. */
 /* Dibujo de grafos en SVG, con nombres de vertice, pesos y anotaciones. */
 var DIB = (function () {

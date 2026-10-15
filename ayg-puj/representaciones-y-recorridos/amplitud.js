@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: el vertice mas lejano, por amplitud (clase 6). */
+/* Ejercicio interactivo: el vertice mas lejano, por amplitud. */
 var EJERCICIO = (function () {
   var CODIGO = [
     { txt: "from collections import deque", num: null },

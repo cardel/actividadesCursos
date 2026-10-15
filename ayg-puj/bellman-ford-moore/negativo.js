@@ -1,5 +1,5 @@
 /* Ejercicio interactivo: recuperar el ciclo negativo con bfm3.cpp y detectarlo
-   con bfm5.cpp (clase 13). Las simulaciones viven en bfm-lib.js. */
+   con bfm5.cpp. Las simulaciones viven en bfm-lib.js. */
 var LIB = (typeof module !== "undefined") ? require("./bfm-lib.js") : { BFM: BFM, DIB: DIB };
 
 var EJERCICIO = (function () {

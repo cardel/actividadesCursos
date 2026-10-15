@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: tres versiones con una linea cambiada (clase 11).
+/* Ejercicio interactivo: tres versiones con una linea cambiada.
    Dos en el conteo por vertice de UVa 10765 (la desigualdad estricta y el
    arranque del valor de la raiz) y una en el etiquetado del arbol de puentes
    (un recorrido que cruza puentes). Las tres corren y devuelven algo con

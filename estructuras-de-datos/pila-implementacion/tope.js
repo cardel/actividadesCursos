@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: la pila sobre arreglo y su techo (clase 17). */
+/* Ejercicio interactivo: la pila sobre arreglo y su techo. */
 var EJERCICIO = (function () {
   var CAPACIDAD = 4;
   var OPERACIONES = [

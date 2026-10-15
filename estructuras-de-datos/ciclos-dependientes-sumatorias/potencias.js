@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: potencias (clase 4). */
+/* Ejercicio interactivo: potencias. */
 var EJERCICIO = (function () {
   var CODIGO = [
     { txt: "int potencias(int n) {",              num: null },

@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: que version del problema y que algoritmo conviene (clase 12).
+/* Ejercicio interactivo: que version del problema y que algoritmo conviene.
    Diez escenarios en palabras. Cada respuesta equivocada trae su explicacion. */
 var EJERCICIO = (function () {
   var ALGS = [

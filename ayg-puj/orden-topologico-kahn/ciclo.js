@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: Kahn cuando el grafo tiene ciclos (clase 8).
+/* Ejercicio interactivo: Kahn cuando el grafo tiene ciclos.
    El mismo kahn de la clase; lo que cambia es que la cola se vacia antes
    de tiempo, y len(orden) < n es la senal. */
 var EJERCICIO = (function () {

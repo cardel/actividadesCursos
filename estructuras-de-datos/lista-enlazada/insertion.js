@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: insertion sort y sus corrimientos (clase 15). */
+/* Ejercicio interactivo: insertion sort y sus corrimientos. */
 var EJERCICIO = (function () {
   var ARREGLO = [6, 4, 8, 2, 9, 5];
   var DECRECIENTE = [9, 8, 6, 5, 4, 2];

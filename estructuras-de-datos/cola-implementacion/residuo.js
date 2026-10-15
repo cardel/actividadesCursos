@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: la cola de arreglo y el residuo (clase 18). */
+/* Ejercicio interactivo: la cola de arreglo y el residuo. */
 var EJERCICIO = (function () {
   var CAPACIDAD = 5;
   var OPERACIONES = [

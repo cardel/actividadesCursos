@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: lo que cobra cada operacion (clase 13). */
+/* Ejercicio interactivo: lo que cobra cada operacion. */
 var EJERCICIO = (function () {
   var CASOS = { insert: { n: 6, p: 2 }, revertir: { n: 5 } };
 

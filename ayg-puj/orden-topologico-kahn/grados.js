@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: grados de entrada y de salida (clase 8, recuento).
+/* Ejercicio interactivo: grados de entrada y de salida (recuento).
    Primero se llenan a mano, despues corre grados_de_entrada tal como esta
    en el codigo de la clase. */
 var EJERCICIO = (function () {

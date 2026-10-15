@@ -1,4 +1,4 @@
-/* Recorridos (clase 1). Los reconocedores responden sí o no; estos retos
+/* Recorridos. Los reconocedores responden sí o no; estos retos
    recorren el dato y construyen uno nuevo, con la misma lectura de la
    gramática. El código del estudiante corre sobre mini-scheme.js. */
 var RETOS = (function () {

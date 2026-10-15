@@ -1,4 +1,4 @@
-/* Reconocedores (clase 1). Cada reto entrega unas reglas y pide el
+/* Reconocedores. Cada reto entrega unas reglas y pide el
    procedimiento que decide la pertenencia. El código del estudiante corre de
    verdad sobre el evaluador de mini-scheme.js. */
 var RETOS = (function () {

@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: tres fallas con una linea cambiada (clase 10).
+/* Ejercicio interactivo: tres fallas con una linea cambiada.
    Dos en cortes (sin la guarda v != padre, y con >= en la condicion del
    puente) y una en tarjan (d[v] != 0 en lugar de en_pila[v]). Las tres
    corren y devuelven algo con apariencia de respuesta. */

@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: la cola sobre la lista con puntero al ultimo (clase 18). */
+/* Ejercicio interactivo: la cola sobre la lista con puntero al ultimo. */
 var EJERCICIO = (function () {
   var LLAMADAS = [
     { op: "encolar", valor: 4 },

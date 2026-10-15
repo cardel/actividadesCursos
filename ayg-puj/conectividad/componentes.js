@@ -1,5 +1,5 @@
-/* Ejercicio interactivo: los componentes conexos con los tres recorridos de
-   la clase 9. La simulacion reproduce componentes_conexos,
+/* Ejercicio interactivo: los componentes conexos con los tres recorridos del
+   tema. La simulacion reproduce componentes_conexos,
    componentes_conexos_con_pila y componentes_conexos_bfs, linea por linea. */
 var EJERCICIO = (function () {
   var CODIGOS = {

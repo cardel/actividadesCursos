@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: splice y sort en list (clase 20). */
+/* Ejercicio interactivo: splice y sort en list. */
 var EJERCICIO = (function () {
   var A = [4, 9, 1];
   var B = [7, 2, 6];

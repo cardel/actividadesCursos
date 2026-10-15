@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: el grafo de estados de The New Villa (UVa 321), clase 13.
+/* Ejercicio interactivo: el grafo de estados de The New Villa (UVa 321).
    La simulacion reproduce sucesores, ssspBFS y resolver de new_villa.py, linea
    por linea, con la numeracion de linea del archivo. */
 var LIB = (typeof module !== "undefined") ? require("./bfm-lib.js") : { DIB: DIB };

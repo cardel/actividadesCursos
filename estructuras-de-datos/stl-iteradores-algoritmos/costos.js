@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: lo que cobra cada operación (clase 14). */
+/* Ejercicio interactivo: lo que cobra cada operación. */
 var EJERCICIO = (function () {
   /* Cuantas veces parte por la mitad lower_bound un rango de n: techo de log2(n). */
   function pasosLowerBound(n) {

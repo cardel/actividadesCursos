@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: triangulo (clase 4). */
+/* Ejercicio interactivo: triangulo. */
 var EJERCICIO = (function () {
   var CODIGO = [
     { txt: "int triangulo(int n) {",              num: null },

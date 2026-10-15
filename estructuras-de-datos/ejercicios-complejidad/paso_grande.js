@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: paso_grande (clase 5). */
+/* Ejercicio interactivo: paso_grande. */
 var EJERCICIO = (function () {
   var CODIGO = [
     { txt: "int paso_grande(int n) {",            num: null },

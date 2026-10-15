@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: la cola necesita los dos extremos (clase 18). */
+/* Ejercicio interactivo: la cola necesita los dos extremos. */
 var EJERCICIO = (function () {
   var N = 30;
   var TAMANOS = [5, 10, 15, 30];

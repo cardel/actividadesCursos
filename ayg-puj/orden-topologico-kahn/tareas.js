@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: de la entrada del juez al grafo (clase 8).
+/* Ejercicio interactivo: de la entrada del juez al grafo.
    UVa 10305 con una instancia que no es la de la muestra. La simulacion
    reproduce leer_grafo tal como esta en el codigo de la clase. */
 var EJERCICIO = (function () {

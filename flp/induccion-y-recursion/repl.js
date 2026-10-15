@@ -1,4 +1,4 @@
-/* Retos de recursión estructural (clase 1). El código del estudiante corre
+/* Retos de recursión estructural. El código del estudiante corre
    de verdad sobre el evaluador de mini-scheme.js. */
 var RETOS = (function () {
   "use strict";

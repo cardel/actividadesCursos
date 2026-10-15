@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: lo que cuesta correr elementos (clase 15). */
+/* Ejercicio interactivo: lo que cuesta correr elementos. */
 var EJERCICIO = (function () {
   var CAPACIDAD = 8;
   var OPERACIONES = [

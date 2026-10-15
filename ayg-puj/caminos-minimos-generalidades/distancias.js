@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: distancias con pesos, con ciclos negativos y sin camino (clase 12).
+/* Ejercicio interactivo: distancias con pesos, con ciclos negativos y sin camino.
    Las delta salen de Bellman-Ford con deteccion de los vertices a los que llega
    un ciclo negativo alcanzable desde la fuente. */
 /* Dibujo de grafos en SVG, con nombres de vertice, pesos y anotaciones. */

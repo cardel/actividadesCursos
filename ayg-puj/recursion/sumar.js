@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: sumarArreglo (clase 2, invariantes de ciclo). */
+/* Ejercicio interactivo: sumarArreglo (invariantes de ciclo). */
 var EJERCICIO = (function () {
   var CODIGO = [
     { txt: "def sumarArreglo(A):",   num: null },

@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: un dato y una direccion (clase 15). */
+/* Ejercicio interactivo: un dato y una direccion. */
 var EJERCICIO = (function () {
   var DATOS = [4, 1, 6, 8];
 

@@ -1,5 +1,5 @@
-/* Ejercicio interactivo: construir las cuatro representaciones de un grafo
-   (clase 6). Las cuatro se escriben a mano y se comprueban por separado. */
+/* Ejercicio interactivo: construir las cuatro representaciones de un grafo.
+   Las cuatro se escriben a mano y se comprueban por separado. */
 var EJERCICIO = (function () {
   var H1 = [[2, 3], [2, 5], [0, 1, 3, 4], [0, 2], [2, 5], [1, 4]];
   var H2 = [[2, 3], [0], [4], [2, 5], [1], [4]];

@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: vector (clase 13). */
+/* Ejercicio interactivo: vector. */
 var EJERCICIO = (function () {
   var OPERACIONES = [
     ["push_back", 3], ["push_back", 9], ["insert", 1, 6], ["push_back", 4], ["erase", 0], ["set", 2, 1]

@@ -1,4 +1,4 @@
-/* Ejercicio interactivo: encuentre los errores de memoria (clase 7). */
+/* Ejercicio interactivo: encuentre los errores de memoria. */
 var EJERCICIO = (function () {
   var LINEAS = [
     { txt: "int *a = malloc(n * sizeof(int));" },

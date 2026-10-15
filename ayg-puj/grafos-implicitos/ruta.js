@@ -1,5 +1,5 @@
 /* Ejercicio interactivo: la ruta con menos saltos, reconstruida con
-   predecesores (clase 7). Red dirigida distinta a la de las diapositivas. */
+   predecesores. Red dirigida distinta a la de las diapositivas. */
 var EJERCICIO = (function () {
   var CODIGO = [
     { txt: "def ruta(grafo, inicio, destino):",      num: null },
