@@ -1,0 +1,62 @@
+# Ejercicios · Estructuras de Datos · Pila implementacion
+
+Clase 17 — el TAD Pila por dentro (7 de octubre). Cada enlace abre una
+actividad que se trabaja directo en el navegador, en el mismo orden de los
+temas de la sesión. Los programas no son los de la sesión: mismo tema, ronda
+nueva.
+
+## La pila que ya tienen
+
+### [tope](tope.html){ target=_blank rel=noopener }
+
+Siete operaciones sobre la pila de arreglo con capacidad para cuatro,
+prediciendo el tope y el tamaño después de cada una, hasta la que ya no entra.
+
+## Una pila es una lista por un solo extremo
+
+### [extremo](extremo.html){ target=_blank rel=noopener }
+
+Los elementos que se mueven al apilar y desapilar cincuenta veces en las cuatro
+combinaciones de estructura y extremo, y por qué el arreglo y la enlazada salen
+en espejo.
+
+## La pila sobre la lista enlazada
+
+### [apilar](apilar.html){ target=_blank rel=noopener }
+
+La cadena y el puntero a la cima paso a paso, con cinco operaciones seguidas
+sobre la pila enlazada.
+
+## Sin la lista de por medio
+
+### [cima](cima.html){ target=_blank rel=noopener }
+
+Qué queda si `desapilar` libera el nodo antes de mover `cima`, y cuántas
+escrituras de puntero cuesta cada operación.
+
+## Lo que cobra cada operación
+
+### [costos](costos.html){ target=_blank rel=noopener }
+
+Tres programas con restricciones distintas y qué pila conviene a cada uno, con
+la razón de por qué las otras salen caras; y hasta dónde aguanta cada una.
+
+## Para el juez
+
+### [retroceso](retroceso.html){ target=_blank rel=noopener }
+
+Los dieciséis estados que la búsqueda de UVa 732 recorre sobre `sala` y `alas`,
+con la pila, lo escrito y la jugada que queda abierta en cada uno, hasta el
+estado donde ninguna de las dos se puede.
+
+### [jugadas](jugadas.html){ target=_blank rel=noopener }
+
+Cuál de cuatro secuencias de `i` y `o` convierte una palabra en la otra, dónde
+se rompe una candidata y cuál de cuatro casos imprime el bloque vacío; cada
+opción equivocada dice qué pasa si se toma.
+
+### [cuantas](cuantas.html){ target=_blank rel=noopener }
+
+Cuántas secuencias imprime un caso, dicho antes de verlo, con letras repetidas
+y con un anagrama que no admite ninguna. La más exigente de este grupo: la
+cuenta sale a mano y crece más rápido de lo que se ve venir.
