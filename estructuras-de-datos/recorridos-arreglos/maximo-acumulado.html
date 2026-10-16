@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>maximo-acumulado: la mayor diferencia en un solo recorrido</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .caja.maximo { border-color: var(--ambar); background: var(--ambar-suave); }
+  .dos-codigos { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 760px) { .dos-codigos { grid-template-columns: 1fr; } }
+  .leyenda { display: inline-block; width: 0.9rem; height: 0.9rem; border-radius: 3px; vertical-align: middle; margin: 0 0.2rem 0 0.6rem; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>La mayor diferencia en un solo recorrido</h1>
+  <p class="intro">UVa 11078, Open Credit System, da las notas de n estudiantes
+  ordenados del más antiguo al más nuevo y pide el mayor valor de
+  A[i] - A[j] con i &lt; j. El enunciado está en
+  <a href="https://onlinejudge.org/external/110/11078.pdf">https://onlinejudge.org/external/110/11078.pdf</a>.
+  Probar todas las parejas cuesta dos ciclos; basta uno si, al llegar a cada j,
+  ya se sabe cuál es el mayor A[i] que quedó atrás.</p>
+
+  <div class="carta">
+    <h2>1. El arreglo</h2>
+    <div class="presets" id="presets"><span>Ejemplos:</span></div>
+    <div class="prediccion">
+      <span>Propio:</span>
+      <input type="text" id="propio" style="width:18rem" placeholder="7 1 9 3 8 2 10 4">
+      <button id="btn-propio">Usar este</button>
+    </div>
+    <div id="error-propio" class="veredicto"></div>
+    <div class="nota">Los tres primeros ejemplos son los casos de prueba del
+    enunciado, cuyas respuestas son 80, 3 y -1.</div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Avance j y prediga</h2>
+    <div class="dos-codigos">
+      <div>
+        <div class="nota" style="margin-top:0">Un recorrido</div>
+        <div class="codigo" id="codigo-uno"></div>
+      </div>
+      <div>
+        <div class="nota" style="margin-top:0">Dos ciclos</div>
+        <div class="codigo" id="codigo-dos"></div>
+      </div>
+    </div>
+    <div class="arreglo fila-arreglo" id="arreglo"></div>
+    <div class="nota">
+      <span class="leyenda" style="background:var(--azul-suave);border:1px solid var(--borde)"></span>ya recorrido
+      <span class="leyenda" style="border:3px solid var(--azul)"></span>la casilla j
+      <span class="leyenda" style="background:var(--ambar-suave);border:2px solid var(--ambar)"></span>el máximo que se resta
+    </div>
+    <p id="pregunta"></p>
+    <div class="prediccion" id="zona-prediccion">
+      <span>máximo:</span>
+      <input type="number" id="pred-maximo">
+      <span>mejor:</span>
+      <input type="number" id="pred-mejor">
+      <button id="btn-comprobar" class="primario">Comprobar</button>
+      <button id="btn-revelar">Revelar</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+    <div class="botones" style="margin-top:0.7rem">
+      <button id="btn-siguiente" class="primario">Siguiente j</button>
+      <button id="btn-reinicio">Volver al principio</button>
+    </div>
+    <div class="envoltura-tabla" style="margin-top:0.8rem">
+      <table>
+        <thead><tr><th>j</th><th>A[j]</th><th>máximo de A[0..j-1]</th><th>candidata</th><th>mejor</th></tr></thead>
+        <tbody id="traza"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Lo que cuesta cada versión</h2>
+    <p style="margin-top:0">Comparaciones de la línea 4 y la línea 7 del
+    recorrido, contra las de la línea 4 de los dos ciclos, para este mismo
+    arreglo.</p>
+    <div class="barra-fila">
+      <span class="rotulo">un recorrido</span>
+      <div class="pista-barra"><div class="barra b1" id="barra-uno"></div></div>
+      <span class="valor" id="valor-uno" style="width:6rem"></span>
+    </div>
+    <div class="barra-fila">
+      <span class="rotulo">dos ciclos</span>
+      <div class="pista-barra"><div class="barra b2" id="barra-dos"></div></div>
+      <span class="valor" id="valor-dos" style="width:6rem"></span>
+    </div>
+    <div class="nota">Con n números, los dos ciclos comparan n(n - 1)/2 parejas
+    y el recorrido hace 2(n - 1). Con cuatro números o menos el recorrido no
+    compara menos; desde cinco la distancia crece con cada número que se
+    agrega.</div>
+  </div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Lo que quedó</h2>
+    <div class="nota">Para el n más grande que permite el enunciado,
+    <b id="dato-n"></b>, los dos ciclos hacen <b id="dato-dos"></b>
+    comparaciones y el recorrido <b id="dato-uno"></b>: Θ(n²) contra Θ(n).
+    El orden de las dos preguntas dentro del ciclo importa: primero se resta
+    el máximo de lo que quedó atrás y después se deja entrar A[j], porque una
+    nota no se compara consigo misma. La trampa del enunciado está en la frase
+    que pide no tomar el valor absoluto: si las notas crecen, la respuesta es
+    negativa, y arrancar con <code>mejor = 0</code> imprime 0 donde va -1. Por
+    eso <code>mejor</code> empieza en A[0] - A[1], una pareja que sí existe.
+    Envío en <a href="https://onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=25&amp;page=submit_problem&amp;problemid=2019">https://onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=25&amp;page=submit_problem&amp;problemid=2019</a>.</div>
+  </div>
+</div>
+<script src="maximo-acumulado.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>acumulados: la suma de un rectángulo con cuatro términos</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .dos-tablas { display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.2rem; align-items: start; }
+  @media (max-width: 760px) { .dos-tablas { grid-template-columns: 1fr; } }
+  .dos-tablas table { width: auto; }
+  .dos-tablas td { min-width: 2.6rem; height: 2.3rem; font-family: ui-monospace, monospace; font-weight: 700; }
+  td.celda-a { cursor: pointer; }
+  td.borde-cero { color: var(--gris); background: var(--codigo-fondo); font-weight: 400; }
+  td.llena { color: var(--azul); }
+  input.entrada-s { width: 3.2rem; padding: 0.2rem; font: inherit; text-align: center; border: 1px dashed var(--borde); border-radius: 6px; }
+  input.entrada-s.errada { border: 2px solid var(--rojo); background: var(--rojo-suave); }
+  td.marca-a { background: var(--resalte); }
+  td.marca-rect { background: var(--azul-suave); }
+  td.marca-esquina { outline: 3px solid var(--azul); }
+  td.marca-mas { background: var(--verde-suave); box-shadow: inset 0 0 0 2px var(--verde); }
+  td.marca-menos { background: var(--rojo-suave); box-shadow: inset 0 0 0 2px var(--rojo); }
+  .formula { font-family: ui-monospace, monospace; font-size: 0.95rem; margin-top: 0.7rem; min-height: 1.4rem; }
+  .t-a { background: var(--resalte); padding: 0 0.2rem; border-radius: 4px; }
+  .t-mas { background: var(--verde-suave); color: var(--verde); padding: 0 0.2rem; border-radius: 4px; }
+  .t-menos { background: var(--rojo-suave); color: var(--rojo); padding: 0 0.2rem; border-radius: 4px; }
+  .carta.apagada { opacity: 0.5; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Acumulados: la suma de un rectángulo con cuatro términos</h1>
+  <p class="intro">UVa 108, Maximum Sum, pide el rectángulo de una matriz
+  n por n cuya suma es la mayor. El enunciado está en
+  <a href="https://onlinejudge.org/external/1/108.pdf">https://onlinejudge.org/external/1/108.pdf</a>.
+  Sumar cada rectángulo celda por celda repite el mismo trabajo muchas veces.
+  La tabla S guarda en S[i][j] la suma de A[0..i-1][0..j-1], lo que queda
+  arriba y a la izquierda; con ella cualquier rectángulo cuesta cuatro
+  lecturas.</p>
+
+  <div class="carta">
+    <h2>1. Llene la tabla de acumulados</h2>
+    <div class="presets">
+      <span>Matriz:</span>
+      <button id="btn-108">la del enunciado</button>
+      <button id="btn-otra">otra al azar</button>
+    </div>
+    <div class="dos-tablas" style="margin-top:0.8rem">
+      <div>
+        <div class="nota" style="margin-top:0">La matriz A</div>
+        <div class="envoltura-tabla"><table id="tabla-a"></table></div>
+      </div>
+      <div>
+        <div class="nota" style="margin-top:0">La tabla S, con una fila y una columna de ceros</div>
+        <div class="envoltura-tabla"><table id="tabla-s"></table></div>
+      </div>
+    </div>
+    <div class="formula" id="formula-celda"></div>
+    <div class="nota">Escriba el valor y oprima Enter. Conviene ir por filas,
+    de izquierda a derecha: cada casilla usa la de arriba y la de la
+    izquierda.</div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-llenar">Llenar lo que falta</button>
+    </div>
+    <div id="veredicto-tabla" class="veredicto"></div>
+  </div>
+
+  <div class="carta apagada" id="carta-consulta">
+    <h2>2. Consulte un rectángulo</h2>
+    <p style="margin-top:0" id="estado-consulta"></p>
+    <div class="formula" id="formula-rect"></div>
+    <div class="prediccion" id="zona-consulta" style="display:none">
+      <span>Con los cuatro valores resaltados en S, la suma es:</span>
+      <input type="number" id="pred-suma">
+      <button id="btn-consulta" class="primario">Comprobar</button>
+    </div>
+    <div id="veredicto-consulta" class="veredicto"></div>
+    <div class="nota">Verde suma, rojo resta. La esquina S[f1][c1] vuelve a
+    entrar porque las dos restas la quitaron dos veces.</div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-mejor">Buscar el mejor rectángulo</button>
+    </div>
+  </div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Lo que quedó</h2>
+    <p style="margin-top:0" id="dato-mejor"></p>
+    <div class="nota">La tabla se llena una vez, en Θ(n²). Después hay
+    Θ(n⁴) rectángulos y cada uno cuesta Θ(1), así que recorrerlos todos
+    cuesta Θ(n⁴), contra Θ(n⁶) si cada rectángulo se suma celda por celda.
+    Con n = 100, el tope del enunciado, son 25.502.500 rectángulos de cuatro
+    lecturas cada uno.
+    La trampa está en los bordes: sin la fila y la columna de ceros, los
+    rectángulos que tocan la fila 0 o la columna 0 piden S[-1], y el arreglo
+    tiene que declararse de tamaño (n + 1) por (n + 1). La otra está en la
+    entrada: los n² números no vienen fila por fila, así que se leen de corrido.
+    Envío en <a href="https://onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=25&amp;page=submit_problem&amp;problemid=44">https://onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=25&amp;page=submit_problem&amp;problemid=44</a>.</div>
+  </div>
+</div>
+<script src="acumulados.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

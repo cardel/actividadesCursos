@@ -49,7 +49,7 @@ tabla no existe para quien busca.
 
 ## Catálogo
 
-Son 311 actividades. El enlace lleva al archivo; para verlas funcionando hay que
+Son 314 actividades. El enlace lleva al archivo; para verlas funcionando hay que
 abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 
 ### Árboles y Grafos — `ayg-puj`
@@ -178,6 +178,7 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`ladocorto`](estructuras-de-datos/lista-enlazada-variantes/ladocorto.html) | la mitad del camino |
 |  | [`mezclar`](estructuras-de-datos/lista-enlazada-variantes/mezclar.html) | ordenar partiendo y mezclando |
 |  | [`variantes`](estructuras-de-datos/lista-enlazada-variantes/variantes.html) | lo que cobra cada implementación |
+| `matrices` | [`acumulados`](estructuras-de-datos/matrices/acumulados.html) | la suma de un rectángulo con cuatro términos, UVa 108 |
 | `memoria-en-c` | [`dos_punteros`](estructuras-de-datos/memoria-en-c/dos_punteros.html) | valores contra direcciones |
 |  | [`errores`](estructuras-de-datos/memoria-en-c/errores.html) | el fragmento que compila y falla |
 |  | [`punteros`](estructuras-de-datos/memoria-en-c/punteros.html) | la primera traza |
@@ -195,6 +196,8 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`tope`](estructuras-de-datos/pila-implementacion/tope.html) | la pila que ya tienen |
 | `punteros-arreglos` | [`aritmetica`](estructuras-de-datos/punteros-arreglos/aritmetica.html) | punteros y arreglos |
 |  | [`rowmajor`](estructuras-de-datos/punteros-arreglos/rowmajor.html) | la tabla en una sola calle |
+| `recorridos-arreglos` | [`maximo-acumulado`](estructuras-de-datos/recorridos-arreglos/maximo-acumulado.html) | la mayor diferencia en un solo recorrido, UVa 11078 |
+|  | [`mejor-tramo`](estructuras-de-datos/recorridos-arreglos/mejor-tramo.html) | el mejor tramo: sigue o se reinicia, UVa 507 |
 | `stl-contenedores` | [`algoritmos`](estructuras-de-datos/stl-contenedores/algoritmos.html) | la STL de C++ |
 |  | [`cadena`](estructuras-de-datos/stl-contenedores/cadena.html) | la STL de C++ |
 |  | [`contenedores`](estructuras-de-datos/stl-contenedores/contenedores.html) | la STL de C++ |
