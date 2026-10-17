@@ -49,7 +49,7 @@ tabla no existe para quien busca.
 
 ## Catálogo
 
-Son 314 actividades. El enlace lleva al archivo; para verlas funcionando hay que
+Son 316 actividades. El enlace lleva al archivo; para verlas funcionando hay que
 abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 
 ### Árboles y Grafos — `ayg-puj`
@@ -88,6 +88,8 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`comprimir`](ayg-puj/invariantes/comprimir.html) | la lista que crece y el invariante que la sostiene |
 |  | [`mayores`](ayg-puj/invariantes/mayores.html) | dos variables que se sostienen entre sí |
 |  | [`rotado`](ayg-puj/invariantes/rotado.html) | inventar el predicado |
+| `logica` | [`equivalencias`](ayg-puj/logica/equivalencias.html) | decidir con la tabla de verdad si dos fórmulas son equivalentes |
+|  | [`traducir`](ayg-puj/logica/traducir.html) | de la frase a la fórmula con cuantificadores |
 | `orden-topologico-dfs-low` | [`cortesdfs`](ayg-puj/orden-topologico-dfs-low/cortesdfs.html) | puntos de articulación y puentes en una sola pasada |
 |  | [`criterio`](ayg-puj/orden-topologico-dfs-low/criterio.html) | la comparación que decide |
 |  | [`errores`](ayg-puj/orden-topologico-dfs-low/errores.html) | tres fallas en cortes y en Tarjan |

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>traducir: de la frase a la fórmula</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .frase { font-size: 1.15rem; font-weight: 600; margin: 0.3rem 0 0.2rem; }
+  .opciones { flex-direction: column; align-items: stretch; }
+  button.formula {
+    text-align: left; font-weight: 500; font-size: 1.02rem;
+    font-family: "Cambria Math", "STIX Two Math", "Latin Modern Math", Georgia, serif;
+  }
+  button.formula.acierto { border-color: var(--verde); background: var(--verde-suave); color: var(--verde); opacity: 1; }
+  button.formula.error { border-color: var(--rojo); background: var(--rojo-suave); color: var(--rojo); }
+  .marcador { display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>De la frase a la fórmula</h1>
+  <p class="intro">Cada frase tiene cuatro fórmulas candidatas y solo una dice lo
+  mismo que la frase. Cada una de las otras tres tiene un error de traducción:
+  ∀ con ∧ en lugar de →, ∃ con → en lugar de ∧, los cuantificadores
+  en el orden equivocado, un rango corrido o una negación que no llegó a donde
+  debía. Cuando una opción falla, la página dice por qué, casi siempre con un
+  caso donde la frase y la fórmula dan valores distintos.</p>
+
+  <div class="carta" id="carta-frase">
+    <div class="marcador">
+      <h2 id="progreso" style="margin:0">Frase 1</h2>
+      <span class="progreso">Aciertos al primer intento: <b id="puntaje">0</b></span>
+    </div>
+    <p class="frase" id="frase"></p>
+    <div class="nota" id="dominio" style="margin-top:0"></div>
+    <div class="opciones" id="opciones"></div>
+    <div id="veredicto" class="veredicto"></div>
+    <div class="botones" style="margin-top:0.7rem">
+      <button id="btn-siguiente" class="primario" disabled>Siguiente frase</button>
+    </div>
+  </div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Resultado</h2>
+    <p id="final" style="margin-top:0"></p>
+    <p id="titulo-fallos" style="display:none">Vale la pena volver a estas:</p>
+    <ul id="fallos"></ul>
+    <div class="nota">Tres comprobaciones antes de dar por buena una traducción.
+    Con ∀, el rango va como antecedente de →; con ∃, va unido por ∧. Toda
+    variable que indexa un arreglo lleva su rango, y ese rango no se niega. Y si
+    un cuantificador está dentro de otro, el de adentro puede escoger un valor
+    distinto para cada valor del de afuera.</div>
+    <div class="botones" style="margin-top:0.7rem">
+      <button id="btn-reinicio">Empezar de nuevo</button>
+    </div>
+  </div>
+</div>
+<script src="traducir.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

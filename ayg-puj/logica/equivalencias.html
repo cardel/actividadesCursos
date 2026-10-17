@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>equivalencias: la tabla de verdad decide</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .formula {
+    font-family: "Cambria Math", "STIX Two Math", "Latin Modern Math", Georgia, serif;
+    font-size: 1.15rem;
+  }
+  .par { display: grid; grid-template-columns: auto 1fr; gap: 0.3rem 0.8rem; align-items: baseline; margin: 0.3rem 0 0.6rem; }
+  .par b { color: var(--azul); }
+  .veredicto.neutro { display: block; background: var(--azul-suave); color: var(--azul); }
+  th, td { font-family: "Cambria Math", "STIX Two Math", Georgia, serif; }
+  th.sub, td.sub { background: var(--codigo-fondo); color: var(--gris); font-size: 0.85rem; }
+  td.fija { font-weight: 700; }
+  button.celda-vf { min-width: 2.4rem; padding: 0.2rem 0.5rem; }
+  button.celda-vf.bien { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  button.celda-vf.mal { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.celda-vf.dada { border-color: var(--azul); color: var(--azul); background: var(--azul-suave); }
+  tr.difiere td { background: var(--rojo-suave); }
+  .marcador { display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+  .entrada { display: grid; grid-template-columns: auto 1fr; gap: 0.5rem 0.7rem; align-items: center; max-width: 34rem; }
+  .entrada input {
+    padding: 0.4rem 0.5rem; font-size: 1.05rem; border: 1px solid var(--borde); border-radius: 8px;
+    font-family: "Cambria Math", "STIX Two Math", Georgia, serif;
+  }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Equivalencias: la tabla de verdad decide</h1>
+  <p class="intro">Dos fórmulas son equivalentes cuando tienen el mismo valor en
+  todas las filas de la tabla de verdad. Para mostrar que no lo son basta una
+  fila donde den valores distintos. En cada par, decida primero, complete
+  después la tabla y, si no son equivalentes, señale la fila que lo
+  demuestra.</p>
+
+  <div class="carta" id="carta-par">
+    <div class="marcador">
+      <h2 id="par-progreso" style="margin:0">Par 1</h2>
+      <span class="progreso">Decisiones acertadas: <b id="puntos">0</b></span>
+    </div>
+    <div class="par">
+      <b>F₁</b><span class="formula" id="f1"></span>
+      <b>F₂</b><span class="formula" id="f2"></span>
+    </div>
+    <div class="opciones">
+      <button id="btn-si">Son equivalentes</button>
+      <button id="btn-no">No son equivalentes</button>
+    </div>
+    <div id="v-decision" class="veredicto"></div>
+
+    <div id="zona-tabla" style="display:none; margin-top:0.8rem">
+      <div class="nota" style="margin-top:0">Cada casilla con ? cambia a V, a F y
+      de nuevo a ? con cada clic. Las columnas grises, si las activa, son las
+      subfórmulas ya calculadas.</div>
+      <label class="nota" style="display:block"><input type="checkbox" id="ver-subs"> Ver subfórmulas</label>
+      <div class="envoltura-tabla" style="margin-top:0.5rem">
+        <table>
+          <thead id="t-cabeza"></thead>
+          <tbody id="t-cuerpo"></tbody>
+        </table>
+      </div>
+      <div class="botones" style="margin-top:0.6rem">
+        <button id="btn-comprobar" class="primario">Comprobar la tabla</button>
+        <button id="btn-fila">Revelar la fila siguiente</button>
+        <button id="btn-todo">Revelar toda la tabla</button>
+      </div>
+      <div id="v-tabla" class="veredicto"></div>
+      <div id="v-fila" class="veredicto"></div>
+    </div>
+    <div class="botones" style="margin-top:0.7rem">
+      <button id="btn-par-siguiente" class="primario" disabled>Siguiente par</button>
+    </div>
+  </div>
+
+  <div class="carta" id="carta-fin" style="display:none">
+    <h2>Resultado</h2>
+    <p id="resumen" style="margin-top:0"></p>
+    <div class="nota">Las equivalencias de los pares, en una lista:
+    p → q ≡ ¬q → ¬p ≡ ¬p ∨ q; q → p ≡ ¬p → ¬q; ¬(p ∨ q) ≡ ¬p ∧ ¬q;
+    ¬(p ∧ q) ≡ ¬p ∨ ¬q; ¬(p → q) ≡ p ∧ ¬q; p ∧ (q ∨ r) ≡ (p ∧ q) ∨ (p ∧ r);
+    p ↔ q ≡ (p → q) ∧ (q → p); (p ∧ q) → r ≡ p → (q → r).</div>
+    <div class="botones" style="margin-top:0.7rem">
+      <button id="btn-reinicio">Empezar de nuevo</button>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>Su propio par</h2>
+    <p style="margin-top:0">Escriba una o dos fórmulas con las variables p, q y
+    r. Con una sola, la página dice si es tautología, contradicción o ninguna de
+    las dos; con dos, si son equivalentes.</p>
+    <div class="entrada">
+      <label for="libre-1"><b>F₁</b></label>
+      <input type="text" id="libre-1" placeholder="~(p & q)">
+      <label for="libre-2"><b>F₂</b></label>
+      <input type="text" id="libre-2" placeholder="~p | ~q">
+    </div>
+    <div class="nota">Símbolos: ¬ o ~, ∧ o &amp;, ∨ o |, → o -&gt;, ↔ o &lt;-&gt;.
+    Sin paréntesis, ¬ se aplica primero, después ∧, ∨, → y al final ↔; la →
+    agrupa a la derecha, así que p → q → r se lee p → (q → r).</div>
+    <label class="nota" style="display:block"><input type="checkbox" id="libre-subs"> Ver subfórmulas</label>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-generar" class="primario">Generar la tabla</button>
+    </div>
+    <div id="v-libre" class="veredicto"></div>
+    <div id="libre-salida" class="envoltura-tabla" style="display:none; margin-top:0.6rem">
+      <table>
+        <thead id="l-cabeza"></thead>
+        <tbody id="l-cuerpo"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<script src="equivalencias.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
