@@ -24,6 +24,11 @@ mueve y cuáles de los tres que se guardaron siguen valiendo.
 Un nodo y una lista entera que cambian de lista con `splice`, un `sort` al
 final y el iterador que sigue a su nodo, con el costo de cada línea.
 
+### [miembros](miembros.html){ target=_blank rel=noopener }
+
+`unique`, `remove`, `reverse` y `merge` sobre una lista nueva: qué queda después
+de cada una y por qué ninguna pide nodos.
+
 ## `deque`: la cola doble que se lee por índice
 
 ### [bloques](bloques.html){ target=_blank rel=noopener }
@@ -54,6 +59,11 @@ combinaciones compilan y qué contenedor conviene poner debajo.
 
 Seis programas nuevos y el contenedor que hace baratas las operaciones que más
 repiten, con la razón de cada opción que no sirve.
+
+### [dosclases](dosclases.html){ target=_blank rel=noopener }
+
+Una mesa de ayuda que atiende primero los bloqueos: qué se imprime, cuánto
+revisa la fila única y qué cuesta con una cola por clase.
 
 ## Medir
 
