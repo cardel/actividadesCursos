@@ -120,6 +120,81 @@ var Series = (function () {
     return y;
   }
 
+  /* ARMA(p, q): y(t) = suma de phi_i y(t-i) + e(t) + suma de theta_j e(t-j),
+     con el signo de statsmodels para theta. El ruido sale de la semilla y es
+     el mismo para cualquier valor de los coeficientes. Se simulan `quemado`
+     datos de más y se descartan, para que el arranque en cero no se note. */
+  function arma(phis, thetas, n, semilla, quemado) {
+    n = n || 110;
+    quemado = quemado === undefined ? 50 : quemado;
+    var g = generador(semilla === undefined ? 2026 : semilla);
+    var total = n + quemado, e = [], y = [];
+    for (var i = 0; i < total; i++) { e.push(g.normal()); }
+    for (var t = 0; t < total; t++) {
+      var v = e[t];
+      for (var a = 0; a < phis.length; a++) { if (t - a - 1 >= 0) { v += phis[a] * y[t - a - 1]; } }
+      for (var b = 0; b < thetas.length; b++) { if (t - b - 1 >= 0) { v += thetas[b] * e[t - b - 1]; } }
+      y.push(v);
+    }
+    return y.slice(quemado);
+  }
+
+  /* ACF teórica de un ARMA por los pesos psi de su forma MA infinita:
+     rho(k) = suma de psi_j psi_(j+k) entre la suma de psi_j^2. */
+  function acfTeorica(phis, thetas, nlags, terminos) {
+    terminos = terminos || 600;
+    var psi = [1];
+    for (var j = 1; j < terminos + nlags; j++) {
+      var v = j <= thetas.length ? thetas[j - 1] : 0;
+      for (var a = 0; a < phis.length; a++) { if (j - a - 1 >= 0) { v += phis[a] * psi[j - a - 1]; } }
+      psi.push(v);
+    }
+    var c0 = 0, r = [];
+    for (var i = 0; i < terminos; i++) { c0 += psi[i] * psi[i]; }
+    for (var k = 0; k <= nlags; k++) {
+      var c = 0;
+      for (var m = 0; m < terminos; m++) { c += psi[m] * psi[m + k]; }
+      r.push(c / c0);
+    }
+    return r;
+  }
+
+  /* Un AR(2) es estacionario dentro del triángulo
+     phi1 + phi2 < 1, phi2 - phi1 < 1, |phi2| < 1. */
+  function estacionarioAR2(phi1, phi2) {
+    return phi1 + phi2 < 1 && phi2 - phi1 < 1 && Math.abs(phi2) < 1;
+  }
+
+  /* Residuos condicionales de un ARMA con coeficientes dados: los valores
+     y los errores anteriores al primer dato se toman como cero.
+     e(t) = x(t) - suma de phi_i x(t-i) - suma de theta_j e(t-j). */
+  function residuosArma(x, phis, thetas) {
+    var e = [];
+    for (var t = 0; t < x.length; t++) {
+      var v = x[t];
+      for (var a = 0; a < phis.length; a++) { if (t - a - 1 >= 0) { v -= phis[a] * x[t - a - 1]; } }
+      for (var b = 0; b < thetas.length; b++) { if (t - b - 1 >= 0) { v -= thetas[b] * e[t - b - 1]; } }
+      e.push(v);
+    }
+    return e;
+  }
+
+  /* Deshace d = 1 y D = 1 con periodo m. Si w(t) = y(t) - y(t-1) - y(t-m)
+     + y(t-m-1), cada pronóstico es y(t) = y(t-1) + y(t-m) - y(t-m-1) + w(t);
+     cuando un y anterior cae en el futuro, entra su pronóstico. */
+  function integrar(historia, wHat, m) {
+    m = m || 12;
+    var y = historia.slice(), T = historia.length, salida = [];
+    for (var h = 0; h < wHat.length; h++) {
+      var t = T + h;
+      var v = y[t - 1] + y[t - m] - y[t - m - 1] + wHat[h];
+      y.push(v);
+      salida.push(v);
+    }
+    return salida;
+  }
+
+
   function mae(y, yh) {
     var s = 0;
     for (var i = 0; i < y.length; i++) { s += Math.abs(y[i] - yh[i]); }
@@ -156,7 +231,8 @@ var Series = (function () {
   return {
     media: media, diff: diff, diferenciar: diferenciar, shift: shift,
     corr: corr, acf: acf, pacf: pacf, banda: banda, bandaBartlett: bandaBartlett, generador: generador,
-    ar1: ar1, mae: mae, rmse: rmse, mape: mape, ingenuo: ingenuo,
+    ar1: ar1, arma: arma, acfTeorica: acfTeorica, estacionarioAR2: estacionarioAR2,
+    residuosArma: residuosArma, integrar: integrar, mae: mae, rmse: rmse, mape: mape, ingenuo: ingenuo,
     estacional_ingenuo: estacional_ingenuo
   };
 })();

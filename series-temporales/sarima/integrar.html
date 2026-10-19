@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Del pronóstico de w a pasajeros</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Del pronóstico de w a pasajeros</h1>
+  <p class="intro">Un SARIMA con d = 1 y D = 1 modela w = <code>diff(12).diff()</code>, no los pasajeros. Su pronóstico de w hay que deshacerlo, mes a mes, para volver a pasajeros. Aquí la serie se corta en febrero de 2025 y se pronostican los doce meses siguientes, que sí se conocen, con dos pronósticos de w: el SARIMA(0,1,0)(0,1,1)₁₂ ajustado hasta el corte y ŵ = 0.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Integre paso a paso</h2>
+    <div class="controles">
+      <label for="h">horizonte h</label>
+      <input type="range" id="h" min="1" max="12" value="1">
+      <span class="valor-n" id="h-valor">1</span>
+      <span class="selector" id="fuente">
+        <button data-fuente="sarima" class="elegido">ŵ del SARIMA</button>
+        <button data-fuente="cero">ŵ = 0</button>
+      </span>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <div class="envoltura-tabla" id="tabla"></div>
+    <div class="figura" id="figura"></div>
+    <p class="nota">ŷ(t) = y(t−1) + y(t−12) − y(t−13) + ŵ(t), en millones de pasajeros. En cursiva, los valores que ya son pronóstico. El ŵ del SARIMA sale de <code>get_forecast(12)</code> de statsmodels, calculado fuera de la página; la integración se hace aquí y coincide con la de statsmodels hasta el redondeo.</p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Lo que hace la integración</h2>
+    <div id="cierre-tabla" class="envoltura-tabla"></div>
+    <div class="nota">Integrar es sumar al último nivel conocido el cambio pronosticado, y desde h = 2 ese último nivel ya es un pronóstico: los errores de un mes pasan al siguiente. Con ŵ = 0 lo que queda es el mismo mes del año anterior más el crecimiento de los últimos doce meses, una línea base que no estima nada. El SARIMA de este corte tiene Θ = −0,99: con Θ tan cerca de −1, el patrón de cada mes que usa es casi un promedio de todos los años de entrenamiento, 2020 y 2021 incluidos, y en estos doce meses pierde contra las dos líneas base. Es un solo origen; la comparación que decide es la del <i>backtest</i> con origen móvil y la tabla de métricas.</div>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["nivel", "estacional", "pandemia"] });</script>
+<script src="integrar.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

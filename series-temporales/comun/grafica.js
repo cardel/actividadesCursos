@@ -77,7 +77,7 @@ var Grafica = (function () {
      lista de { valores, color }; op.cero dibuja la recta y = 0. */
   function lineas(op) {
     var largo = 0;
-    op.lineas.forEach(function (l) { largo = Math.max(largo, l.valores.length); });
+    op.lineas.forEach(function (l) { largo = Math.max(largo, (l.desde || 0) + l.valores.length); });
     var ys = extremos(op.lineas.map(function (l) { return l.valores; }).concat(op.cero ? [[0]] : []));
     var f = marco(op, 0, largo - 1, ys[0], ys[1]);
     var s = f.svg;

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La firma de un AR, un MA y un ARMA</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>La firma de un AR, un MA y un ARMA</h1>
+  <p class="intro">Una serie simulada de 110 datos, y(t) = φ₁·y(t−1) + φ₂·y(t−2) + e(t) + θ·e(t−1), con el ruido e(t) fijo por una semilla. Con θ = 0 es un AR(2); con φ₁ = φ₂ = 0, un MA(1); con φ₂ = 0 y los otros dos distintos de cero, un ARMA(1,1). Debajo van su ACF y su PACF hasta k = 20, con la banda ±1,96/√110.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Mueva los coeficientes</h2>
+    <div class="controles">
+      <label for="phi1">φ₁</label>
+      <input type="range" id="phi1" min="-1.9" max="1.9" step="0.05" value="0">
+      <span class="valor-n" id="phi1-valor">0,00</span>
+    </div>
+    <div class="controles">
+      <label for="phi2">φ₂</label>
+      <input type="range" id="phi2" min="-0.95" max="0.95" step="0.05" value="0">
+      <span class="valor-n" id="phi2-valor">0,00</span>
+    </div>
+    <div class="controles">
+      <label for="theta">θ</label>
+      <input type="range" id="theta" min="-0.95" max="0.95" step="0.05" value="0.8">
+      <span class="valor-n" id="theta-valor">0,80</span>
+    </div>
+    <div class="controles">
+      <span class="presets" id="presets">
+        <button data-c="0,0,0">ruido blanco</button>
+        <button data-c="0,0,0.8">MA(1), θ = 0,8</button>
+        <button data-c="0.5,0.3,0">AR(2), 0,5 y 0,3</button>
+        <button data-c="1,-0.5,0">AR(2), 1 y −0,5</button>
+        <button data-c="0.6,0.5,0">AR(2), 0,6 y 0,5</button>
+        <button data-c="0.7,0,0.7">ARMA(1,1), 0,7 y 0,7</button>
+      </span>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <div class="figura" id="figura-serie"></div>
+    <div class="dos-columnas">
+      <div class="figura" id="figura-acf"></div>
+      <div class="figura" id="figura-pacf"></div>
+    </div>
+    <p class="nota">La ACF teórica sale de los coeficientes; la de las barras, de los 110 datos simulados. El generador con semilla es propio de esta página, así que la serie no coincide con la de numpy en el notebook, y la forma de los correlogramas sí.</p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Tres firmas</h2>
+    <div id="cierre-tabla" class="envoltura-tabla"></div>
+    <div class="nota">Un MA(q) recuerda solo los q últimos errores, así que su ACF se corta después de k = q; su PACF, en cambio, baja poco a poco, porque escrito como autorregresivo el MA necesita infinitos rezagos. Un AR(p) es el espejo: la PACF se corta en p y la ACF decae, de forma geométrica o como una onda que se apaga cuando φ₂ es negativo. En un ARMA ninguno de los dos se corta. Por eso la identificación por correlogramas propone un AR o un MA puro cuando uno de los dos se corta, y un ARMA de orden bajo cuando ninguno lo hace. Además, φ₁ y φ₂ no pueden ser cualquier par: fuera del triángulo φ₁ + φ₂ &lt; 1, φ₂ − φ₁ &lt; 1, |φ₂| &lt; 1 la serie se dispara.</div>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["simuladas", "azar"], texto: "La serie del curso, pasajeros aéreos por mes en Colombia, como referencia: esta actividad trabaja sobre series simuladas del mismo largo." });</script>
+<script src="firma.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

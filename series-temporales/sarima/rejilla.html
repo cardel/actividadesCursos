@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La rejilla SARIMA y sus residuos</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>La rejilla SARIMA y sus residuos</h1>
+  <p class="intro">Treinta y seis SARIMA(p,1,q)(P,1,Q)₁₂, con p y q de 0 a 2 y P y Q de 0 a 1, ajustados sobre la serie del curso y ordenados por AIC. Cinco de ellos traen sus residuos para revisarlos con la ACF y con Ljung-Box.</p>
+
+  <div id="contexto"></div>
+
+  <div class="carta">
+    <h2>Los correlogramas de w</h2>
+    <div class="dos-columnas">
+      <div class="figura" id="figura-acf-w"></div>
+      <div class="figura" id="figura-pacf-w"></div>
+    </div>
+    <p class="nota">w = <code>diff(12).diff()</code>, hasta k = 36, con la banda ±1,96/√n.</p>
+  </div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Revise los residuos</h2>
+    <div class="controles">
+      <span class="selector" id="modelos"></span>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <div class="figura" id="figura-resid"></div>
+    <div class="figura" id="figura-acf-resid"></div>
+    <h3>Los doce de menor AIC</h3>
+    <div class="envoltura-tabla" id="tabla-rejilla"></div>
+    <details><summary>Los treinta y seis</summary><div class="envoltura-tabla" id="tabla-completa"></div></details>
+    <p class="nota">AIC, coeficientes, residuos y valores p de Ljung-Box salen de <code>ARIMA(y, order=(p, 1, q), seasonal_order=(P, 1, Q, 12)).fit()</code> y de <code>acorr_ljungbox(resid[13:], lags=[12, 24])</code> de statsmodels, con la serie en millones de pasajeros, calculados fuera de la página. Los trece primeros residuos se descartan, porque las diferencias los dejan sin con qué compararse. La ACF de los residuos se calcula aquí.</p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>El modelo elegido</h2>
+    <div id="cierre-tabla" class="envoltura-tabla"></div>
+    <div class="nota">La firma de w pedía un MA estacional: un pico en k = 12 en la ACF y dos, en 12 y 24, en la PACF. La rejilla lo confirma: todos los modelos con Q = 1 quedan arriba y los separa menos de lo que vale un parámetro, así que se escoge el más simple. Con Q = 1 la barra de k = 12 de los residuos entra en la banda y Ljung-Box deja de rechazar. El Θ cercano a −1 dice además que el patrón de cada mes cambia muy poco de un año a otro. Lo que el modelo no explica está en la pandemia, que ningún SARIMA anticipa. Falta la prueba que decide: el <i>backtest</i> con origen móvil contra el estacional ingenuo, en la tabla de métricas.</div>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["estacionaria", "unidades", "muestra"] });</script>
+<script src="rejilla.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

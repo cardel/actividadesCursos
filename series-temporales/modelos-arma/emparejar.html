@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>¿De qué modelo son estos correlogramas?</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>¿De qué modelo son estos correlogramas?</h1>
+  <p class="intro">Cuatro series simuladas, cada una con su ACF y su PACF hasta k = 15: un AR(1), un MA(1), un AR(2) y un ARMA(1,1), en desorden. Hay que emparejar cada modelo con su letra mirando dónde se corta cada correlograma, si es que alguno se corta.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Los cuatro pares de correlogramas</h2>
+    <div class="controles">
+      <label for="n">datos simulados n</label>
+      <input type="range" id="n" min="100" max="1000" step="50" value="300">
+      <span class="valor-n" id="n-valor">300</span>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <div class="candidatos-st" id="candidatos" style="grid-template-columns: repeat(2, 1fr)"></div>
+    <p class="nota">Pase el puntero sobre una barra para ver su valor. Las preguntas citan los valores con n = 300.</p>
+  </div>
+
+  <div id="emparejar"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Cómo se reconoce cada uno</h2>
+    <div id="cierre-tabla" class="envoltura-tabla"></div>
+    <div class="nota">El orden de lectura es siempre el mismo: primero se busca un corte. Si la PACF se corta en p y la ACF decae, se propone un AR(p); si la ACF se corta en q y la PACF decae, un MA(q); si ninguna se corta, un ARMA de orden bajo, empezando por el (1,1). Con pocos datos la banda se ensancha y las barras cortas quedan adentro, así que un corte puede parecer más temprano de lo que es. Por eso el correlograma propone candidatos y la decisión entre ellos la toman la estimación y el AIC.</div>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["simuladas"], texto: "La serie del curso, pasajeros aéreos por mes en Colombia, como referencia: esta actividad trabaja sobre series simuladas." });</script>
+<script src="emparejar.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

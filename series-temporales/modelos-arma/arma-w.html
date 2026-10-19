@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Un ARMA para la serie diferenciada</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Un ARMA para la serie diferenciada</h1>
+  <p class="intro">La serie del curso con las dos diferencias, w = <code>diff(12).diff()</code>, y seis ARMA de orden bajo ajustados sobre ella con statsmodels. Al elegir un orden aparecen su AIC, sus coeficientes y la ACF de lo que el modelo no explica: sus residuos.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Elija el orden (p, q)</h2>
+    <div class="dos-columnas">
+      <div class="figura" id="figura-acf-w"></div>
+      <div class="figura" id="figura-pacf-w"></div>
+    </div>
+    <div class="controles">
+      <span class="selector" id="ordenes"></span>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <div class="figura" id="figura-resid"></div>
+    <div class="figura" id="figura-acf-resid"></div>
+    <p class="nota">AIC, coeficientes y valores p de Ljung-Box salen de <code>ARIMA(w, order=(p, 0, q), trend="n").fit()</code> y de <code>acorr_ljungbox</code> de statsmodels, con w en millones de pasajeros, calculados fuera de la página. Los residuos se calculan aquí con esos coeficientes, tomando como cero lo anterior al primer dato; su ACF en k = 12 coincide con la de statsmodels en dos decimales.</p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Lo que el ARMA no alcanza</h2>
+    <div id="cierre-tabla" class="envoltura-tabla"></div>
+    <div class="nota">En los rezagos cortos de w queda poco: la barra de k = 1 apenas sale de la banda, y por eso los seis órdenes empatan en AIC con el modelo sin ningún término. Lo que sí sobra está en k = 12, una correlación negativa entre el cambio de un mes y el del mismo mes un año antes, y un AR o un MA de orden 1 o 2 mira uno o dos meses atrás, no doce. Los residuos lo confirman: la barra de k = 12 sigue en el mismo sitio y Ljung-Box rechaza el ruido blanco en los seis. Hace falta un término que mire doce meses atrás, y ese es el término estacional del SARIMA.</div>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["estacionaria", "unidades", "pandemia"] });</script>
+<script src="arma-w.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

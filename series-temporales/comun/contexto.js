@@ -109,6 +109,30 @@ var Contexto = (function () {
         v.length + " datos, los mismos meses que tiene la serie, para que las bandas midan igual. En la " +
         "serie del curso, la tendencia y la estacionalidad tapan la firma de un AR; por eso la identificación " +
         "se hace sobre la serie diferenciada.";
+    },
+    simuladas: function () {
+      return "<b>Las series de esta actividad.</b> No son la serie del curso: se simulan con un ruido normal " +
+        "fijado por una semilla, así que al mover un coeficiente cambia el modelo y no el azar. En la serie " +
+        "del curso la tendencia y la estacionalidad tapan estas formas, y por eso se buscan en la serie diferenciada.";
+    },
+    azar: function () {
+      function b(n) { return Series.banda(n).toFixed(3).replace(".", ","); }
+      return "<b>Barras fuera por azar.</b> La banda ±1,96/√n deja fuera, en promedio, una de cada veinte " +
+        "barras de un ruido blanco. Mide ±" + b(v.length) + " con " + v.length + " datos y ±" + b(300) +
+        " con 300. Una barra suelta fuera, lejos de los primeros rezagos, no basta para proponer un término.";
+    },
+    estacionaria: function () {
+      var n = Series.diferenciar(v, 1, 1, 12).length;
+      return "<b>La serie estacionaria.</b> w = <code>diff(12).diff()</code> le resta a cada mes el mismo mes " +
+        "del año anterior y después el cambio del mes anterior. Quedan " + n + " datos, y es la única " +
+        "combinación de las dos diferencias con la que ADF rechaza la raíz unitaria.";
+    },
+    unidades: function () {
+      var n = Series.diferenciar(v, 1, 1, 12).length;
+      var c = (2 * n * Math.log(1e6)).toFixed(1).replace(".", ",");
+      return "<b>Las unidades del AIC.</b> Los modelos se ajustaron con la serie en millones de pasajeros. " +
+        "El AIC depende de la unidad: con la serie en pasajeros, todos los AIC de esta página suben " + c +
+        " (2 · " + n + " · ln 10⁶), y la diferencia entre dos modelos, que es lo que se compara, no cambia.";
     }
   };
 
