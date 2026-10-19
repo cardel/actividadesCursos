@@ -49,7 +49,7 @@ tabla no existe para quien busca.
 
 ## Catálogo
 
-Son 330 actividades. El enlace lleva al archivo; para verlas funcionando hay que
+Son 334 actividades. El enlace lleva al archivo; para verlas funcionando hay que
 abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 
 ### Árboles y Grafos — `ayg-puj`
@@ -115,8 +115,11 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`orientar`](ayg-puj/puentes-y-articulaciones/orientar.html) | las calles de una ciudad, UVa 610 |
 |  | [`paloma`](ayg-puj/puentes-y-articulaciones/paloma.html) | el valor de cada estación, UVa 10765 |
 |  | [`recuento`](ayg-puj/puentes-y-articulaciones/recuento.html) | low, puntos de articulación y puentes |
+| `recurrencias` | [`arbol`](ayg-puj/recurrencias/arbol.html) | el costo de una recurrencia, nivel por nivel |
 | `recursion` | [`factorial`](ayg-puj/recursion/factorial.html) | los invariantes son suyos |
+|  | [`grey`](ayg-puj/recursion/grey.html) | el bit de cada nivel sin construir la lista |
 |  | [`mezclar`](ayg-puj/recursion/mezclar.html) | dos tramos ordenados en uno |
+|  | [`movil`](ayg-puj/recursion/movil.html) | leer el submóvil entero aunque ya diga NO |
 |  | [`ordenar`](ayg-puj/recursion/ordenar.html) | bajar partiendo, subir mezclando |
 |  | [`sumar`](ayg-puj/recursion/sumar.html) | descubra los invariantes |
 | `representaciones-y-recorridos` | [`amplitud`](ayg-puj/representaciones-y-recorridos/amplitud.html) | el vértice más lejano |
@@ -134,6 +137,7 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 | `abstraccion-tad` | [`caja`](estructuras-de-datos/abstraccion-tad/caja.html) | abstracción de datos |
 |  | [`contrato`](estructuras-de-datos/abstraccion-tad/contrato.html) | precondiciones y this |
 | `ciclos-dependientes-sumatorias` | [`contar_incluida`](estructuras-de-datos/ciclos-dependientes-sumatorias/contar_incluida.html) | contador de pasos |
+|  | [`feynman`](estructuras-de-datos/ciclos-dependientes-sumatorias/feynman.html) | cuántos cuadrados caben y cuántas vueltas da el triple ciclo |
 |  | [`potencias`](estructuras-de-datos/ciclos-dependientes-sumatorias/potencias.html) | contador de pasos |
 |  | [`suma_parejas`](estructuras-de-datos/ciclos-dependientes-sumatorias/suma_parejas.html) | contador de pasos |
 |  | [`triangulo`](estructuras-de-datos/ciclos-dependientes-sumatorias/triangulo.html) | contador de pasos |
