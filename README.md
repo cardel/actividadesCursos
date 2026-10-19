@@ -49,7 +49,7 @@ tabla no existe para quien busca.
 
 ## Catálogo
 
-Son 334 actividades. El enlace lleva al archivo; para verlas funcionando hay que
+Son 337 actividades. El enlace lleva al archivo; para verlas funcionando hay que
 abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 
 ### Árboles y Grafos — `ayg-puj`
@@ -86,8 +86,10 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`ruta`](ayg-puj/grafos-implicitos/ruta.html) | la ruta con menos saltos |
 | `invariantes` | [`burbuja`](ayg-puj/invariantes/burbuja.html) | un lema adentro, un teorema afuera |
 |  | [`comprimir`](ayg-puj/invariantes/comprimir.html) | la lista que crece y el invariante que la sostiene |
+|  | [`credito`](ayg-puj/invariantes/credito.html) | los invariantes de la mayor diferencia, UVa 11078 |
 |  | [`mayores`](ayg-puj/invariantes/mayores.html) | dos variables que se sostienen entre sí |
 |  | [`rotado`](ayg-puj/invariantes/rotado.html) | inventar el predicado |
+|  | [`tramo`](ayg-puj/invariantes/tramo.html) | dos invariantes que se sostienen, UVa 507 |
 | `logica` | [`equivalencias`](ayg-puj/logica/equivalencias.html) | decidir con la tabla de verdad si dos fórmulas son equivalentes |
 |  | [`traducir`](ayg-puj/logica/traducir.html) | de la frase a la fórmula con cuantificadores |
 | `orden-topologico-dfs-low` | [`cortesdfs`](ayg-puj/orden-topologico-dfs-low/cortesdfs.html) | puntos de articulación y puentes en una sola pasada |
@@ -161,6 +163,7 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 | `ejercicios-complejidad` | [`combinado`](estructuras-de-datos/ejercicios-complejidad/combinado.html) | ¿cuál bloque manda? |
 |  | [`mitades`](estructuras-de-datos/ejercicios-complejidad/mitades.html) | contador de pasos |
 |  | [`paso_grande`](estructuras-de-datos/ejercicios-complejidad/paso_grande.html) | contador de pasos |
+|  | [`tamano`](estructuras-de-datos/ejercicios-complejidad/tamano.html) | ¿de qué depende? |
 |  | [`todos_positivos`](estructuras-de-datos/ejercicios-complejidad/todos_positivos.html) | mejor y peor caso |
 | `ejercicios-tad-lista-pila-cola` | [`cola`](estructuras-de-datos/ejercicios-tad-lista-pila-cola/cola.html) | ejercicios con los TAD |
 |  | [`costos`](estructuras-de-datos/ejercicios-tad-lista-pila-cola/costos.html) | ejercicios con los TAD |

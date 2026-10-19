@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tamano: ¿de qué depende?</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .contenedor { max-width: 1180px; }
+  .area { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; align-items: start; }
+  @media (max-width: 900px) { .area { grid-template-columns: 1fr; } }
+  .area .fija { position: sticky; top: 0.5rem; }
+  #panel-codigo { max-height: 78vh; overflow-y: auto; }
+  .punto { border-top: 1px solid var(--borde); padding: 0.6rem 0 0.4rem; }
+  .punto:first-of-type { border-top: none; }
+  .rotulo-punto { cursor: pointer; display: flex; gap: 0.6rem; align-items: baseline; flex-wrap: wrap; }
+  .rotulo-punto code { font-family: ui-monospace, monospace; background: var(--codigo-fondo); border-radius: 6px; padding: 0.05rem 0.4rem; }
+  .num-linea { color: var(--gris); font-size: 0.85rem; min-width: 4.2rem; }
+  .url { font-family: ui-monospace, monospace; font-size: 0.85rem; word-break: break-all; }
+  #selector { margin-top: 0; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>¿De qué depende?</h1>
+  <p class="intro">Ocho soluciones de problemas de juez, tal como se
+  escribieron. En cada una: diga de qué variable depende el tamaño de la
+  entrada, cuántas veces corre cada ciclo o llamada, el total en O y si
+  alcanza contra los límites del enunciado.</p>
+
+  <div class="carta">
+    <div class="opciones" id="selector"></div>
+  </div>
+
+  <div class="area">
+    <div class="carta fija">
+      <h2 id="titulo-problema"></h2>
+      <div class="nota" style="margin-top:0">Enunciado: <span class="url" id="url-problema"></span><br>
+      Solución en Python: <span id="archivo-problema"></span></div>
+      <div class="codigo" id="panel-codigo" style="margin-top:0.6rem"></div>
+    </div>
+    <div id="pasos"></div>
+  </div>
+
+  <div class="carta">
+    <h2>Los ocho problemas</h2>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Problema</th><th>Depende de</th><th>Tamaño según el enunciado</th><th>Total</th><th>Vueltas en el peor caso</th></tr></thead>
+        <tbody id="cuerpo-cierre"></tbody>
+      </table>
+    </div>
+    <div id="nota-cierre" class="nota"></div>
+  </div>
+
+</div>
+<script src="tamano.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

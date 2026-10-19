@@ -1,8 +1,10 @@
 # Ejercicios · AyG PUJ · Invariantes
 
-Cuatro ejercicios que se trabajan en el navegador, uno por cada forma de ciclo
-de la sesión. Ninguno repite los ejemplos de las diapositivas: la idea es
-encontrar el invariante donde no está escrito todavía.
+Seis ejercicios que se trabajan en el navegador, agrupados por la forma del
+ciclo. Crédito y el mejor tramo trabajan los ciclos de las soluciones de
+UVa 11078 y UVa 507; los otros cuatro no repiten los ejemplos de las
+diapositivas. En todos, la idea es encontrar el invariante donde no está
+escrito todavía.
 
 La mecánica es la de siempre. Primero prediga la respuesta sin ejecutar nada.
 Después recorra el algoritmo paso a paso y busque, en la tabla de estados, lo
@@ -10,7 +12,7 @@ que se cumple en **todas** las filas mientras el resto cambia. Cuando lo
 encuentre, el ejercicio abre la demostración y usted la arma respondiendo una
 pregunta por movimiento.
 
-Una advertencia que vale para los cuatro. Un invariante es una fórmula, no
+Una advertencia que vale para todos. Un invariante es una fórmula, no
 una frase: lleva $N$, el índice y el arreglo, un cuantificador sobre las
 posiciones y, adentro, una igualdad o una pertenencia. Se escribe
 $\texttt{mayor} = \max A[0..i)$, o
@@ -44,6 +46,31 @@ Falta un tercer invariante, pequeño, sin el cual la estabilidad no se deja
 escribir: el que relaciona el último elemento escrito con $A[i-1]$. Es el
 puente entre lo que el código compara y lo que el enunciado pide, y el
 ejercicio no avanza hasta que aparece.
+
+## Los problemas de juez
+
+### [crédito](credito.html){ target=_blank rel=noopener }
+
+El ciclo de la solución de UVa 11078, *Open Credit System*: la mayor
+diferencia $A[i] - A[k]$ con $i < k$ en un solo recorrido. Hay que encontrar
+tres invariantes, el del índice, el de `maximo` y el de `mejor`, y el de
+`mejor` depende de cómo arranca: con `mejor = A[0] - A[1]` y el ciclo desde
+$j = 1$, la fórmula sin el término $A[0] - A[1]$ falla en el primer chequeo.
+
+Al elegir un candidato errado, la traza se pinta en rojo en el chequeo donde
+falla y muestra lo que pedía la fórmula. La demostración también pregunta por
+qué la actualización de `mejor` va antes que la de `maximo`.
+
+### [el mejor tramo](tramo.html){ target=_blank rel=noopener }
+
+El ciclo de UVa 507, *Jill Rides Again*, solo con el valor del tramo: `suma`
+sigue o vuelve a 0, y `mejor` guarda el máximo visto. El 0 es el tramo vacío,
+y sin él ninguno de los dos invariantes se sostiene al inicio.
+
+El invariante de `mejor` no se deja demostrar sin el de `suma`: la
+estabilidad usa que el mejor tramo que termina en la posición nueva es
+`suma + A[i]`. Guardar dónde empieza y dónde termina el tramo queda como
+ejercicio al final.
 
 ## Ciclos anidados
 

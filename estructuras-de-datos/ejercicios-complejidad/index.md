@@ -3,7 +3,7 @@
 Cada enlace abre un ejercicio de conteo que se trabaja directo en el
 navegador. La mecánica es la misma en todos: elija la entrada, escriba su
 predicción antes de ejecutar y recorra el código paso a paso viendo
-cuántas veces corre cada línea. Estos cuatro cubren las ideas nuevas de la
+cuántas veces corre cada línea. Los cuatro primeros cubren las ideas nuevas de la
 sesión: el mejor y el peor caso, los pasos que no son de uno en uno y los
 bloques en secuencia.
 
@@ -26,8 +26,9 @@ alerta explica por qué el enunciado exige n ≥ 10.
 ## [mitades](mitades.html){ target=_blank rel=noopener }
 
 El índice arranca en n y se parte por la mitad en cada vuelta. Es el
-espejo de potencias, el ejercicio del miércoles: ¿bajar partiendo en dos
-cuesta lo mismo que subir duplicando?
+espejo de [potencias](../ciclos-dependientes-sumatorias/potencias.html){ target=_blank rel=noopener },
+el ciclo de los ciclos dependientes y las sumatorias donde el índice se
+duplica: ¿bajar partiendo en dos cuesta lo mismo que subir duplicando?
 
 Suba n hasta 1000 y mire la secuencia n, n/2, n/4, … La división es
 entera: el último valor visitado siempre es 1.
@@ -41,3 +42,16 @@ uno de los tres se come a los demás.
 Antes de ejecutar, responda cuál bloque manda. Las barras muestran el
 aporte de cada uno con el n elegido y la tabla final lo repite con
 n = 10, 100 y 1000.
+
+## [tamano](tamano.html){ target=_blank rel=noopener }
+
+Ocho soluciones de problemas de juez, tal como se escribieron: UVa 11078,
+507, 108, 100, 10189, 10920, 839 y 620. Aquí no se cuenta línea por línea:
+se pregunta de qué variable depende el tamaño de la entrada, cuántas veces
+corre cada ciclo o llamada, el total en $O$ y si alcanza contra los límites
+del enunciado.
+
+Las opciones erradas traen las confusiones más comunes: el valor de un número
+contra la cantidad de números, $N$ contra las $N^2$ casillas de una matriz, y
+las líneas del archivo contra las barras de un móvil. Toda respuesta errada
+muestra su razón, y al final queda una tabla con los ocho problemas.
