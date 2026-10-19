@@ -49,7 +49,7 @@ tabla no existe para quien busca.
 
 ## Catálogo
 
-Son 316 actividades. El enlace lleva al archivo; para verlas funcionando hay que
+Son 325 actividades. El enlace lleva al archivo; para verlas funcionando hay que
 abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 
 ### Árboles y Grafos — `ayg-puj`
@@ -144,11 +144,13 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`vaciar`](estructuras-de-datos/cola-implementacion/vaciar.html) | sin la lista de por medio |
 | `contenedores-list-deque-stack-queue` | [`bloques`](estructuras-de-datos/contenedores-list-deque-stack-queue/bloques.html) | deque: bloques y mapa |
 |  | [`debajo`](estructuras-de-datos/contenedores-list-deque-stack-queue/debajo.html) | stack y queue: lo que va debajo |
+|  | [`dosclases`](estructuras-de-datos/contenedores-list-deque-stack-queue/dosclases.html) | Escoger por el costo: una fila o dos colas |
 |  | [`empalmar`](estructuras-de-datos/contenedores-list-deque-stack-queue/empalmar.html) | list: splice y sort |
 |  | [`escoger`](estructuras-de-datos/contenedores-list-deque-stack-queue/escoger.html) | Cuál escoger |
 |  | [`invalidar`](estructuras-de-datos/contenedores-list-deque-stack-queue/invalidar.html) | deque: lo que sigue valiendo |
 |  | [`iterador`](estructuras-de-datos/contenedores-list-deque-stack-queue/iterador.html) | list: un iterador que no se pierde |
 |  | [`ladocorto`](estructuras-de-datos/contenedores-list-deque-stack-queue/ladocorto.html) | deque: el lado más corto |
+|  | [`miembros`](estructuras-de-datos/contenedores-list-deque-stack-queue/miembros.html) | list: unique, remove, reverse y merge |
 |  | [`mitad`](estructuras-de-datos/contenedores-list-deque-stack-queue/mitad.html) | Medir: insertar en la mitad |
 |  | [`traducir`](estructuras-de-datos/contenedores-list-deque-stack-queue/traducir.html) | Lo que ya está construido: del TAD a la biblioteca |
 |  | [`vaciar`](estructuras-de-datos/contenedores-list-deque-stack-queue/vaciar.html) | Medir: vaciar por el frente |
@@ -210,6 +212,10 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`costos`](estructuras-de-datos/stl-iteradores-algoritmos/costos.html) | iteradores y algoritmos de la STL |
 |  | [`ejercicios`](estructuras-de-datos/stl-iteradores-algoritmos/ejercicios.html) | iteradores y algoritmos de la STL |
 |  | [`iterador`](estructuras-de-datos/stl-iteradores-algoritmos/iterador.html) | iteradores y algoritmos de la STL |
+| `tabla-direccionamiento-directo` | [`banderas`](estructuras-de-datos/tabla-direccionamiento-directo/banderas.html) | banderas para los repetidos |
+|  | [`casillas`](estructuras-de-datos/tabla-direccionamiento-directo/casillas.html) | la clave dice la casilla |
+|  | [`contar`](estructuras-de-datos/tabla-direccionamiento-directo/contar.html) | contadores en las casillas y lo que ocupa la tabla |
+|  | [`costos`](estructuras-de-datos/tabla-direccionamiento-directo/costos.html) | lo que cobra la tabla directa y cuándo sirve |
 | `tad-lista-pila-cola` | [`cola`](estructuras-de-datos/tad-lista-pila-cola/cola.html) | TAD Lista, Pila y Cola |
 |  | [`disciplinas`](estructuras-de-datos/tad-lista-pila-cola/disciplinas.html) | TAD Lista, Pila y Cola |
 |  | [`juntos`](estructuras-de-datos/tad-lista-pila-cola/juntos.html) | TAD Lista, Pila y Cola |
@@ -370,7 +376,8 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`insercion`](pfc/listas/insercion.html) | en qué posición queda el elemento que se inserta |
 |  | [`patrones`](pfc/listas/patrones.html) | qué caso del match corresponde con la lista |
 |  | [`reversa`](pfc/listas/reversa.html) | la concatenación que queda pendiente en cada marco |
-| `ordenamiento-y-alto-orden` | [`empaquetar`](pfc/ordenamiento-y-alto-orden/empaquetar.html) | la traza con span, paso a paso |
+| `ordenamiento-y-alto-orden` | [`codificar`](pfc/ordenamiento-y-alto-orden/codificar.html) | cuántos pares salen y cuáles |
+|  | [`empaquetar`](pfc/ordenamiento-y-alto-orden/empaquetar.html) | la traza con span, paso a paso |
 |  | [`mapFilter`](pfc/ordenamiento-y-alto-orden/mapFilter.html) | prediga las dos listas de salida |
 |  | [`merge`](pfc/ordenamiento-y-alto-orden/merge.html) | prediga cuál cabeza sale en cada paso |
 |  | [`msort`](pfc/ordenamiento-y-alto-orden/msort.html) | dividir, ordenar cada mitad y mezclar |
@@ -378,6 +385,8 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`reduceFold`](pfc/ordenamiento-y-alto-orden/reduceFold.html) | elija el valor de cada expresión |
 |  | [`reversaFold`](pfc/ordenamiento-y-alto-orden/reversaFold.html) | el acumulador que crece por el frente |
 |  | [`sumarVec`](pfc/ordenamiento-y-alto-orden/sumarVec.html) | la traza de la suma de vectores |
+|  | [`tuplas`](pfc/ordenamiento-y-alto-orden/tuplas.html) | el valor, el tipo y lo que no compila |
+|  | [`variaciones`](pfc/ordenamiento-y-alto-orden/variaciones.html) | qué sale y cuántas veces se pregunta |
 | `recursion-de-cola-y-procesos` | [`acumulador`](pfc/recursion-de-cola-y-procesos/acumulador.html) | el resultado viaja en un parámetro |
 |  | [`agotar`](pfc/recursion-de-cola-y-procesos/agotar.html) | qué se acaba primero |
 |  | [`arbol`](pfc/recursion-de-cola-y-procesos/arbol.html) | partir el problema en dos |

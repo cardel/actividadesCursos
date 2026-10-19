@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Variaciones de filter: qué sale y cuántas veces se pregunta</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .item { border-top: 1px dotted var(--borde); padding: 0.8rem 0 0.2rem; }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .llamada {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.95rem; font-weight: 700; color: var(--azul);
+    overflow-wrap: anywhere;
+  }
+  .opciones button {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.86rem;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .cuantas { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; margin-top: 0.5rem; }
+  .cuantas label { font-size: 0.86rem; color: var(--gris); }
+  .cuantas input {
+    width: 4rem; font-family: ui-monospace, monospace; font-size: 0.92rem;
+    padding: 0.3rem 0.45rem; border: 1px solid var(--borde); border-radius: 8px;
+  }
+  .cuantas input.bien-celda { border-color: var(--verde); background: var(--verde-suave); color: var(--verde); }
+  .pasada { margin-top: 0.55rem; display: none; }
+  .pasada.visible { display: block; }
+  .caja.sinmirar { opacity: 0.35; border-style: dashed; }
+  .leyenda { font-size: 0.8rem; color: var(--gris); margin-top: 0.3rem; }
+  .salida {
+    font-family: ui-monospace, monospace; font-size: 0.9rem;
+    background: var(--codigo-fondo); border: 1px solid var(--borde);
+    border-radius: 8px; padding: 0.3rem 0.55rem; display: inline-block; margin-top: 0.35rem;
+  }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  .codigo { max-height: none; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Variaciones de <code>filter</code>: qué sale y cuántas veces se pregunta</h1>
+  <p class="intro">Seis funciones reciben el mismo predicado y la misma lista, y
+  ninguna devuelve lo mismo. Dos preguntas por cada una: qué lista sale y a
+  cuántos elementos se les llegó a aplicar el predicado. La segunda es la que
+  separa dos familias que desde el resultado no se distinguen. Las dos
+  respuestas salieron de correr las seis llamadas, la de cuántas veces se
+  evaluó el predicado con uno que anuncia cada elemento que recibe.</p>
+
+  <div class="carta">
+    <h2>1. La lista y el predicado</h2>
+    <div class="codigo" id="panel-codigo"></div>
+    <div class="arreglo" id="fila-entrada"></div>
+    <p class="nota">El predicado responde si el número es par. En la lista hay
+    dos pares al principio, después un impar, y más adelante vuelve a aparecer
+    un par.</p>
+  </div>
+
+  <div class="carta">
+    <h2>2. Las seis llamadas</h2>
+    <p class="nota" style="margin-top:0">Primero la lista que devuelve; después
+    el número de elementos a los que se les aplicó el predicado. Al resolver las
+    dos aparece la pasada, con los elementos que el predicado nunca vio.</p>
+    <div id="llamadas"></div>
+    <div class="progreso" id="marcador"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Las dos que devuelven una tupla</h2>
+    <p class="nota" style="margin-top:0">Cada una de las dos equivale a un par
+    de las otras cuatro, hecho en una sola pasada. Elija a qué par.</p>
+    <div id="pares"></div>
+    <div class="progreso" id="marcador-pares"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>4. Lo que se lleva de aquí</h2>
+    <p style="margin-top:0">Las seis se reparten en dos familias.
+    <code>filter</code>, <code>filterNot</code> y <code>partition</code>
+    recorren la lista completa: le preguntan por todos los elementos, y por eso
+    el 8 entra en el resultado de <code>filter</code> aunque antes haya habido
+    un impar. <code>takeWhile</code>, <code>dropWhile</code> y
+    <code>span</code> se detienen en el primer elemento que no cumple: con esta
+    lista preguntan tres veces y las tres últimas posiciones nunca llegan al
+    predicado.</p>
+    <p>Lo incómodo es que <code>dropWhile</code> devuelve cuatro elementos sin
+    haber mirado tres de ellos. El 8 está en su resultado no porque sea par,
+    sino porque viene después del 7, que fue donde el recorrido se detuvo. Si el
+    predicado fuera costoso, esa es toda la diferencia de costo entre las dos
+    familias; y si el predicado tuviera un efecto, la diferencia sería de
+    comportamiento.</p>
+    <p><code>partition</code> y <code>span</code> entregan las dos mitades en
+    una tupla, y ahí es donde la tupla paga: devolver dos listas sin tener que
+    recorrer la entrada por segunda vez. <code>span</code> es el que usa
+    <code>empaquetar</code> para separar el grupo que se está cerrando del resto
+    que queda por recorrer.</p>
+  </div>
+</div>
+<script src="variaciones.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

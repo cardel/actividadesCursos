@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>codificar: de los grupos a los pares (elemento, cantidad)</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .item { border-top: 1px dotted var(--borde); padding: 0.8rem 0 0.2rem; }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .llamada {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.94rem; font-weight: 700; color: var(--azul);
+    overflow-wrap: anywhere;
+  }
+  .cuantos { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; margin-top: 0.5rem; }
+  .cuantos label { font-size: 0.86rem; color: var(--gris); }
+  .cuantos input {
+    width: 4rem; font-family: ui-monospace, monospace; font-size: 0.92rem;
+    padding: 0.3rem 0.45rem; border: 1px solid var(--borde); border-radius: 8px;
+  }
+  .cuantos input.bien-celda { border-color: var(--verde); background: var(--verde-suave); color: var(--verde); }
+  .opciones { flex-direction: column; align-items: stretch; }
+  .opciones button {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.86rem; text-align: left;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .grupos { margin-top: 0.5rem; display: none; }
+  .grupos.visible { display: block; }
+  .grupo {
+    display: inline-flex; gap: 0.2rem; align-items: center; margin: 0.15rem 0.3rem 0.15rem 0;
+    border: 1px solid var(--borde); border-radius: 8px; padding: 0.2rem 0.4rem;
+    background: var(--codigo-fondo); font-family: ui-monospace, monospace; font-size: 0.85rem;
+  }
+  .grupo b { color: var(--azul); }
+  .flecha-par { color: var(--gris); }
+  .afirmaciones .item { padding-top: 0.6rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  .codigo { max-height: none; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1><code>codificar</code>: de los grupos a los pares (elemento, cantidad)</h1>
+  <p class="intro">La función se arma con tres piezas que ya están resueltas por
+  separado: <code>empaquetar</code> agrupa los elementos iguales que están
+  seguidos, <code>map</code> transforma cada grupo en una sola cosa, y esa cosa
+  es una tupla. Antes de ver el resultado hay que decir cuántos pares salen, que
+  es la pregunta donde se equivoca casi todo el mundo, y después escoger el
+  resultado entre cuatro candidatos. Los cuatro salieron de correr código: tres
+  son lo que devuelven otras funciones parecidas.</p>
+
+  <div class="carta">
+    <h2>1. Las dos definiciones</h2>
+    <div class="codigo" id="panel-codigo"></div>
+    <p class="nota">La lista que recibe <code>map</code> es la de los grupos, no
+    la de la entrada. De ahí sale <code>grupo.head</code>, que es el elemento
+    porque todos los del grupo son iguales, y <code>grupo.length</code>, que es
+    cuántas veces venía seguido.</p>
+  </div>
+
+  <div class="carta">
+    <h2>2. Tres entradas</h2>
+    <p class="nota" style="margin-top:0">Primero el número de pares; al
+    acertarlo aparecen las cuatro opciones del resultado. Cada opción
+    equivocada dice de qué función es ese valor.</p>
+    <div id="llamadas"></div>
+    <div class="progreso" id="marcador"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Tres afirmaciones sobre el tamaño</h2>
+    <p class="nota" style="margin-top:0">Valen para cualquier lista, no solo
+    para las tres de arriba.</p>
+    <div id="afirmaciones" class="afirmaciones"></div>
+    <div class="progreso" id="marcador-afirm"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>4. Lo que se lleva de aquí</h2>
+    <p style="margin-top:0">El número de pares es el número de grupos, y no el
+    de elementos distintos. <code>map</code> pone exactamente una salida por
+    cada elemento de la lista que recibe, así que la longitud del resultado es
+    la de los grupos; y <code>empaquetar</code> solo junta lo que viene seguido.
+    Con <code>List(1, 1, 2, 1, 1, 1)</code> el 1 aparece en dos grupos
+    separados por el 2, y por eso salen tres pares y no dos: los dos grupos del
+    1 quedan contados aparte.</p>
+    <p>Esa separación es lo que hace reversible la codificación. Si los grupos
+    del mismo elemento se fundieran, <code>(1,5), (2,1)</code> ya no diría en
+    qué orden venían los elementos y la lista original no se podría recuperar.
+    Tal como está, recorrer los pares y repetir cada elemento su cantidad de
+    veces devuelve la entrada.</p>
+    <p>El reparto del trabajo entre las tres piezas se lee en los tipos. La
+    recursión con <code>span</code> vive en <code>empaquetar</code>, que pasa de
+    <code>List[T]</code> a <code>List[List[T]]</code>; <code>codificar</code> no
+    tiene recursión propia, solo el <code>map</code> que lleva eso a
+    <code>List[(T, Int)]</code>. La tupla es lo que permite que cada grupo se
+    reduzca a dos datos de tipos distintos sin perder ninguno.</p>
+  </div>
+</div>
+<script src="codificar.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

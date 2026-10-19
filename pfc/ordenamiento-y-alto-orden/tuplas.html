@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tuplas: el valor, el tipo y lo que no compila</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .item {
+    border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem;
+  }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.95rem; font-weight: 700; color: var(--azul);
+    overflow-wrap: anywhere;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.88rem; min-width: 4rem;
+  }
+  .opciones button.larga {
+    font-family: inherit; font-size: 0.88rem; text-align: left;
+    white-space: normal; flex: 1 1 14rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .mensaje {
+    font-family: ui-monospace, monospace; font-size: 0.82rem; white-space: pre-wrap;
+    background: var(--codigo-fondo); border: 1px solid var(--borde);
+    border-radius: 8px; padding: 0.35rem 0.55rem; margin-top: 0.35rem; color: var(--rojo);
+  }
+  .mensaje.compila { color: var(--verde); }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  .codigo { max-height: none; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Tuplas: el valor, el tipo y lo que no compila</h1>
+  <p class="intro">Una tupla agrupa valores de tipos distintos y su tamaño queda
+  fijo al escribirla. No es recursiva, así que no se recorre con
+  <code>head</code> y <code>tail</code>: a cada componente se llega por su
+  posición, con <code>_1</code> y <code>_2</code>, o repartiendo la tupla con un
+  patrón. Abajo hay trece preguntas sobre estas dos tuplas. Lo que devuelve cada
+  expresión, y lo que dice el compilador cuando algo no cuadra, salió de correr
+  el código con la misma versión de Scala del proyecto del curso.</p>
+
+  <div class="carta">
+    <h2>1. Las dos tuplas</h2>
+    <div class="codigo" id="panel-codigo"></div>
+    <p class="nota">La primera tiene dos componentes y la segunda tres. Los
+    comentarios son lo que responde el intérprete al declararlas.</p>
+  </div>
+
+  <div class="carta">
+    <h2>2. ¿Qué devuelve cada expresión?</h2>
+    <p class="nota" style="margin-top:0">Seis expresiones sobre esas dos tuplas.
+    Elija el valor antes de seguir; cada opción equivocada dice en qué consiste
+    la confusión.</p>
+    <div id="valores"></div>
+    <div class="progreso" id="marcador-valores"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. ¿De qué tipo es?</h2>
+    <p class="nota" style="margin-top:0">El valor y el tipo se responden por
+    separado, porque es justo ahí donde se confunde la tupla entera con uno de
+    sus componentes.</p>
+    <div id="tipos"></div>
+    <div class="progreso" id="marcador-tipos"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Cuatro declaraciones: ¿cuáles compilan?</h2>
+    <p class="nota" style="margin-top:0">Las cuatro se escriben sobre
+    <code>pareja</code> y <code>triple</code>. Después de responder aparece lo
+    que contesta el compilador, copiado de la corrida.</p>
+    <div id="declaraciones"></div>
+    <div class="progreso" id="marcador-decl"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>5. Lo que se lleva de aquí</h2>
+    <p style="margin-top:0">Una lista y una tupla resuelven cosas distintas. La
+    lista pide un solo tipo para todos sus elementos y crece cuanto haga falta;
+    la tupla admite un tipo por posición y su tamaño queda escrito en el tipo.
+    Por eso <code>(Double, String, Boolean)</code> es un tipo legítimo y
+    <code>List</code> no puede hacer lo mismo sin perder la información de qué
+    hay en cada puesto.</p>
+    <p>El paréntesis es azúcar sintáctica. El tipo <code>(String, Int)</code> es
+    <code>Tuple2[String, Int]</code> y la expresión <code>("hola", 42)</code> es
+    <code>scala.Tuple2("hola", 42)</code>: las dos formas construyen el mismo
+    valor, y de ahí sale que existan <code>Tuple2</code> hasta
+    <code>Tuple22</code> y que <code>_3</code> no exista en una pareja. Al ser
+    una clase de las que comparan por contenido, dos tuplas escritas igual son
+    iguales con <code>==</code>.</p>
+    <p>Quedan dos formas de llegar a los componentes. Con <code>_1</code> y
+    <code>_2</code> se saca uno a la vez y el nombre no dice nada de lo que
+    contiene. Con <code>val (texto, valor) = pareja</code> se reparten los dos
+    en una línea y cada uno queda con el nombre que corresponde, que es el
+    mismo mecanismo que permite escribir <code>case (x :: xs, y :: ys)</code>
+    para avanzar dos listas a la vez.</p>
+  </div>
+</div>
+<script src="tuplas.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
