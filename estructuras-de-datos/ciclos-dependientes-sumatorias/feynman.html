@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>feynman: cuántos cuadrados caben en una cuadrícula</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  :root { --lado-celda: 34px; }
+  .rejilla { display: grid; gap: 2px; margin: 0.7rem 0; width: max-content; }
+  .celda-rej {
+    width: var(--lado-celda); height: var(--lado-celda);
+    background: #fff; border: 1px solid var(--borde); border-radius: 3px;
+    position: relative;
+  }
+  .celda-rej.esquina::after {
+    content: ""; position: absolute; left: 4px; top: 4px;
+    width: 10px; height: 10px; border-radius: 50%; background: var(--ambar);
+  }
+  .celda-rej.esquina { cursor: pointer; }
+  .celda-rej.dentro { background: var(--azul-suave); border-color: var(--azul); }
+  .celda-rej.origen { background: #c9dbf0; }
+  .dos-paneles { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: start; }
+  @media (max-width: 760px) { .dos-paneles { grid-template-columns: 1fr; } }
+  .formula { font-family: ui-monospace, monospace; background: var(--codigo-fondo);
+    border-radius: 8px; padding: 0.5rem 0.7rem; margin: 0.5rem 0; overflow-x: auto; }
+  .leyenda { display: inline-block; width: 0.9rem; height: 0.9rem; border-radius: 3px;
+    vertical-align: middle; margin: 0 0.2rem 0 0.6rem; }
+  #total-conteo { display: none; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>feynman: cuántos cuadrados caben en una cuadrícula</h1>
+  <p class="intro">UVa 12149, Feynman, pregunta cuántos cuadrados distintos
+  hay en una cuadrícula de N × N casillas. Con N = 2 la respuesta es 5: cuatro
+  de lado 1 y uno de lado 2. Primero se cuentan a mano, lado por lado; después
+  se cuentan las vueltas de los tres ciclos que hacen lo mismo.</p>
+
+  <div class="carta">
+    <h2>1. Lado por lado</h2>
+    <div class="fila-n">
+      <label for="rango-n">Tamaño de la cuadrícula:</label>
+      <input type="range" id="rango-n" min="1" max="8" value="4">
+      <span class="valor-n">N = <span id="ver-n">4</span></span>
+    </div>
+    <div class="presets" id="lados" style="margin-top:0.6rem"></div>
+    <div class="dos-paneles">
+      <div>
+        <div class="rejilla" id="rejilla"></div>
+        <div class="nota">
+          <span class="leyenda" style="background:var(--ambar);border-radius:50%"></span>esquina superior izquierda posible
+          <span class="leyenda" style="background:var(--azul-suave);border:1px solid var(--azul)"></span>un cuadrado de lado m
+          <br>Pase el puntero por una esquina para ver el cuadrado que empieza ahí.
+        </div>
+      </div>
+      <div>
+        <p id="pregunta-pos" style="margin-top:0.7rem"></p>
+        <div class="prediccion">
+          <span>posiciones:</span>
+          <input type="number" id="pred-pos" min="0">
+          <button id="btn-pos" class="primario">Comprobar</button>
+          <button id="btn-revelar-pos">Revelar</button>
+        </div>
+        <div id="veredicto-pos" class="veredicto"></div>
+        <div class="envoltura-tabla" style="margin-top:0.8rem">
+          <table>
+            <thead><tr><th>lado m</th><th>posiciones</th><th>acumulado</th></tr></thead>
+            <tbody id="tabla-lados"></tbody>
+          </table>
+        </div>
+        <div id="cierre-tabla" class="nota"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Los tres ciclos: lado, fila y columna</h2>
+    <p style="margin-top:0">El ciclo de m escoge el lado; los de f y c recorren
+    las esquinas donde ese lado cabe. Cada vez que corre la línea 6 se cuenta
+    un cuadrado, y la cuadrícula muestra cuál.</p>
+    <div class="panel-doble">
+      <div class="codigo" id="panel-codigo"></div>
+      <div class="estado">
+        <div class="chips">
+          <span class="chip">m = <b id="chip-m">–</b></span>
+          <span class="chip">f = <b id="chip-f">–</b></span>
+          <span class="chip">c = <b id="chip-c">–</b></span>
+          <span class="chip cuenta">cuenta = <b id="chip-cuenta">–</b></span>
+        </div>
+        <div class="progreso">Paso <span id="ver-paso">0</span> de <span id="ver-total">0</span></div>
+        <div class="botones">
+          <button id="btn-paso" class="primario">Un paso</button>
+          <button id="btn-auto">Auto</button>
+          <button id="btn-fin">Al final</button>
+          <button id="btn-reiniciar">Reiniciar</button>
+        </div>
+        <div class="rejilla" id="rejilla-ciclo"></div>
+      </div>
+    </div>
+    <div class="nota">Cada cabecera de <code>for</code> cuenta como su
+    condición y se cuenta cada vez que se evalúa, también la última, la que da
+    falso. La inicialización y el incremento no se cuentan aparte.</div>
+  </div>
+
+  <div class="carta">
+    <h2>3. El conteo línea a línea</h2>
+    <p style="margin-top:0">Escriba cuántas veces corre cada línea con el N
+    elegido. Puede comprobar contra los contadores de la parte 2, pero la idea
+    es llegar con la tabla de la parte 1: congele m, cuente lo de adentro y sume.</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>línea</th><th>veces</th><th>fórmula (k = N − m + 1)</th></tr></thead>
+        <tbody id="tabla-conteo"></tbody>
+      </table>
+    </div>
+    <div class="botones" style="margin-top:0.7rem">
+      <button id="btn-conteo" class="primario">Comprobar</button>
+      <button id="btn-revelar-conteo">Revelar</button>
+    </div>
+    <div id="veredicto-conteo" class="veredicto"></div>
+    <div id="total-conteo" class="alerta">Al sumar las siete líneas,
+      <div class="formula">T(N) = N(N + 1)(2N + 1)/3 + N² + 3N + 4</div>
+      y con N = <b id="t-n"></b> da <b id="t-valor"></b>. El término que crece
+      más rápido es 2N³/3: el conteo con tres ciclos es Θ(N³).</div>
+  </div>
+
+  <div class="carta">
+    <h2>4. De la tabla a la fórmula</h2>
+    <p style="margin-top:0">La línea 6 corre una vez por cada cuadrado, así que
+    su conteo es la respuesta. Para el lado m hay (N − m + 1)² esquinas; con
+    k = N − m + 1, cuando m va de 1 a N, k va de N a 1:</p>
+    <div class="formula">Σ<sub>m=1..N</sub> (N − m + 1)² = Σ<sub>k=1..N</sub> k² = N(N + 1)(2N + 1)/6</div>
+    <p>Con N = 2 da 2 · 3 · 5 / 6 = 5 y con N = 8 da 8 · 9 · 17 / 6 = 204,
+    los dos valores de la salida de ejemplo. La fórmula responde con un número
+    fijo de operaciones, sin importar N; los tres ciclos hacen Θ(N³). Con el
+    N más grande que permite el enunciado, 100, la línea 6 corre 338.350 veces
+    por caso.</p>
+  </div>
+
+  <div class="carta">
+    <h2>5. El problema en el juez</h2>
+    <p style="margin-top:0"><b>UVa 12149, Feynman.</b> Enunciado en
+    <a href="https://onlinejudge.org/external/121/12149.pdf">https://onlinejudge.org/external/121/12149.pdf</a>;
+    envío en
+    <a href="https://onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=25&amp;page=submit_problem&amp;problemid=3301">https://onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=25&amp;page=submit_problem&amp;problemid=3301</a>.</p>
+    <div class="nota">El parámetro es N, el número de casillas por lado, de 1
+    a 100. La propiedad que hace funcionar el conteo es que un cuadrado queda
+    fijo con su lado y su esquina superior izquierda, y la esquina solo puede
+    ir donde el cuadrado no se sale. La trampa está en la palabra
+    <i>distintos</i>: no son solo las N² casillas, son los cuadrados de todos
+    los lados, y con N = 2 la respuesta es 5, no 4. La entrada trae varios
+    casos y termina con una línea que tiene 0, que no se procesa.</div>
+  </div>
+</div>
+<script src="feynman.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

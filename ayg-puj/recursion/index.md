@@ -52,3 +52,27 @@ por nivel hasta el caso base y súbala mezclando con el ejercicio anterior.
 La tabla acumula el trabajo de cada nivel y ahí aparece el patrón que
 explica el n·lg n: todos los pisos del árbol mueven exactamente n
 elementos, y pisos hay lg n.
+
+## Árbol de llamadas
+
+### [movil](./movil.html){ target=_blank rel=noopener }
+
+UVa 839, Not so Mobile. Cargue la muestra del enunciado, un móvil al azar o
+uno propio, y siga la función `movil()` lectura por lectura: el móvil se
+dibuja a medida que se lee y la pila de llamadas muestra lo que espera cada
+marco. En cada lectura decida si es caso base o recursivo, y en cada retorno
+escriba el peso y si el submóvil está en equilibrio.
+
+Fíjese en las líneas con borde punteado: aparecen cuando un submóvil ya
+devolvió que no está en equilibrio, y se leen igual. Si la función dejara de
+leer, la siguiente lectura tomaría una línea que no le corresponde.
+
+### [grey](./grey.html){ target=_blank rel=noopener }
+
+UVa 11173, Grey Codes. Elija $n$ y $k$ y baje por las mitades del rango
+$[ini, fin)$: en cada nivel marque en qué mitad cae $k$, escriba el bit, el
+rango nuevo y la posición, que se refleja cuando cae en la mitad derecha. La
+pila crece al bajar y, al subir, cada marco muestra lo que devuelve.
+
+La expansión de $T(m) = T(m/2) + c$ aparece nivel por nivel, y la lista
+completa de $2^n$ códigos solo al final, para comprobar la respuesta.

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>arbol: el costo de una recurrencia, nivel por nivel</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .dibujo { margin: 0.6rem 0; overflow-x: auto; }
+  .nivel-arbol { display: flex; gap: 6px; align-items: center; margin: 5px 0; flex-wrap: nowrap; }
+  .nivel-arbol .rotulo-nivel { width: 4.5rem; flex: none; font-size: 0.8rem; color: var(--gris); }
+  .nodo-arbol {
+    flex: none; border: 2px solid var(--azul); background: var(--azul-suave);
+    border-radius: 999px; padding: 0.1rem 0.5rem;
+    font-family: ui-monospace, monospace; font-size: 0.8rem; font-weight: 700; color: var(--azul);
+  }
+  .nodo-arbol.hoja { border-color: var(--verde); background: var(--verde-suave); color: var(--verde); }
+  .puntos { color: var(--gris); font-size: 0.85rem; white-space: nowrap; }
+  input.celda-num { width: 4.5rem; padding: 0.25rem 0.35rem; font-size: 0.95rem;
+    border: 1px solid var(--borde); border-radius: 6px; }
+  tr.actual-fila td { background: var(--resalte); }
+  tr.revelada td { color: var(--gris); }
+  .desarrollo { font-family: ui-monospace, monospace; white-space: pre; background: var(--codigo-fondo);
+    border-radius: 8px; padding: 0.6rem 0.8rem; overflow-x: auto; font-size: 0.88rem; }
+  #carta-total, #carta-clase, #bloque-desarrollo { display: none; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>arbol: el costo de una recurrencia, nivel por nivel</h1>
+  <p class="intro">Cada nodo del árbol es una llamada y lleva el trabajo que
+  esa llamada hace fuera de sus llamadas recursivas. Sumando por niveles se
+  obtiene T(n) sin desarrollar la recurrencia; después se comparan los dos
+  caminos. El trabajo se escribe en unidades de c.</p>
+
+  <div class="carta">
+    <h2>1. La recurrencia y el tamaño</h2>
+    <div class="presets" id="selector-rec"></div>
+    <div class="presets" id="selector-n" style="margin-top:0.5rem"></div>
+    <p class="nota" id="descripcion"></p>
+  </div>
+
+  <div class="carta">
+    <h2>2. Nivel por nivel</h2>
+    <p style="margin-top:0">Para el nivel resaltado escriba cuántos nodos tiene,
+    cuánto trabaja cada uno y cuánto cuesta el nivel entero.</p>
+    <div class="dibujo" id="dibujo"></div>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>nivel</th><th>cada nodo</th><th>nodos</th><th>trabajo por nodo</th><th>costo del nivel</th></tr></thead>
+        <tbody id="tabla-niveles"></tbody>
+      </table>
+    </div>
+    <div class="prediccion" id="zona-nivel">
+      <button id="btn-nivel" class="primario">Comprobar el nivel</button>
+      <button id="btn-revelar-nivel">Revelar</button>
+      <button id="btn-medio">Llenar hasta el penúltimo</button>
+    </div>
+    <div id="veredicto-nivel" class="veredicto"></div>
+  </div>
+
+  <div class="carta" id="carta-total">
+    <h2>3. Niveles y total</h2>
+    <div class="prediccion">
+      <span>¿Cuántos niveles tiene el árbol?</span>
+      <input type="number" id="in-niveles" min="1">
+      <span>¿Cuánto suma todo, en unidades de c?</span>
+      <input type="number" id="in-total" min="1">
+      <button id="btn-total" class="primario">Comprobar</button>
+      <button id="btn-revelar-total">Revelar</button>
+    </div>
+    <div id="veredicto-total" class="veredicto"></div>
+    <div id="bloque-desarrollo">
+      <p>Desarrollando la recurrencia por sustitución:</p>
+      <div class="desarrollo" id="desarrollo"></div>
+      <p class="nota" id="comparacion"></p>
+    </div>
+  </div>
+
+  <div class="carta" id="carta-clase">
+    <h2>4. La clase Θ</h2>
+    <p style="margin-top:0">Con el total en función de n, ¿a qué clase pertenece T(n)?</p>
+    <div class="opciones" id="opciones-clase"></div>
+    <div id="veredicto-clase" class="veredicto"></div>
+  </div>
+</div>
+<script src="arbol.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

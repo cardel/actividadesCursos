@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>grey: el código en la posición k sin construir la lista</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .escalera-rangos { display: flex; flex-direction: column; gap: 4px; margin: 0.6rem 0; overflow-x: auto; padding-bottom: 0.3rem; }
+  .fila-rango { display: flex; gap: 2px; align-items: center; }
+  .rotulo-rango { width: 5.5rem; flex: none; font-family: ui-monospace, monospace; font-size: 0.8rem; color: var(--gris); }
+  .pos { height: 26px; flex: none; border-radius: 4px; border: 1px dashed var(--borde);
+    font-family: ui-monospace, monospace; font-size: 0.7rem; color: var(--gris);
+    display: flex; align-items: center; justify-content: center; }
+  .pos.dentro { background: var(--azul-suave); border: 1px solid var(--azul); color: var(--azul); }
+  .pos.corte { box-shadow: inset 3px 0 0 var(--tinta); }
+  .pos.objetivo { background: var(--ambar); border-color: var(--ambar); color: #fff; font-weight: 700; }
+  .marco { border: 1px solid var(--borde); border-radius: 8px; padding: 0.35rem 0.55rem;
+    margin-bottom: 0.35rem; font-size: 0.85rem; font-family: ui-monospace, monospace; background: #fff; }
+  .marco.tope { border-color: var(--ambar); background: var(--ambar-suave); }
+  .marco.cerrado { color: var(--gris); border-style: dashed; }
+  .lista-gray { display: flex; flex-wrap: wrap; gap: 4px; margin: 0.6rem 0; }
+  .codigo-gray { display: flex; flex-direction: column; align-items: center; min-width: 3.4rem;
+    border: 1px solid var(--borde); border-radius: 6px; padding: 0.15rem 0.3rem;
+    font-family: ui-monospace, monospace; font-size: 0.75rem; }
+  .codigo-gray span { color: var(--gris); font-size: 0.68rem; }
+  .codigo-gray.objetivo { background: var(--ambar-suave); border-color: var(--ambar); }
+  .recurrencia { font-family: ui-monospace, monospace; font-size: 0.9rem; line-height: 1.7; }
+  .prediccion input.corto { width: 4.5rem; }
+  .leyenda { display: inline-block; width: 0.9rem; height: 0.9rem; border-radius: 3px; vertical-align: middle; margin: 0 0.2rem 0 0.6rem; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>El código en la posición k sin construir la lista</h1>
+  <p class="intro">UVa 11173, Grey Codes, construye la lista reflejada de
+  códigos de n bits: se toma la lista de n - 1 bits, se le pega debajo su
+  reflejo, y se antepone un 0 a la mitad de arriba y un 1 a la de abajo. Pide
+  el código en la posición k. El enunciado está en
+  <a href="https://onlinejudge.org/external/111/11173.pdf">https://onlinejudge.org/external/111/11173.pdf</a>.
+  Aquí la lista se dibuja acostada: la mitad de arriba queda a la izquierda.
+  La función trabaja sobre el rango de posiciones [ini, fin) y en cada llamada
+  decide un bit.</p>
+
+  <div class="carta">
+    <h2>1. n y k</h2>
+    <div class="prediccion" style="margin-top:0">
+      <span>n:</span>
+      <input type="number" id="n" class="corto" min="1" max="6">
+      <span>k:</span>
+      <input type="number" id="k" class="corto" min="0">
+      <button id="btn-cargar" class="primario">Usar estos</button>
+      <button id="btn-azar">Al azar</button>
+    </div>
+    <div id="error-entrada" class="veredicto"></div>
+    <div class="nota">n va de 1 a 6 y k de 0 a 2<sup>n</sup> - 1. La primera
+    llamada es grey(0, 2<sup>n</sup>, k).</div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Baje por las mitades</h2>
+    <div class="panel-doble">
+      <div class="codigo" id="codigo"></div>
+      <div>
+        <div class="nota" style="margin-top:0">Pila de llamadas, el tope arriba
+        (abiertas: <b id="profundidad">0</b>)</div>
+        <div id="pila"></div>
+      </div>
+    </div>
+    <div class="escalera-rangos" id="escalera"></div>
+    <div class="nota">
+      <span class="leyenda" style="background:var(--azul-suave);border:1px solid var(--azul)"></span>el rango de la llamada
+      <span class="leyenda" style="background:var(--ambar)"></span>la posición que se busca
+      <span class="leyenda" style="box-shadow:inset 3px 0 0 var(--tinta);border:1px solid var(--borde)"></span>donde empieza la mitad derecha
+    </div>
+    <p id="pregunta"></p>
+    <div class="prediccion" id="zona-bajar">
+      <label><input type="radio" name="lado" id="lado-izq"> izquierda</label>
+      <label><input type="radio" name="lado" id="lado-der"> derecha</label>
+      <span>bit:</span>
+      <input type="number" id="bit" class="corto" min="0" max="1">
+      <span>nuevo rango [</span>
+      <input type="number" id="nuevo-ini" class="corto">
+      <span>,</span>
+      <input type="number" id="nuevo-fin" class="corto">
+      <span>) posición:</span>
+      <input type="number" id="nuevo-k" class="corto">
+      <button id="btn-comprobar" class="primario">Comprobar</button>
+      <button id="btn-revelar">Revelar</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+    <div class="botones" style="margin-top:0.7rem">
+      <button id="btn-subir" class="primario" style="display:none">Volver una llamada</button>
+      <button id="btn-reinicio">Volver al principio</button>
+    </div>
+    <div class="envoltura-tabla" style="margin-top:0.8rem">
+      <table>
+        <thead><tr><th>rango</th><th>k</th><th>mitad</th><th>mitad elegida</th><th>bit</th><th>nuevo rango</th><th>nueva posición</th></tr></thead>
+        <tbody id="traza"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>3. La recurrencia</h2>
+    <p style="margin-top:0">Con m = fin - ini posiciones, una llamada hace un
+    trabajo constante c y una sola llamada sobre la mitad:
+    T(m) = T(m/2) + c, con T(1) = c. Niveles bajados:
+    <b id="niveles-hechos">0</b> de <b id="niveles-total">0</b>.</p>
+    <div class="recurrencia" id="recurrencia"></div>
+    <div class="nota">Con m = <span id="m-total"></span> la expansión llega a
+    T(1) después de lg m = n niveles: T(m) = c·lg m + c, Θ(lg m), es decir
+    Θ(n). Construir la lista entera cuesta Θ(2<sup>n</sup>).</div>
+  </div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>La comprobación</h2>
+    <p style="margin-top:0" id="comparacion"></p>
+    <div class="nota">La lista entera de n bits, con la posición encima, el
+    código en binario y su valor debajo:</div>
+    <div class="lista-gray" id="lista"></div>
+    <p>Hubo <b id="dato-llamadas"></b> llamadas para n = <b id="dato-n"></b>:
+    una por bit y la del caso base.</p>
+    <div class="nota"><b>UVa 11173, Grey Codes.</b> Enunciado en
+    <a href="https://onlinejudge.org/external/111/11173.pdf">https://onlinejudge.org/external/111/11173.pdf</a>;
+    envío en
+    <a href="https://onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=25&amp;page=submit_problem&amp;problemid=2114">https://onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=25&amp;page=submit_problem&amp;problemid=2114</a>.</div>
+    <div class="nota"><b>El parámetro</b> es el rango [ini, fin), que se
+    parte a la mitad en cada llamada. <b>La propiedad</b> es la construcción
+    misma: la mitad izquierda es la lista de n - 1 bits con un 0 delante y la
+    derecha es esa lista al revés con un 1 delante, de modo que la posición k
+    de la derecha corresponde a la posición mitad + fin - 1 - k en la lista sin
+    invertir. <b>La trampa</b> está en los límites: n llega a 30, así que la
+    lista tendría 2<sup>30</sup> códigos y no se puede construir; y hay hasta
+    250000 casos, de modo que cada uno tiene que salir en n pasos y la entrada
+    se lee completa de una vez.</div>
+  </div>
+</div>
+<script src="grey.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

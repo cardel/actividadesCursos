@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>movil: un móvil en equilibrio, llamada por llamada</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .panel-arbol { display: grid; grid-template-columns: minmax(0, 1fr) 230px; gap: 1rem; align-items: start; }
+  @media (max-width: 760px) { .panel-arbol { grid-template-columns: 1fr; } }
+  .marco-arbol { overflow-x: auto; background: #fff; border: 1px solid var(--borde); border-radius: 8px; }
+  #arbol { display: block; margin: 0 auto; }
+  #arbol .barra-svg { stroke: var(--tinta); stroke-width: 3; }
+  #arbol .cuerda { stroke: var(--gris); stroke-width: 1.5; }
+  #arbol .dist { font-size: 11px; fill: var(--gris); }
+  #arbol .objeto { fill: var(--azul-suave); stroke: var(--azul); stroke-width: 2; }
+  #arbol .pendiente { fill: #fff; stroke: var(--gris); stroke-dasharray: 4 3; }
+  #arbol .peso { font-size: 13px; font-weight: 700; text-anchor: middle; fill: var(--tinta); }
+  #arbol .nodo rect { fill: #fff; stroke: var(--gris); stroke-width: 1.5; }
+  #arbol .nodo.actual rect { fill: var(--resalte); stroke: var(--ambar); stroke-width: 3; }
+  #arbol .nodo.si rect { fill: var(--verde-suave); stroke: var(--verde); }
+  #arbol .nodo.no rect { fill: var(--rojo-suave); stroke: var(--rojo); }
+  #arbol .nodo.tarde rect { stroke-dasharray: 5 3; }
+  #arbol .rotulo-nodo { font-family: ui-monospace, monospace; font-size: 12px; text-anchor: middle; }
+  #arbol .num-linea { font-size: 10px; fill: var(--gris); text-anchor: middle; }
+  #arbol .devuelto { font-size: 11px; font-weight: 700; text-anchor: middle; fill: var(--tinta); }
+  .marco { border: 1px solid var(--borde); border-radius: 8px; padding: 0.35rem 0.55rem;
+    margin-bottom: 0.35rem; font-size: 0.85rem; background: #fff; }
+  .marco.tope { border-color: var(--ambar); background: var(--ambar-suave); }
+  .marco span { color: var(--gris); }
+  textarea { width: 100%; max-width: 16rem; font-family: ui-monospace, monospace; font-size: 0.9rem;
+    border: 1px solid var(--borde); border-radius: 8px; padding: 0.4rem; }
+  .entrada-fila { display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-start; }
+  .opciones button { text-align: left; }
+  .leyenda { display: inline-block; width: 0.9rem; height: 0.9rem; border-radius: 3px; vertical-align: middle; margin: 0 0.2rem 0 0.6rem; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Un móvil en equilibrio, llamada por llamada</h1>
+  <p class="intro">UVa 839, Not so Mobile, describe un móvil con una línea
+  Wl Dl Wr Dr por barra: pesos y distancias al punto de donde cuelga. Un peso
+  0 dice que de ese extremo cuelga otro móvil, descrito en las líneas
+  siguientes. El enunciado está en
+  <a href="https://onlinejudge.org/external/8/839.pdf">https://onlinejudge.org/external/8/839.pdf</a>.
+  La barra está en equilibrio si Wl·Dl = Wr·Dr y lo que cuelga de ella también
+  lo está. Una llamada a <code>movil()</code> lee una línea y devuelve el peso
+  del submóvil y si está en equilibrio.</p>
+
+  <div class="carta">
+    <h2>1. La entrada</h2>
+    <div class="entrada-fila">
+      <textarea id="entrada" rows="9" spellcheck="false"></textarea>
+      <div>
+        <div class="botones">
+          <button id="btn-muestra">La muestra del enunciado</button>
+          <button id="btn-azar">Un móvil al azar</button>
+          <button id="btn-usar" class="primario">Usar esta entrada</button>
+        </div>
+        <div class="nota">Se acepta el formato del juez, con el número de
+        casos y la línea en blanco, o solo las líneas de cuatro enteros. El
+        móvil al azar tiene hasta cuatro niveles de barras y a veces no está
+        en equilibrio.</div>
+      </div>
+    </div>
+    <div id="error-entrada" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Avance llamada por llamada</h2>
+    <div class="panel-arbol">
+      <div>
+        <div class="marco-arbol"><svg id="arbol" xmlns="http://www.w3.org/2000/svg"></svg></div>
+        <div class="nota">
+          <span class="leyenda" style="background:var(--resalte);border:2px solid var(--ambar)"></span>la línea de la llamada actual
+          <span class="leyenda" style="background:var(--verde-suave);border:1px solid var(--verde)"></span>devolvió sí
+          <span class="leyenda" style="background:var(--rojo-suave);border:1px solid var(--rojo)"></span>devolvió no
+          <span class="leyenda" style="border:1px dashed var(--gris)"></span>submóvil sin leer, o línea leída cuando ya se sabía que la respuesta es NO
+        </div>
+      </div>
+      <div>
+        <div class="nota" style="margin-top:0">Pila de llamadas, el tope arriba
+        (profundidad <b id="profundidad">0</b>)</div>
+        <div id="pila"></div>
+      </div>
+    </div>
+    <div class="codigo" id="codigo" style="margin-top:0.8rem"></div>
+    <p id="pregunta"></p>
+    <div id="aviso-tarde" class="alerta" style="display:none">Un submóvil ya
+    devolvió no, así que la respuesta del caso es NO. La función lee esta línea
+    de todas formas: si se saltara el resto del submóvil, la siguiente lectura
+    tomaría una línea que no le corresponde.</div>
+    <div class="opciones" id="zona-leer">
+      <div class="opciones" id="opciones-caso"></div>
+      <button id="btn-revelar-caso">Revelar</button>
+    </div>
+    <div class="prediccion" id="zona-volver" style="display:none">
+      <span>peso devuelto:</span>
+      <input type="number" id="peso">
+      <span>¿en equilibrio?</span>
+      <label><input type="radio" name="eq" id="eq-si"> sí</label>
+      <label><input type="radio" name="eq" id="eq-no"> no</label>
+      <button id="btn-comprobar" class="primario">Comprobar</button>
+      <button id="btn-revelar">Revelar</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+    <div class="botones" style="margin-top:0.7rem">
+      <span class="progreso" id="progreso"></span>
+      <button id="btn-completar">Ir al final</button>
+      <button id="btn-reinicio">Volver al principio</button>
+    </div>
+    <div class="envoltura-tabla" style="margin-top:0.8rem">
+      <table>
+        <thead><tr><th>línea</th><th>Wl Dl Wr Dr</th><th>Wl·Dl</th><th>Wr·Dr</th><th>peso devuelto</th><th>equilibrio</th></tr></thead>
+        <tbody id="traza"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Lo que cuesta</h2>
+    <p style="margin-top:0">Hubo <b id="dato-llamadas"></b> llamadas para
+    <b id="dato-lineas"></b> líneas, y <b id="dato-pasos"></b> pasos entre
+    lecturas y retornos. Cada llamada lee una línea y nada más: una llamada por
+    barra del móvil. Fuera de sus llamadas recursivas, una llamada hace un
+    trabajo constante, una lectura, dos productos y una suma, así que el costo
+    es T(L) = c·L para un móvil de L líneas, Θ(L). Ese es también el mínimo,
+    porque el juez obliga a leer toda la entrada.</p>
+    <div class="nota"><b>UVa 839, Not so Mobile.</b> Enunciado en
+    <a href="https://onlinejudge.org/external/8/839.pdf">https://onlinejudge.org/external/8/839.pdf</a>;
+    envío en
+    <a href="https://onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=25&amp;page=submit_problem&amp;problemid=780">https://onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=25&amp;page=submit_problem&amp;problemid=780</a>.</div>
+    <div class="nota"><b>El parámetro</b> no es un número: es el submóvil, es
+    decir, el bloque de líneas que lo describe, que la llamada consume de la
+    entrada. <b>La propiedad</b> que hace funcionar la recursión es que un
+    submóvil pesa lo mismo que la suma de sus objetos y está en equilibrio si
+    lo están sus dos lados y Wl·Dl = Wr·Dr con esos pesos; por eso la llamada
+    devuelve dos cosas. <b>La trampa</b> está en la entrada: el submóvil ocupa
+    las líneas siguientes, y una función que devuelve NO apenas lo detecta deja
+    líneas sin leer que el siguiente caso toma como suyas. Además hay una línea
+    en blanco antes de cada caso y la salida separa dos casos con una línea en
+    blanco, sin una al final: <code>leer_linea()</code> salta las líneas
+    vacías.</div>
+  </div>
+</div>
+<script src="movil.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

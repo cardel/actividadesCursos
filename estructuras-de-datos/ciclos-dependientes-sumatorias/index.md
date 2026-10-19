@@ -41,3 +41,14 @@ pasarse de n?
 Use los botones de 10, 100 y 1000 y mire la secuencia de valores que
 visita el índice. La tabla de crecimiento muestra por qué a este
 comportamiento se le llama logarítmico.
+
+## [feynman](./feynman.html){ target=_blank rel=noopener }
+
+UVa 12149: cuántos cuadrados caben en una cuadrícula de N × N. Primero se
+cuentan a mano, lado por lado, las esquinas donde cabe cada cuadrado;
+después se ejecuta el triple ciclo sobre el lado, la fila y la columna, y se
+escribe cuántas veces corre cada línea.
+
+Pase el puntero por una esquina para ver el cuadrado que empieza ahí. Al
+final, el cambio de variable convierte el conteo del cuerpo en
+1² + 2² + … + N² = N(N + 1)(2N + 1)/6, la respuesta del problema.
