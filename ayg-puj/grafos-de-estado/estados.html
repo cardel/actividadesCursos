@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grafo de estados</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+<style>
+  .viva, tr.viva td { background: var(--ambar-suave); }
+  span.viva { font-family: ui-monospace, monospace; border-radius: 8px; padding: 0.3rem 0.6rem; display: inline-block; word-break: break-all; }
+  .salida { font-family: ui-monospace, monospace; font-size: 0.8rem; background: var(--codigo-fondo); border-radius: 8px; padding: 0.4rem 0.6rem; min-height: 2rem; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Grafo de estados</h1>
+  <p class="intro">En UVa 321 <i>The New Villa</i> no hay un grafo dado: los vértices se
+  construyen. Un estado es el par (habitación, máscara de luces) y de cada estado salen
+  aristas de peso 1: pasar a una habitación vecina cuya luz esté prendida, o cambiar con un
+  interruptor la luz de otra habitación. Aquí se ejecuta la función <code>solve</code> de
+  <code>321-new-villa.cpp</code> sobre una villa pequeña, línea por línea, hasta ver cómo la
+  búsqueda en amplitud descubre los estados y cómo la meta trae consigo la lista de pasos.
+  Se empieza en la habitación 1 con solo su luz prendida y se quiere terminar en la última
+  habitación con solo su luz prendida.</p>
+
+  <div class="carta">
+    <h2>1. La villa y la predicción</h2>
+    <div class="presets" id="presets-grafo">
+      <span class="nota" style="margin-top:0">Villa:</span>
+      <button data-preset="0" class="primario">Dos puertas desde la 1</button>
+      <button data-preset="1">En fila, sin solución</button>
+      <button data-preset="2">En fila, con solución</button>
+    </div>
+    <p class="nota" id="ver-texto"></p>
+    <p class="nota" style="margin-top:0">Interruptores: <span id="ver-inter"></span> No se cambia la luz de la habitación donde se está.</p>
+    <div class="villa-dibujo" id="dibujo"></div>
+    <div class="nota" style="text-align:center">Se dibuja el estado que acaba de salir de la cola: contorno azul en la habitación actual y relleno amarillo en las que tienen la luz prendida.</div>
+    <div class="prediccion">
+      <span>¿Cuántos estados hay en <code>dist</code> cuando termina el ciclo?</span>
+      <input type="number" id="prediccion" step="1" placeholder="estados">
+      <button id="btn-comprobar" class="primario">Comprobar</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Ejecute solve</h2>
+    <div class="panel-doble">
+      <div class="codigo" id="panel-codigo"></div>
+      <div class="estado">
+        <div class="chips" id="chips"></div>
+        <div>cola <code>q</code>, de la salida a la entrada: <span class="viva" id="ver-cola">[ ]</span></div>
+        <div>Lo que ha impreso el programa:</div>
+        <div class="salida" id="ver-salida">–</div>
+        <div class="progreso">Paso <span id="ver-paso">0</span> de <span id="ver-total">0</span></div>
+        <div class="botones">
+          <button id="btn-paso" class="primario">Un paso</button>
+          <button id="btn-auto">Auto</button>
+          <button id="btn-fin">Al final</button>
+          <button id="btn-reiniciar">Reiniciar</button>
+        </div>
+        <div class="nota">El número de cada línea es el de <code>321-new-villa.cpp</code>. Un estado se
+        escribe (habitación, {luces prendidas}) y la máscara va en decimal y en binario, con la luz 1 a la
+        derecha. Las dos líneas <code>for</code> cuentan una vez por cada valor de <code>i</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>3. El mapa <code>dist</code></h2>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Estado</th><th>Máscara</th><th><code>dist</code></th><th><code>steps</code> que trae</th></tr></thead>
+        <tbody id="cuerpo-tabla"></tbody>
+      </table>
+    </div>
+    <div class="nota">Cada estado se guarda con la lista completa de pasos que lo alcanzó; no hay vector de predecesores. Las filas están en el orden en que entran a <code>dist</code>, que es el orden en que salen de la cola.</div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Los pasos de la solución</h2>
+    <div id="secuencia" class="veredicto"></div>
+    <div class="nota">Al sacar la meta de la cola, <code>res</code> la guarda y el ciclo termina. La respuesta se imprime recorriendo <code>res.steps</code> de principio a fin: no hay que reconstruir nada hacia atrás.</div>
+  </div>
+
+  <div class="carta">
+    <h2>5. Para llevarse</h2>
+    <p style="margin-top:0">En la villa sin solución, diga cuál es el último estado
+    que se descubre y por qué no se puede llegar a la meta. Después compare los estados en
+    <code>dist</code> de las dos villas en fila: una se detiene antes de explorar todo lo
+    alcanzable y la otra no. Por último, diga qué cambiaría en los resultados si el ciclo de
+    puertas se escribiera después del de interruptores.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="lib.js"></script>
+<script src="estados.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

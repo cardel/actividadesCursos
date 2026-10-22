@@ -1,0 +1,24 @@
+/* Piezas visuales propias de los ejercicios de grafos de estado. */
+.villa-dibujo { text-align: center; margin: 0.4rem 0; }
+.datos-villa { font-size: 0.9rem; }
+.bombillas { display: flex; gap: 0.5rem; margin: 0.6rem 0; flex-wrap: wrap; }
+.bombilla { text-align: center; font-family: ui-monospace, monospace; font-size: 0.8rem; }
+.bombilla i { display: block; width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--gris); background: #fff; margin-bottom: 2px; }
+.bombilla.on i { background: var(--resalte); border-color: var(--ambar); }
+code.exp { background: var(--codigo-fondo); padding: 0.1rem 0.4rem; border-radius: 4px; }
+input.corto { width: 6.5rem; padding: 0.3rem 0.5rem; border: 1px solid var(--borde); border-radius: 6px; font-size: 1rem; font-family: ui-monospace, monospace; }
+input.mini { width: 3.5rem; padding: 0.25rem 0.4rem; border: 1px solid var(--borde); border-radius: 6px; font-size: 0.95rem; }
+.fila-tr { display: grid; grid-template-columns: 1.7fr auto 1fr; gap: 0.6rem; align-items: center; padding: 0.4rem 0.2rem; border-bottom: 1px solid var(--borde); }
+.fila-tr .res { display: flex; gap: 0.4rem; align-items: center; font-size: 0.9rem; }
+.fila-tr .fb { grid-column: 1 / -1; font-size: 0.85rem; padding: 0.35rem 0.6rem; border-radius: 6px; display: none; }
+.fila-tr .fb.bien { display: block; background: var(--verde-suave); color: var(--verde); }
+.fila-tr .fb.mal { display: block; background: var(--rojo-suave); color: var(--rojo); }
+.rejilla { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.8rem; }
+.rejilla th, .rejilla td { border: 1px solid var(--borde); padding: 0; }
+.rejilla th { font-weight: 600; padding: 0.15rem 0.3rem; }
+.rejilla td button { width: 100%; min-width: 2.1rem; border: none; border-radius: 0; padding: 0.35rem 0.2rem; background: #fff; font-size: 0.8rem; }
+.rejilla td button.marca { background: var(--azul); color: #fff; }
+.rejilla td button.capa-ya { background: var(--azul-suave); color: var(--azul); cursor: default; }
+.rejilla td button.meta { outline: 2px solid var(--verde); outline-offset: -2px; }
+.capa-ok { margin: 0.3rem 0; font-size: 0.9rem; }
+.capa-ok b { color: var(--azul); }

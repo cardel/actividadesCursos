@@ -49,7 +49,7 @@ tabla no existe para quien busca.
 
 ## Catálogo
 
-Son 337 actividades. El enlace lleva al archivo; para verlas funcionando hay que
+Son 340 actividades. El enlace lleva al archivo; para verlas funcionando hay que
 abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 
 ### Árboles y Grafos — `ayg-puj`
@@ -58,7 +58,6 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |---|---|---|
 | `bellman-ford-moore` | [`bellman`](ayg-puj/bellman-ford-moore/bellman.html) | Bellman-Ford |
 |  | [`errores`](ayg-puj/bellman-ford-moore/errores.html) | Líneas cambiadas |
-|  | [`estados`](ayg-puj/bellman-ford-moore/estados.html) | Grafo de estados |
 |  | [`moore`](ayg-puj/bellman-ford-moore/moore.html) | Moore |
 |  | [`negativo`](ayg-puj/bellman-ford-moore/negativo.html) | Ciclo negativo |
 |  | [`red`](ayg-puj/bellman-ford-moore/red.html) | La red |
@@ -78,6 +77,10 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`red`](ayg-puj/conectividad/red.html) | quince páginas y sus enlaces |
 |  | [`tiempos`](ayg-puj/conectividad/tiempos.html) | los dos relojes y el orden por finalización |
 |  | [`transpuesto`](ayg-puj/conectividad/transpuesto.html) | el grafo al revés y el grafo de componentes |
+| `grafos-de-estado` | [`capas`](ayg-puj/grafos-de-estado/capas.html) | los estados de cada capa del grafo |
+|  | [`estados`](ayg-puj/grafos-de-estado/estados.html) | la búsqueda en amplitud de The New Villa con máscaras |
+|  | [`mascaras`](ayg-puj/grafos-de-estado/mascaras.html) | operaciones con bits sobre las luces |
+|  | [`transiciones`](ayg-puj/grafos-de-estado/transiciones.html) | qué transiciones son válidas y a qué estado llevan |
 | `grafos-implicitos` | [`bosque`](ayg-puj/grafos-implicitos/bosque.html) | el peligro se calcula, no se lee |
 |  | [`componentes`](ayg-puj/grafos-implicitos/componentes.html) | un recorrido por cada grupo |
 |  | [`errores`](ayg-puj/grafos-implicitos/errores.html) | tres fallas sobre cuadrículas |

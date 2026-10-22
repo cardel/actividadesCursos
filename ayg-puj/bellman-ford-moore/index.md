@@ -1,9 +1,9 @@
 # Ejercicios · AyG PUJ · Bellman ford moore
 
-Seis ejercicios para el navegador, organizados por los temas de la sesión y en
+Cinco ejercicios para el navegador, organizados por los temas de la sesión y en
 el mismo orden. Los cuatro primeros corren el código C++ de la clase, línea
-por línea; el de grafos de estado sigue el BFS de *The New Villa*. Ninguno usa
-los grafos de las diapositivas ni los de sus ejercicios propuestos.
+por línea. Ninguno usa los grafos de las diapositivas ni los de sus ejercicios
+propuestos.
 
 ## Versión 1: una matriz de n filas
 
@@ -31,9 +31,7 @@ Dos redes de trece y catorce nodos corridas con `bfm5.cpp`: una casa de cambio c
 
 ## Grafos de estado
 
-### [Grafo de estados](estados.html){ target=_blank rel=noopener }
-
-El grafo de estados de *The New Villa* sobre tres villas pequeñas distintas a la del enunciado. Se predice cuántos estados distintos descubre la búsqueda y luego se sigue `new_villa.py`: los sucesores de cada estado (moverse, prender o apagar), la cola, la tabla de distancias y predecesores y la reconstrucción de la secuencia de pasos. Una de las villas no tiene solución.
+El grafo de estados de *The New Villa* tiene su propia página, con las máscaras de bits, las transiciones, las capas y la búsqueda en amplitud: [Grafos de estado](../grafos-de-estado/index.md).
 
 ## Errores comunes
 
