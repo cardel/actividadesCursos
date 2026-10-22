@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Algoritmo de Dijkstra</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Algoritmo de Dijkstra</h1>
+  <p class="intro">Se ejecuta <code>dijkstra</code>, la versión de uno a todos, línea por línea. La cola de
+  prioridad guarda parejas <code>(distancia, vértice)</code> y se muestra ordenada, de modo que la primera
+  pareja es la que sale. Una pareja cuya distancia ya no coincide con <code>dist</code> es vieja y se
+  descarta. El número que acompaña a cada línea es el de su archivo, y el contador dice cuántas veces se
+  ejecuta.</p>
+
+  <div class="carta">
+    <h2>1. El grafo y la predicción</h2>
+    <div class="presets" id="presets-grafo">
+      <span class="nota" style="margin-top:0">Grafo:</span>
+      <button data-preset="0" class="primario">Seis vértices, un ciclo hacia la fuente</button>
+      <button data-preset="1">Siete vértices, aristas en los dos sentidos</button>
+      <button data-preset="2">Siete vértices, un empate y un vértice aislado</button>
+    </div>
+    <p class="nota" id="ver-texto"></p>
+    <div class="dibujo" id="panel-grafo"></div>
+    <div class="leyenda">Sobre cada vértice, <i>dist</i>/<i>pred</i>, con ∞ para <code>INF</code> y un guion para <code>-1</code>.
+    Verde claro: vértices ya extraídos con su distancia final. Ámbar: el vértice <code>u</code> que se procesa.
+    La arista azul es la que se examina, verde si mejora un <i>dist</i>, y las moradas forman el árbol de <code>pred</code>.</div>
+    <div class="prediccion">
+      <span id="pregunta-pred">Escriba el orden en que los vértices se procesan, separados por espacios (las parejas viejas no cuentan):</span>
+      <input type="text" id="prediccion" class="texto" placeholder="por ejemplo: 1 0 3">
+      <button id="btn-comprobar" class="primario">Comprobar</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Ejecute el código</h2>
+    <div class="panel-doble">
+      <div class="codigo" id="panel-codigo"></div>
+      <div class="estado">
+        <div class="chips" id="chips"></div>
+        <div class="progreso">Paso <span id="ver-paso">0</span> de <span id="ver-total">0</span></div>
+        <div class="botones">
+          <button id="btn-paso" class="primario">Un paso</button>
+          <button id="btn-auto">Auto</button>
+          <button id="btn-fin">Al final</button>
+          <button id="btn-reiniciar">Reiniciar</button>
+        </div>
+        <div class="tira"><span class="rot">Cola <code>pqueue</code></span><span id="ver-cola"></span></div>
+        <div class="tira"><span class="rot">Procesados</span><span id="ver-orden"></span></div>
+        <div class="nota">Tachada, una pareja vieja: su distancia ya no es la de <code>dist</code>. Cuando
+        sale de la cola se descarta en la línea 45.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>3. El estado</h2>
+    <div class="envoltura-tabla"><table id="tabla"></table></div>
+    <div class="nota">En ámbar, el vértice que se procesa. En verde, el valor que acaba de bajar.</div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Cuántas parejas entran y cuántas valen</h2>
+    <div id="cuentas"></div>
+  </div>
+
+  <div class="carta">
+    <h2>5. Para llevarse</h2>
+    <p style="margin-top:0">Sin solución aquí. En el primer grafo, cambie el peso de una arista y diga si
+    cambia el orden en que se procesan los vértices. Después diga cuántas parejas habría en la cola si
+    <code>dijkstra</code> metiera todos los vértices al comienzo, como sugiere el comentario de la línea 38,
+    y qué pasaría con las parejas viejas.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="lib.js"></script>
+<script src="dijkstra.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

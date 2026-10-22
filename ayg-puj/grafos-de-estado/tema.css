@@ -22,3 +22,12 @@ input.mini { width: 3.5rem; padding: 0.25rem 0.4rem; border: 1px solid var(--bor
 .rejilla td button.meta { outline: 2px solid var(--verde); outline-offset: -2px; }
 .capa-ok { margin: 0.3rem 0; font-size: 0.9rem; }
 .capa-ok b { color: var(--azul); }
+/* Piezas del ejercicio de Super Mario: cola, tiempos conocidos y salida. */
+.dibujo { text-align: center; margin: 0.4rem 0; }
+.tira { display: flex; gap: 0.35rem; flex-wrap: wrap; align-items: center; margin: 0.3rem 0; font-family: ui-monospace, monospace; font-size: 0.9rem; }
+.tira .rot { font-family: system-ui, sans-serif; color: var(--gris); font-size: 0.85rem; min-width: 6.5rem; }
+.par { border: 1px solid var(--borde); border-radius: 6px; padding: 0.1rem 0.45rem; background: #fff; }
+.par.sale { background: var(--resalte); border-color: var(--ambar); }
+.par.vieja { color: var(--gris); text-decoration: line-through; background: var(--codigo-fondo); }
+.caja-struct { max-height: 11rem; overflow: auto; border: 1px solid var(--borde); border-radius: 8px; padding: 0.3rem 0.5rem; background: var(--codigo-fondo); font-family: ui-monospace, monospace; font-size: 0.82rem; }
+pre.salida { background: var(--codigo-fondo); border: 1px solid var(--borde); border-radius: 8px; padding: 0.4rem 0.7rem; font-size: 0.82rem; min-height: 1.6rem; }

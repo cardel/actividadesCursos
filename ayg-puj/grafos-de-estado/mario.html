@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Super Mario como grafo de estado</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Super Mario como grafo de estado</h1>
+  <p class="intro">Un mapa con dos aldeas (círculos, 1 y 2) y dos castillos (cuadrados, 3 y 4). Mario sale de la
+  aldea 1 y quiere llegar al castillo 4. Tiene una bota que se puede calzar K veces; calzada, tiene carga
+  L, y cada vía recorrida con ella gasta su peso en carga y no consume tiempo. Un estado es
+  <code>(u, l, k)</code>: el lugar, la carga que queda y los usos que faltan. Primero se predicen
+  transiciones, y después se sigue el Dijkstra de <code>10269-super-mario.py</code> sobre los estados.</p>
+
+  <div class="carta">
+    <h2>1. El mapa y las reglas</h2>
+    <div class="dibujo" id="panel-grafo"></div>
+    <p class="nota">Parámetros: <code>a</code> = 2 aldeas, <code>b</code> = 2 castillos, <code>L</code> = 5, <code>K</code> = 1.
+    Vías, con su peso: 1–2 (3), 2–3 (4), 3–4 (2), 1–3 (7), 2–4 (6).</p>
+    <ul>
+      <li><b>Calzar</b> la bota, si <code>l != L</code> y <code>k &gt; 0</code>: de <code>(u, l, k)</code> a <code>(u, L, k − 1)</code>, sin costo.</li>
+      <li><b>Caminar</b> por una vía de peso <code>p</code>: de <code>(u, l, k)</code> a <code>(v, 0, k)</code>, con costo <code>p</code>.</li>
+      <li><b>Correr</b> con la bota por una vía de peso <code>p</code>, si <code>l &gt;= p</code> y <code>u</code> es una aldea o <code>l == L</code>: de <code>(u, l, k)</code> a <code>(v, l − p, k)</code>, sin costo.</li>
+    </ul>
+  </div>
+
+  <div class="carta">
+    <h2>2. Predecir la transición</h2>
+    <p style="margin-top:0">En cada fila se escribe el estado al que se llega y lo que cuesta la transición, o se marca que no se puede.</p>
+    <div id="preguntas"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Predecir el resultado</h2>
+    <div class="prediccion">
+      <span>¿Qué número imprime el programa en este mapa?</span>
+      <input type="number" id="prediccion" step="1" placeholder="tiempo">
+      <button id="btn-comprobar" class="primario">Comprobar</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Ejecute el código</h2>
+    <div class="panel-doble">
+      <div class="codigo" id="panel-codigo"></div>
+      <div class="estado">
+        <div class="chips" id="chips"></div>
+        <div class="progreso">Paso <span id="ver-paso">0</span> de <span id="ver-total">0</span></div>
+        <div class="botones">
+          <button id="btn-paso" class="primario">Un paso</button>
+          <button id="btn-auto">Auto</button>
+          <button id="btn-fin">Al final</button>
+          <button id="btn-reiniciar">Reiniciar</button>
+        </div>
+        <div class="tira"><span class="rot">Cola <code>queue</code></span><span id="ver-cola"></span></div>
+        <div>Tiempos conocidos, <code>vis</code>:</div>
+        <div class="caja-struct" id="ver-vis"></div>
+        <div>Salida:</div>
+        <pre class="salida" id="ver-salida" style="margin:0"></pre>
+        <div class="nota">Las tuplas de la cola son <code>(c, u, l, k)</code>, ordenadas de menor a mayor. Tachada, una tupla vieja: su
+        tiempo ya no es el de <code>vis</code>. Sale de la cola y se descarta en la línea 35.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>5. Para llevarse</h2>
+    <p style="margin-top:0">Sin solución aquí. Con <code>K = 2</code> en el mismo mapa, diga cuánto tarda Mario y en
+    qué lugares calza la bota. Después cuente cuántos estados <code>(u, l, k)</code> podría haber en total para este
+    mapa y compare con los que guarda <code>vis</code> al terminar.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="mario.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

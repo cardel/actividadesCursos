@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dijkstra con pesos negativos</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Dijkstra con pesos negativos</h1>
+  <p class="intro">Seis grafos con alguna arista negativa y ningún ciclo negativo. En cada uno se decide qué
+  hace <code>dijkstraST(G, s, t)</code>, la versión de uno a uno que se detiene cuando <code>t</code> sale de la
+  cola, y en qué vértice se rompe la propiedad en que descansa el algoritmo: que un vértice que sale de la cola
+  ya tiene su distancia mínima. Después se corren <code>dijkstra</code> y Bellman-Ford sobre el mismo grafo
+  y se comparan.</p>
+
+  <div class="carta">
+    <h2>El grafo</h2>
+    <div class="presets" id="presets-grafo"></div>
+    <p class="nota" id="ver-texto"></p>
+    <div class="dibujo" id="panel-grafo"></div>
+    <div class="leyenda">Las aristas negativas van en rojo. La fuente es <b>s</b> y el destino es <b>t</b>.</div>
+  </div>
+
+  <div class="carta">
+    <h2>1. ¿Qué pasa con <code>dijkstraST</code>?</h2>
+    <div id="opciones-1"></div>
+    <div class="botones" style="margin-top:0.6rem"><button id="comprobar-1" class="primario">Comprobar</button></div>
+    <div id="fb-1" class="fb"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. ¿En qué vértice se rompe la propiedad?</h2>
+    <p style="margin-top:0">Es el primer vértice que sale de la cola con una distancia mayor que su distancia mínima,
+    o ninguno si todos salen bien antes de que el algoritmo se detenga.</p>
+    <div id="opciones-2" class="opciones"></div>
+    <div class="botones" style="margin-top:0.6rem"><button id="comprobar-2" class="primario">Comprobar</button></div>
+    <div id="fb-2" class="fb"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Los dos algoritmos lado a lado</h2>
+    <div class="botones"><button id="btn-correr" class="primario">Correr dijkstra y Bellman-Ford</button></div>
+    <div id="lado" style="margin-top:0.6rem"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Para llevarse</h2>
+    <p style="margin-top:0">Sin solución aquí. Diga por qué la versión de uno a todos, que acepta una pareja si
+    <code>dist[u] == du</code> y vuelve a meter un vértice cada vez que mejora, termina con las distancias
+    correctas cuando no hay ciclos negativos, y qué pagaría si el grafo fuera grande. Después diga qué ocurriría
+    con <code>dijkstra</code> si hubiera un ciclo negativo alcanzable desde la fuente.</p>
+  </div>
+</div>
+<script src="../comun/grafo-svg.js"></script>
+<script src="lib.js"></script>
+<script src="negativos.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

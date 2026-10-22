@@ -1,6 +1,6 @@
 # Ejercicios · AyG PUJ · Grafos de estado
 
-Cuatro ejercicios para el navegador, organizados por los temas de la sesión y en el
+Cinco ejercicios para el navegador, organizados por los temas de la sesión y en el
 mismo orden. Los grafos de estado se construyen sobre *The New Villa* (UVa 321), con el
 código C++ con máscaras de bits del titular. Ninguno de los ejercicios usa las
 villas de las diapositivas ni las de sus ejercicios propuestos.
@@ -28,6 +28,12 @@ Tres villas, una con cuatro habitaciones. Se marcan en una rejilla los estados d
 ### [Grafo de estados](estados.html){ target=_blank rel=noopener }
 
 La función `solve` de `321-new-villa.cpp` línea por línea sobre tres villas pequeñas. Antes de ejecutar se predice cuántos estados quedan en `dist` al terminar. Se ven la cola, el estado que sale de ella, el vector de pasos que acompaña a cada estado y lo que imprime el programa. Una de las villas no tiene solución, y en las que sí tienen la búsqueda se detiene al sacar la meta, sin explorar todo.
+
+## Un grafo de estado con Dijkstra
+
+### [Super Mario como grafo de estado](mario.html){ target=_blank rel=noopener }
+
+Un mapa de dos aldeas y dos castillos con una bota que se calza una vez. Un estado es el lugar, la carga que queda en la bota y los usos que faltan. Seis transiciones para predecir, con el estado siguiente y su costo, y una que no se puede por dos razones a la vez. Después se predice lo que imprime `10269-super-mario.py` y se sigue su Dijkstra línea por línea, con la cola de tuplas `(c, u, l, k)`, las tuplas viejas y el diccionario de tiempos conocidos.
 
 ## Para resolver en papel
 

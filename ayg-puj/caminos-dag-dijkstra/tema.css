@@ -1,0 +1,22 @@
+/* Piezas visuales propias de los ejercicios de caminos mas cortos en un DAG y con Dijkstra. */
+.dibujo { text-align: center; margin: 0.4rem 0; }
+.leyenda { font-size: 0.85rem; color: var(--gris); text-align: center; }
+.tira { display: flex; gap: 0.35rem; flex-wrap: wrap; align-items: center; margin: 0.3rem 0; font-family: ui-monospace, monospace; font-size: 0.9rem; }
+.tira .rot { font-family: system-ui, sans-serif; color: var(--gris); font-size: 0.85rem; min-width: 6.5rem; }
+.par { border: 1px solid var(--borde); border-radius: 6px; padding: 0.1rem 0.45rem; background: #fff; }
+.par.sale { background: var(--resalte); border-color: var(--ambar); }
+.par.vieja { color: var(--gris); text-decoration: line-through; background: var(--codigo-fondo); }
+.par.hecho { background: #c8e6c9; border-color: var(--verde); }
+.par.ahora { background: var(--azul-suave); border-color: var(--azul); font-weight: 700; }
+td.mejora { background: #c8e6c9; font-weight: 700; }
+td.fila-u, tr.fila-u td { background: var(--ambar-suave); }
+input.texto { width: 12rem; padding: 0.3rem 0.5rem; border: 1px solid var(--borde); border-radius: 6px; font-size: 1rem; font-family: ui-monospace, monospace; }
+.opcion { display: block; width: 100%; text-align: left; margin: 0.3rem 0; }
+.opcion.elegida { border-color: var(--azul); background: var(--azul-suave); }
+.opcion.bien { border-color: var(--verde); background: var(--verde-suave); }
+.opcion.mal { border-color: var(--rojo); background: var(--rojo-suave); }
+.fb { margin-top: 0.4rem; font-size: 0.9rem; padding: 0.4rem 0.7rem; border-radius: 6px; display: none; }
+.fb.bien { display: block; background: var(--verde-suave); color: var(--verde); }
+.fb.mal { display: block; background: var(--rojo-suave); color: var(--rojo); }
+.caja-struct { max-height: 11rem; overflow: auto; border: 1px solid var(--borde); border-radius: 8px; padding: 0.3rem 0.5rem; background: var(--codigo-fondo); font-family: ui-monospace, monospace; font-size: 0.82rem; }
+.pregunta { margin: 0.3rem 0 0.2rem; font-weight: 600; }

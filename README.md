@@ -49,7 +49,7 @@ tabla no existe para quien busca.
 
 ## Catálogo
 
-Son 340 actividades. El enlace lleva al archivo; para verlas funcionando hay que
+Son 345 actividades. El enlace lleva al archivo; para verlas funcionando hay que
 abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 
 ### Árboles y Grafos — `ayg-puj`
@@ -64,6 +64,10 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 | `busqueda-binaria` | [`biseccion`](ayg-puj/busqueda-binaria/biseccion.html) | el intervalo que encierra la respuesta |
 |  | [`buscar`](ayg-puj/busqueda-binaria/buscar.html) | la ventana que se encoge |
 |  | [`resolver`](ayg-puj/busqueda-binaria/resolver.html) | resolver un problema con bisección, paso a paso |
+| `caminos-dag-dijkstra` | [`cual`](ayg-puj/caminos-dag-dijkstra/cual.html) | el algoritmo de caminos más cortos para cada escenario |
+|  | [`dag`](ayg-puj/caminos-dag-dijkstra/dag.html) | topoSort y una pasada en orden topológico |
+|  | [`dijkstra`](ayg-puj/caminos-dag-dijkstra/dijkstra.html) | Dijkstra con la cola de prioridad a la vista |
+|  | [`negativos`](ayg-puj/caminos-dag-dijkstra/negativos.html) | dónde falla Dijkstra con pesos negativos |
 | `caminos-minimos-generalidades` | [`amplitud`](ayg-puj/caminos-minimos-generalidades/amplitud.html) | Amplitud |
 |  | [`distancias`](ayg-puj/caminos-minimos-generalidades/distancias.html) | Distancias |
 |  | [`karistas`](ayg-puj/caminos-minimos-generalidades/karistas.html) | A lo sumo k aristas |
@@ -79,6 +83,7 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`transpuesto`](ayg-puj/conectividad/transpuesto.html) | el grafo al revés y el grafo de componentes |
 | `grafos-de-estado` | [`capas`](ayg-puj/grafos-de-estado/capas.html) | los estados de cada capa del grafo |
 |  | [`estados`](ayg-puj/grafos-de-estado/estados.html) | la búsqueda en amplitud de The New Villa con máscaras |
+|  | [`mario`](ayg-puj/grafos-de-estado/mario.html) | Super Mario con Dijkstra sobre los estados |
 |  | [`mascaras`](ayg-puj/grafos-de-estado/mascaras.html) | operaciones con bits sobre las luces |
 |  | [`transiciones`](ayg-puj/grafos-de-estado/transiciones.html) | qué transiciones son válidas y a qué estado llevan |
 | `grafos-implicitos` | [`bosque`](ayg-puj/grafos-implicitos/bosque.html) | el peligro se calcula, no se lee |
