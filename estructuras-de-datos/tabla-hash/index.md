@@ -23,6 +23,11 @@ chocan y lo que pasa con una tabla de 1000 casillas.
 La suma de los códigos y el polinomio en base 31 sobre `mar` y `ram`, paso a
 paso.
 
+### [multiplicacion](multiplicacion.html){ target=_blank rel=noopener }
+
+El método de la multiplicación con A = 0,7071 paso a paso, los múltiplos de 32
+con m = 32 y lo que hace una constante mala.
+
 ## Encadenamiento
 
 ### [encadenar](encadenar.html){ target=_blank rel=noopener }
