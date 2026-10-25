@@ -146,6 +146,31 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |---|---|---|
 | `abstraccion-tad` | [`caja`](estructuras-de-datos/abstraccion-tad/caja.html) | abstracción de datos |
 |  | [`contrato`](estructuras-de-datos/abstraccion-tad/contrato.html) | precondiciones y this |
+| `arbol-binario` | [`contener`](estructuras-de-datos/arbol-binario/contener.html) | datos que se contienen: un organigrama en una lista |
+|  | [`terminologia`](estructuras-de-datos/arbol-binario/terminologia.html) | vocabulario del árbol con raíz; primer hijo y hermano siguiente |
+|  | [`vacios`](estructuras-de-datos/arbol-binario/vacios.html) | nodos y vacíos de un árbol binario, crearNodo |
+| `arbol-binario-busqueda` | [`arreglo`](estructuras-de-datos/arbol-binario-busqueda/arreglo.html) | la búsqueda binaria ya dibuja un árbol |
+|  | [`borrar`](estructuras-de-datos/arbol-binario-busqueda/borrar.html) | borrar en sus tres casos |
+|  | [`buscar`](estructuras-de-datos/arbol-binario-busqueda/buscar.html) | buscar, mínimo y máximo; recursiva e iterativa |
+|  | [`esabb`](estructuras-de-datos/arbol-binario-busqueda/esabb.html) | decidir si un árbol es ABB |
+|  | [`forma`](estructuras-de-datos/arbol-binario-busqueda/forma.html) | la forma depende del orden de inserción |
+|  | [`insertar`](estructuras-de-datos/arbol-binario-busqueda/insertar.html) | insertar una secuencia |
+|  | [`preorden`](estructuras-de-datos/arbol-binario-busqueda/preorden.html) | del preorden al posorden, para el juez |
+|  | [`rango`](estructuras-de-datos/arbol-binario-busqueda/rango.html) | esABB con el rango permitido |
+|  | [`recorte`](estructuras-de-datos/arbol-binario-busqueda/recorte.html) | recorridos que se recortan por rango |
+|  | [`reenganche`](estructuras-de-datos/arbol-binario-busqueda/reenganche.html) | cómo insertar reengancha el árbol |
+|  | [`situaciones`](estructuras-de-datos/arbol-binario-busqueda/situaciones.html) | lo que cuesta cada operación según la forma |
+| `arbol-binario-busqueda` | [`arreglo`](estructuras-de-datos/arbol-binario-busqueda/arreglo.html) | la búsqueda binaria de un arreglo ordenado y el árbol de sus comparaciones |
+|   | [`borrar`](estructuras-de-datos/arbol-binario-busqueda/borrar.html) | una hoja, un nodo con un hijo y dos con dos hijos; el olvido de `raiz =` |
+|   | [`buscar`](estructuras-de-datos/arbol-binario-busqueda/buscar.html) | comparaciones, marcos de la recursiva y vueltas de `buscarIterativa` |
+|   | [`esabb`](estructuras-de-datos/arbol-binario-busqueda/esabb.html) | cuatro árboles para decidir si son ABB y el inorden que delata al que falla |
+|   | [`forma`](estructuras-de-datos/arbol-binario-busqueda/forma.html) | la altura según el orden de llegada y las cotas de h |
+|   | [`insertar`](estructuras-de-datos/arbol-binario-busqueda/insertar.html) | el preorden y la altura que deja cada orden de inserción |
+|   | [`preorden`](estructuras-de-datos/arbol-binario-busqueda/preorden.html) | del preorden al posorden, con el sucesor frente al predecesor |
+|   | [`rango`](estructuras-de-datos/arbol-binario-busqueda/rango.html) | `esABBHijos` frente a `esABB` y el rango que hereda cada nodo |
+|   | [`recorte`](estructuras-de-datos/arbol-binario-busqueda/recorte.html) | `contarRango` y `kEsimo`, y los subárboles que se saltan |
+|   | [`reenganche`](estructuras-de-datos/arbol-binario-busqueda/reenganche.html) | qué asignación de `insertar` cambia de verdad un puntero |
+|   | [`situaciones`](estructuras-de-datos/arbol-binario-busqueda/situaciones.html) | qué cobra el ABB en cada caso y cuándo le gana un arreglo ordenado |
 | `ciclos-dependientes-sumatorias` | [`contar_incluida`](estructuras-de-datos/ciclos-dependientes-sumatorias/contar_incluida.html) | contador de pasos |
 |  | [`feynman`](estructuras-de-datos/ciclos-dependientes-sumatorias/feynman.html) | cuántos cuadrados caben y cuántas vueltas da el triple ciclo |
 |  | [`potencias`](estructuras-de-datos/ciclos-dependientes-sumatorias/potencias.html) | contador de pasos |
@@ -217,6 +242,15 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`rowmajor`](estructuras-de-datos/punteros-arreglos/rowmajor.html) | la tabla en una sola calle |
 | `recorridos-arreglos` | [`maximo-acumulado`](estructuras-de-datos/recorridos-arreglos/maximo-acumulado.html) | la mayor diferencia en un solo recorrido, UVa 11078 |
 |  | [`mejor-tramo`](estructuras-de-datos/recorridos-arreglos/mejor-tramo.html) | el mejor tramo: sigue o se reinicia, UVa 507 |
+| `recorridos-arbol` | [`columnas`](estructuras-de-datos/recorridos-arbol/columnas.html) | un árbol en preorden con sus vacíos, UVa 699 |
+|  | [`expresion`](estructuras-de-datos/recorridos-arbol/expresion.html) | el árbol de una expresión: prefija, postfija y evaluar |
+|  | [`liberar`](estructuras-de-datos/recorridos-arbol/liberar.html) | el orden de los delete y las versiones que borran antes |
+|  | [`pila`](estructuras-de-datos/recorridos-arbol/pila.html) | preordenPila, inordenPila y posordenPila vuelta por vuelta |
+|  | [`predecir`](estructuras-de-datos/recorridos-arbol/predecir.html) | preorden, inorden y posorden |
+|  | [`reconstruir`](estructuras-de-datos/recorridos-arbol/reconstruir.html) | reconstruir un árbol desde preorden e inorden |
+| `recursion-arboles` | [`casobase`](estructuras-de-datos/recursion-arboles/casobase.html) | el caso base: el producto de un árbol en cuatro versiones |
+|  | [`costos`](estructuras-de-datos/recursion-arboles/costos.html) | llamadas, altura y marcos; la pila de 1 MB |
+|  | [`llamadas`](estructuras-de-datos/recursion-arboles/llamadas.html) | la pila de llamadas de una función recursiva sobre un árbol |
 | `stl-contenedores` | [`algoritmos`](estructuras-de-datos/stl-contenedores/algoritmos.html) | la STL de C++ |
 |  | [`cadena`](estructuras-de-datos/stl-contenedores/cadena.html) | la STL de C++ |
 |  | [`contenedores`](estructuras-de-datos/stl-contenedores/contenedores.html) | la STL de C++ |
@@ -242,19 +276,22 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 | Tema | Actividad | Qué pide |
 |---|---|---|
 | `asignacion-y-paso-por-referencia` | [`alias`](flp/asignacion-y-paso-por-referencia/alias.html) | Alias con paso por referencia |
-|  | [`ambiente`](flp/asignacion-y-paso-por-referencia/ambiente.html) | El ambiente con vectores |
-|  | [`blancos`](flp/asignacion-y-paso-por-referencia/blancos.html) | Blancos directos e indirectos |
-|  | [`cierre`](flp/asignacion-y-paso-por-referencia/cierre.html) | Escribir el evaluador y extender el lenguaje |
+|  | [`almacen`](flp/asignacion-y-paso-por-referencia/almacen.html) | El almacén |
+|  | [`almacen-codigo`](flp/asignacion-y-paso-por-referencia/almacen-codigo.html) | El almacén en código |
+|  | [`ambiente`](flp/asignacion-y-paso-por-referencia/ambiente.html) | El ambiente que liga nombres a referencias |
+|  | [`cierre`](flp/asignacion-y-paso-por-referencia/cierre.html) | Cierre: un intérprete con almacén |
 |  | [`compartir`](flp/asignacion-y-paso-por-referencia/compartir.html) | Clausuras que comparten estado |
-|  | [`dibujar`](flp/asignacion-y-paso-por-referencia/dibujar.html) | Dibujar la cadena con celdas que cambian |
+|  | [`dibujar`](flp/asignacion-y-paso-por-referencia/dibujar.html) | Dibujar la cadena con celdas |
+|  | [`dibujar-explicitas`](flp/asignacion-y-paso-por-referencia/dibujar-explicitas.html) | Dibujar la cadena con referencias explícitas |
 |  | [`dibujar-referencia`](flp/asignacion-y-paso-por-referencia/dibujar-referencia.html) | Dibujar la cadena con paso por referencia |
 |  | [`efecto`](flp/asignacion-y-paso-por-referencia/efecto.html) | Valor y efecto |
-|  | [`eval-rand`](flp/asignacion-y-paso-por-referencia/eval-rand.html) | eval-rand y el llamado por referencia |
+|  | [`explicitas`](flp/asignacion-y-paso-por-referencia/explicitas.html) | Referencias explícitas |
 |  | [`gramatica`](flp/asignacion-y-paso-por-referencia/gramatica.html) | Las producciones de set y begin |
+|  | [`letrec-celdas`](flp/asignacion-y-paso-por-referencia/letrec-celdas.html) | letrec con referencias |
+|  | [`operando`](flp/asignacion-y-paso-por-referencia/operando.html) | El paso por referencia en código |
 |  | [`orden`](flp/asignacion-y-paso-por-referencia/orden.html) | El orden de evaluación |
 |  | [`politicas`](flp/asignacion-y-paso-por-referencia/politicas.html) | Por valor y por referencia |
-|  | [`referencia`](flp/asignacion-y-paso-por-referencia/referencia.html) | El TAD referencia |
-|  | [`reglas`](flp/asignacion-y-paso-por-referencia/reglas.html) | Las cláusulas de set y begin en el evaluador |
+|  | [`reglas`](flp/asignacion-y-paso-por-referencia/reglas.html) | Las cláusulas de la asignación |
 |  | [`trazas`](flp/asignacion-y-paso-por-referencia/trazas.html) | Trazas con asignación |
 | `datatypes-y-arboles-sintaxis-abstracta` | [`arboles`](flp/datatypes-y-arboles-sintaxis-abstracta/arboles.html) | ¿Cuál árbol es? |
 |  | [`cases`](flp/datatypes-y-arboles-sintaxis-abstracta/cases.html) | Recorrer con cases |
