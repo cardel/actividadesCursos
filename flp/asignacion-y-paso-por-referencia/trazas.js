@@ -56,9 +56,11 @@ var PREDICCIONES = [
     programa: "letrec f(n) = *(n, 2) in let g = f in begin set f = proc(n) +(n, 1); +((f 10), (g 10)) end",
     campos: ["valor", "clausuras"],
     pista:
-      "El let copió en la celda de g la clausura que había en la celda de f. " +
-      "El set cambia solo la celda de f: (f 10) da 11 con la clausura nueva, " +
-      "(g 10) da 20 con la vieja."
+      "f está ligado en el marco del letrec, y buscarlo reserva una celda " +
+      "nueva con una clausura recién hecha. El set escribe la clausura nueva " +
+      "en una de esas celdas, que no queda ligada a nada: (f 10) vuelve a " +
+      "buscar f y da 20. (g 10) también da 20. Las cuatro clausuras son las " +
+      "tres búsquedas de f y el proc del set."
   },
   {
     id: "trazas-ambiente-inicial",

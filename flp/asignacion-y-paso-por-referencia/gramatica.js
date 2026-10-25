@@ -19,7 +19,7 @@ var BLOQUES = (function () {
       titulo: "1. De la gramática a los programas",
       definicion: PRODUCCIONES,
       explicacion:
-        "Las dos producciones nuevas (EOPL §4.2). El lado izquierdo de " +
+        "Las dos producciones nuevas (EOPL §4.3). El lado izquierdo de " +
         "<code>set</code> es un identificador y el derecho es cualquier " +
         "expresión; en <code>begin</code>, la primera expresión va fuera de " +
         "la estrella y cada una de las siguientes va precedida de su punto y " +
@@ -128,7 +128,7 @@ var BLOQUES = (function () {
                      "nada: ya se genera",
                      "cambiar identificador por expresion en la producción, y además darle al evaluador una celda para (f 1), que no tiene"],
           correcta: 2,
-          razon: "Con expresion en la producción el árbol se armaría, pero la cláusula set-exp necesita una celda para pasársela a setref!, y la única forma de conseguirla es apply-env-ref con un nombre. (f 1) produce un valor expresado, no una referencia. Con la producción actual, el parser lo rechaza con “looking for identificador, found ... (”." },
+          razon: "Con expresion en la producción el árbol se armaría, pero la cláusula set-exp necesita una referencia para pasársela a setref!, y la única forma de conseguirla es apply-env con un nombre. (f 1) produce un valor expresado, no una referencia. Con la producción actual, el parser lo rechaza con “looking for identificador, found ... (”." },
         { valor: "Un begin con una sola expresión: <code>begin 4 end</code>",
           opciones: ["una producción aparte para un solo elemento",
                      "nada: ya se genera",
@@ -140,7 +140,7 @@ var BLOQUES = (function () {
                      "cambiar identificador por expresion",
                      "nada en la gramática: ya se genera, y lo rechaza el evaluador"],
           correcta: 2,
-          razon: "La gramática no sabe qué nombres están ligados: solo ve un identificador. El programa se parsea y se detiene al evaluar, cuando apply-env-ref llega al ambiente vacío: “No se encuentra la variable: w”." },
+          razon: "La gramática no sabe qué nombres están ligados: solo ve un identificador. El programa se parsea y se detiene al evaluar, cuando apply-env llega al ambiente vacío: “No se encuentra la variable w”." },
         { valor: "Que set devuelva el valor asignado en vez de 1",
           opciones: ["cambiar la cláusula set-exp del evaluador; la producción y la variante quedan igual",
                      "agregar un campo a set-exp",
@@ -162,7 +162,7 @@ var BLOQUES = (function () {
         "Valor denotado  = Ref(Valor expresado)",
       explicacion:
         "Con asignación, un identificador ya no denota un valor sino una " +
-        "referencia a una celda que guarda el valor (EOPL §4.2). Los valores " +
+        "referencia a una celda que guarda el valor (EOPL §4.3). Los valores " +
         "expresados, los que produce una expresión, siguen siendo los mismos. " +
         "Elija la respuesta para cada renglón.",
       items: [
@@ -171,11 +171,11 @@ var BLOQUES = (function () {
                      "el árbol (lit-exp 5)",
                      "una referencia a una celda que guarda 5"],
           correcta: 2,
-          razon: "Una referencia: el let crea un eslabón con el vector #(5), y w queda asociada a la posición 0 de ese vector, (a-ref 0 #(5)). El 5 es lo que hay en la celda." },
+          razon: "Una referencia: el let reserva la celda 6 con newref y liga w a (a-ref 6). El 5 es lo que hay en la celda; las celdas 0 a 5 son las del ambiente inicial." },
         { valor: "En el mismo programa, la expresión <code>w</code> del cuerpo vale",
-          opciones: ["la referencia (a-ref 0 #(5))", "5, un valor expresado", "1"],
+          opciones: ["la referencia (a-ref 6)", "5, un valor expresado", "1"],
           correcta: 1,
-          razon: "Vale 5. La cláusula var-exp llama a apply-env, que es deref aplicado a lo que devuelve apply-env-ref: la referencia se usa por dentro y lo que sale es su contenido." },
+          razon: "Vale 5. La cláusula var-exp es (deref (apply-env amb id)): apply-env devuelve la referencia, que se usa por dentro, y lo que sale es su contenido." },
         { valor: "En " + programa("let y = 1 in let leer = proc() y in begin set y = 7; (leer) end") +
             ", el set y = 7",
           opciones: ["cambia lo que guarda la celda; y sigue denotando la misma referencia",

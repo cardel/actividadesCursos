@@ -4,9 +4,9 @@
    dos resultados y después se abren las dos trazas. */
 var MODOS = [
   { rotulo: "Por valor", opciones: {},
-    titulo: "Por valor, con el interpretador 1 Asignacion" },
+    titulo: "Por valor, con el intérprete 1 Asignacion" },
   { rotulo: "Por referencia", opciones: { referencia: true },
-    titulo: "Por referencia, con el interpretador 2 PasoPorReferencia" }
+    titulo: "Por referencia, con el intérprete 2 PasoPorReferencia" }
 ];
 
 var PREDICCIONES = [
@@ -20,8 +20,8 @@ var PREDICCIONES = [
     programa: "let subir = proc(v) set v = add1(v) in let m = 5 in begin (subir m); (subir m); m end",
     pista:
       "Por valor, v es una celda nueva en cada llamada y m no se entera. Por " +
-      "referencia, la celda de v guarda un indirect-target a la de m, y cada " +
-      "set sigue esa indirección y escribe en m."
+      "referencia, v recibe la referencia de m: las dos ligaduras nombran la " +
+      "misma celda y cada set escribe en ella."
   },
   {
     id: "politicas-no-variable",
@@ -32,9 +32,9 @@ var PREDICCIONES = [
       "que vale lo mismo que <code>m</code>.",
     programa: "let subir = proc(v) set v = add1(v) in let m = 5 in begin (subir +(m, 0)); m end",
     razonIguales:
-      "+(m, 0) no es una variable, así que eval-rand lo evalúa y lo envuelve " +
-      "en un direct-target: v recibe su propia celda, como por valor. Lo que " +
-      "decide es la forma del operando, no lo que vale.",
+      "+(m, 0) no es una variable, así que evaluar-operando lo evalúa y le " +
+      "reserva una celda nueva: v recibe su propia celda, como por valor. Lo " +
+      "que decide es la forma del operando, no lo que vale.",
     pista: "Mire qué forma tiene el operando: ¿es una var-exp?"
   },
   {
@@ -50,17 +50,18 @@ var PREDICCIONES = [
       "segunda parte de ahí: 9 por 8. Por valor, las dos parten de 10."
   },
   {
-    id: "politicas-intercambiar",
-    titulo: "4. Intercambiar dos variables",
+    id: "politicas-rotar",
+    titulo: "4. Rotar tres variables",
     modos: MODOS,
     enunciado:
-      "<code>cambiar</code> intercambia sus dos parámetros con una " +
-      "temporal. Después se resta <code>u</code> menos <code>w</code>.",
-    programa: "let cambiar = proc(p, q) let t = p in begin set p = q; set q = t end in let u = 1 w = 2 in begin (cambiar u w); -(u, w) end",
+      "<code>rotar</code> corre los valores de sus tres parámetros un lugar " +
+      "a la izquierda, con una temporal. Después se arman las cifras de " +
+      "<code>a1</code>, <code>a2</code> y <code>a3</code> en un número.",
+    programa: "let rotar = proc(p, q, r) let t = p in begin set p = q; set q = r; set r = t end in let a1 = 1 a2 = 2 a3 = 3 in begin (rotar a1 a2 a3); +(*(a1, 100), *(a2, 10), a3) end",
     pista:
-      "El let de adentro es por valor en los dos interpretadores: t guarda " +
-      "una copia de p. Lo que cambia es dónde escriben los dos set: en celdas " +
-      "propias de la llamada o en las de u y w."
+      "El let de adentro reserva celda propia en los dos intérpretes: t " +
+      "guarda una copia de p. Lo que cambia es dónde escriben los tres set: " +
+      "en celdas de la llamada o en las de a1, a2 y a3."
   },
   {
     id: "politicas-dos-saltos",
@@ -71,9 +72,9 @@ var PREDICCIONES = [
       "<code>fijar</code>, que sí asigna.",
     programa: "let fijar = proc(v) set v = 0 in let pasar = proc(w) (fijar w) in let m = 8 in begin (pasar m); m end",
     pista:
-      "Por referencia, w guarda un indirect-target a m. Al llamar (fijar w), " +
-      "eval-rand ve que la celda de w ya es indirecta y le pasa a v esa misma " +
-      "referencia, la de m, en vez de crear un indirecto a un indirecto."
+      "Por referencia, w recibe la referencia de m. Al llamar (fijar w), w es " +
+      "una variable, así que evaluar-operando entrega su referencia, que es " +
+      "la de m. v, w y m nombran la misma celda."
   },
   {
     id: "politicas-procedimiento",
@@ -87,14 +88,14 @@ var PREDICCIONES = [
     programa: "let anular = proc(h) set h = 0 in let doble = proc(n) *(n, 2) in begin (anular doble); doble end",
     pista:
       "doble es una variable como cualquier otra, y su celda guarda una " +
-      "clausura. Por referencia, h apunta a esa celda y el set la cambia por " +
-      "un 0."
+      "clausura. Por referencia, h recibe la referencia de esa celda y el set " +
+      "cambia la clausura por un 0."
   }
 ];
 
 var EJEMPLOS = [
   "let subir = proc(v) set v = add1(v) in let m = 5 in begin (subir m); (subir m); m end",
-  "let cambiar = proc(p, q) let t = p in begin set p = q; set q = t end in let u = 1 w = 2 in begin (cambiar u w); -(u, w) end",
+  "let rotar = proc(p, q, r) let t = p in begin set p = q; set q = r; set r = t end in let a1 = 1 a2 = 2 a3 = 3 in begin (rotar a1 a2 a3); +(*(a1, 100), *(a2, 10), a3) end",
   "let fijar = proc(v) set v = 0 in let pasar = proc(w) (fijar w) in let m = 8 in begin (pasar m); m end"
 ];
 

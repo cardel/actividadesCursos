@@ -3,71 +3,59 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Escribir el evaluador y extender el lenguaje</title>
+<title>Cierre: un intérprete con almacén</title>
 <link rel="stylesheet" href="../../comun/estilo.css">
 <link rel="stylesheet" href="../comun/ejercicios.css">
 </head>
 <body>
 <div class="contenedor">
   <a class="volver" href="#">← Volver a los ejercicios</a>
-  <h1>Escribir el evaluador y extender el lenguaje</h1>
-  <p class="intro">Un intérprete pequeño con asignación y paso por valor, con las celdas en vectores como en EOPL §4.2. Cuatro retos: la cláusula de <code>begin</code>, la de <code>set</code>, una forma nueva (<code>incr</code>) con su producción, su variante y su cláusula, y un recorrido del árbol que cuenta los <code>set</code> escritos para compararlos con los que se ejecutan. El ambiente inicial liga <code>x = 4</code>, <code>y = 2</code>, <code>z = 5</code> sobre <code>a = 4</code>, <code>b = 5</code>, <code>c = 6</code>.</p>
+  <h1>Cierre: un intérprete con almacén</h1>
+  <p class="intro">Cuatro retos sobre un intérprete pequeño con almacén, del tamaño justo para ver cada cláusula (EOPL §4.3): <code>var-exp</code> y <code>let-exp</code>, <code>set-exp</code>, <code>begin-exp</code> y una forma nueva, <code>incr x</code>, con su variante y su cláusula. Los programas de las pruebas se escriben como árboles, con los constructores del datatype.</p>
 
   <div class="alerta">
     Esto no es Racket. Es un evaluador pequeño que entiende <code>define</code>,
     <code>lambda</code>, <code>if</code>, <code>cond</code>, <code>let</code>,
-    <code>letrec</code>, <code>begin</code>, <code>and</code>, <code>or</code>,
-    <code>quote</code>, <code>define-datatype</code> y <code>cases</code>, con
-    las primitivas de listas, aritmética y vectores (<code>make-vector</code>,
-    <code>vector-ref</code>, <code>vector-set!</code>,
-    <code>list-&gt;vector</code>). No trae <code>set!</code>, <code>map</code>
-    ni <code>apply</code>: los recorridos se escriben con recursión, y el
-    contador del último reto vive en un vector de una celda. No hay parser:
-    los programas se construyen como árboles, con su texto en el comentario de
-    arriba. Donde aquí dice <code>error</code>, en DrRacket va
-    <code>eopl:error</code>; lo que se entrega se escribe y se corre allá.
+    <code>let*</code>, <code>letrec</code>, <code>begin</code>, <code>set!</code>,
+    <code>define-datatype</code> y <code>cases</code>, con las primitivas de
+    listas y aritmética; no tiene <code>map</code>. Un valor de un datatype se
+    imprime como <code>(a-ref 1)</code> para poder leerlo; Racket lo muestra
+    como <code>#(struct:a-ref 1)</code>. Las pruebas que escriben empiezan con
+    <code>(initialize-store!)</code>, así que cada una arranca con el almacén
+    vacío. Lo que se entrega se escribe y se corre en DrRacket.
   </div>
 
   <div id="retos"></div>
 
   <div class="carta" id="carta-cierre" style="display:none">
-    <h2>Los cuatro, resueltos</h2>
-    <p style="margin-top:0">Lo que queda medido en cada uno:</p>
+    <h2>Resueltos</h2>
     <div class="envoltura-tabla">
       <table>
-        <thead>
-          <tr><th>Reto</th><th>Lo que se midió</th></tr>
-        </thead>
+        <thead><tr><th>Reto</th><th>Lo que se midió</th></tr></thead>
         <tbody>
-          <tr><td><code>begin</code></td><td><code>begin w; set w = 0 end</code> vale 1, el valor del <code>set</code>; dos <code>set</code> seguidos sobre 8 dejan 18</td></tr>
-          <tr><td><code>set</code></td><td><code>+(set w = 2, w)</code> vale 3; <code>+((doblar n), n)</code> con <code>n = 7</code> vale 21 por valor y 28 por referencia</td></tr>
-          <tr><td><code>incr</code></td><td><code>+(incr v, v)</code> con <code>v = 4</code> vale 9; con la producción nueva, <code>let incr = 1 in incr</code> deja de parsearse</td></tr>
-          <tr><td>conteo</td><td>escritos contra ejecutados: 1 y 3 en <code>tres-llamadas</code>, 1 y 0 en <code>nunca-llamado</code>, 2 y 6 en <code>doble-tres</code></td></tr>
+          <tr><td><code>var-exp</code> y <code>let-exp</code></td><td>dos <code>let</code>, dos celdas: <code>(3 4)</code></td></tr>
+          <tr><td><code>set-exp</code></td><td>con dos <code>m</code>, el <code>set</code> escribe en la de adentro y la de afuera sigue en 1</td></tr>
+          <tr><td><code>begin-exp</code></td><td>un <code>begin</code> que termina en <code>set</code> vale 1 y deja su efecto en la celda</td></tr>
+          <tr><td><code>incr</code></td><td>dos <code>incr</code> en una suma dan 1 + 2: el segundo ve lo que escribió el primero</td></tr>
         </tbody>
       </table>
     </div>
-    <div class="nota">Extender el lenguaje con <code>incr</code> tocó tres
-    sitios: la producción de SLLGEN, la variante del datatype y la cláusula
-    del evaluador. El cuarto efecto no se escribió en ninguno: la palabra
-    <code>incr</code> quedó reservada. Y las dos cifras del último reto miden
-    cosas distintas. La primera se lee en el árbol; la segunda depende de
-    cuántas veces corre cada <code>proc</code>, y solo se conoce
-    ejecutando.</div>
+    <div class="nota">Una forma nueva toca la producción, la variante y la cláusula. El almacén no cambia: newref, deref y setref! alcanzan para todo lo imperativo del lenguaje.</div>
   </div>
 
   <div class="carta">
     <h2>Consola</h2>
     <p style="margin-top:0">Para probar cualquier cosa. Las definiciones se
     acumulan entre corridas hasta que se reinicie la sesión.</p>
-    <textarea id="consola-entrada" class="editor" rows="8" spellcheck="false">(define contador (make-vector 1 0))
-(define marcar
-  (lambda ()
-    (begin
-      (vector-set! contador 0 (+ (vector-ref contador 0) 1))
-      (vector-ref contador 0))))
-(marcar)
-(marcar)
-(list (marcar) contador)</textarea>
+    <textarea id="consola-entrada" class="editor" rows="8" spellcheck="false">(define-datatype referencia referencia?
+  (a-ref (pos number?)))
+(define el-almacen '())
+(define newref
+  (lambda (val)
+    (let ((k (length el-almacen)))
+      (begin (set! el-almacen (append el-almacen (list val)))
+             (a-ref k)))))
+(list (newref 4) (newref 2) el-almacen)</textarea>
     <div class="botones">
       <button id="btn-consola" class="primario">Ejecutar</button>
       <button id="btn-limpiar">Reiniciar sesión</button>

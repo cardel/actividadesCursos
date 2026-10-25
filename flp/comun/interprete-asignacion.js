@@ -1,43 +1,58 @@
-/* El interpretador con asignación, escrito en JavaScript para poder mostrar
-   lo que hace. Calca a `Corte 2/1 Asignacion`: su sintaxis, su semántica y
-   sus verificaciones.
+/* Los intérpretes con almacén, escritos en JavaScript para poder mostrar lo
+   que hacen. Calcan a los tres de `Corte 2`, en la versión de la tercera
+   edición de EOPL: su sintaxis, su semántica, sus verificaciones y el orden
+   en que reservan las celdas, de modo que la celda 7 de aquí es la celda 7
+   de (almacen->lista) en Racket.
 
+   Con { modo: "implicitas" }, el modo por omisión, calca a `1 Asignacion`
+   (EOPL §4.3):
       <expresion> ::= <numero> | <identificador> | true | false
                   ::= if <exp> then <exp> else <exp>
                   ::= let {<id> = <exp>}* in <exp>
                   ::= proc ( {<id>}*(,) ) <exp>
                   ::= ( <exp> {<exp>}* )
                   ::= letrec {<id> ( {<id>}*(,) ) = <exp>}* in <exp>
-                  ::= begin <exp> {; <exp>}* end
                   ::= set <id> = <exp>
+                  ::= begin <exp> {; <exp>}* end
                   ::= <primitiva> ( {<exp>}*(,) )
-      <primitiva> ::= + | - | * | / | add1 | sub1 | > | >= | < | <= | ==
+   El ambiente liga cada nombre a una referencia del almacén. let y la
+   aplicación reservan una celda por variable; buscar un nombre de letrec
+   reserva una celda con la clausura recién hecha. El ambiente inicial,
+   [x=4, y=2, z=5] sobre [a=4, b=5, c=6], ocupa las celdas 0 a 5.
 
-   El ambiente asocia cada nombre con una celda de un vector, y una
-   referencia es la pareja (posición, vector). `set` escribe en la celda y
-   devuelve 1. El ambiente inicial es [x=4, y=2, z=5] sobre [a=4, b=5, c=6].
+   Con { modo: "referencia" } calca a `2 PasoPorReferencia` (EOPL §4.5.1): un
+   operando que es una variable entrega su propia referencia al parámetro.
 
-   Con { referencia: true } calca a `Corte 2/2 PasoPorReferencia`: las
-   celdas guardan blancos —(direct-target v) o (indirect-target r)—, un
-   operando que es una variable se pasa como indirect-target a su celda, la
-   gramática admite listas literales [e, …] y el ambiente inicial es
-   [x=1, y=2, z=3] sobre [a=4, b=5, c=6].
+   Con { modo: "explicitas" } calca a `0 ReferenciasExplicitas` (EOPL §4.2):
+   no hay set; hay newref(e), deref(e) y setref(e1, e2), el ambiente liga
+   nombres a valores y una referencia es uno de esos valores.
 
-   Con { copia: true } la clausura se queda con una copia de las celdas del
-   ambiente en el momento de crearse. No es la regla de ninguno de los dos
-   interpretadores: está para mostrar qué pasaría si el ambiente guardara
-   valores en lugar de referencias. */
+   Con { copia: true }, en el modo de asignación, la clausura se lleva celdas
+   nuevas con una copia de lo que veía al crearse. No es la regla de ningún
+   intérprete: está para mostrar qué pasaría si el ambiente guardara valores
+   en lugar de referencias. */
 var InterpreteAsignacion = (function () {
   "use strict";
 
   var PRIMITIVAS = ["+", "-", "*", "/", "add1", "sub1", ">=", "<=", "==", ">", "<"];
-  var PALABRAS = ["if", "then", "else", "let", "letrec", "in", "proc", "true", "false",
-                  "begin", "end", "set"];
+  var COMUNES = ["if", "then", "else", "let", "letrec", "in", "proc", "true", "false",
+                 "begin", "end"];
   var MAX_LLAMADAS = 20000;
+
+  function modoDe(opciones) {
+    opciones = opciones || {};
+    if (opciones.modo) { return opciones.modo; }
+    if (opciones.referencia) { return "referencia"; }
+    return "implicitas";
+  }
+  function palabras(modo) {
+    return modo === "explicitas" ? COMUNES.concat(["newref", "deref", "setref"])
+                                 : COMUNES.concat(["set"]);
+  }
 
   /* --- Scanner ------------------------------------------------------- */
   function tokenizar(texto, opciones) {
-    var conListas = !!(opciones && opciones.referencia);
+    var PALABRAS = palabras(modoDe(opciones));
     var tokens = [], i = 0;
     function letra(c) { return /[a-zA-Z]/.test(c); }
     function digito(c) { return /[0-9]/.test(c); }
@@ -74,16 +89,15 @@ var InterpreteAsignacion = (function () {
         return !letra(p[0]) && texto.slice(i, i + p.length) === p;
       })[0];
       if (prim) { tokens.push({ clase: "primitiva", lexema: prim }); i += prim.length; continue; }
-      if ("(),=;".indexOf(c) !== -1 || (conListas && "[]".indexOf(c) !== -1)) {
-        tokens.push({ clase: "signo", lexema: c }); i++; continue;
-      }
+      if ("(),=;".indexOf(c) !== -1) { tokens.push({ clase: "signo", lexema: c }); i++; continue; }
       throw new Error("El scanner no reconoce el carácter " + c + ".");
     }
     return tokens;
   }
 
   /* --- Parser --------------------------------------------------------- */
-  function parsear(tokens) {
+  function parsear(tokens, opciones) {
+    var explicitas = modoDe(opciones) === "explicitas";
     var pos = 0;
     function mirar() { return tokens[pos]; }
     function fallar(que) {
@@ -170,15 +184,27 @@ var InterpreteAsignacion = (function () {
         comer("end");
         return { v: "begin-exp", campos: [primera, resto] };
       }
-      if (t.lexema === "set") {
+      if (!explicitas && t.lexema === "set") {
         pos++;
         var id = comerIdentificador();
         comer("=");
         return { v: "set-exp", campos: [id, expresion()] };
       }
-      if (t.lexema === "[") {
+      if (explicitas && (t.lexema === "newref" || t.lexema === "deref")) {
         pos++;
-        return { v: "list-exp", campos: [separadas("]", expresion)] };
+        comer("(");
+        var e = expresion();
+        comer(")");
+        return { v: t.lexema + "-exp", campos: [e] };
+      }
+      if (explicitas && t.lexema === "setref") {
+        pos++;
+        comer("(");
+        var e1 = expresion();
+        comer(",");
+        var e2 = expresion();
+        comer(")");
+        return { v: "setref-exp", campos: [e1, e2] };
       }
       if (t.clase === "primitiva") {
         pos++;
@@ -224,105 +250,122 @@ var InterpreteAsignacion = (function () {
         (n.campos[1].length ? " " + n.campos[1].map(texto).join(" ") : "") + ")";
       case "begin-exp": return "begin " + [n.campos[0]].concat(n.campos[1]).map(texto).join("; ") + " end";
       case "set-exp": return "set " + n.campos[0] + " = " + texto(n.campos[1]);
-      case "list-exp": return "[" + n.campos[0].map(texto).join(", ") + "]";
+      case "newref-exp": return "newref(" + texto(n.campos[0]) + ")";
+      case "deref-exp": return "deref(" + texto(n.campos[0]) + ")";
+      case "setref-exp": return "setref(" + texto(n.campos[0]) + ", " + texto(n.campos[1]) + ")";
     }
     return "?";
   }
+
+  function lista(xs) { return "(" + xs.join(" ") + ")"; }
 
   function escribir(v) {
     if (v === true) { return "#t"; }
     if (v === false) { return "#f"; }
     if (v && v.clausura) {
-      return "(closure (" + v.ids.join(", ") + ") " + texto(v.cuerpo) + " " + v.env.nombre + ")";
+      return "(closure (" + v.ids.join(" ") + ") " + texto(v.cuerpo) + " " + v.env.nombre + ")";
     }
-    if (v && v.directo !== undefined) { return "(direct-target " + escribir(v.directo) + ")"; }
-    if (v && v.indirecto) {
-      return "(indirect-target " + v.indirecto.env.ligaduras[v.indirecto.pos][0] +
-        " de " + v.indirecto.env.nombre + ")";
-    }
-    if (Array.isArray(v)) { return "(" + v.map(escribir).join(" ") + ")"; }
+    if (v && v.ref !== undefined) { return "(a-ref " + v.ref + ")"; }
     return String(v);
-  }
-
-  function esExpval(v) {
-    return typeof v === "number" || typeof v === "boolean" || !!(v && v.clausura);
   }
 
   /* --- Evaluador ------------------------------------------------------ */
   function evaluar(arbol, opciones) {
     opciones = opciones || {};
-    var porReferencia = !!opciones.referencia;
-    var copia = !!opciones.copia;
+    var modo = modoDe(opciones);
+    var explicitas = modo === "explicitas";
+    var porReferencia = modo === "referencia";
+    var copia = !!opciones.copia && !explicitas;
     var traza = [], creados = 0, clausuras = [], masProfundo = null, ultimaLlamada = null;
     var escrituras = [], marcos = [];
+    var almacen = [];
     var cuenta = { valueOf: 0, applyProc: 0, variables: 0, ambientes: 0, clausuras: 0,
-                   asignaciones: 0, celdas: 0, indirectos: 0 };
+                   asignaciones: 0, celdas: 0, compartidas: 0 };
 
     function hondura(env) { var n = 0; while (env) { n++; env = env.viejo; } return n; }
 
-    /* El blanco de una celda, en el interpretador por referencia. */
-    function directo(v) {
-      if (!esExpval(v)) {
-        throw new Error("direct-target: el valor " + escribir(v) +
-                        " no es un valor expresado (número, booleano o procedimiento).");
+    /* --- El almacén --- */
+    function newref(v, porque) {
+      almacen.push(v);
+      var r = { ref: almacen.length - 1 };
+      if (porque !== "inicial") {
+        cuenta.celdas++;
+        traza.push({ reserva: true, celda: r.ref, ambiente: "",
+                     expresion: "newref: se reserva la celda " + r.ref + " con " + escribir(v) +
+                       (porque ? " (" + porque + ")" : "") });
       }
-      return { directo: v };
+      return r;
     }
-
-    /* apply-env-ref: la referencia es la pareja (marco, posición). */
-    function referenciaDe(env, id) {
-      var e = env;
-      while (e) {
-        for (var i = 0; i < e.ligaduras.length; i++) {
-          if (e.ligaduras[i][0] === id) { return { env: e, pos: i }; }
-        }
-        e = e.viejo;
+    function deref(r, quien) {
+      if (!(r && r.ref !== undefined)) {
+        throw new Error((quien || "deref") + ": Se esperaba una referencia y se obtuvo: " + escribir(r));
       }
-      throw new Error("apply-env-ref: No se encuentra la variable: " + id);
-    }
-    function celda(ref) { return ref.env.ligaduras[ref.pos][1]; }
-    function nombreCelda(ref) { return ref.env.ligaduras[ref.pos][0] + " de " + ref.env.nombre; }
-
-    function deref(ref) {
-      var c = celda(ref);
-      if (!porReferencia) { return c; }
-      if (c.directo !== undefined) { return c.directo; }
-      var c2 = celda(c.indirecto);
-      if (c2.directo !== undefined) { return c2.directo; }
-      throw new Error("deref: Invariante roto: indirect-target apunta a otro indirect-target.");
-    }
-
-    function setref(ref, val, que) {
-      var destino = ref;
-      if (porReferencia) {
-        var c = celda(ref);
-        if (c.indirecto) { destino = c.indirecto; }
-        val = directo(val);
+      if (r.ref >= almacen.length) {
+        throw new Error("deref: La referencia " + r.ref + " no apunta a ninguna celda del almacén");
       }
-      var antes = celda(destino);
-      destino.env.ligaduras[destino.pos][1] = val;
-      var fila = { escritura: true, ambiente: destino.env.nombre, env: destino.env,
-                   expresion: que + ": la celda de " + nombreCelda(destino) + " pasa de " +
-                     escribir(antes) + " a " + escribir(val) +
-                     (destino !== ref ? " (" + nombreCelda(ref) +
-                       " guarda un indirect-target y la escritura sigue hasta allá)" : "") };
+      return almacen[r.ref];
+    }
+    function setref(r, v, que) {
+      var antes = almacen[r.ref];
+      almacen[r.ref] = v;
+      var fila = { escritura: true, celda: r.ref, ambiente: "",
+                   expresion: que + ": la celda " + r.ref + " pasa de " + escribir(antes) +
+                     " a " + escribir(v) };
       traza.push(fila);
       escrituras.push(fila);
     }
 
-    function nuevoMarco(env, ids, vals, recursivo) {
+    /* --- El ambiente --- */
+    function nuevoMarco(env, ids, vals) {
       creados++;
       cuenta.ambientes++;
-      cuenta.celdas += ids.length;
-      var nuevo = { nombre: "amb" + creados, viejo: env, recursivo: !!recursivo,
+      var nuevo = { nombre: "amb" + creados, viejo: env,
                     ligaduras: ids.map(function (id, k) { return [id, vals[k]]; }) };
       marcos.push(nuevo);
       if (!masProfundo || hondura(nuevo) >= hondura(masProfundo)) { masProfundo = nuevo; }
       return nuevo;
     }
+    function marcoRecursivo(env, nombres, paramss, cuerpos) {
+      creados++;
+      cuenta.ambientes++;
+      var nuevo = { nombre: "amb" + creados, viejo: env, recursivo: true,
+                    nombres: nombres, paramss: paramss, cuerpos: cuerpos,
+                    ligaduras: [["procnames", lista(nombres)],
+                                ["idss", lista(paramss.map(lista))],
+                                ["cuerpos", lista(cuerpos.map(function (c) {
+                                  return "(" + texto(c) + ")"; }))]] };
+      marcos.push(nuevo);
+      if (!masProfundo || hondura(nuevo) >= hondura(masProfundo)) { masProfundo = nuevo; }
+      return nuevo;
+    }
 
-    /* La foto de la cadena en un instante: lo que guarda cada celda en ese
-       momento, aunque después una asignación la cambie. */
+    /* apply-env: con referencias implícitas devuelve la referencia; con
+       explícitas, el valor. En un marco de letrec fabrica la clausura, y con
+       referencias implícitas además le reserva una celda. */
+    function applyEnv(env, id) {
+      var e = env;
+      while (e) {
+        if (e.recursivo) {
+          var k = e.nombres.indexOf(id);
+          if (k !== -1) {
+            cuenta.clausuras++;
+            var cl = { clausura: true, ids: e.paramss[k], cuerpo: e.cuerpos[k], env: e };
+            clausuras.push({ texto: escribir(cl), env: e, creada: "buscar " + id });
+            return explicitas ? cl : newref(cl, "buscar " + id + " en el marco de letrec");
+          }
+        } else {
+          for (var i = 0; i < e.ligaduras.length; i++) {
+            if (e.ligaduras[i][0] === id) { return e.ligaduras[i][1]; }
+          }
+        }
+        e = e.viejo;
+      }
+      throw new Error("apply-env: No se encuentra la variable " + id);
+    }
+
+    /* La foto de la cadena en un instante. Las ligaduras guardan referencias,
+       que no cambian; lo que cambia está en el almacén, y por eso viaja una
+       copia del almacén junto con la cadena. */
     function foto(env) {
       var cadena = [];
       while (env) {
@@ -333,14 +376,21 @@ var InterpreteAsignacion = (function () {
       return cadena;
     }
 
-    /* Con { copia: true }: la clausura se lleva una copia de cada marco de
-       la cadena, de modo que no ve lo que se asigne después. */
+    /* Con { copia: true }: la clausura se lleva celdas propias con lo que
+       había en las de su cadena al crearse. */
     function copiarCadena(env) {
       if (!env) { return null; }
-      var copiaMarco = { nombre: env.nombre + "′", recursivo: env.recursivo,
-                         ligaduras: env.ligaduras.map(function (l) { return [l[0], l[1]]; }),
-                         viejo: copiarCadena(env.viejo) };
-      return copiaMarco;
+      if (env.recursivo) {
+        var r = Object.assign({}, env);
+        r.nombre = env.nombre + "′";
+        r.viejo = copiarCadena(env.viejo);
+        return r;
+      }
+      return { nombre: env.nombre + "′",
+               ligaduras: env.ligaduras.map(function (l) {
+                 return [l[0], newref(almacen[l[1].ref], "copia de " + l[0] + " para la clausura")];
+               }),
+               viejo: copiarCadena(env.viejo) };
     }
 
     function aplicarPrim(prim, args) {
@@ -365,17 +415,25 @@ var InterpreteAsignacion = (function () {
       }
     }
 
-    /* eval-rand: un operando que es una variable viaja como indirect-target
-       a su celda, aplanado si esa celda ya era indirecta; cualquier otro, como
-       direct-target de su valor. */
-    function evalRand(exp, env) {
+    /* evaluar-operando: una variable entrega la referencia que ya tiene; otra
+       expresión, una celda nueva con su valor. */
+    function evaluarOperando(exp, env) {
       if (exp.v === "var-exp") {
-        var ref = referenciaDe(env, exp.campos[0]);
-        var c = celda(ref);
-        cuenta.indirectos++;
-        return { indirecto: c.indirecto ? c.indirecto : ref };
+        cuenta.compartidas++;
+        return applyEnv(env, exp.campos[0]);
       }
-      return directo(valueOf(exp, env));
+      return newref(valueOf(exp, env), "operando " + texto(exp));
+    }
+
+    function aplicar(proc, args, quien) {
+      if (!(proc && proc.clausura)) {
+        throw new Error("El operador no evaluó a un procedimiento: " + escribir(proc) + ".");
+      }
+      if (proc.ids.length !== args.length) {
+        throw new Error("Número de argumentos incorrecto: se esperaban " + proc.ids.length +
+                        " y se recibieron " + args.length + ".");
+      }
+      return proc;
     }
 
     function valueOf(exp, env) {
@@ -384,7 +442,7 @@ var InterpreteAsignacion = (function () {
         throw new Error("El programa lleva demasiadas llamadas a value-of. " +
                         "Puede que la recursión no llegue al caso base.");
       }
-      var instante = foto(env);
+      var instante = foto(env), almacenAntes = almacen.slice();
       var valor;
       switch (exp.v) {
         case "lit-exp": valor = exp.campos[0]; break;
@@ -392,14 +450,11 @@ var InterpreteAsignacion = (function () {
         case "false-exp": valor = false; break;
         case "var-exp":
           cuenta.variables++;
-          valor = deref(referenciaDe(env, exp.campos[0]));
+          valor = explicitas ? applyEnv(env, exp.campos[0]) : deref(applyEnv(env, exp.campos[0]));
           break;
         case "prim-exp":
           valor = aplicarPrim(exp.campos[0],
                               exp.campos[1].map(function (r) { return valueOf(r, env); }));
-          break;
-        case "list-exp":
-          valor = exp.campos[0].map(function (r) { return valueOf(r, env); });
           break;
         case "if-exp":
           var prueba = valueOf(exp.campos[0], env);
@@ -410,31 +465,22 @@ var InterpreteAsignacion = (function () {
           valor = valueOf(exp.campos[prueba ? 1 : 2], env);
           break;
         case "let-exp":
-          var vals = exp.campos[1].map(function (r) {
-            var v = valueOf(r, env);
-            return porReferencia ? directo(v) : v;
+          var vals = exp.campos[1].map(function (r) { return valueOf(r, env); });
+          var ligados = explicitas ? vals : vals.map(function (v, k) {
+            return newref(v, "let " + exp.campos[0][k]);
           });
-          var nuevo = nuevoMarco(env, exp.campos[0], vals);
+          var nuevo = nuevoMarco(env, exp.campos[0], ligados);
           traza.push({ creacion: true, ambiente: nuevo.nombre, env: nuevo,
                        expresion: "se crea " + nuevo.nombre + " = [" +
                          exp.campos[0].map(function (id, k) {
-                           return id + "=" + escribir(vals[k]); }).join(", ") + "]" + env.nombre });
+                           return id + "=" + escribir(ligados[k]); }).join(", ") + "] sobre " + env.nombre });
           valor = valueOf(exp.campos[2], nuevo);
           break;
         case "letrec-exp":
-          /* Se reserva el vector, se arma el marco sobre él y se llenan sus
-             celdas con clausuras que capturan ese mismo marco. */
-          var marco = nuevoMarco(env, exp.campos[0], exp.campos[0].map(function () { return 0; }), true);
-          exp.campos[0].forEach(function (nom, k) {
-            var cl = { clausura: true, ids: exp.campos[1][k], cuerpo: exp.campos[2][k], env: marco };
-            cuenta.clausuras++;
-            marco.ligaduras[k][1] = porReferencia ? directo(cl) : cl;
-            clausuras.push({ texto: escribir(cl), env: marco, creada: nom });
-          });
+          var marco = marcoRecursivo(env, exp.campos[0], exp.campos[1], exp.campos[2]);
           traza.push({ creacion: true, ambiente: marco.nombre, env: marco,
-                       expresion: "se crea " + marco.nombre + " = [" +
-                         marco.ligaduras.map(function (l) {
-                           return l[0] + "=" + escribir(l[1]); }).join(", ") + "]" + env.nombre });
+                       expresion: "se crea " + marco.nombre + ", el marco recursivo de " +
+                         exp.campos[0].join(", ") + ", sobre " + env.nombre });
           valor = valueOf(exp.campos[3], marco);
           break;
         case "proc-exp":
@@ -444,26 +490,28 @@ var InterpreteAsignacion = (function () {
           clausuras.push({ texto: escribir(valor), env: valor.env, creada: texto(exp) });
           break;
         case "app-exp":
-          /* Primero los operandos y después el operador, como el let de
-             Racket que los liga en ese orden. */
-          var args = exp.campos[1].map(function (r) {
-            return porReferencia ? evalRand(r, env) : valueOf(r, env);
-          });
-          var proc = valueOf(exp.campos[0], env);
-          if (!(proc && proc.clausura)) {
-            throw new Error("El operador no evaluó a un procedimiento: " + escribir(proc) + ".");
-          }
-          if (proc.ids.length !== args.length) {
-            throw new Error("Número de argumentos incorrecto: se esperaban " + proc.ids.length +
-                            " y se recibieron " + args.length + ".");
+          /* El mismo orden que en Racket: primero los operandos, después el
+             operador, y al final las celdas de los parámetros. */
+          var args, proc;
+          if (porReferencia) {
+            args = exp.campos[1].map(function (r) { return evaluarOperando(r, env); });
+            proc = aplicar(valueOf(exp.campos[0], env), args);
+          } else {
+            var valores = exp.campos[1].map(function (r) { return valueOf(r, env); });
+            var operador = valueOf(exp.campos[0], env);
+            args = explicitas ? valores : valores.map(function (v, k) {
+              var nom = operador && operador.clausura && operador.ids[k];
+              return newref(v, nom ? "parámetro " + nom : "argumento " + (k + 1));
+            });
+            proc = aplicar(operador, args);
           }
           cuenta.applyProc++;
           var dentro = nuevoMarco(proc.env, proc.ids, args);
           traza.push({ creacion: true, ambiente: dentro.nombre, env: dentro,
                        expresion: "se crea " + dentro.nombre + " = [" +
                          proc.ids.map(function (id, k) {
-                           return id + "=" + escribir(args[k]); }).join(", ") + "]" + proc.env.nombre +
-                         " para el cuerpo de la clausura" });
+                           return id + "=" + escribir(args[k]); }).join(", ") + "] sobre " +
+                         proc.env.nombre + ", el ambiente de la clausura" });
           ultimaLlamada = dentro;
           valor = valueOf(proc.cuerpo, dentro);
           break;
@@ -472,31 +520,57 @@ var InterpreteAsignacion = (function () {
           for (var s = 0; s < todas.length; s++) { valor = valueOf(todas[s], env); }
           break;
         case "set-exp":
-          var ref = referenciaDe(env, exp.campos[0]);
+          var ref = applyEnv(env, exp.campos[0]);
           var nuevoValor = valueOf(exp.campos[1], env);
           cuenta.asignaciones++;
           setref(ref, nuevoValor, "set " + exp.campos[0]);
           valor = 1;
           break;
+        case "newref-exp":
+          valor = newref(valueOf(exp.campos[0], env), texto(exp));
+          break;
+        case "deref-exp":
+          valor = deref(valueOf(exp.campos[0], env), "deref");
+          break;
+        case "setref-exp":
+          var r1 = valueOf(exp.campos[0], env);
+          if (!(r1 && r1.ref !== undefined)) {
+            throw new Error("setref: Se esperaba una referencia y se obtuvo: " + escribir(r1));
+          }
+          var v2 = valueOf(exp.campos[1], env);
+          cuenta.asignaciones++;
+          setref(r1, v2, texto(exp));
+          valor = 1;
+          break;
       }
       traza.push({ expresion: texto(exp), ambiente: env.nombre, valor: escribir(valor),
-                   env: env, consulta: exp.v === "var-exp", cadena: instante });
+                   env: env, consulta: exp.v === "var-exp", cadena: instante,
+                   almacen: almacenAntes });
       return valor;
     }
 
-    var amb0 = porReferencia
-      ? { nombre: "amb0", ligaduras: [["x", directo(1)], ["y", directo(2)], ["z", directo(3)]],
-          viejo: { nombre: "base", ligaduras: [["a", directo(4)], ["b", directo(5)], ["c", directo(6)]],
-                   viejo: null } }
-      : { nombre: "amb0", ligaduras: [["x", 4], ["y", 2], ["z", 5]],
-          viejo: { nombre: "base", ligaduras: [["a", 4], ["b", 5], ["c", 6]], viejo: null } };
+    /* El ambiente inicial: en los modos con referencias implícitas sus seis
+       variables ocupan las celdas 0 a 5. */
+    var amb0;
+    if (explicitas) {
+      amb0 = { nombre: "amb0", ligaduras: [["x", 4], ["y", 2], ["z", 5]],
+               viejo: { nombre: "base", ligaduras: [["a", 4], ["b", 5], ["c", 6]], viejo: null } };
+    } else {
+      var r0 = [4, 2, 5].map(function (v) { return newref(v, "inicial"); });
+      var r00 = [4, 5, 6].map(function (v) { return newref(v, "inicial"); });
+      amb0 = { nombre: "amb0", ligaduras: [["x", r0[0]], ["y", r0[1]], ["z", r0[2]]],
+               viejo: { nombre: "base", ligaduras: [["a", r00[0]], ["b", r00[1]], ["c", r00[2]]],
+                        viejo: null } };
+    }
+    var iniciales = almacen.length;
 
     function estado(valor) {
       return { valor: valor, texto: valor === undefined ? "" : escribir(valor),
                traza: traza, cuenta: cuenta, env0: amb0, marcos: marcos,
                clausuras: clausuras, masProfundo: masProfundo || amb0,
                ultimaLlamada: ultimaLlamada, escrituras: escrituras,
-               mutable: true, referencia: porReferencia, copia: copia };
+               almacen: almacen, iniciales: iniciales,
+               mutable: true, modo: modo, referencia: porReferencia, copia: copia };
     }
 
     try {
@@ -512,7 +586,7 @@ var InterpreteAsignacion = (function () {
     var tokens;
     try { tokens = tokenizar(programa, opciones); salida.tokens = tokens; }
     catch (e) { salida.error = e.message; salida.etapa = "scanner"; return salida; }
-    try { salida.arbol = parsear(tokens); }
+    try { salida.arbol = parsear(tokens, opciones); }
     catch (e) { salida.error = e.message; salida.etapa = "parser"; return salida; }
     var r;
     try {
@@ -523,47 +597,50 @@ var InterpreteAsignacion = (function () {
       r = e.estado;
     }
     ["valor", "texto", "traza", "cuenta", "clausuras", "masProfundo", "ultimaLlamada",
-     "env0", "escrituras", "marcos", "mutable", "referencia", "copia"].forEach(function (k) {
+     "env0", "escrituras", "marcos", "almacen", "iniciales", "mutable", "modo", "referencia",
+     "copia"].forEach(function (k) {
       if (!(salida.error && (k === "valor" || k === "texto"))) { salida[k] = r[k]; }
     });
     return salida;
   }
 
   /* La cadena de ambientes en el instante en que empieza a evaluarse la
-     expresión que se nombre, del eslabón más nuevo al más viejo, con lo que
-     guardaba cada celda en ese instante. */
+     expresión que se nombre, del eslabón más nuevo al más viejo. */
   function cadenaEn(salida, expresion) {
-    if (!salida.traza) { return null; }
-    var fila = salida.traza.filter(function (f) {
-      return !f.creacion && !f.escritura && f.expresion === expresion;
-    })[0];
+    var fila = filaDe(salida, expresion);
     return fila ? fila.cadena : null;
+  }
+  /* El almacén en ese mismo instante. */
+  function almacenEn(salida, expresion) {
+    var fila = filaDe(salida, expresion);
+    return fila ? fila.almacen : null;
+  }
+  function filaDe(salida, expresion) {
+    if (!salida.traza) { return null; }
+    return salida.traza.filter(function (f) {
+      return !f.creacion && !f.escritura && !f.reserva && f.expresion === expresion;
+    })[0] || null;
   }
 
   /* Cómo se compara lo que escribe el estudiante al dibujar con lo que
-     guarda la celda. Un direct-target puede escribirse con su valor solo, y
-     un indirect-target con el nombre de la variable a cuya celda apunta. */
+     guarda la ligadura. Una referencia se escribe (a-ref 7), ref 7 o celda 7;
+     un número solo no vale, porque la ligadura no guarda el valor. */
   function mismoValor(escrito, real) {
     var e = String(escrito).toLowerCase().replace(/\s+/g, "");
     var r = escribir(real).toLowerCase().replace(/\s+/g, "");
     if (e === r) { return true; }
-    if (real && real.clausura) { return /^(closure|proc|procedimiento|clausura)/.test(e); }
-    if (real && real.directo !== undefined) {
-      var dentro = e.replace(/^\(?(direct-target|directo|direct)/, "").replace(/\)$/, "");
-      return mismoValor(dentro, real.directo);
+    if (real && real.clausura) { return /^(\(?closure|proc|procedimiento|clausura)/.test(e); }
+    if (real && real.ref !== undefined) {
+      var m = e.match(/^\(?(a-ref|ref|celda)(\d+)\)?$/);
+      return !!m && Number(m[2]) === real.ref;
     }
-    if (real && real.indirecto) {
-      var nombre = real.indirecto.env.ligaduras[real.indirecto.pos][0].toLowerCase();
-      var limpio = e.replace(/^\(?(indirect-target|indirecto|indirect|ind|ref|→|->)/, "")
-                    .replace(/\)$/, "").replace(/^(r_|→|->)/, "")
-                    .replace(/(de|en|@)(amb\d*|ρ\d*|base)$/, "");
-      return /^(\(?(indirect|ind|ref|→|->))/.test(e) && limpio === nombre;
-    }
+    if (typeof real === "string") { return /cuerpo/.test(e) || e === r; }
     return false;
   }
 
   return { tokenizar: tokenizar, parsear: parsear, evaluar: evaluar, ejecutar: ejecutar,
-           texto: texto, escribir: escribir, cadenaEn: cadenaEn, mismoValor: mismoValor };
+           texto: texto, escribir: escribir, cadenaEn: cadenaEn, almacenEn: almacenEn,
+           mismoValor: mismoValor };
 })();
 
 if (typeof module !== "undefined") { module.exports = InterpreteAsignacion; }

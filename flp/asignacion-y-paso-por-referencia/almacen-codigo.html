@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El almacén en código</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>El almacén en código</h1>
+  <p class="intro">Cinco retos que levantan <code>src/almacen.rkt</code> pieza por pieza (EOPL §4.2): la lista igual salvo en una posición, <code>newref</code> sobre el almacén global, <code>deref</code> con su verificación, el almacén numerado que se mira desde el REPL y dos clientes que solo usan la interfaz. El último es el más exigente, porque la misma referencia llega dos veces.</p>
+
+  <div class="alerta">
+    Esto no es Racket. Es un evaluador pequeño que entiende <code>define</code>,
+    <code>lambda</code>, <code>if</code>, <code>cond</code>, <code>let</code>,
+    <code>letrec</code>, <code>begin</code>, <code>set!</code>,
+    <code>define-datatype</code> y <code>cases</code>, con las primitivas de
+    listas y aritmética. Un valor de un datatype se imprime como
+    <code>(a-ref 1)</code> para poder leerlo; Racket lo muestra como
+    <code>#(struct:a-ref 1)</code>. Las pruebas que escriben empiezan con
+    <code>(initialize-store!)</code>, así que cada una arranca con el
+    almacén vacío.
+  </div>
+
+  <div id="retos"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Los cinco, resueltos</h2>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Reto</th><th>Lo que se midió</th></tr></thead>
+        <tbody>
+          <tr><td>reemplazar</td><td>la lista vieja queda intacta: sin el <code>set!</code> de <code>setref!</code>, la escritura se perdería</td></tr>
+          <tr><td>newref</td><td>dos <code>(newref 5)</code> dan <code>(a-ref 0)</code> y <code>(a-ref 1)</code>, y el almacén guarda <code>(5 5)</code></td></tr>
+          <tr><td>deref</td><td>la posición existe si es menor que el largo; la 3 de <code>(4 2 5)</code> no existe</td></tr>
+          <tr><td>numerar</td><td><code>((0 4) (1 2) (2 5))</code>, como <code>(almacen-&gt;lista)</code> en DrRacket</td></tr>
+          <tr><td>clientes</td><td>intercambiar una celda consigo misma la deja igual; dos intercambios seguidos se deshacen</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>Consola</h2>
+    <p style="margin-top:0">Para probar cualquier cosa. Las definiciones se
+    acumulan entre corridas hasta que se reinicie la sesión.</p>
+    <textarea id="consola-entrada" class="editor" rows="9" spellcheck="false">(define-datatype referencia referencia?
+  (a-ref (pos number?)))
+(define el-almacen '())
+(define newref
+  (lambda (val)
+    (let ((k (length el-almacen)))
+      (begin (set! el-almacen (append el-almacen (list val)))
+             (a-ref k)))))
+(list (newref 4) (newref 2) el-almacen)</textarea>
+    <div class="botones">
+      <button id="btn-consola" class="primario">Ejecutar</button>
+      <button id="btn-limpiar">Reiniciar sesión</button>
+      <span class="atajo">Ctrl + Enter también ejecuta</span>
+    </div>
+    <div id="consola-salida" class="consola-salida">(sin valor)</div>
+  </div>
+
+</div>
+<script src="../comun/mini-scheme.js"></script>
+<script src="../comun/motor-retos.js"></script>
+
+<script src="almacen-codigo.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

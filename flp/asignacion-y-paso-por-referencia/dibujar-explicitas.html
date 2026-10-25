@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dibujar la cadena con referencias explícitas</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Dibujar la cadena con referencias explícitas</h1>
+  <p class="intro">Cuatro programas del lenguaje de EOPL §4.2 y, para cada uno, un instante de la evaluación. Hay que escribir los eslabones que existen en ese instante, del más nuevo al más viejo. Aquí el ambiente guarda valores, y algunos de esos valores son referencias: lo que se escribe para esas ligaduras es la referencia, no lo que hay en la celda. Al pedir la cadena del intérprete aparece con el almacén debajo y una flecha de cada referencia a su celda.</p>
+
+  <div class="alerta">
+    El lenguaje es el del intérprete <code>0 ReferenciasExplicitas</code>:
+    las expresiones del lenguaje con <code>letrec</code> más
+    <code>newref(e)</code>, <code>deref(e)</code>, <code>setref(e, e)</code> y
+    <code>begin e; e; … end</code>. El ambiente inicial liga <code>x = 4</code>,
+    <code>y = 2</code>, <code>z = 5</code> sobre <code>a = 4</code>,
+    <code>b = 5</code>, <code>c = 6</code>.
+  </div>
+
+  <div class="alerta">
+    Un eslabón se escribe con sus ligaduras entre corchetes:
+    <code>[v=8]</code>, o <code>[r=(a-ref 0), v=8]</code> si liga dos nombres.
+    Una referencia se escribe <code>(a-ref 0)</code> o <code>ref 0</code>. El
+    marco de un <code>letrec</code> lleva sus tres listas:
+    <code>[procnames=(f), idss=((n)), cuerpos=cuerpo]</code>; en la de
+    cuerpos basta con escribir <code>cuerpo</code>. Los dos eslabones del
+    ambiente inicial y el vacío los pone la página.
+  </div>
+
+  <div id="ejercicios"></div>
+
+  <div class="carta">
+    <h2>Cómo se lee el diagrama</h2>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>En el diagrama</th><th>Qué significa</th></tr></thead>
+        <tbody>
+          <tr><td>cada caja de arriba</td><td>un eslabón de la cadena; el de la izquierda es el más nuevo</td></tr>
+          <tr><td>la flecha gris entre cajas</td><td>va del ambiente que extiende hacia el que extendió</td></tr>
+          <tr><td>la fila de abajo</td><td>el almacén, con la posición de cada celda debajo</td></tr>
+          <tr><td>la flecha azul</td><td>va de una ligadura que guarda una referencia a la celda que nombra</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="nota">Dos flechas azules que llegan a la misma celda son dos
+    nombres para la misma memoria: lo que se escriba por uno se lee por el
+    otro.</div>
+  </div>
+
+</div>
+<script src="../comun/interprete-asignacion.js"></script>
+<script src="../comun/dibujar-ambientes.js"></script>
+<script src="../comun/dibujar-almacen.js"></script>
+<script src="../comun/motor-dibujo.js"></script>
+
+<script src="dibujar-explicitas.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

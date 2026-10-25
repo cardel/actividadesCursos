@@ -129,7 +129,7 @@ var MotorDibujo = (function () {
           "línea, del más nuevo al más viejo, con sus ligaduras entre corchetes. " +
           "Los dos eslabones del ambiente inicial y el vacío los pone la página.</p>" +
         '<textarea class="editor" rows="4" spellcheck="false" ' +
-          'placeholder="[b=9]&#10;[a=3]"></textarea>' +
+          'placeholder="' + (ej.ejemplo || "[b=9]&#10;[a=3]") + '"></textarea>' +
         '<div class="botones">' +
           '<button class="primario" data-accion="comprobar">Comprobar</button>' +
           '<button data-accion="ver">Ver la cadena</button>' +
@@ -173,9 +173,24 @@ var MotorDibujo = (function () {
       }
     });
 
+    /* Con almacén, la cadena del intérprete se muestra con el almacén de ese
+       instante debajo y una flecha de cada referencia a su celda. */
+    function dibujarConAlmacen() {
+      var almacen = INT.almacenEn && INT.almacenEn(salida, ej.momento);
+      if (!almacen || typeof DibujarAlmacen === "undefined") { return dibujarReal(reales, inicial); }
+      var todos = cadena.map(function (e, i) {
+        return { nombre: i < reales.length ? "ρ" + (reales.length - i) : e.nombre,
+                 ligaduras: e.ligaduras, destacado: i === 0 };
+      });
+      return '<div class="envoltura-ambientes">' +
+        DibujarAlmacen.svg(todos, almacen, { escribir: INT.escribir, iniciales: salida.iniciales }) +
+        "</div>";
+    }
+
     carta.querySelector('[data-accion="ver"]').addEventListener("click", function () {
-      suyo.innerHTML = "<p class=\"rotulo-dibujo\">La cadena del interpretador:</p>" +
-        dibujarReal(reales, inicial) + (ej.cierre ? '<div class="nota">' + ej.cierre + "</div>" : "");
+      suyo.innerHTML = "<p class=\"rotulo-dibujo\">La cadena del interpretador" +
+        (salida.almacen ? " y el almacén en ese momento" : "") + ":</p>" +
+        dibujarConAlmacen() + (ej.cierre ? '<div class="nota">' + ej.cierre + "</div>" : "");
       suyo.style.display = "block";
     });
 

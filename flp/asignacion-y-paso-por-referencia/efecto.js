@@ -34,7 +34,7 @@ var BLOQUES = (function () {
             programa("begin set x = 9; +(x, a) end") +
             ", en el intérprete de asignación",
           correcta: 1,
-          razon: "Sobrescribe la celda de x en el primer eslabón del ambiente inicial, la posición 0 del vector #(4 2 5), que pasa a #(9 2 5). El programa vale 13. Ningún let la creó: la celda existía desde antes de empezar." },
+          razon: "Escribe 9 en la celda 0, la de x, que reservó el ambiente inicial antes de empezar el programa. Vale 13. Ningún let la creó, y set no crea ninguna." },
         { valor: "Ligar el parámetro <code>k</code> al aplicar <code>(p m)</code> en " +
             programa("let p = proc(k) begin set k = 0; k end in let m = 5 in +((p m), m)") +
             ", en el intérprete de asignación",
@@ -43,7 +43,7 @@ var BLOQUES = (function () {
         { valor: "El <code>set h = 5</code> en " +
             programa("letrec h(n) = n in begin set h = 5; h end"),
           correcta: 1,
-          razon: "El letrec ligó h a una celda que guarda la clausura, y set escribe 5 en esa misma celda. El programa vale 5. Un nombre declarado con letrec se puede asignar igual que cualquier otro." },
+          razon: "Es una asignación, pero no se ve. Buscar h en el marco del letrec reserva una celda nueva con una clausura recién hecha, y el 5 se escribe en esa celda, que no queda ligada a nada. La h del final vuelve a buscar y encuentra otra clausura: el programa vale una clausura, no 5." },
         { valor: "El <code>y = 100</code> en " +
             programa("let leer = proc() y in let y = 100 in begin set y = 7; (leer) end"),
           correcta: 0,

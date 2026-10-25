@@ -1,8 +1,10 @@
-/* Dibujar la cadena de ambientes con celdas que cambian. Para cada programa
-   se señala un momento y hay que escribir los eslabones que existen en ese
-   instante con lo que guarda cada celda, del más nuevo al más viejo. La
-   página los dibuja mientras se escriben y los compara con los del
-   interpretador. */
+/* Dibujar la cadena de ambientes del intérprete con asignación. Cada ligadura
+   guarda una referencia, no un valor: se escribe la referencia, y lo que hay
+   en la celda se ve en el almacén. Para cada programa se señala un momento y
+   hay que escribir los eslabones que existen en ese instante, del más nuevo
+   al más viejo. La página los dibuja mientras se escriben, los compara con
+   los del intérprete y, al pedir la cadena del intérprete, la muestra con el
+   almacén debajo. */
 var EJERCICIOS = [
   {
     id: "dibujar-celda-cambiada",
@@ -10,17 +12,20 @@ var EJERCICIOS = [
     enunciado:
       "Dos <code>let</code> anidados y un <code>set</code> sobre la variable " +
       "de afuera. El momento es la suma final, cuando el <code>set</code> ya " +
-      "se ejecutó.",
+      "se ejecutó. Las celdas 0 a 5 son las del ambiente inicial, así que la " +
+      "primera que reserva el programa es la 6.",
     programa: "let n = 3 in let m = *(n, 2) in begin set n = 0; +(n, m) end",
     momento: "+(n, m)",
+    ejemplo: "[m=(a-ref 9)]&#10;[n=(a-ref 9)]",
     pista:
-      "Dos eslabones, el de m y el de n, en ese orden. La celda de n ya no " +
-      "guarda 3: el set escribió en ella. m conserva lo que valía n * 2 " +
-      "cuando se creó su eslabón.",
+      "Dos eslabones, el de m y el de n, en ese orden. n se ligó primero, a la " +
+      "celda 6; m después, a la 7. El set no cambia ninguna ligadura: cambia " +
+      "lo que hay en la celda 6.",
     cierre:
-      "La asignación no creó ningún eslabón: cambió el contenido de una " +
-      "celda que ya existía. La cadena tiene la misma forma que antes del " +
-      "<code>set</code>; lo que cambió es lo que dice una de sus casillas."
+      "La cadena tiene la misma forma que antes del <code>set</code>, y las " +
+      "ligaduras son las mismas. Lo que cambió está en el almacén: la celda 6 " +
+      "pasó de 3 a 0, y la 7 conserva el 6 que se calculó al crear el eslabón " +
+      "de <code>m</code>."
   },
   {
     id: "dibujar-dentro-llamada",
@@ -31,16 +36,17 @@ var EJERCICIOS = [
       "multiplicación.",
     programa: "let s = 1 in let f = proc(k) begin set s = +(s, k); *(s, 10) end in (f 4)",
     momento: "*(s, 10)",
+    ejemplo: "[k=(a-ref 9)]&#10;[s=(a-ref 9)]",
     pista:
       "Dos eslabones: el del parámetro k y el de s. El de f no está: el proc " +
       "se evaluó como operando del let, en el eslabón de s, y la clausura " +
-      "capturó ese. La celda de s ya guarda el resultado del set.",
+      "capturó ese. Las celdas van en el orden en que se reservaron: s, la " +
+      "clausura de f, y k al llamar.",
     cierre:
-      "El eslabón de la llamada cuelga del ambiente que la clausura capturó, " +
-      "y el de <code>f</code> se creó después de la clausura. El set encuentra " +
-      "la celda de <code>s</code> con <code>apply-env-ref</code>, recorriendo " +
-      "la cadena igual que <code>apply-env</code>; la diferencia está en lo " +
-      "que devuelve: la referencia y no el contenido."
+      "El <code>set</code> encontró la referencia de <code>s</code> con " +
+      "<code>apply-env</code>, recorriendo la cadena desde el eslabón de " +
+      "<code>k</code>, y escribió 5 en la celda 6. La clausura está en la " +
+      "celda 7 y el 4 del parámetro en la 8."
   },
   {
     id: "dibujar-segunda-llamada",
@@ -48,18 +54,18 @@ var EJERCICIOS = [
     enunciado:
       "<code>f</code> incrementa su parámetro y lo devuelve. La primera " +
       "llamada liga <code>r1</code>; el momento es la segunda llamada, justo " +
-      "antes de que empiece a evaluarse. Una ligadura que guarde un " +
-      "procedimiento se escribe con <code>closure</code> como valor.",
+      "antes de que empiece a evaluarse.",
     programa: "let f = proc(k) begin set k = add1(k); k end in let r1 = (f 10) in (f r1)",
     momento: "(f r1)",
+    ejemplo: "[r1=(a-ref 9)]&#10;[f=(a-ref 9)]",
     pista:
-      "Dos eslabones: el de r1 y el de f. El eslabón con la celda de k de la " +
-      "primera llamada se creó, se modificó y quedó fuera de esta cadena.",
+      "Dos eslabones: el de r1 y el de f. La primera llamada reservó la celda " +
+      "7 para su k; después el let de r1 reservó la 8. El eslabón de esa k ya " +
+      "no está en la cadena, pero su celda sigue en el almacén.",
     cierre:
-      "La primera llamada creó un eslabón para k, lo modificó y devolvió 11. " +
-      "Ese eslabón colgaba del ambiente inicial, donde se creó la clausura, y " +
-      "nadie lo vuelve a alcanzar. La segunda llamada creará otro, con su " +
-      "propia celda, en la que pondrá 11 y después 12."
+      "La celda 7 guarda 11, lo que dejó el <code>set</code> de la primera " +
+      "llamada, y nadie la vuelve a nombrar. La segunda llamada reservará la " +
+      "celda 9 con una copia del 11 que hay en la 8, y la dejará en 12."
   },
   {
     id: "dibujar-contador-letrec",
@@ -67,21 +73,21 @@ var EJERCICIOS = [
     enunciado:
       "<code>bajar</code> cuenta sus vueltas en <code>cuenta</code>, que vive " +
       "afuera del <code>letrec</code>. El momento es el caso base, cuando " +
-      "<code>n</code> llega a 0. En este interpretador el marco del " +
-      "<code>letrec</code> guarda un vector con una clausura por nombre, así " +
-      "que se escribe como cualquier eslabón: <code>bajar=closure</code>.",
+      "<code>n</code> llega a 0. El marco del <code>letrec</code> lleva sus " +
+      "tres listas, como en el lenguaje sin asignación.",
     programa: "let cuenta = 0 in letrec bajar(n) = if ==(n, 0) then *(cuenta, 100) else begin set cuenta = add1(cuenta); (bajar sub1(n)) end in (bajar 2)",
     momento: "*(cuenta, 100)",
+    ejemplo: "[n=(a-ref 9)]&#10;[procnames=(bajar), idss=((n)), cuerpos=cuerpo]&#10;[cuenta=(a-ref 9)]",
     pista:
       "Tres eslabones: el de la última llamada, el marco del letrec y el de " +
-      "cuenta. Las llamadas anteriores no aparecen, porque cada una cuelga " +
-      "del marco recursivo y no de la anterior.",
+      "cuenta. Cada llamada hace dos reservas: primero la celda de la " +
+      "clausura, al buscar bajar, y después la de n. Con tres llamadas, la n " +
+      "de la última queda en la celda 12.",
     cierre:
-      "Las tres llamadas escribieron en la misma celda de <code>cuenta</code> " +
-      "y cada una tuvo su propia celda para <code>n</code>. Aquí el marco del " +
-      "<code>letrec</code> no guarda nombres, parámetros y cuerpos por " +
-      "separado: reserva el vector, arma el eslabón sobre él y llena cada " +
-      "celda con una clausura que captura ese mismo eslabón."
+      "Las celdas 7, 9 y 11 guardan clausuras: una por cada vez que se buscó " +
+      "<code>bajar</code>. Las celdas 8, 10 y 12 son las de <code>n</code>, " +
+      "con 2, 1 y 0. Todas las llamadas escribieron en la misma celda 6 de " +
+      "<code>cuenta</code>, que ya tiene 2."
   }
 ];
 

@@ -3,36 +3,58 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Las cláusulas de set y begin en el evaluador</title>
+<title>Las cláusulas de la asignación</title>
 <link rel="stylesheet" href="../../comun/estilo.css">
 <link rel="stylesheet" href="../comun/ejercicios.css">
 </head>
 <body>
 <div class="contenedor">
   <a class="volver" href="#">← Volver a los ejercicios</a>
-  <h1>Las cláusulas de set y begin en el evaluador</h1>
-  <p class="intro">Las cláusulas nuevas de <code>evaluar-expresion</code> en el intérprete de asignación (EOPL §4.2), leídas línea por línea y puestas a prueba con programas. Dos preguntas se responden con una copia modificada del intérprete: qué pasa si <code>set-exp</code> usa <code>apply-env</code>, y qué pasa si el ambiente guarda listas en vez de vectores. Los otros bloques miden qué devuelven <code>set</code> y <code>begin</code>, cómo arma <code>let-exp</code> su eslabón y por qué cada aplicación estrena celdas.</p>
+  <h1>Las cláusulas de la asignación</h1>
+  <p class="intro">Las cláusulas de <code>evaluar-expresion</code> en el intérprete con asignación (EOPL §4.3), leídas línea por línea. Tres bloques: qué devuelve <code>apply-env</code> y por qué <code>set</code> la necesita así, cuántas celdas reserva cada programa y qué pasaría si una cláusula se escribiera de otra forma. Todo se midió con los intérpretes en Racket.</p>
+
+  <div class="carta">
+    <h2>Dónde nace cada celda</h2>
+    <p style="margin-top:0"><code>let f = proc(u) u in (f 3)</code>: el <code>let</code> reserva la celda 6 para la clausura y la llamada reserva la 7 para <code>u</code>.</p>
+    <div class="envoltura-ambientes">
+      <svg class="diagrama-ambientes" viewBox="0 0 640 210" width="640" role="img" aria-label="Ambiente y almacén de let f = proc(u) u in (f 3)">
+        <defs><marker id="pR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" class="alm-punta"/></marker>
+        <marker id="pA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" class="amb-punta"/></marker></defs>
+        <rect class="amb-caja amb-nuevo" x="4" y="4" width="120" height="46" rx="8"/>
+        <text class="amb-nombre" x="64" y="23">amb2</text><text class="amb-ligadura" x="64" y="41">u = (a-ref 7)</text>
+        <line class="amb-flecha" x1="130" y1="22" x2="320" y2="22" marker-end="url(#pA)"/>
+        <rect class="amb-caja" x="170" y="64" width="120" height="46" rx="8"/>
+        <text class="amb-nombre" x="230" y="83">amb1</text><text class="amb-ligadura" x="230" y="101">f = (a-ref 6)</text>
+        <line class="amb-flecha" x1="290" y1="80" x2="324" y2="40" marker-end="url(#pA)"/>
+        <rect class="amb-caja" x="326" y="4" width="150" height="46" rx="8"/>
+        <text class="amb-nombre" x="401" y="23">amb0</text><text class="amb-ligadura" x="401" y="41">x, y, z: celdas 0-2</text>
+        <text class="alm-titulo" x="4" y="150">almacén</text>
+        <rect class="alm-celda alm-inicial" x="4" y="160" width="200" height="26"/><text class="amb-ligadura alm-gris" x="104" y="177">celdas 0 a 5</text>
+        <rect class="alm-celda" x="208" y="160" width="230" height="26"/><text class="amb-ligadura" x="323" y="177">(closure (u) u amb0)</text>
+        <rect class="alm-celda alm-escrita" x="442" y="160" width="60" height="26"/><text class="amb-ligadura" x="472" y="177">3</text>
+        <text class="alm-pos" x="323" y="200">6</text><text class="alm-pos" x="472" y="200">7</text>
+        <path class="alm-flecha" d="M 290 101 C 320 130, 323 120, 323 157" marker-end="url(#pR)"/>
+        <path class="alm-flecha" d="M 124 41 C 300 60, 472 100, 472 157" marker-end="url(#pR)"/>
+      </svg>
+    </div>
+  </div>
 
   <div id="bloques"></div>
 
   <div class="carta" id="carta-cierre" style="display:none">
-    <h2>Los cuatro bloques, resueltos</h2>
+    <h2>Los tres bloques, resueltos</h2>
     <div class="envoltura-tabla">
       <table>
-        <thead><tr><th>Cláusula</th><th>Qué usa</th><th>Qué devuelve</th><th>Programa medido</th></tr></thead>
+        <thead><tr><th>Cláusula</th><th>Qué hace con el almacén</th></tr></thead>
         <tbody>
-          <tr><td><code>set-exp</code></td><td><code>apply-env-ref</code> y <code>setref!</code></td><td>1</td><td><code>+(set x = 5, x)</code> vale 6</td></tr>
-          <tr><td><code>begin-exp</code></td><td><code>evaluar-secuencia</code> sobre <code>exp</code> y <code>lexp</code></td><td>el valor de la última expresión</td><td><code>let w = 0 in begin +(w, 100); w end</code> vale 0</td></tr>
-          <tr><td><code>let-exp</code></td><td><code>ambiente-extendido</code>, que hace <code>list-&gt;vector</code></td><td>el valor del cuerpo</td><td><code>let x = 10 w = add1(x) in w</code> vale 5</td></tr>
-          <tr><td><code>app-exp</code></td><td><code>ambiente-extendido</code> sobre el ambiente de la clausura</td><td>el valor del cuerpo</td><td><code>let s = 1 in let f = proc(t) begin set t = 50; s end in (f s)</code> vale 1</td></tr>
+          <tr><td><code>var-exp</code></td><td><code>deref</code> de la referencia que devuelve <code>apply-env</code></td></tr>
+          <tr><td><code>set-exp</code></td><td><code>setref!</code> sobre esa misma referencia; vale 1</td></tr>
+          <tr><td><code>let-exp</code></td><td>un <code>newref</code> por variable</td></tr>
+          <tr><td><code>app-exp</code></td><td>un <code>newref</code> por parámetro: paso por valor</td></tr>
+          <tr><td>buscar un nombre de <code>letrec</code></td><td>un <code>newref</code> con la clausura recién hecha</td></tr>
         </tbody>
       </table>
     </div>
-    <div class="nota">Las dos copias modificadas fallan de maneras distintas.
-    Con <code>apply-env</code> en <code>set-exp</code>, cada set se detiene con
-    <code>cases: not a referencia</code>, pero los programas sin set corren igual. Sin
-    <code>list-&gt;vector</code>, el intérprete no carga: el ambiente inicial
-    también se construye con <code>ambiente-extendido</code>.</div>
   </div>
 
 </div>

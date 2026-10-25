@@ -177,6 +177,15 @@ var MiniScheme = (function () {
     fallar("La variable " + nombre + " no está ligada.");
   };
   Ambiente.prototype.definir = function (nombre, valor) { this.tabla[nombre] = valor; };
+  /* set!: cambia la ligadura que ya existe, la más cercana en la cadena. */
+  Ambiente.prototype.asignar = function (nombre, valor) {
+    var a = this;
+    while (a) {
+      if (nombre in a.tabla) { a.tabla[nombre] = valor; return; }
+      a = a.padre;
+    }
+    fallar("set! no puede asignar " + nombre + ": la variable no está ligada.");
+  };
 
   /* --- Primitivas ------------------------------------------------- */
   function numero(nombre, v) {
@@ -476,6 +485,11 @@ var MiniScheme = (function () {
           var cuerpo = args.slice(1);
           for (var c = 0; c < cuerpo.length - 1; c++) { this.evaluar(cuerpo[c], nuevo); }
           exp = cuerpo[cuerpo.length - 1]; amb = nuevo; continue;
+        }
+        if (nombre === "set!") {
+          if (!(args[0] instanceof Simbolo)) { fallar("set! necesita el nombre de una variable."); }
+          amb.asignar(args[0].nombre, this.evaluar(args[1], amb));
+          return undefined;
         }
         if (nombre === "begin") {
           if (args.length === 0) { return undefined; }

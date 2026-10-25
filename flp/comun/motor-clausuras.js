@@ -21,8 +21,8 @@ var MotorClausuras = (function () {
     ambientes: { etiqueta: "Ambientes que se crean", leer: function (r) { return r.cuenta.ambientes; } },
     clausuras: { etiqueta: "Clausuras que se crean", leer: function (r) { return r.cuenta.clausuras; } },
     asignaciones: { etiqueta: "Asignaciones que se ejecutan", leer: function (r) { return r.cuenta.asignaciones; } },
-    celdas:    { etiqueta: "Celdas que se crean", leer: function (r) { return r.cuenta.celdas; } },
-    indirectos: { etiqueta: "Operandos que viajan como indirect-target", leer: function (r) { return r.cuenta.indirectos; } }
+    celdas:    { etiqueta: "Celdas que reserva el programa", leer: function (r) { return r.cuenta.celdas; } },
+    compartidas: { etiqueta: "Operandos que entregan su propia celda", leer: function (r) { return r.cuenta.compartidas; } }
   };
 
   function elemento(html) {
@@ -42,8 +42,8 @@ var MotorClausuras = (function () {
   function panelTraza(r) {
     var paso = 0;
     var filas = r.traza.map(function (f) {
-      if (f.creacion || f.escritura) {
-        return '<tr class="' + (f.escritura ? "fila-escritura" : "fila-creacion") +
+      if (f.creacion || f.escritura || f.reserva) {
+        return '<tr class="' + (f.escritura ? "fila-escritura" : f.reserva ? "fila-reserva" : "fila-creacion") +
           '"><td></td><td colspan="3">' + escapar(f.expresion) + "</td></tr>";
       }
       paso++;
@@ -62,35 +62,33 @@ var MotorClausuras = (function () {
       r.cuenta.applyProc + " procedimientos aplicados · " +
       r.cuenta.variables + " variables evaluadas · " +
       r.cuenta.ambientes + " ambientes creados" +
-      (r.mutable ? " · " + r.cuenta.asignaciones + " asignaciones" : "") + "</p>";
+      (r.mutable ? " · " + r.cuenta.asignaciones + " asignaciones · " +
+                   r.cuenta.celdas + " celdas reservadas por el programa" : "") + "</p>";
   }
 
-  /* Con asignación, lo que guarda cada celda al terminar: los marcos que el
-     programa creó y los del ambiente inicial, en el orden en que nacieron. */
-  function panelCeldas(r) {
-    if (!r.mutable || !r.env0) { return ""; }
-    var marcos = [], e = r.env0;
-    while (e) { marcos.push(e); e = e.viejo; }
-    marcos = marcos.reverse().concat(r.marcos || []);
-    var filas = marcos.map(function (m) {
-      return "<tr><td>" + m.nombre + "</td><td><code>" + escapar(m.ligaduras.map(function (l) {
-        return l[0] + " = " + INT.escribir(l[1]); }).join(", ")) + "</code></td></tr>";
-    }).join("");
-    return "<h3>Lo que guarda cada celda al terminar</h3>" +
-      '<div class="envoltura-tabla"><table class="tabla-traza"><thead><tr><th>Marco</th>' +
-      "<th>Celdas</th></tr></thead><tbody>" + filas + "</tbody></table></div>";
+  /* Con almacén, la cadena se dibuja con el almacén debajo y una flecha de
+     cada referencia a su celda. */
+  function cadenaConAlmacen(env, destacado, r) {
+    if (typeof DibujarAlmacen === "undefined" || !r.almacen) { return cadena(env, destacado, ""); }
+    var escritas = (r.escrituras || []).map(function (f) { return f.celda; });
+    return '<div class="envoltura-ambientes">' +
+      DibujarAlmacen.svg(DibujarAlmacen.desdeAmbiente(env, destacado), r.almacen,
+                         { escribir: INT.escribir, iniciales: r.iniciales, escritas: escritas }) +
+      "</div>";
   }
 
   function panelAmbientes(r) {
     var partes;
     if (r.ultimaLlamada) {
       partes = ["<h3>La cadena donde se evaluó el cuerpo del último procedimiento aplicado" +
-                (r.mutable ? ", con lo que guardan sus celdas al terminar" : "") + "</h3>",
-                cadena(r.ultimaLlamada, r.ultimaLlamada.nombre, "cadena de ambientes")];
+                (r.almacen ? ", y el almacén al terminar" : "") + "</h3>",
+                r.almacen ? cadenaConAlmacen(r.ultimaLlamada, r.ultimaLlamada.nombre, r)
+                          : cadena(r.ultimaLlamada, r.ultimaLlamada.nombre, "cadena de ambientes")];
     } else {
       partes = ["<h3>La cadena de ambientes, en su punto más hondo" +
-                (r.mutable ? ", con lo que guardan sus celdas al terminar" : "") + "</h3>",
-                cadena(r.masProfundo, r.masProfundo.nombre, "cadena de ambientes")];
+                (r.almacen ? ", y el almacén al terminar" : "") + "</h3>",
+                r.almacen ? cadenaConAlmacen(r.masProfundo, r.masProfundo.nombre, r)
+                          : cadena(r.masProfundo, r.masProfundo.nombre, "cadena de ambientes")];
     }
     if (r.clausuras && r.clausuras.length) {
       partes.push("<h3>Las clausuras y el ambiente que cada una capturó</h3>");
@@ -134,11 +132,11 @@ var MotorClausuras = (function () {
       /* Si se detuvo evaluando, lo que alcanzó a hacer explica por qué: la
          traza llega hasta la expresión que falló. */
       if (r.traza && r.traza.length && r.cuenta) {
-        return aviso + panelTraza(r) + panelAmbientes(r) + panelCeldas(r);
+        return aviso + panelTraza(r) + panelAmbientes(r);
       }
       return aviso;
     }
-    return panelTraza(r) + panelAmbientes(r) + panelCeldas(r);
+    return panelTraza(r) + panelAmbientes(r);
   }
 
   function pintarPrediccion(p) {
@@ -267,7 +265,7 @@ var MotorClausuras = (function () {
     return carta;
   }
 
-  function montarLibre(id, ejemplos) {
+  function montarLibre(id, ejemplos, base) {
     var caja = document.getElementById(id);
     if (!caja) { return; }
     var entrada = caja.querySelector("textarea");
@@ -279,7 +277,8 @@ var MotorClausuras = (function () {
     var opcion = (marca && marca.getAttribute("data-opcion")) || "dinamico";
     function correr() {
       var op = {};
-      op[opcion] = !!(marca && marca.checked);
+      Object.keys(base || {}).forEach(function (k) { op[k] = base[k]; });
+      if (marca) { op[opcion] = marca.checked; }
       var r = INT.ejecutar(entrada.value.trim(), op);
       salida.innerHTML = proceso(r);
       salida.style.display = "block";
@@ -305,7 +304,7 @@ var MotorClausuras = (function () {
         destino.appendChild(p.alcances || p.modos ? pintarAlcance(p) : pintarPrediccion(p));
       });
     }
-    if (opciones.libre) { montarLibre(opciones.libre, opciones.ejemplos); }
+    if (opciones.libre) { montarLibre(opciones.libre, opciones.ejemplos, opciones.opcionesLibre); }
   }
 
   return { montar: montar, proceso: proceso };

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El almacén</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>El almacén</h1>
+  <p class="intro">El almacén es una lista de celdas y una referencia es la posición de una de ellas (EOPL §4.2). Cuatro bloques: qué le hace cada operación a la lista, qué queda después de una secuencia de <code>newref</code> y <code>setref!</code>, qué se puede afirmar de una referencia y por qué el almacén está hecho con un <code>set!</code> sobre una variable global. Todo lo que aquí se afirma se corrió en Racket contra <code>src/almacen.rkt</code>.</p>
+
+  <div class="carta">
+    <h2>El almacén, paso a paso</h2>
+    <p style="margin-top:0">Así se ve la lista después de cada línea, empezando vacía. La celda resaltada es la que cambió.</p>
+    <div class="envoltura-ambientes">
+      <svg class="diagrama-ambientes" viewBox="0 0 560 250" width="560" role="img" aria-label="El almacén después de cada operación">
+        <g font-family="ui-monospace, monospace" font-size="12">
+          <text x="0" y="22">(newref 5) ⇒ (a-ref 0)</text>
+          <rect class="alm-celda alm-escrita" x="300" y="6" width="44" height="24"/><text class="amb-ligadura" x="322" y="22">5</text>
+          <text x="0" y="72">(newref 7) ⇒ (a-ref 1)</text>
+          <rect class="alm-celda" x="300" y="56" width="44" height="24"/><text class="amb-ligadura" x="322" y="72">5</text>
+          <rect class="alm-celda alm-escrita" x="348" y="56" width="44" height="24"/><text class="amb-ligadura" x="370" y="72">7</text>
+          <text x="0" y="122">(setref! (a-ref 0) 9)</text>
+          <rect class="alm-celda alm-escrita" x="300" y="106" width="44" height="24"/><text class="amb-ligadura" x="322" y="122">9</text>
+          <rect class="alm-celda" x="348" y="106" width="44" height="24"/><text class="amb-ligadura" x="370" y="122">7</text>
+          <text x="0" y="172">(deref (a-ref 1)) ⇒ 7</text>
+          <rect class="alm-celda" x="300" y="156" width="44" height="24"/><text class="amb-ligadura" x="322" y="172">9</text>
+          <rect class="alm-celda" x="348" y="156" width="44" height="24"/><text class="amb-ligadura" x="370" y="172">7</text>
+          <text x="0" y="222">(newref (a-ref 0)) ⇒ (a-ref 2)</text>
+          <rect class="alm-celda" x="300" y="206" width="44" height="24"/><text class="amb-ligadura" x="322" y="222">9</text>
+          <rect class="alm-celda" x="348" y="206" width="44" height="24"/><text class="amb-ligadura" x="370" y="222">7</text>
+          <rect class="alm-celda alm-escrita" x="396" y="206" width="84" height="24"/><text class="amb-ligadura" x="438" y="222">(a-ref 0)</text>
+          <text class="alm-pos" x="322" y="244">0</text><text class="alm-pos" x="370" y="244">1</text><text class="alm-pos" x="438" y="244">2</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <div id="bloques"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Los cuatro bloques, resueltos</h2>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Operación</th><th>Qué le hace a la lista</th><th>Qué devuelve</th></tr></thead>
+        <tbody>
+          <tr><td><code>(newref v)</code></td><td>agrega <code>v</code> al final</td><td><code>(a-ref k)</code>, con <code>k</code> el largo anterior</td></tr>
+          <tr><td><code>(deref r)</code></td><td>nada</td><td>lo que guarda la celda de <code>r</code></td></tr>
+          <tr><td><code>(setref! r v)</code></td><td>cambia la celda de <code>r</code>; el largo no cambia</td><td>nada que interese</td></tr>
+          <tr><td><code>(initialize-store!)</code></td><td>la deja vacía</td><td>nada que interese</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="nota">Una referencia es el nombre de una celda. No cambia
+    cuando la celda cambia, y dos <code>newref</code> con el mismo valor dan
+    dos nombres para dos celdas distintas.</div>
+  </div>
+
+</div>
+<script src="../comun/motor-decisiones.js"></script>
+
+<script src="almacen.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

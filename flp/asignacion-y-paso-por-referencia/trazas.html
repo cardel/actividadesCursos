@@ -11,7 +11,7 @@
 <div class="contenedor">
   <a class="volver" href="#">← Volver a los ejercicios</a>
   <h1>Trazas con asignación</h1>
-  <p class="intro">Cinco programas para trazar completos: un acumulador que la recursión actualiza desde afuera, un parámetro que se asigna en dos llamadas sin que la variable de afuera se entere, tres llamadas que escriben en la misma celda, un procedimiento recursivo al que se le asigna otro, y un programa que no crea ningún ambiente y aun así cambia dos celdas. Se predicen el valor y los conteos; al comprobar, la página abre la traza con cada asignación marcada, la cadena de ambientes y lo que guarda cada celda al terminar.</p>
+  <p class="intro">Cinco programas para trazar completos: un acumulador que la recursión actualiza desde afuera, un parámetro que se asigna en dos llamadas sin que la variable de afuera se entere, tres llamadas que escriben en la misma celda, un procedimiento recursivo al que se le intenta asignar otro, y un programa que no crea ningún ambiente y aun así cambia dos celdas. Se predicen el valor y los conteos; al comprobar, la página abre la traza con cada reserva y cada asignación marcadas, y la cadena de ambientes con el almacén debajo.</p>
 
   <div class="alerta">
     El lenguaje es el del interpretador con asignación: números, variables, <code>true</code> y <code>false</code>, las primitivas antes del paréntesis
@@ -34,7 +34,7 @@
 
   <div class="carta" id="libre">
     <h2>La máquina, abierta</h2>
-    <p style="margin-top:0">Escriba cualquier programa del lenguaje y vea su traza. Con la casilla, corre con paso por referencia, que tiene otro ambiente inicial.</p>
+    <p style="margin-top:0">Escriba cualquier programa del lenguaje y vea su traza. Con la casilla, corre con paso por referencia.</p>
     <textarea class="editor" rows="3" spellcheck="false">let pila = 0 in let meter = proc(k) set pila = +(*(pila, 10), k) in begin (meter 4); (meter 2); (meter 7); pila end</textarea>
     <div class="ejemplos"></div>
     <div class="botones">
@@ -47,13 +47,14 @@
 
   <div class="carta">
     <h2>El ambiente inicial en DrRacket</h2>
-    <p style="margin-top:0">Aquí cada programa empieza con el ambiente inicial recién creado. En el ciclo de lectura de DrRacket no pasa lo mismo: <code>ambiente-inicial</code> es un solo valor del módulo, y sus vectores son los mismos de un programa al siguiente. Después de evaluar <code>begin set x = 99; x end</code>, el programa <code>x</code> da 99 y no 4, hasta que se vuelva a correr el archivo.</p>
-    <div class="nota">Es la diferencia entre una ligadura y una asignación llevada al extremo: el efecto alcanza a toda la computación siguiente, también a los programas que se escriban después en el mismo ciclo.</div>
+    <p style="margin-top:0">Cada programa empieza de cero, aquí y en DrRacket: <code>evaluar-programa</code> llama a <code>initialize-store!</code> y construye un ambiente inicial nuevo, con seis celdas nuevas para <code>x</code>, <code>y</code>, <code>z</code>, <code>a</code>, <code>b</code> y <code>c</code>. Después de <code>begin set x = 99; x end</code>, el programa <code>x</code> vuelve a dar 4. Desde el REPL, <code>(almacen-&gt;lista)</code> muestra el almacén que dejó el último programa.</p>
+    <div class="nota">El 99 quedó en la celda 0 del almacén del primer programa, y ese almacén ya no existe cuando corre el segundo.</div>
   </div>
 
 </div>
 <script src="../comun/interprete-asignacion.js"></script>
 <script src="../comun/dibujar-ambientes.js"></script>
+<script src="../comun/dibujar-almacen.js"></script>
 <script src="../comun/motor-clausuras.js"></script>
 
 <script src="trazas.js"></script>

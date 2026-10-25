@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El paso por referencia en código</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>El paso por referencia en código</h1>
+  <p class="intro">Tres retos sobre un intérprete pequeño con almacén, para levantar el paso por referencia de EOPL §4.5.1: <code>evaluar-operando</code>, que entrega la referencia de una variable o una celda nueva; la aplicación que liga los parámetros a esas referencias; y un predicado que dice si dos nombres son alias.</p>
+
+  <div class="alerta">
+    Esto no es Racket. Es un evaluador pequeño que entiende <code>define</code>,
+    <code>lambda</code>, <code>if</code>, <code>cond</code>, <code>let</code>,
+    <code>let*</code>, <code>letrec</code>, <code>begin</code>, <code>set!</code>,
+    <code>define-datatype</code> y <code>cases</code>, con las primitivas de
+    listas y aritmética; no tiene <code>map</code>. Un valor de un datatype se
+    imprime como <code>(a-ref 1)</code> para poder leerlo; Racket lo muestra
+    como <code>#(struct:a-ref 1)</code>. Las pruebas que escriben empiezan con
+    <code>(initialize-store!)</code>, así que cada una arranca con el almacén
+    vacío. Lo que se entrega se escribe y se corre en DrRacket.
+  </div>
+
+  <div id="retos"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Resueltos</h2>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Reto</th><th>Lo que se midió</th></tr></thead>
+        <tbody>
+          <tr><td><code>evaluar-operando</code></td><td>una variable presta su celda; <code>+(m, 1)</code> recibe una celda nueva con 4</td></tr>
+          <tr><td>la aplicación</td><td>con <code>m</code> el 4 se ve afuera; con <code>+(m, 0)</code> queda en la celda 2</td></tr>
+          <tr><td><code>alias?</code></td><td><code>n</code> y <code>k</code> guardan 5 y no son alias; <code>u</code> y <code>v</code> en <code>(f n n)</code> sí</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="nota">Paso por valor y paso por referencia se separan en una sola línea: la que decide si una variable presta su referencia o recibe una celda nueva.</div>
+  </div>
+
+  <div class="carta">
+    <h2>Consola</h2>
+    <p style="margin-top:0">Para probar cualquier cosa. Las definiciones se
+    acumulan entre corridas hasta que se reinicie la sesión.</p>
+    <textarea id="consola-entrada" class="editor" rows="8" spellcheck="false">(define-datatype referencia referencia?
+  (a-ref (pos number?)))
+(define el-almacen '())
+(define newref
+  (lambda (val)
+    (let ((k (length el-almacen)))
+      (begin (set! el-almacen (append el-almacen (list val)))
+             (a-ref k)))))
+(list (newref 4) (newref 2) el-almacen)</textarea>
+    <div class="botones">
+      <button id="btn-consola" class="primario">Ejecutar</button>
+      <button id="btn-limpiar">Reiniciar sesión</button>
+      <span class="atajo">Ctrl + Enter también ejecuta</span>
+    </div>
+    <div id="consola-salida" class="consola-salida">(sin valor)</div>
+  </div>
+
+</div>
+<script src="../comun/mini-scheme.js"></script>
+<script src="../comun/motor-retos.js"></script>
+
+<script src="operando.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

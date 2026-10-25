@@ -11,7 +11,7 @@
 <div class="contenedor">
   <a class="volver" href="#">← Volver a los ejercicios</a>
   <h1>Dibujar la cadena con celdas que cambian</h1>
-  <p class="intro">Cuatro programas y, para cada uno, un instante de la evaluación: el momento en que empieza a evaluarse una expresión. Hay que escribir los eslabones que existen entonces, del más nuevo al más viejo, con lo que guarda cada celda en ese instante y no al final. La página los dibuja mientras se escriben y señala la primera diferencia con la cadena del interpretador. En dos de ellos el eslabón de un procedimiento no está donde uno esperaría, y en otro una celda ya no es la que fue.</p>
+  <p class="intro">Cuatro programas del intérprete con asignación y, para cada uno, un instante de la evaluación. Hay que escribir los eslabones que existen entonces, del más nuevo al más viejo. En este intérprete cada ligadura guarda una <strong>referencia</strong>: lo que se escribe es <code>(a-ref 6)</code> y no el número que hay en la celda, que está en el almacén (EOPL §4.3). La página dibuja lo que se escribe, señala la primera diferencia con la cadena del intérprete y, al pedirla, la muestra con el almacén debajo y una flecha de cada referencia a su celda.</p>
 
   <div class="alerta">
     El lenguaje es el del interpretador con asignación: números, variables, <code>true</code> y <code>false</code>, las primitivas antes del paréntesis
@@ -27,16 +27,18 @@
     <code>c = 6</code>. La página hace lo mismo que el interpretador en
     Racket, con sus verificaciones: <code>boolean?</code> en la prueba del
     <code>if</code>, <code>procval?</code> en el operador y la cantidad de
-    argumentos. Cada programa empieza con el ambiente inicial recién creado.
+    argumentos. Cada programa empieza con el almacén vacío y un ambiente inicial nuevo.
   </div>
 
   <div class="alerta">
     Un eslabón se escribe con sus ligaduras entre corchetes:
-    <code>[n=0]</code>, o <code>[p=1, q=2]</code> si liga dos nombres. Los
-    dos eslabones del ambiente inicial y el vacío los pone la página. Una
-    celda que guarde un procedimiento se escribe con <code>closure</code>
-    como valor. Los nombres de los eslabones no se revisan, solo el orden,
-    los nombres ligados y lo que guarda cada celda.
+    <code>[n=(a-ref 6)]</code>, o <code>[p=(a-ref 7), q=(a-ref 8)]</code> si
+    liga dos nombres. Una referencia también puede escribirse
+    <code>ref 6</code>. El marco de un <code>letrec</code> lleva sus tres
+    listas: <code>[procnames=(f), idss=((n)), cuerpos=cuerpo]</code>; en la de
+    cuerpos basta con escribir <code>cuerpo</code>. Las celdas 0 a 5 son las
+    del ambiente inicial, y los dos eslabones del ambiente inicial y el vacío
+    los pone la página.
   </div>
 
   <div id="ejercicios"></div>
@@ -47,7 +49,9 @@
       <table>
         <thead><tr><th>En el diagrama</th><th>Qué significa</th></tr></thead>
         <tbody>
-          <tr><td>cada ligadura de un eslabón</td><td>una celda del vector del eslabón; su referencia es la pareja (posición, vector)</td></tr>
+          <tr><td>cada ligadura de un eslabón</td><td>un nombre y la referencia de su celda, <code>(a-ref k)</code></td></tr>
+          <tr><td>la fila de abajo</td><td>el almacén: la celda <code>k</code> guarda lo que vale ese nombre</td></tr>
+          <tr><td>la flecha azul</td><td>va de la ligadura a su celda; las del ambiente inicial van en gris claro</td></tr>
           <tr><td>la caja de la izquierda</td><td>el eslabón más nuevo: ahí empieza toda búsqueda</td></tr>
           <tr><td>la flecha</td><td>va del ambiente que extiende hacia el que extendió</td></tr>
           <tr><td>la caja gris del final</td><td>el ambiente vacío</td></tr>
@@ -55,12 +59,13 @@
         </tbody>
       </table>
     </div>
-    <div class="nota">Una asignación no agrega eslabones ni los quita: cambia lo que dice una casilla. El cuerpo de un procedimiento se evalúa en un eslabón que cuelga del ambiente que la clausura capturó, y en un <code>let f = proc…</code> ese ambiente es el de afuera del <code>let</code>.</div>
+    <div class="nota">Una asignación no agrega eslabones ni cambia ligaduras: cambia lo que guarda una celda del almacén. El cuerpo de un procedimiento se evalúa en un eslabón que cuelga del ambiente que la clausura capturó, y en un <code>let f = proc…</code> ese ambiente es el de afuera del <code>let</code>.</div>
   </div>
 
 </div>
 <script src="../comun/interprete-asignacion.js"></script>
 <script src="../comun/dibujar-ambientes.js"></script>
+<script src="../comun/dibujar-almacen.js"></script>
 <script src="../comun/motor-dibujo.js"></script>
 
 <script src="dibujar.js"></script>

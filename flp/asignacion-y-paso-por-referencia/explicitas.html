@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Referencias explícitas</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Referencias explícitas</h1>
+  <p class="intro">En el lenguaje de EOPL §4.2 el programa maneja la memoria a mano: <code>newref</code> reserva una celda, <code>deref</code> la lee y <code>setref</code> la escribe, y una referencia es un valor como cualquier otro. Ocho programas para predecir el valor y alguna cuenta del almacén. Al comprobar se abre la traza, con una fila verde por cada celda que se reserva y una azul por cada escritura, y la cadena de ambientes con el almacén dibujado debajo: cada flecha va de una ligadura a la celda que nombra su referencia.</p>
+
+  <div class="alerta">
+    El lenguaje es el del intérprete <code>0 ReferenciasExplicitas</code>:
+    números, variables, <code>true</code> y <code>false</code>, las primitivas
+    antes del paréntesis y con comas (<code>+(e,e)</code>, <code>-(e,e)</code>,
+    <code>*(e,e)</code>, <code>add1(e)</code>, <code>sub1(e)</code>,
+    <code>==(e,e)</code>), <code>if e then e else e</code>,
+    <code>let id = e … in e</code>, <code>proc(id, …) cuerpo</code>,
+    <code>letrec</code>, la aplicación <code>(rator rand …)</code>, que va sin
+    comas, <code>begin e; e; … end</code>, <code>newref(e)</code>,
+    <code>deref(e)</code> y <code>setref(e, e)</code>, que devuelve 1. No hay
+    <code>set</code>. El ambiente inicial liga <code>x = 4</code>,
+    <code>y = 2</code>, <code>z = 5</code> sobre <code>a = 4</code>,
+    <code>b = 5</code>, <code>c = 6</code>, sin celdas: en este lenguaje el
+    ambiente guarda valores. Cada programa empieza con el almacén vacío.
+  </div>
+
+  <div id="predicciones"></div>
+
+  <div class="carta" id="libre">
+    <h2>La máquina, abierta</h2>
+    <p style="margin-top:0">Escriba un programa y vea su traza, su cadena de
+    ambientes y el almacén al terminar.</p>
+    <textarea class="editor" rows="3" spellcheck="false">let saldo = newref(100) in let retirar = proc(m) setref(saldo, -(deref(saldo), m)) in begin (retirar 30); (retirar 20); deref(saldo) end</textarea>
+    <div class="ejemplos"></div>
+    <div class="botones">
+      <button class="primario" data-accion="correr">Ver el proceso</button>
+      <span class="atajo">Ctrl + Enter también</span>
+    </div>
+    <div class="proceso" style="display:none"></div>
+  </div>
+
+</div>
+<script src="../comun/interprete-asignacion.js"></script>
+<script src="../comun/dibujar-ambientes.js"></script>
+<script src="../comun/dibujar-almacen.js"></script>
+<script src="../comun/motor-clausuras.js"></script>
+
+<script src="explicitas.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
