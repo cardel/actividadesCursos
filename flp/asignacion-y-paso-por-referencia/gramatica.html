@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Las producciones de set y begin</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Las producciones de set y begin</h1>
+  <p class="intro">Las dos producciones nuevas de la gramática (EOPL §4.2), trabajadas en los dos sentidos. Primero, seis programas para decidir si la gramática los genera, con sorpresas en ambas direcciones; después, el reparto de un programa en los campos de <code>begin-exp</code> y <code>set-exp</code>. El tercer bloque va del árbol que no se genera a lo que habría que cambiar, y el cuarto separa lo que una expresión vale de lo que un identificador denota. Cada programa se corrió contra el intérprete de asignación; cada respuesta muestra su razón, se acierte o no.</p>
+
+  <div id="bloques"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Los cuatro bloques, resueltos</h2>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Programa</th><th>¿Se genera?</th><th>Qué pasa</th></tr></thead>
+        <tbody>
+          <tr><td><code>begin set x = set y = 7; +(x, y) end</code></td><td>sí</td><td>vale 8: x recibe el 1 del set de adentro</td></tr>
+          <tr><td><code>(set y = 0)</code></td><td>sí</td><td>se detiene al evaluar: el operador vale 1</td></tr>
+          <tr><td><code>set w = 1</code></td><td>sí</td><td>se detiene al evaluar: w no está ligada</td></tr>
+          <tr><td><code>begin x; end</code></td><td>no</td><td>después del punto y coma falta una expresión</td></tr>
+          <tr><td><code>set add1 = 3</code></td><td>no</td><td>add1 es una cadena de la gramática, no un identificador</td></tr>
+          <tr><td><code>set x = 5; x</code></td><td>no</td><td>el punto y coma solo existe dentro de un begin</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="nota">El árbol de <code>begin set y = *(y, 3); y; add1(y) end</code>
+    pone la primera expresión en <code>exp</code> y las otras dos en la lista
+    <code>lexp</code>; el de <code>begin 9 end</code> trae <code>lexp</code>
+    vacía. En <code>set-exp</code>, el campo <code>id</code> es un símbolo y
+    nunca un árbol: el lado izquierdo de set es un nombre, que denota una
+    celda, y no una expresión que se evalúe.</div>
+  </div>
+
+</div>
+<script src="../comun/motor-decisiones.js"></script>
+
+<script src="gramatica.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El orden de evaluación</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>El orden de evaluación</h1>
+  <p class="intro">Mientras ninguna expresión cambiaba nada, daba igual en qué orden evaluaba el interpretador las partes de una suma, de un <code>let</code> o de una aplicación. Con <code>set</code> deja de dar igual (EOPL §4.1). Siete programas para predecir, y en cada uno el resultado depende de un orden concreto: los operandos de una primitiva de izquierda a derecha, las ligaduras de un <code>let</code> antes de crear el eslabón, los operandos de una aplicación antes que el operador. Uno de ellos se salva de detenerse solo por ese orden.</p>
+
+  <div class="alerta">
+    El lenguaje es el del interpretador con asignación: números, variables, <code>true</code> y <code>false</code>, las primitivas antes del paréntesis
+    y con comas (<code>+(e,e)</code>, <code>-(e,e)</code>, <code>*(e,e)</code>,
+    <code>add1(e)</code>, <code>sub1(e)</code>, <code>&gt;(e,e)</code>,
+    <code>==(e,e)</code>), <code>if e then e else e</code>,
+    <code>let id = e … in e</code>, <code>proc(id, …) cuerpo</code>,
+    <code>letrec</code>, la aplicación <code>(rator rand …)</code>, que va sin
+    comas, <code>begin e; e; … end</code> y <code>set id = e</code>, que
+    devuelve 1.
+    El ambiente inicial liga <code>x = 4</code>, <code>y = 2</code>,
+    <code>z = 5</code> sobre <code>a = 4</code>, <code>b = 5</code>,
+    <code>c = 6</code>. La página hace lo mismo que el interpretador en
+    Racket, con sus verificaciones: <code>boolean?</code> en la prueba del
+    <code>if</code>, <code>procval?</code> en el operador y la cantidad de
+    argumentos. Cada programa empieza con el ambiente inicial recién creado.
+  </div>
+
+  <div id="predicciones"></div>
+
+  <div class="carta" id="libre">
+    <h2>La máquina, abierta</h2>
+    <p style="margin-top:0">Escriba un programa y vea su traza, con cada asignación en la fila donde ocurre.</p>
+    <textarea class="editor" rows="3" spellcheck="false">let k = 1 in +(begin set k = *(k, 10); k end, k)</textarea>
+    <div class="ejemplos"></div>
+    <div class="botones">
+      <button class="primario" data-accion="correr">Ver el proceso</button>
+      <span class="atajo">Ctrl + Enter también</span>
+    </div>
+    <div class="proceso" style="display:none"></div>
+  </div>
+
+</div>
+<script src="../comun/interprete-asignacion.js"></script>
+<script src="../comun/dibujar-ambientes.js"></script>
+<script src="../comun/motor-clausuras.js"></script>
+
+<script src="orden.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

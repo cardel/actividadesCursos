@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Valor y efecto</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Valor y efecto</h1>
+  <p class="intro">Hasta <code>set</code>, una expresión solo producía un valor. Ahora puede además cambiar una celda, y ese cambio lo ve todo lo que se evalúe después (EOPL §4.1). Cuatro bloques: separar la ligadura de la asignación, decidir cuándo una subexpresión se puede cambiar por su valor, medir si el orden de evaluación cambia el resultado y pesar lo que el lenguaje gana contra lo que cuesta. Cada programa se corrió en el intérprete; donde los dos intérpretes difieren, la razón lo dice.</p>
+
+  <div id="bloques"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Los cuatro bloques, resueltos</h2>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Programa</th><th>Vale</th><th>Lo que muestra</th></tr></thead>
+        <tbody>
+          <tr><td><code>let w = 7 in +(let w = add1(w) in w, w)</code></td><td>15</td><td>la ligadura crea otra celda y la de afuera sigue en 7</td></tr>
+          <tr><td><code>let w = 7 in +(begin set w = add1(w); w end, w)</code></td><td>16</td><td>la asignación cambia la celda que ya existía</td></tr>
+          <tr><td><code>let c = 10 in begin set c = 0; c end</code></td><td>0</td><td>una variable no tiene un valor fijo: depende de cuándo se lee</td></tr>
+          <tr><td><code>let w = 2 in *(w, begin set w = 5; w end)</code></td><td>10</td><td>de derecha a izquierda daría 25</td></tr>
+          <tr><td><code>let f = proc(r, s) begin set r = 10; s end in let w = 1 in (f w w)</code></td><td>1 y 10</td><td>asignación y paso por referencia: en el segundo, r y s son la misma celda</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="nota">Las cinco filas salen de la misma observación: con
+    <code>set</code>, un identificador denota una celda y no un valor. La
+    ligadura agrega celdas y la asignación cambia lo que guardan; la
+    transparencia y la independencia del orden se pierden justo en las
+    expresiones que escriben o leen una celda que alguien escribe.</div>
+  </div>
+
+</div>
+<script src="../comun/motor-decisiones.js"></script>
+
+<script src="efecto.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

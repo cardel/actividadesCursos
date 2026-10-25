@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blancos directos e indirectos</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Blancos directos e indirectos</h1>
+  <p class="intro">En el intérprete de paso por referencia, cada celda guarda un blanco (EOPL §4.3): un <code>direct-target</code> con su valor o un <code>indirect-target</code> que apunta a la celda de otra variable. Primero se decide qué blanco recibe un parámetro según su operando, y ahí hay casos que engañan, como <code>+(a, 0)</code> o el nombre de un procedimiento de <code>letrec</code>. Siguen el invariante, lo que hacen <code>deref</code> y <code>setref!</code> sobre una configuración dada, y lo que pasa en dos copias del intérprete donde <code>eval-rand</code> no aplana. Todo se midió en el intérprete, donde el ambiente inicial liga x = 1, y = 2, z = 3.</p>
+
+  <div id="bloques"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Los cuatro bloques, resueltos</h2>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Operando</th><th>Blanco del parámetro</th><th>Programa medido</th><th>Vale</th></tr></thead>
+        <tbody>
+          <tr><td>una variable, <code>c</code></td><td><code>indirect-target</code> a la celda de c</td><td><code>let f = proc(k) set k = add1(k) in begin (f c); (f c); c end</code></td><td>8</td></tr>
+          <tr><td>un literal, <code>7</code></td><td><code>direct-target 7</code></td><td><code>let f = proc(k) begin set k = add1(k); k end in (f 7)</code></td><td>8</td></tr>
+          <tr><td><code>+(a, 0)</code> o <code>begin a end</code></td><td><code>direct-target 4</code></td><td><code>let f = proc(k) set k = 0 in begin (f +(a, 0)); a end</code></td><td>4</td></tr>
+          <tr><td>un parámetro que ya es alias, <code>k</code></td><td><code>indirect-target</code> a la celda a la que apunta k</td><td><code>let g = proc(m) set m = 0 in let f = proc(k) (g k) in begin (f b); b end</code></td><td>0</td></tr>
+          <tr><td>un nombre de <code>letrec</code>, <code>h</code></td><td><code>indirect-target</code> a la celda de h</td><td><code>letrec h(n) = n in let f = proc(k) set k = proc(n) 99 in begin (f h); (h 1) end</code></td><td>99</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="nota">Sin aplanar, el cuarto programa se detiene al construir
+    el blanco de <code>m</code>. Si además se quita la comprobación del
+    datatype y <code>f</code> pasa a ser <code>proc(k) begin (g k); k end</code>,
+    el programa deja <code>b</code> en 5:
+    <code>setref!</code> sigue un solo nivel y escribe en la celda de
+    <code>k</code>, rompiendo el alias. Aplanar en <code>eval-rand</code> es lo
+    que permite que <code>deref</code> y <code>setref!</code> se queden en un
+    salto.</div>
+  </div>
+
+</div>
+<script src="../comun/motor-decisiones.js"></script>
+
+<script src="blancos.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

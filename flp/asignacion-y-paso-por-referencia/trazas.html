@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trazas con asignación</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Trazas con asignación</h1>
+  <p class="intro">Cinco programas para trazar completos: un acumulador que la recursión actualiza desde afuera, un parámetro que se asigna en dos llamadas sin que la variable de afuera se entere, tres llamadas que escriben en la misma celda, un procedimiento recursivo al que se le asigna otro, y un programa que no crea ningún ambiente y aun así cambia dos celdas. Se predicen el valor y los conteos; al comprobar, la página abre la traza con cada asignación marcada, la cadena de ambientes y lo que guarda cada celda al terminar.</p>
+
+  <div class="alerta">
+    El lenguaje es el del interpretador con asignación: números, variables, <code>true</code> y <code>false</code>, las primitivas antes del paréntesis
+    y con comas (<code>+(e,e)</code>, <code>-(e,e)</code>, <code>*(e,e)</code>,
+    <code>add1(e)</code>, <code>sub1(e)</code>, <code>&gt;(e,e)</code>,
+    <code>==(e,e)</code>), <code>if e then e else e</code>,
+    <code>let id = e … in e</code>, <code>proc(id, …) cuerpo</code>,
+    <code>letrec</code>, la aplicación <code>(rator rand …)</code>, que va sin
+    comas, <code>begin e; e; … end</code> y <code>set id = e</code>, que
+    devuelve 1.
+    El ambiente inicial liga <code>x = 4</code>, <code>y = 2</code>,
+    <code>z = 5</code> sobre <code>a = 4</code>, <code>b = 5</code>,
+    <code>c = 6</code>. La página hace lo mismo que el interpretador en
+    Racket, con sus verificaciones: <code>boolean?</code> en la prueba del
+    <code>if</code>, <code>procval?</code> en el operador y la cantidad de
+    argumentos. Cada programa empieza con el ambiente inicial recién creado.
+  </div>
+
+  <div id="predicciones"></div>
+
+  <div class="carta" id="libre">
+    <h2>La máquina, abierta</h2>
+    <p style="margin-top:0">Escriba cualquier programa del lenguaje y vea su traza. Con la casilla, corre con paso por referencia, que tiene otro ambiente inicial.</p>
+    <textarea class="editor" rows="3" spellcheck="false">let pila = 0 in let meter = proc(k) set pila = +(*(pila, 10), k) in begin (meter 4); (meter 2); (meter 7); pila end</textarea>
+    <div class="ejemplos"></div>
+    <div class="botones">
+      <button class="primario" data-accion="correr">Ver el proceso</button>
+      <label class="campo"><input type="checkbox" data-opcion="referencia"> <span>con paso por referencia</span></label>
+      <span class="atajo">Ctrl + Enter también</span>
+    </div>
+    <div class="proceso" style="display:none"></div>
+  </div>
+
+  <div class="carta">
+    <h2>El ambiente inicial en DrRacket</h2>
+    <p style="margin-top:0">Aquí cada programa empieza con el ambiente inicial recién creado. En el ciclo de lectura de DrRacket no pasa lo mismo: <code>ambiente-inicial</code> es un solo valor del módulo, y sus vectores son los mismos de un programa al siguiente. Después de evaluar <code>begin set x = 99; x end</code>, el programa <code>x</code> da 99 y no 4, hasta que se vuelva a correr el archivo.</p>
+    <div class="nota">Es la diferencia entre una ligadura y una asignación llevada al extremo: el efecto alcanza a toda la computación siguiente, también a los programas que se escriban después en el mismo ciclo.</div>
+  </div>
+
+</div>
+<script src="../comun/interprete-asignacion.js"></script>
+<script src="../comun/dibujar-ambientes.js"></script>
+<script src="../comun/motor-clausuras.js"></script>
+
+<script src="trazas.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

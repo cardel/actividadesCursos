@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dibujar la cadena con celdas que cambian</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Dibujar la cadena con celdas que cambian</h1>
+  <p class="intro">Cuatro programas y, para cada uno, un instante de la evaluación: el momento en que empieza a evaluarse una expresión. Hay que escribir los eslabones que existen entonces, del más nuevo al más viejo, con lo que guarda cada celda en ese instante y no al final. La página los dibuja mientras se escriben y señala la primera diferencia con la cadena del interpretador. En dos de ellos el eslabón de un procedimiento no está donde uno esperaría, y en otro una celda ya no es la que fue.</p>
+
+  <div class="alerta">
+    El lenguaje es el del interpretador con asignación: números, variables, <code>true</code> y <code>false</code>, las primitivas antes del paréntesis
+    y con comas (<code>+(e,e)</code>, <code>-(e,e)</code>, <code>*(e,e)</code>,
+    <code>add1(e)</code>, <code>sub1(e)</code>, <code>&gt;(e,e)</code>,
+    <code>==(e,e)</code>), <code>if e then e else e</code>,
+    <code>let id = e … in e</code>, <code>proc(id, …) cuerpo</code>,
+    <code>letrec</code>, la aplicación <code>(rator rand …)</code>, que va sin
+    comas, <code>begin e; e; … end</code> y <code>set id = e</code>, que
+    devuelve 1.
+    El ambiente inicial liga <code>x = 4</code>, <code>y = 2</code>,
+    <code>z = 5</code> sobre <code>a = 4</code>, <code>b = 5</code>,
+    <code>c = 6</code>. La página hace lo mismo que el interpretador en
+    Racket, con sus verificaciones: <code>boolean?</code> en la prueba del
+    <code>if</code>, <code>procval?</code> en el operador y la cantidad de
+    argumentos. Cada programa empieza con el ambiente inicial recién creado.
+  </div>
+
+  <div class="alerta">
+    Un eslabón se escribe con sus ligaduras entre corchetes:
+    <code>[n=0]</code>, o <code>[p=1, q=2]</code> si liga dos nombres. Los
+    dos eslabones del ambiente inicial y el vacío los pone la página. Una
+    celda que guarde un procedimiento se escribe con <code>closure</code>
+    como valor. Los nombres de los eslabones no se revisan, solo el orden,
+    los nombres ligados y lo que guarda cada celda.
+  </div>
+
+  <div id="ejercicios"></div>
+
+  <div class="carta">
+    <h2>Cómo se lee el diagrama</h2>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>En el diagrama</th><th>Qué significa</th></tr></thead>
+        <tbody>
+          <tr><td>cada ligadura de un eslabón</td><td>una celda del vector del eslabón; su referencia es la pareja (posición, vector)</td></tr>
+          <tr><td>la caja de la izquierda</td><td>el eslabón más nuevo: ahí empieza toda búsqueda</td></tr>
+          <tr><td>la flecha</td><td>va del ambiente que extiende hacia el que extendió</td></tr>
+          <tr><td>la caja gris del final</td><td>el ambiente vacío</td></tr>
+          <tr><td>el borde discontinuo</td><td>el eslabón más nuevo de la cadena</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="nota">Una asignación no agrega eslabones ni los quita: cambia lo que dice una casilla. El cuerpo de un procedimiento se evalúa en un eslabón que cuelga del ambiente que la clausura capturó, y en un <code>let f = proc…</code> ese ambiente es el de afuera del <code>let</code>.</div>
+  </div>
+
+</div>
+<script src="../comun/interprete-asignacion.js"></script>
+<script src="../comun/dibujar-ambientes.js"></script>
+<script src="../comun/motor-dibujo.js"></script>
+
+<script src="dibujar.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

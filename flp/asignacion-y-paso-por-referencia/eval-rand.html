@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>eval-rand y el llamado por referencia</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>eval-rand y el llamado por referencia</h1>
+  <p class="intro">El paso por referencia de EOPL §4.3, levantado desde el almacén. Cada celda guarda un blanco directo o indirecto, y sobre eso se escriben cuatro piezas: <code>deref</code>, que sigue un alias a lo sumo una vez; <code>setref!</code>, que escribe en la celda apuntada; <code>eval-rand</code>, que decide qué blanco recibe cada parámetro y aplana los alias; y la cláusula de la aplicación, que liga los parámetros a esos blancos. Los retos van de menor a mayor y el último es el más largo.</p>
+
+  <div class="alerta">
+    Esto no es Racket. Es un evaluador pequeño que entiende <code>define</code>,
+    <code>lambda</code>, <code>if</code>, <code>cond</code>, <code>let</code>,
+    <code>letrec</code>, <code>begin</code>, <code>and</code>, <code>or</code>,
+    <code>quote</code>, <code>define-datatype</code> y <code>cases</code>, con
+    las primitivas de listas, aritmética y vectores (<code>make-vector</code>,
+    <code>vector-ref</code>, <code>vector-set!</code>,
+    <code>list-&gt;vector</code>). No trae <code>set!</code>, <code>map</code>
+    ni <code>apply</code>: los recorridos se escriben con recursión.
+    <code>vector-set!</code> no devuelve nada, y por eso las pruebas que
+    escriben terminan en un <code>begin</code> que lee algo. Los valores de un
+    datatype se imprimen como <code>(direct-target 5)</code>. Donde aquí dice
+    <code>error</code>, en DrRacket va <code>eopl:error</code>; lo que se
+    entrega se escribe y se corre allá.
+  </div>
+
+  <div id="retos"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Los cuatro, resueltos</h2>
+    <p style="margin-top:0">Lo que queda medido en cada uno:</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead>
+          <tr><th>Reto</th><th>Lo que se midió</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>deref</code></td><td>2, <code>#f</code> y 9 sobre celdas sanas; <code>invariante-roto</code> en <code>arriba</code>, armado con una escritura cruda después de construir el indirecto</td></tr>
+          <tr><td><code>setref!</code></td><td>escribir por un alias cambia la celda de <code>dueno</code> y el alias sigue siendo indirecto; sobre el caso roto deja <code>(4 9)</code></td></tr>
+          <tr><td><code>eval-rand</code></td><td><code>w</code> y <code>p</code> entregan el mismo indirecto, a la celda 0 de <code>base</code>; <code>add1(w)</code> pasa por valor</td></tr>
+          <tr><td>aplicación</td><td><code>(g u u)</code> vale 26 y deja <code>u</code> en 13 (por valor: 18 y 5); <code>(h t +(t, e))</code> vale 27 con las dos políticas y deja <code>t</code> en 15</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="nota">El tipo <code>target</code> revisa su invariante una sola
+    vez, al construir el indirecto. Lo que lo mantiene después es la manera de
+    escribir: <code>setref!</code> nunca deja un indirecto y
+    <code>eval-rand</code> nunca apunta a uno. Sin el aplanado, la llamada a
+    <code>suma2</code> dentro de <code>prog-pasa</code> habría chocado con el
+    constructor de <code>indirect-target</code>.</div>
+  </div>
+
+  <div class="carta">
+    <h2>Consola</h2>
+    <p style="margin-top:0">Para probar cualquier cosa. Las definiciones se
+    acumulan entre corridas hasta que se reinicie la sesión.</p>
+    <textarea id="consola-entrada" class="editor" rows="9" spellcheck="false">(define-datatype referencia referencia?
+  (a-ref (pos number?) (vec vector?)))
+
+(define celdas (make-vector 3 0))
+(define r (a-ref 1 celdas))
+(cases referencia r
+  (a-ref (pos vec) (vector-set! vec pos 'aqui)))
+celdas</textarea>
+    <div class="botones">
+      <button id="btn-consola" class="primario">Ejecutar</button>
+      <button id="btn-limpiar">Reiniciar sesión</button>
+      <span class="atajo">Ctrl + Enter también ejecuta</span>
+    </div>
+    <div id="consola-salida" class="consola-salida">(sin valor)</div>
+  </div>
+
+</div>
+<script src="../comun/mini-scheme.js"></script>
+<script src="../comun/motor-retos.js"></script>
+
+<script src="eval-rand.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El ambiente con vectores</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>El ambiente con vectores</h1>
+  <p class="intro">El ambiente del intérprete con asignación, pieza por pieza (EOPL §4.2): cada eslabón guarda sus nombres en una lista y sus valores en un vector, y la celda de un nombre es su ubicación. Cinco retos: el constructor que convierte la lista de valores en vector, <code>apply-env-ref</code>, <code>apply-env</code> con una asignación, el ambiente recursivo que llena sus celdas con clausuras y un cliente que recorre la cadena. El cuarto es el más exigente: el ambiente que arma es cíclico.</p>
+
+  <div class="alerta">
+    Esto no es Racket. Es un evaluador pequeño que entiende <code>define</code>,
+    <code>lambda</code>, <code>if</code>, <code>cond</code>, <code>let</code>,
+    <code>letrec</code>, <code>begin</code>, <code>define-datatype</code> y
+    <code>cases</code>, con las primitivas de listas, aritmética y vectores
+    (<code>make-vector</code>, <code>vector-ref</code>,
+    <code>vector-set!</code>, <code>list-&gt;vector</code>,
+    <code>vector-length</code>). No tiene <code>set!</code>, <code>map</code>
+    ni <code>apply</code>. Un ambiente se imprime como
+    <code>(ambiente-extendido-ref (p q) #(3 8) (ambiente-vacio))</code>, pero
+    uno que guarda una clausura que lo guarda a él no tiene escritura finita,
+    y las pruebas sobre él preguntan con <code>eq?</code> o cuentan. Lo que
+    se entrega se escribe y se corre en DrRacket.
+  </div>
+
+  <div id="retos"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Los cinco, resueltos</h2>
+    <p style="margin-top:0">Lo que quedó medido en cada uno:</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead>
+          <tr><th>Reto</th><th>Lo que se midió</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>constructor</td><td>dos eslabones armados con la misma lista <code>'(3 8)</code>: escribir 50 en uno deja el otro en <code>#(3 8)</code></td></tr>
+          <tr><td><code>apply-env-ref</code></td><td><code>m</code> da <code>(a-ref 0 #(30 11))</code>, la del eslabón nuevo; dos consultas por <code>n</code> dan dos <code>a-ref</code> distintas</td></tr>
+          <tr><td>asignación</td><td>asignar 0 a <code>m</code> cambia <code>#(30 11)</code> y deja el 64; dos eslabones sobre la misma base comparten la celda de <code>k</code></td></tr>
+          <tr><td>recursivo</td><td>una sola clausura por nombre, y las dos capturan el eslabón que las guarda</td></tr>
+          <tr><td>recorrido</td><td><code>amb-taller</code> tiene 5 celdas y el ambiente recursivo 3</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="nota"><code>apply-env-ref</code> responde con un lugar y
+    <code>apply-env</code> con lo que hay en él; <code>set</code> necesita el
+    lugar. Como las celdas viven en el vector del eslabón, quien comparte un
+    eslabón comparte sus celdas, y por eso el ambiente recursivo puede armarse
+    primero y llenarse después.</div>
+  </div>
+
+  <div class="carta">
+    <h2>Consola</h2>
+    <p style="margin-top:0">Para probar cualquier cosa. Las definiciones se
+    acumulan entre corridas hasta que se reinicie la sesión.</p>
+    <textarea id="consola-entrada" class="editor" rows="9" spellcheck="false">(define-datatype ambiente ambiente?
+  (ambiente-vacio)
+  (ambiente-extendido-ref (lids (list-of symbol?)) (lvalue vector?)
+                          (old-env ambiente?)))
+
+(define celdas (list->vector '(5 1)))
+(define e (ambiente-extendido-ref '(alto ancho) celdas (ambiente-vacio)))
+(vector-set! celdas 1 9)
+e</textarea>
+    <div class="botones">
+      <button id="btn-consola" class="primario">Ejecutar</button>
+      <button id="btn-limpiar">Reiniciar sesión</button>
+      <span class="atajo">Ctrl + Enter también ejecuta</span>
+    </div>
+    <div id="consola-salida" class="consola-salida">(sin valor)</div>
+  </div>
+
+</div>
+<script src="../comun/mini-scheme.js"></script>
+<script src="../comun/motor-retos.js"></script>
+
+<script src="ambiente.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

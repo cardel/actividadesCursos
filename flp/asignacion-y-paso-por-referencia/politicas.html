@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Por valor y por referencia</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Por valor y por referencia</h1>
+  <p class="intro">El mismo programa con las dos políticas de paso de parámetros (EOPL §4.3). Por valor, cada aplicación crea celdas nuevas con los valores de los operandos y el llamador no ve las asignaciones del cuerpo. Por referencia, un operando que es una variable comparte su celda con el parámetro. Seis programas: se predicen los dos resultados y después se abren las dos trazas, una debajo de la otra. En uno las políticas coinciden aunque el operando valga lo mismo que una variable, y en otro el valor que se lee al final deja de ser un procedimiento.</p>
+
+  <div class="alerta">
+    El lenguaje es el mismo en los dos interpretadores: números, variables, <code>true</code> y <code>false</code>, las primitivas antes del paréntesis
+    y con comas (<code>+(e,e)</code>, <code>-(e,e)</code>, <code>*(e,e)</code>,
+    <code>add1(e)</code>, <code>sub1(e)</code>, <code>&gt;(e,e)</code>,
+    <code>==(e,e)</code>), <code>if e then e else e</code>,
+    <code>let id = e … in e</code>, <code>proc(id, …) cuerpo</code>,
+    <code>letrec</code>, la aplicación <code>(rator rand …)</code>, que va sin
+    comas, <code>begin e; e; … end</code> y <code>set id = e</code>, que
+    devuelve 1.
+    Los programas ligan sus propias variables y no usan las del ambiente
+    inicial, que en los dos interpretadores es distinto. Por valor es
+    <code>1 Asignacion</code>: cada aplicación crea celdas nuevas con los
+    valores de los operandos. Por referencia es
+    <code>2 PasoPorReferencia</code>: un operando que es una variable pasa
+    la celda misma.
+  </div>
+
+  <div id="predicciones"></div>
+
+  <div class="carta" id="libre">
+    <h2>La máquina, abierta</h2>
+    <p style="margin-top:0">Escriba un programa y córralo con cada política. Recuerde que los dos ambientes iniciales son distintos.</p>
+    <textarea class="editor" rows="3" spellcheck="false">let subir = proc(v) set v = add1(v) in let m = 5 in begin (subir m); (subir m); m end</textarea>
+    <div class="ejemplos"></div>
+    <div class="botones">
+      <button class="primario" data-accion="correr">Ver el proceso</button>
+      <label class="campo"><input type="checkbox" data-opcion="referencia"> <span>con paso por referencia</span></label>
+      <span class="atajo">Ctrl + Enter también</span>
+    </div>
+    <div class="proceso" style="display:none"></div>
+  </div>
+
+</div>
+<script src="../comun/interprete-asignacion.js"></script>
+<script src="../comun/dibujar-ambientes.js"></script>
+<script src="../comun/motor-clausuras.js"></script>
+
+<script src="politicas.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

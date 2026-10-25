@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El TAD referencia</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>El TAD referencia</h1>
+  <p class="intro">Una referencia es la pareja (posición, vector) de EOPL §4.2, y todo lo que hace una asignación pasa por <code>deref</code> y <code>setref!</code>. Cinco retos: escribir las dos primitivas, decidir cuándo dos referencias son la misma celda, intercambiar contenidos sin tocar vectores, incrementar las celdas de una lista y copiar una celda frente a compartirla. Los dos últimos son los que más piden, porque una misma celda aparece por dos caminos.</p>
+
+  <div class="alerta">
+    Esto no es Racket. Es un evaluador pequeño que entiende <code>define</code>,
+    <code>lambda</code>, <code>if</code>, <code>cond</code>, <code>let</code>,
+    <code>letrec</code>, <code>begin</code>, <code>define-datatype</code> y
+    <code>cases</code>, con las primitivas de listas, aritmética y vectores
+    (<code>make-vector</code>, <code>vector-ref</code>,
+    <code>vector-set!</code>, <code>list-&gt;vector</code>). No tiene
+    <code>set!</code>, <code>map</code> ni <code>apply</code>. Un valor de un
+    datatype se imprime como <code>(a-ref 1 #(8 3 6))</code> para poder
+    leerlo; Racket lo muestra como <code>#(struct:a-ref 1 #(8 3 6))</code>.
+    Lo que se entrega se escribe y se corre en DrRacket.
+  </div>
+
+  <div id="retos"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Los cinco, resueltos</h2>
+    <p style="margin-top:0">Lo que quedó medido en cada uno:</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead>
+          <tr><th>Reto</th><th>Lo que se midió</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>leer y escribir</td><td>dos <code>a-ref</code> a la celda 1 del mismo vector: <code>eq?</code> da <code>#f</code> y la escritura de 11 por una se lee por la otra</td></tr>
+          <tr><td>misma celda</td><td>dos vectores armados con <code>'(1 9 4)</code>: <code>equal?</code> los iguala, pero escribir 0 en uno deja el otro en 9</td></tr>
+          <tr><td>intercambiar</td><td>con la misma celda dos veces, la versión con <code>let</code> la deja en 12 y la de sumas y restas en 0</td></tr>
+          <tr><td>incrementar</td><td><code>(list a c a)</code> sobre <code>#(2 7 0)</code>: lecturas <code>(3 1 4)</code>, contenidos finales <code>(4 1 4)</code></td></tr>
+          <tr><td>copiar o compartir</td><td>después de escribir 99, la celda original guarda 13 si se copió y 99 si se compartió</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="nota">Una referencia no es su contenido ni es la pareja que
+    la representa: es la celda. Dos <code>a-ref</code> distintas pueden
+    denotarla, y dos celdas con el mismo número siguen siendo dos. De ahí
+    salen las sorpresas de los retos 3 y 4, y la diferencia entre pasar un
+    argumento por valor y por referencia del reto 5.</div>
+  </div>
+
+  <div class="carta">
+    <h2>Consola</h2>
+    <p style="margin-top:0">Para probar cualquier cosa. Las definiciones se
+    acumulan entre corridas hasta que se reinicie la sesión.</p>
+    <textarea id="consola-entrada" class="editor" rows="9" spellcheck="false">(define-datatype referencia referencia?
+  (a-ref (pos number?) (vec vector?)))
+
+(define celdas (list->vector '(4 0 7 1)))
+(define r (a-ref 3 celdas))
+(vector-set! celdas 3 20)
+(list r (vector-ref celdas 3))</textarea>
+    <div class="botones">
+      <button id="btn-consola" class="primario">Ejecutar</button>
+      <button id="btn-limpiar">Reiniciar sesión</button>
+      <span class="atajo">Ctrl + Enter también ejecuta</span>
+    </div>
+    <div id="consola-salida" class="consola-salida">(sin valor)</div>
+  </div>
+
+</div>
+<script src="../comun/mini-scheme.js"></script>
+<script src="../comun/motor-retos.js"></script>
+
+<script src="referencia.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

@@ -49,7 +49,7 @@ tabla no existe para quien busca.
 
 ## Catálogo
 
-Son 345 actividades. El enlace lleva al archivo; para verlas funcionando hay que
+Son 360 actividades. El enlace lleva al archivo; para verlas funcionando hay que
 abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 
 ### Árboles y Grafos — `ayg-puj`
@@ -241,6 +241,21 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 
 | Tema | Actividad | Qué pide |
 |---|---|---|
+| `asignacion-y-paso-por-referencia` | [`alias`](flp/asignacion-y-paso-por-referencia/alias.html) | Alias con paso por referencia |
+|  | [`ambiente`](flp/asignacion-y-paso-por-referencia/ambiente.html) | El ambiente con vectores |
+|  | [`blancos`](flp/asignacion-y-paso-por-referencia/blancos.html) | Blancos directos e indirectos |
+|  | [`cierre`](flp/asignacion-y-paso-por-referencia/cierre.html) | Escribir el evaluador y extender el lenguaje |
+|  | [`compartir`](flp/asignacion-y-paso-por-referencia/compartir.html) | Clausuras que comparten estado |
+|  | [`dibujar`](flp/asignacion-y-paso-por-referencia/dibujar.html) | Dibujar la cadena con celdas que cambian |
+|  | [`dibujar-referencia`](flp/asignacion-y-paso-por-referencia/dibujar-referencia.html) | Dibujar la cadena con paso por referencia |
+|  | [`efecto`](flp/asignacion-y-paso-por-referencia/efecto.html) | Valor y efecto |
+|  | [`eval-rand`](flp/asignacion-y-paso-por-referencia/eval-rand.html) | eval-rand y el llamado por referencia |
+|  | [`gramatica`](flp/asignacion-y-paso-por-referencia/gramatica.html) | Las producciones de set y begin |
+|  | [`orden`](flp/asignacion-y-paso-por-referencia/orden.html) | El orden de evaluación |
+|  | [`politicas`](flp/asignacion-y-paso-por-referencia/politicas.html) | Por valor y por referencia |
+|  | [`referencia`](flp/asignacion-y-paso-por-referencia/referencia.html) | El TAD referencia |
+|  | [`reglas`](flp/asignacion-y-paso-por-referencia/reglas.html) | Las cláusulas de set y begin en el evaluador |
+|  | [`trazas`](flp/asignacion-y-paso-por-referencia/trazas.html) | Trazas con asignación |
 | `datatypes-y-arboles-sintaxis-abstracta` | [`arboles`](flp/datatypes-y-arboles-sintaxis-abstracta/arboles.html) | ¿Cuál árbol es? |
 |  | [`cases`](flp/datatypes-y-arboles-sintaxis-abstracta/cases.html) | Recorrer con cases |
 |  | [`construir`](flp/datatypes-y-arboles-sintaxis-abstracta/construir.html) | Construir el árbol a mano |
