@@ -19,7 +19,10 @@ var MotorClausuras = (function () {
     applyProc: { etiqueta: "Procedimientos aplicados", leer: function (r) { return r.cuenta.applyProc; } },
     variables: { etiqueta: "Variables que se evalúan", leer: function (r) { return r.cuenta.variables; } },
     ambientes: { etiqueta: "Ambientes que se crean", leer: function (r) { return r.cuenta.ambientes; } },
-    clausuras: { etiqueta: "Clausuras que se crean", leer: function (r) { return r.cuenta.clausuras; } }
+    clausuras: { etiqueta: "Clausuras que se crean", leer: function (r) { return r.cuenta.clausuras; } },
+    asignaciones: { etiqueta: "Asignaciones que se ejecutan", leer: function (r) { return r.cuenta.asignaciones; } },
+    celdas:    { etiqueta: "Celdas que se crean", leer: function (r) { return r.cuenta.celdas; } },
+    indirectos: { etiqueta: "Operandos que viajan como indirect-target", leer: function (r) { return r.cuenta.indirectos; } }
   };
 
   function elemento(html) {
@@ -39,8 +42,9 @@ var MotorClausuras = (function () {
   function panelTraza(r) {
     var paso = 0;
     var filas = r.traza.map(function (f) {
-      if (f.creacion) {
-        return '<tr class="fila-creacion"><td></td><td colspan="3">' + escapar(f.expresion) + "</td></tr>";
+      if (f.creacion || f.escritura) {
+        return '<tr class="' + (f.escritura ? "fila-escritura" : "fila-creacion") +
+          '"><td></td><td colspan="3">' + escapar(f.expresion) + "</td></tr>";
       }
       paso++;
       return "<tr><td>" + paso + "</td><td><code>" + escapar(f.expresion) + "</code></td><td>" +
@@ -57,16 +61,35 @@ var MotorClausuras = (function () {
       r.cuenta.valueOf + " llamadas a <code>value-of</code> · " +
       r.cuenta.applyProc + " procedimientos aplicados · " +
       r.cuenta.variables + " variables evaluadas · " +
-      r.cuenta.ambientes + " ambientes creados</p>";
+      r.cuenta.ambientes + " ambientes creados" +
+      (r.mutable ? " · " + r.cuenta.asignaciones + " asignaciones" : "") + "</p>";
+  }
+
+  /* Con asignación, lo que guarda cada celda al terminar: los marcos que el
+     programa creó y los del ambiente inicial, en el orden en que nacieron. */
+  function panelCeldas(r) {
+    if (!r.mutable || !r.env0) { return ""; }
+    var marcos = [], e = r.env0;
+    while (e) { marcos.push(e); e = e.viejo; }
+    marcos = marcos.reverse().concat(r.marcos || []);
+    var filas = marcos.map(function (m) {
+      return "<tr><td>" + m.nombre + "</td><td><code>" + escapar(m.ligaduras.map(function (l) {
+        return l[0] + " = " + INT.escribir(l[1]); }).join(", ")) + "</code></td></tr>";
+    }).join("");
+    return "<h3>Lo que guarda cada celda al terminar</h3>" +
+      '<div class="envoltura-tabla"><table class="tabla-traza"><thead><tr><th>Marco</th>' +
+      "<th>Celdas</th></tr></thead><tbody>" + filas + "</tbody></table></div>";
   }
 
   function panelAmbientes(r) {
     var partes;
     if (r.ultimaLlamada) {
-      partes = ["<h3>La cadena donde se evaluó el cuerpo del último procedimiento aplicado</h3>",
+      partes = ["<h3>La cadena donde se evaluó el cuerpo del último procedimiento aplicado" +
+                (r.mutable ? ", con lo que guardan sus celdas al terminar" : "") + "</h3>",
                 cadena(r.ultimaLlamada, r.ultimaLlamada.nombre, "cadena de ambientes")];
     } else {
-      partes = ["<h3>La cadena de ambientes, en su punto más hondo</h3>",
+      partes = ["<h3>La cadena de ambientes, en su punto más hondo" +
+                (r.mutable ? ", con lo que guardan sus celdas al terminar" : "") + "</h3>",
                 cadena(r.masProfundo, r.masProfundo.nombre, "cadena de ambientes")];
     }
     if (r.clausuras && r.clausuras.length) {
@@ -111,15 +134,15 @@ var MotorClausuras = (function () {
       /* Si se detuvo evaluando, lo que alcanzó a hacer explica por qué: la
          traza llega hasta la expresión que falló. */
       if (r.traza && r.traza.length && r.cuenta) {
-        return aviso + panelTraza(r) + panelAmbientes(r);
+        return aviso + panelTraza(r) + panelAmbientes(r) + panelCeldas(r);
       }
       return aviso;
     }
-    return panelTraza(r) + panelAmbientes(r);
+    return panelTraza(r) + panelAmbientes(r) + panelCeldas(r);
   }
 
   function pintarPrediccion(p) {
-    var r = INT.ejecutar(p.programa);
+    var r = INT.ejecutar(p.programa, p.opciones);
     var carta = elemento(
       '<div class="carta">' +
         "<h2>" + p.titulo + "</h2>" +
@@ -176,18 +199,26 @@ var MotorClausuras = (function () {
   }
 
   /* --- Los dos alcances, lado a lado -------------------------------- */
+  var ALCANCES = [{ rotulo: "Con alcance estático", titulo: "Con alcance estático, el del lenguaje" },
+                  { rotulo: "Con alcance dinámico", titulo: "Con alcance dinámico, para comparar",
+                    opciones: { dinamico: true } }];
+
+  /* Dos reglas sobre el mismo programa. Sin p.modos son los dos alcances; con
+     p.modos, las dos que la tarjeta nombre, cada una con sus opciones para el
+     interpretador. */
   function pintarAlcance(p) {
-    var estatico = INT.ejecutar(p.programa);
-    var dinamico = INT.ejecutar(p.programa, { dinamico: true });
+    var modos = p.modos || ALCANCES;
+    var estatico = INT.ejecutar(p.programa, modos[0].opciones);
+    var dinamico = INT.ejecutar(p.programa, modos[1].opciones);
     var carta = elemento(
       '<div class="carta">' +
         "<h2>" + p.titulo + "</h2>" +
         (p.enunciado ? "<p>" + p.enunciado + "</p>" : "") +
         '<pre class="codigo programa-simulador">' + escapar(p.programa) + "</pre>" +
         '<div class="campos-prediccion">' +
-          '<label class="campo"><span>Con alcance estático</span>' +
+          '<label class="campo"><span>' + modos[0].rotulo + '</span>' +
           '<input type="text" size="8" data-clave="est"></label>' +
-          '<label class="campo"><span>Con alcance dinámico</span>' +
+          '<label class="campo"><span>' + modos[1].rotulo + '</span>' +
           '<input type="text" size="8" data-clave="din"></label>' +
         "</div>" + AVISO_ERROR +
         '<div class="botones">' +
@@ -205,14 +236,14 @@ var MotorClausuras = (function () {
 
     carta.querySelector('[data-accion="comprobar"]').addEventListener("click", function () {
       var lineas = [], todo = true;
-      [["est", estatico, "Con alcance estático"], ["din", dinamico, "Con alcance dinámico"]]
+      [["est", estatico, modos[0].rotulo], ["din", dinamico, modos[1].rotulo]]
         .forEach(function (par) {
           var entrada = carta.querySelector('input[data-clave="' + par[0] + '"]');
           var esperado = par[1].error ? null : par[1].texto;
           var dado = entrada.value.trim();
           var bien = dado !== "" && (par[1].error
             ? diceError(dado)
-            : dado === String(esperado));
+            : dado === String(esperado) || (esTextoDeClausura(esperado) && diceClausura(dado)));
           if (!bien) { todo = false; }
           entrada.className = bien ? "bien" : "mal";
           lineas.push((bien ? "✓ " : "✗ ") + par[2] + ": " + escapar(resultado(par[1])));
@@ -228,8 +259,8 @@ var MotorClausuras = (function () {
 
     btnProceso.addEventListener("click", function () {
       zonaProceso.innerHTML =
-        "<h3>Con alcance estático, el del lenguaje</h3>" + proceso(estatico) +
-        "<h3>Con alcance dinámico, para comparar</h3>" + proceso(dinamico);
+        "<h3>" + (modos[0].titulo || modos[0].rotulo) + "</h3>" + proceso(estatico) +
+        "<h3>" + (modos[1].titulo || modos[1].rotulo) + "</h3>" + proceso(dinamico);
       zonaProceso.style.display = "block";
       btnProceso.disabled = true;
     });
@@ -243,9 +274,13 @@ var MotorClausuras = (function () {
     var salida = caja.querySelector(".proceso");
     var marca = caja.querySelector('input[type="checkbox"]');
 
+    /* La casilla dice qué opción del interpretador prende: dinamico si no
+       nombra otra. */
+    var opcion = (marca && marca.getAttribute("data-opcion")) || "dinamico";
     function correr() {
-      var r = INT.ejecutar(entrada.value.trim(),
-                                           { dinamico: marca && marca.checked });
+      var op = {};
+      op[opcion] = !!(marca && marca.checked);
+      var r = INT.ejecutar(entrada.value.trim(), op);
       salida.innerHTML = proceso(r);
       salida.style.display = "block";
     }
@@ -267,7 +302,7 @@ var MotorClausuras = (function () {
     var destino = document.getElementById(opciones.destino);
     if (destino) {
       (opciones.predicciones || []).forEach(function (p) {
-        destino.appendChild(p.alcances ? pintarAlcance(p) : pintarPrediccion(p));
+        destino.appendChild(p.alcances || p.modos ? pintarAlcance(p) : pintarPrediccion(p));
       });
     }
     if (opciones.libre) { montarLibre(opciones.libre, opciones.ejemplos); }

@@ -77,7 +77,9 @@ var MotorDibujo = (function () {
         if (mio[k][0] !== suyo[k][0]) {
           return cual + "liga «" + mio[k][0] + "» donde va «" + suyo[k][0] + "».";
         }
-        if (!mismoValor(mio[k][1], INT.escribir(suyo[k][1]), suyo[k][0])) {
+        var igual = INT.mismoValor ? INT.mismoValor(mio[k][1], suyo[k][1])
+                                   : mismoValor(mio[k][1], INT.escribir(suyo[k][1]), suyo[k][0]);
+        if (!igual) {
           return cual + "le da a «" + suyo[k][0] + "» el valor " + (mio[k][1] || "nada") +
             " y debía valer " + INT.escribir(suyo[k][1]) + ".";
         }
@@ -93,7 +95,9 @@ var MotorDibujo = (function () {
                destacado: destacar && i === 0 };
     });
     inicial.forEach(function (e) {
-      cadena.push({ nombre: e.nombre, ligaduras: e.ligaduras });
+      cadena.push({ nombre: e.nombre, ligaduras: e.ligaduras.map(function (l) {
+        return [l[0], INT.escribir(l[1])];
+      }) });
     });
     return '<div class="envoltura-ambientes">' +
       DibujarAmbientes.svg(cadena, { titulo: "cadena de ambientes" }) + "</div>";
@@ -108,7 +112,7 @@ var MotorDibujo = (function () {
   }
 
   function pintar(ej) {
-    var salida = INT.ejecutar(ej.programa);
+    var salida = INT.ejecutar(ej.programa, ej.opciones);
     var cadena = INT.cadenaEn(salida, ej.momento);
     /* Los dos últimos eslabones son el ambiente inicial del interpretador y
        no se piden: el estudiante escribe lo que el programa construye. */

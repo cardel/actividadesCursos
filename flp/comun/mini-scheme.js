@@ -33,6 +33,8 @@ var MiniScheme = (function () {
   function Dato(tipo, variante, campos) {
     this.tipo = tipo; this.variante = variante; this.campos = campos;
   }
+  /* Un vector: celdas que vector-set! puede cambiar en su sitio. */
+  function Vector(celdas) { this.celdas = celdas; }
 
   function ErrorScheme(mensaje) { this.mensaje = mensaje; }
   function fallar(mensaje) { throw new ErrorScheme(mensaje); }
@@ -129,6 +131,7 @@ var MiniScheme = (function () {
     if (v instanceof Dato) {
       return "(" + [v.variante].concat(v.campos.map(escribir)).join(" ") + ")";
     }
+    if (v instanceof Vector) { return "#(" + v.celdas.map(escribir).join(" ") + ")"; }
     if (v instanceof Par) {
       var partes = [], p = v;
       while (p instanceof Par) { partes.push(escribir(p.car)); p = p.cdr; }
@@ -153,6 +156,11 @@ var MiniScheme = (function () {
     if (a instanceof Dato && b instanceof Dato) {
       if (a.tipo !== b.tipo || a.variante !== b.variante || a.campos.length !== b.campos.length) { return false; }
       for (var i = 0; i < a.campos.length; i++) { if (!iguales(a.campos[i], b.campos[i])) { return false; } }
+      return true;
+    }
+    if (a instanceof Vector && b instanceof Vector) {
+      if (a.celdas.length !== b.celdas.length) { return false; }
+      for (var j = 0; j < a.celdas.length; j++) { if (!iguales(a.celdas[j], b.celdas[j])) { return false; } }
       return true;
     }
     return false;
@@ -324,6 +332,46 @@ var MiniScheme = (function () {
       return r;
     });
     prim("reverse", 1, 1, function (a) { return desdeArreglo(aArreglo(a[0]).reverse()); });
+
+    /* Vectores: las celdas mutables sobre las que se apoyan las referencias.
+       vector-set! cambia la celda en su sitio y no devuelve nada que
+       imprimir, igual que en Racket. */
+    function vector(nombre, v) {
+      if (!(v instanceof Vector)) { fallar(nombre + " esperaba un vector y recibió " + escribir(v) + "."); }
+      return v;
+    }
+    function posicion(nombre, v, k) {
+      if (typeof k !== "number" || k < 0 || k % 1 !== 0) {
+        fallar(nombre + " esperaba una posición entera desde 0 y recibió " + escribir(k) + ".");
+      }
+      if (k >= v.celdas.length) {
+        fallar(nombre + " pidió la posición " + k + " de un vector de " + v.celdas.length +
+               " celda" + (v.celdas.length === 1 ? "" : "s") + ".");
+      }
+      return k;
+    }
+    prim("vector", 0, Infinity, function (a) { return new Vector(a.slice()); });
+    prim("make-vector", 1, 2, function (a) {
+      var n = numero("make-vector", a[0]), celdas = [];
+      for (var i = 0; i < n; i++) { celdas.push(a.length > 1 ? a[1] : 0); }
+      return new Vector(celdas);
+    });
+    prim("vector?", 1, 1, function (a) { return a[0] instanceof Vector; });
+    prim("vector-length", 1, 1, function (a) { return vector("vector-length", a[0]).celdas.length; });
+    prim("vector-ref", 2, 2, function (a) {
+      var v = vector("vector-ref", a[0]);
+      return v.celdas[posicion("vector-ref", v, a[1])];
+    });
+    prim("vector-set!", 3, 3, function (a) {
+      var v = vector("vector-set!", a[0]);
+      v.celdas[posicion("vector-set!", v, a[1])] = a[2];
+      return undefined;
+    });
+    prim("list->vector", 1, 1, function (a) {
+      if (!esLista(a[0])) { fallar("list->vector esperaba una lista y recibió " + escribir(a[0]) + "."); }
+      return new Vector(aArreglo(a[0]));
+    });
+    prim("vector->list", 1, 1, function (a) { return desdeArreglo(vector("vector->list", a[0]).celdas.slice()); });
     prim("not", 1, 1, function (a) { return a[0] === false; });
     prim("eq?", 2, 2, function (a) { return a[0] === a[1] || (typeof a[0] === "number" && a[0] === a[1]); });
     prim("eqv?", 2, 2, function (a) { return a[0] === a[1] || (typeof a[0] === "number" && a[0] === a[1]); });
