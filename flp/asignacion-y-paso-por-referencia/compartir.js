@@ -49,8 +49,9 @@ var PREDICCIONES = [
       "<code>retirar</code>.",
     programa: "let saldo = 100 in let retirar = proc(m) set saldo = -(saldo, m) in let ver = proc() saldo in begin (retirar 30); (retirar 20); (ver) end",
     pista:
-      "Con referencias, las dos clausuras capturaron el mismo eslabón y " +
-      "apuntan a la misma celda de saldo: lo que escribe retirar lo lee ver. " +
+      "Con referencias, cada clausura capturó el eslabón que había cuando se " +
+      "creó, y las dos cadenas pasan por el de saldo: llegan a la misma " +
+      "celda, así que lo que escribe retirar lo lee ver. " +
       "Con copias, cada clausura tendría su propio saldo y ver seguiría " +
       "viendo el 100 con que se creó."
   },
