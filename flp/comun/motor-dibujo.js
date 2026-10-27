@@ -127,6 +127,8 @@ var MotorDibujo = (function () {
         "<p>Dibuje la cadena tal como está <strong>en el momento en que se evalúa " +
           "<code>" + escapar(ej.momento) + "</code></strong>. Escriba un eslabón por " +
           "línea, del más nuevo al más viejo, con sus ligaduras entre corchetes. " +
+          "El eslabón de una llamada a un procedimiento sin parámetros no liga " +
+          "nada y se escribe <code>[]</code>, pero cuenta como eslabón. " +
           "Los dos eslabones del ambiente inicial y el vacío los pone la página.</p>" +
         '<textarea class="editor" rows="4" spellcheck="false" ' +
           'placeholder="' + (ej.ejemplo || "[b=9]&#10;[a=3]") + '"></textarea>' +

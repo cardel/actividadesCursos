@@ -135,6 +135,7 @@
 .amb-vacio + .amb-nombre, .amb-caja.amb-vacio ~ .amb-nombre { fill: #666; }
 .amb-ligadura { font: 12px ui-monospace, SFMono-Regular, Menlo, monospace;
   fill: #333; text-anchor: middle; }
+.amb-sin { fill: #888; font-style: italic; }
 .amb-flecha { stroke: #666; stroke-width: 1.3; }
 .amb-punta { fill: #666; }
 .amb-rotulo { font: 10px system-ui, sans-serif; fill: #888; text-anchor: middle; }

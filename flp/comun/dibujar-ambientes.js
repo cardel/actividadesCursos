@@ -17,9 +17,13 @@ var DibujarAmbientes = (function () {
   function textoLigadura(l) { return l[0] + " = " + comoTexto(l[1]); }
 
   function medir(eslabon) {
-    var lineas = [eslabon.nombre].concat((eslabon.ligaduras || []).map(textoLigadura));
+    /* Una llamada a un procedimiento sin parámetros crea un eslabón que no
+       liga nada, y ese eslabón se dibuja igual que los demás. */
+    var ligaduras = eslabon.ligaduras || [];
+    var lineas = [eslabon.nombre].concat(
+      ligaduras.length ? ligaduras.map(textoLigadura) : ["sin ligaduras"]);
     var ancho = Math.max.apply(null, lineas.map(function (t) { return t.length; }));
-    return { lineas: lineas,
+    return { lineas: lineas, sinLigaduras: ligaduras.length === 0,
              ancho: Math.max(64, ancho * ANCHO_CARACTER + 2 * RELLENO),
              alto: lineas.length * ALTO_LINEA + 2 * RELLENO };
   }
@@ -28,7 +32,8 @@ var DibujarAmbientes = (function () {
     opciones = opciones || {};
     var eslabones = cadena.map(function (e) {
       var m = medir(e);
-      return { datos: e, lineas: m.lineas, ancho: m.ancho, alto: m.alto };
+      return { datos: e, lineas: m.lineas, sinLigaduras: m.sinLigaduras,
+               ancho: m.ancho, alto: m.alto };
     });
     eslabones.push({ datos: { nombre: "empty-env", vacio: true }, lineas: ["empty-env"],
                      ancho: 92, alto: ALTO_LINEA + 2 * RELLENO });
@@ -42,7 +47,9 @@ var DibujarAmbientes = (function () {
       partes.push('<rect class="' + clase + '" x="' + x + '" y="' + y +
                   '" width="' + e.ancho + '" height="' + e.alto + '" rx="8"/>');
       e.lineas.forEach(function (t, k) {
-        partes.push('<text class="' + (k === 0 ? "amb-nombre" : "amb-ligadura") +
+        partes.push('<text class="' +
+                    (k === 0 ? "amb-nombre"
+                             : "amb-ligadura" + (e.sinLigaduras ? " amb-sin" : "")) +
                     '" x="' + (x + e.ancho / 2) + '" y="' +
                     (y + RELLENO + ALTO_LINEA * k + 13) + '">' +
                     String(t).replace(/</g, "&lt;") + "</text>");

@@ -50,6 +50,9 @@ var DibujarAlmacen = (function () {
           renglones.push({ texto: (k ? "    " : "") + t, ref: k === 0 && l[1] && l[1].ref !== undefined ? l[1].ref : null });
         });
       });
+      /* Una llamada a un procedimiento sin parámetros crea un eslabón que no
+         liga nada, y ese eslabón se dibuja igual que los demás. */
+      if (renglones.length === 1) { renglones.push({ texto: "sin ligaduras", sin: true }); }
       var ancho = Math.max(70, Math.max.apply(null, renglones.map(function (r) {
         return r.texto.length; })) * ANCHO_CARACTER + 2 * RELLENO);
       var alto = renglones.length * ALTO_LINEA + 2 * RELLENO;
@@ -64,10 +67,12 @@ var DibujarAlmacen = (function () {
                   '" height="' + c.alto + '" rx="8"/>');
       c.renglones.forEach(function (r, k) {
         var ty = y + RELLENO + ALTO_LINEA * k + 13;
-        partes.push('<text class="' + (r.titulo ? "amb-nombre" : "amb-ligadura alm-izq") + '" x="' +
+        partes.push('<text class="' +
+                    (r.titulo ? "amb-nombre"
+                              : "amb-ligadura alm-izq" + (r.sin ? " amb-sin" : "")) + '" x="' +
                     (r.titulo ? c.x + c.ancho / 2 : c.x + RELLENO) + '" y="' + ty + '">' +
                     esc(r.texto) + "</text>");
-        if (r.ref !== null) { refs.push(r.ref); }
+        if (r.ref !== null && r.ref !== undefined) { refs.push(r.ref); }
       });
       /* Las flechas salen del borde inferior de la caja, repartidas en el
          orden de las ligaduras, para no cruzar el texto. */

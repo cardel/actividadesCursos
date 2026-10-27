@@ -17,7 +17,7 @@
     <h2>Dónde nace cada celda</h2>
     <p style="margin-top:0"><code>let f = proc(u) u in (f 3)</code>: el <code>let</code> reserva la celda 6 para la clausura y la llamada reserva la 7 para <code>u</code>.</p>
     <div class="envoltura-ambientes">
-      <svg class="diagrama-ambientes" viewBox="0 0 640 210" width="640" role="img" aria-label="Ambiente y almacén de let f = proc(u) u in (f 3)">
+      <svg class="diagrama-ambientes" viewBox="0 0 800 210" width="800" role="img" aria-label="Ambiente y almacén de let f = proc(u) u in (f 3)">
         <defs><marker id="pR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" class="alm-punta"/></marker>
         <marker id="pA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" class="amb-punta"/></marker></defs>
         <rect class="amb-caja amb-nuevo" x="4" y="4" width="120" height="46" rx="8"/>
@@ -28,6 +28,12 @@
         <line class="amb-flecha" x1="290" y1="80" x2="324" y2="40" marker-end="url(#pA)"/>
         <rect class="amb-caja" x="326" y="4" width="150" height="46" rx="8"/>
         <text class="amb-nombre" x="401" y="23">amb0</text><text class="amb-ligadura" x="401" y="41">x, y, z: celdas 0-2</text>
+        <line class="amb-flecha" x1="482" y1="40" x2="500" y2="62" marker-end="url(#pA)"/>
+        <rect class="amb-caja" x="506" y="64" width="150" height="46" rx="8"/>
+        <text class="amb-nombre" x="581" y="83">base</text><text class="amb-ligadura" x="581" y="101">a, b, c: celdas 3-5</text>
+        <line class="amb-flecha" x1="662" y1="80" x2="680" y2="52" marker-end="url(#pA)"/>
+        <rect class="amb-caja amb-vacio" x="686" y="4" width="106" height="46" rx="8"/>
+        <text class="amb-nombre" x="739" y="32">empty-env</text>
         <text class="alm-titulo" x="4" y="150">almacén</text>
         <rect class="alm-celda alm-inicial" x="4" y="160" width="200" height="26"/><text class="amb-ligadura alm-gris" x="104" y="177">celdas 0 a 5</text>
         <rect class="alm-celda" x="208" y="160" width="230" height="26"/><text class="amb-ligadura" x="323" y="177">(closure (u) u amb0)</text>
@@ -50,7 +56,7 @@
           <tr><td><code>var-exp</code></td><td><code>deref</code> de la referencia que devuelve <code>apply-env</code></td></tr>
           <tr><td><code>set-exp</code></td><td><code>setref!</code> sobre esa misma referencia; vale 1</td></tr>
           <tr><td><code>let-exp</code></td><td>un <code>newref</code> por variable</td></tr>
-          <tr><td><code>app-exp</code></td><td>un <code>newref</code> por parámetro: paso por valor</td></tr>
+          <tr><td><code>app-exp</code></td><td>un <code>newref</code> por parámetro: paso por valor. El eslabón de la llamada se crea igual cuando no hay ninguno</td></tr>
           <tr><td>buscar un nombre de <code>letrec</code></td><td>un <code>newref</code> con la clausura recién hecha</td></tr>
         </tbody>
       </table>
