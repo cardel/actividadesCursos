@@ -31,3 +31,12 @@ input.mini { width: 3.5rem; padding: 0.25rem 0.4rem; border: 1px solid var(--bor
 .par.vieja { color: var(--gris); text-decoration: line-through; background: var(--codigo-fondo); }
 .caja-struct { max-height: 11rem; overflow: auto; border: 1px solid var(--borde); border-radius: 8px; padding: 0.3rem 0.5rem; background: var(--codigo-fondo); font-family: ui-monospace, monospace; font-size: 0.82rem; }
 pre.salida { background: var(--codigo-fondo); border: 1px solid var(--borde); border-radius: 8px; padding: 0.4rem 0.7rem; font-size: 0.82rem; min-height: 1.6rem; }
+/* Preguntas de opción múltiple con retroalimentación por opción. */
+.pregunta { margin: 0.5rem 0 0.2rem; font-weight: 600; }
+.opciones-v { display: block; margin-top: 0.5rem; }
+.opcion { display: block; width: 100%; text-align: left; margin: 0.3rem 0; }
+.opcion.elegida { border-color: var(--azul); background: var(--azul-suave); }
+.fb { margin-top: 0.5rem; font-size: 0.9rem; padding: 0.45rem 0.7rem; border-radius: 6px; display: none; }
+.fb.bien { display: block; background: var(--verde-suave); color: var(--verde); }
+.fb.mal { display: block; background: var(--rojo-suave); color: var(--rojo); }
+.leyenda { font-size: 0.85rem; color: var(--gris); text-align: center; }

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reconstruir el camino con nex</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Reconstruir el camino con nex</h1>
+  <p class="intro"><code>nex[i][j]</code> es el vértice que sigue después de <code>i</code> en un camino más
+  corto hacia <code>j</code>. El camino se arma hacia adelante: desde <code>i</code> se salta a
+  <code>nex[i][j]</code> y se repite hasta llegar. Una de las parejas de abajo no tiene camino, y ahí los
+  saltos llevan a una arista que no existe.</p>
+  <div class="carta"><b>Resueltas: <span id="resueltas">0</span> de <span id="total">6</span></b></div>
+
+  <div class="carta">
+    <h2>1. El grafo</h2>
+    <div class="dibujo" id="panel-grafo"></div>
+    <div class="leyenda">En verde el origen de la pareja en curso, en ámbar el destino y en morado los
+    saltos que se llevan dados.</div>
+    <p class="nota" id="ver-aristas"></p>
+  </div>
+
+  <div class="carta">
+    <h2>2. Las dos matrices</h2>
+    <div class="par-paneles">
+      <div><div id="panel-d"></div></div>
+      <div><div id="panel-nex"></div></div>
+    </div>
+    <div class="leyenda">A la izquierda las distancias, con la pareja en curso marcada. A la derecha
+    <code>nex</code>, con la columna del destino sombreada: es la que se lee salto tras salto.</div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Escriba los caminos</h2>
+    <p class="nota" style="margin-top:0">Los vértices separados por espacios, incluidos los dos extremos.
+    Si la pareja no tiene camino, escriba <code>ninguno</code>.</p>
+    <div id="parejas"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Siga los saltos</h2>
+    <div class="presets" id="presets-par"></div>
+    <p class="nota" id="ver-pareja"></p>
+    <div class="tira"><span class="rot">Camino</span><span id="ver-saltos"></span></div>
+    <div class="botones">
+      <button id="btn-salto" class="primario">Salto siguiente</button>
+      <button id="btn-reiniciar">Reiniciar</button>
+    </div>
+    <div class="nota" id="ver-cuenta"></div>
+  </div>
+
+  <div class="carta">
+    <h2>5. Para llevarse</h2>
+    <p style="margin-top:0">Sin solución aquí. Escriba la función que recibe <code>d</code>,
+    <code>nex</code>, <code>i</code> y <code>j</code> y devuelve la lista de vértices del camino, o la lista
+    vacía cuando no hay, con un solo <code>return</code> al final. Después diga qué pasa si se le quita la
+    comparación con la distancia y se corre sobre la pareja que aquí no tiene camino.</p>
+  </div>
+</div>
+<script src="../comun/grafo-svg.js"></script>
+<script src="lib.js"></script>
+<script src="camino.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

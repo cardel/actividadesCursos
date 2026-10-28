@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plantear un escenario como grafo de estado</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Plantear un escenario como grafo de estado</h1>
+  <p class="intro">Una ciudad con cruces y vías de doble sentido. Recorrer una vía de longitud ℓ toma ℓ
+  minutos y gasta ℓ de batería. Un carro eléctrico sale con la batería llena, tiene capacidad
+  <code>C</code>, y en algunos cruces hay estación de carga, donde dejar la batería llena toma
+  <code>t</code> minutos. Se pide el menor tiempo hasta el cruce de destino. Las ocho preguntas de abajo
+  son las que se responden de cualquier problema de este tipo, en su orden.</p>
+  <div class="carta"><b>Resueltas: <span id="resueltas">0</span> de <span id="total">8</span></b></div>
+
+  <div class="carta">
+    <h2>La ciudad</h2>
+    <div class="dibujo" id="panel-grafo"></div>
+    <div class="leyenda">Los cuadros ámbar son los cruces con estación de carga. En verde el cruce de
+    salida, en azul el de destino. Las vías no tienen sentido: se recorren en los dos.</div>
+    <p class="nota" id="ver-datos"></p>
+  </div>
+
+  <div id="preguntas"></div>
+
+  <div class="carta">
+    <h2>La respuesta</h2>
+    <div class="prediccion">
+      <span>¿Cuál es el menor tiempo, en minutos, para llegar al destino?</span>
+      <input type="number" id="tiempo" placeholder="0">
+      <button id="btn-tiempo" class="primario">Comprobar</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+    <div id="panel-ruta"></div>
+  </div>
+
+  <div class="carta">
+    <h2>Para llevarse</h2>
+    <p style="margin-top:0">Sin solución aquí. Queda la quinta pregunta, que es dibujar: haga el pedazo
+    del grafo de estados que sale del estado inicial, con dos niveles de transiciones y la acción escrita
+    en cada arista. Después suba la capacidad de la batería a 12, diga cuánto tarda el carro, por qué la
+    carga desaparece de la respuesta y por qué el cruce 2 deja de ser un callejón sin salida. Por último,
+    escriba cuántos estados caben si el enunciado agregara un límite de <code>K</code> cargas.</p>
+  </div>
+</div>
+<script src="../comun/grafo-svg.js"></script>
+<script src="escenario.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

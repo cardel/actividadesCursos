@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La recurrencia de Floyd-Warshall</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>La recurrencia de Floyd-Warshall</h1>
+  <p class="intro">Un paso del algoritmo agrega un vértice al conjunto de intermedios permitidos y aplica
+  <code>d[i][j] = min(d[i][j], d[i][k] + d[k][j])</code> a toda la matriz. Aquí se escoge el paso, se marcan
+  las parejas que mejoran y se escribe el valor nuevo de una de ellas antes de ver la matriz que queda.</p>
+
+  <div class="carta">
+    <h2>1. El grafo y el paso</h2>
+    <div class="presets" id="presets-grafo"></div>
+    <p class="nota" id="ver-texto"></p>
+    <div class="presets" id="presets-k" style="margin-top:0.5rem"></div>
+    <div class="dibujo" id="panel-grafo"></div>
+    <div class="leyenda">En ámbar, el vértice <i>k</i> que se permite como intermedio. En azul, sus aristas.</div>
+    <p class="nota" id="ver-paso"></p>
+  </div>
+
+  <div class="carta">
+    <h2>2. La matriz antes del paso</h2>
+    <div id="panel-matriz"></div>
+    <div class="leyenda">Sombreadas, la fila <i>k</i> y la columna <i>k</i>: son las dos entradas que la
+    recurrencia consulta para cada pareja, y las únicas que el paso no puede mover.</div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Marque las parejas que mejoran</h2>
+    <p class="nota" style="margin-top:0">Haga clic en cada casilla que baja en este paso. Vuelva a hacer clic
+    para quitarla. La diagonal aparece con un punto porque sin ciclos negativos se queda en 0.</p>
+    <div id="panel-rejilla"></div>
+    <div class="botones"><button id="btn-marcas" class="primario">Comprobar</button></div>
+    <div id="fb-marcas" class="fb"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. El valor nuevo</h2>
+    <div class="prediccion">
+      <span id="pregunta-valor"></span>
+      <input type="text" id="valor" class="corto" placeholder="entero o inf">
+      <button id="btn-valor" class="primario">Comprobar</button>
+    </div>
+    <div id="fb-valor" class="fb"></div>
+  </div>
+
+  <div class="carta">
+    <h2>5. La matriz después del paso</h2>
+    <div id="panel-siguiente"></div>
+  </div>
+
+  <div class="carta">
+    <h2>6. Para llevarse</h2>
+    <p style="margin-top:0">Sin solución aquí. Tome el grafo de cinco vértices y recorra los pasos de
+    <code>k = 0</code> a <code>k = 4</code> contando cuántas parejas mejoran en cada uno. Después cambie el
+    orden de los vértices en su cabeza, permitiendo primero el 4 y de último el 0, y diga cuáles pasos
+    mejoran ahora y si la matriz final es la misma.</p>
+  </div>
+</div>
+<script src="../comun/grafo-svg.js"></script>
+<script src="lib.js"></script>
+<script src="intermedios.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

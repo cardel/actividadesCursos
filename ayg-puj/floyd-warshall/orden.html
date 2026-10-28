@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El orden de los tres ciclos</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>El orden de los tres ciclos</h1>
+  <p class="intro">Seis variantes del mismo cuerpo, cambiando el orden en que se anidan los ciclos de
+  <code>k</code>, <code>i</code> y <code>j</code>. Para cada una se decide si deja en la matriz las
+  distancias y se escoge la razón. Al comprobar aparece la matriz que esa variante deja de verdad, corrida
+  sobre el grafo de abajo, con las parejas que no coinciden marcadas.</p>
+  <div class="carta"><b>Resueltas: <span id="resueltas">0</span> de <span id="total">6</span></b></div>
+
+  <div class="carta">
+    <h2>El grafo de prueba</h2>
+    <div class="dibujo" id="panel-grafo"></div>
+    <div class="leyenda">Cinco vértices en un ciclo numerado al revés del recorrido, más la arista
+    <code>4 → 0</code> de peso 20, en ámbar, que es cara pero existe.</div>
+    <p class="nota" id="ver-aristas"></p>
+    <h2 style="margin-top:1rem">Las distancias</h2>
+    <div id="panel-correcta"></div>
+    <div class="leyenda">Es contra esta matriz que se compara cada variante.</div>
+  </div>
+
+  <div id="variantes"></div>
+
+  <div class="carta">
+    <h2>Para llevarse</h2>
+    <p style="margin-top:0">Sin solución aquí. Las variantes que fallan dejan <code>d[2][0]</code> en 29 o
+    varias parejas en ∞. Escriba, para una de ellas, en qué momento de la corrida se decide ese 29 y qué
+    valor tenía <code>d[0][2]</code> entonces. Después construya el grafo más pequeño que distinga
+    <code>k, i, j</code> de <code>i, j, k</code> y diga cuántos vértices y cuántas aristas necesita.</p>
+  </div>
+</div>
+<script src="../comun/grafo-svg.js"></script>
+<script src="lib.js"></script>
+<script src="orden.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

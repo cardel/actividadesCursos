@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El triple ciclo sobre la matriz</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>El triple ciclo sobre la matriz</h1>
+  <p class="intro">Se ejecuta <code>floydWarshall</code>, la versión de una sola matriz, línea por línea. El
+  arranque ya corrió: <code>d</code> es la matriz de pesos con la diagonal en 0. El número que acompaña a
+  cada línea es el de su archivo, y el contador dice cuántas veces se ejecuta.</p>
+
+  <div class="carta">
+    <h2>1. El grafo y la predicción</h2>
+    <div class="presets" id="presets-grafo"></div>
+    <p class="nota" id="ver-texto"></p>
+    <div class="dibujo" id="panel-grafo"></div>
+    <div class="leyenda">En ámbar, el vértice <i>k</i> de la pasada en curso. En azul claro, el vértice
+    <i>i</i> de la fila que se está recorriendo.</div>
+    <div class="prediccion">
+      <span>¿Cuántas veces se ejecuta la línea 57, la que baja una distancia, en toda la corrida?</span>
+      <input type="number" id="prediccion" placeholder="0">
+      <button id="btn-comprobar" class="primario">Comprobar</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Ejecute el código</h2>
+    <div class="panel-doble">
+      <div class="codigo" id="panel-codigo"></div>
+      <div class="estado">
+        <div class="chips" id="chips"></div>
+        <div class="progreso">Paso <span id="ver-paso">0</span> de <span id="ver-total">0</span></div>
+        <div class="botones">
+          <button id="btn-paso" class="primario">Un paso</button>
+          <button id="btn-auto">Auto</button>
+          <button id="btn-fin">Al final</button>
+          <button id="btn-reiniciar">Reiniciar</button>
+        </div>
+        <div class="tira"><span class="rot">Pasadas</span><span id="ver-pasadas"></span></div>
+        <div class="nota" id="ver-cuerpo"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>3. La matriz</h2>
+    <div id="panel-matriz"></div>
+    <div class="leyenda">Sombreadas, la fila <i>k</i> y la columna <i>k</i>, que la pasada lee y no mueve.
+    Con borde ámbar, la pareja que se está mirando; en verde, la que acaba de bajar.</div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Lo que cuesta</h2>
+    <div id="cuentas"></div>
+  </div>
+
+  <div class="carta">
+    <h2>5. Para llevarse</h2>
+    <p style="margin-top:0">Sin solución aquí. Lleve la corrida hasta el final y mire la columna de una
+    pareja que nunca bajó: escriba la comparación que la línea 56 hizo en cada uno de los pasos y diga por
+    qué ninguna fue cierta. Después agregue al primer grafo una arista de peso 1 del último vértice al
+    primero y diga cuántas veces correría la línea 57.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="lib.js"></script>
+<script src="pasada.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

@@ -49,7 +49,7 @@ tabla no existe para quien busca.
 
 ## Catálogo
 
-Son 360 actividades. El enlace lleva al archivo; para verlas funcionando hay que
+Son 365 actividades. El enlace lleva al archivo; para verlas funcionando hay que
 abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 
 ### Árboles y Grafos — `ayg-puj`
@@ -81,7 +81,12 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`red`](ayg-puj/conectividad/red.html) | quince páginas y sus enlaces |
 |  | [`tiempos`](ayg-puj/conectividad/tiempos.html) | los dos relojes y el orden por finalización |
 |  | [`transpuesto`](ayg-puj/conectividad/transpuesto.html) | el grafo al revés y el grafo de componentes |
+| `floyd-warshall` | [`camino`](ayg-puj/floyd-warshall/camino.html) | reconstruir el camino siguiendo nex |
+|  | [`intermedios`](ayg-puj/floyd-warshall/intermedios.html) | qué parejas mejoran al permitir el vértice k |
+|  | [`orden`](ayg-puj/floyd-warshall/orden.html) | seis órdenes de los tres ciclos |
+|  | [`pasada`](ayg-puj/floyd-warshall/pasada.html) | el triple ciclo sobre la matriz |
 | `grafos-de-estado` | [`capas`](ayg-puj/grafos-de-estado/capas.html) | los estados de cada capa del grafo |
+|  | [`escenario`](ayg-puj/grafos-de-estado/escenario.html) | plantear un escenario nuevo como grafo de estado |
 |  | [`estados`](ayg-puj/grafos-de-estado/estados.html) | la búsqueda en amplitud de The New Villa con máscaras |
 |  | [`mario`](ayg-puj/grafos-de-estado/mario.html) | Super Mario con Dijkstra sobre los estados |
 |  | [`mascaras`](ayg-puj/grafos-de-estado/mascaras.html) | operaciones con bits sobre las luces |
