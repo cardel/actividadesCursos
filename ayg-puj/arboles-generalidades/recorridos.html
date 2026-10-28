@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Los cuatro recorridos y el árbol que los produjo</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Los cuatro recorridos y el árbol que los produjo</h1>
+  <p class="intro">Los tres recorridos de profundidad visitan los mismos nodos y bajan por los mismos
+  lados; lo único que cambia es cuándo se escribe la raíz. El de amplitud va por niveles. Primero se
+  escriben los cuatro de un árbol dado, y después se hace el camino de vuelta: dos recorridos y el árbol
+  que sale de ellos.</p>
+
+  <div class="carta">
+    <h2>1. Escribir los cuatro recorridos</h2>
+    <div class="presets" id="presets-arbol"></div>
+    <p class="nota" id="ver-texto"></p>
+    <div class="dibujo" id="panel-arbol"></div>
+    <div class="leyenda">Los valores van separados por espacios. El hijo que falta se ve en el dibujo:
+    un nodo con un solo hijo lo tiene a un lado concreto, y eso cambia tres de los cuatro recorridos.</div>
+    <div id="campos"></div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-comprobar" class="primario">Comprobar los cuatro</button>
+      <button id="btn-limpiar">Limpiar</button>
+    </div>
+    <div id="fb-general" class="fb"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Reconstruir el árbol con dos recorridos</h2>
+    <div class="presets" id="presets-caso"></div>
+    <p class="nota" id="ver-caso"></p>
+    <div class="tira"><span class="rot" id="rot-otro"></span><span id="ver-otro"></span></div>
+    <div class="tira"><span class="rot">Inorden</span><span id="ver-ino"></span></div>
+    <p class="pregunta" id="ver-pregunta"></p>
+    <div class="estrato" id="candidatos"></div>
+    <div id="fb-rec" class="fb"></div>
+    <div class="dibujo" id="panel-rec"></div>
+    <div class="leyenda" id="pie-rec"></div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-reiniciar-rec">Empezar de nuevo</button>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Para llevarse</h2>
+    <p style="margin-top:0">Sin solución aquí. Del segundo árbol de la primera tarjeta, el inorden sale
+    en orden creciente y del primero no. Diga qué tiene el segundo que el primero no tiene, y si eso
+    mismo se puede leer en el preorden. Después tome un nodo que tenga un solo hijo y páselo al otro
+    lado: diga cuál de los cuatro recorridos cambia y por qué los otros tres se quedan iguales.</p>
+  </div>
+</div>
+<script src="lib.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="recorridos.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

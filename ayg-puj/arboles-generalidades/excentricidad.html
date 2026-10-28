@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Excentricidad, radio, diámetro y centro</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Excentricidad, radio, diámetro y centro</h1>
+  <p class="intro">La excentricidad de un vértice es la mayor de sus distancias al resto, y una búsqueda
+  en amplitud desde ese vértice las calcula todas. Con las excentricidades de los ocho vértices ya salen el
+  radio, el diámetro y el centro. Aquí se corre la amplitud, se llenan las excentricidades y se
+  cierran las tres cifras.</p>
+
+  <div class="carta">
+    <h2>1. El grafo y la fuente</h2>
+    <div class="presets" id="presets-grafo"></div>
+    <p class="nota" id="ver-texto"></p>
+    <div class="presets" id="presets-fuente"></div>
+    <div class="dibujo" id="panel-grafo"></div>
+    <div class="leyenda">En ámbar, la fuente. En azul claro, el vértice que acaba de salir de la cola.
+    Encima de cada vértice, su distancia a la fuente cuando ya la tiene.</div>
+  </div>
+
+  <div class="carta">
+    <h2>2. La amplitud desde esa fuente</h2>
+    <div class="panel-doble">
+      <div class="codigo" id="panel-codigo"></div>
+      <div class="estado">
+        <div class="chips" id="chips"></div>
+        <div class="progreso">Paso <span id="ver-paso">0</span> de <span id="ver-total">0</span></div>
+        <div class="botones">
+          <button id="btn-paso" class="primario">Un paso</button>
+          <button id="btn-auto">Auto</button>
+          <button id="btn-fin">Al final</button>
+          <button id="btn-reiniciar">Reiniciar</button>
+        </div>
+        <div class="nota" id="ver-cuerpo"></div>
+      </div>
+    </div>
+    <div class="arreglo fila-arreglo" id="panel-dist"></div>
+    <div class="tira"><span class="rot">La cola</span><span id="ver-cola"></span></div>
+  </div>
+
+  <div class="carta" id="carta-ecc">
+    <h2>3. La excentricidad de cada vértice</h2>
+    <p class="nota" style="margin-top:0">Una amplitud por vértice y la mayor de sus distancias. Se puede
+    llenar corriendo la traza de arriba con cada fuente.</p>
+    <div id="campos-ecc"></div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-ecc" class="primario">Comprobar</button>
+    </div>
+    <div id="fb-ecc" class="fb"></div>
+  </div>
+
+  <div class="carta" id="carta-rdc">
+    <h2>4. Radio, diámetro y centro</h2>
+    <div class="fila-par">
+      <span class="rotulo">Radio: la menor de las excentricidades</span>
+      <input type="number" id="in-radio" class="corto" placeholder="0">
+      <span class="fb" id="fb-radio"></span>
+    </div>
+    <div class="fila-par">
+      <span class="rotulo">Diámetro: la mayor de las excentricidades</span>
+      <input type="number" id="in-diametro" class="corto" placeholder="0">
+      <span class="fb" id="fb-diametro"></span>
+    </div>
+    <div class="pregunta">El centro: marque los vértices cuya excentricidad es igual al radio.</div>
+    <div class="estrato" id="centro"></div>
+    <div id="fb-centro" class="fb"></div>
+    <div class="botones" style="margin-top:0.7rem">
+      <button id="btn-rdc" class="primario">Comprobar los tres</button>
+    </div>
+    <div id="fb-cota" class="fb"></div>
+  </div>
+
+  <div class="carta" id="carta-roto">
+    <h2>5. Un grafo que no es conexo</h2>
+    <div class="fila-par">
+      <span class="rotulo">Al correr <code>amplitud(p)</code>, ¿cuántos vértices se quedan en −1?</span>
+      <input type="number" id="in-menos" class="corto" placeholder="0">
+      <span class="fb" id="fb-menos"></span>
+    </div>
+    <div class="botones" style="margin-top:0.4rem">
+      <button id="btn-menos" class="primario">Comprobar</button>
+    </div>
+    <p class="pregunta">¿Qué devuelve <code>excentricidad(p)</code> en este grafo?</p>
+    <div class="opciones col" id="opciones-roto"></div>
+    <div id="fb-roto" class="fb"></div>
+  </div>
+
+  <div class="carta">
+    <h2>6. Para llevarse</h2>
+    <p style="margin-top:0">Sin solución aquí. En el grafo con ciclos, corra la amplitud desde los dos
+    vértices del centro y diga qué tienen en común sus arreglos de distancias. En el árbol, compruebe que
+    el diámetro es exactamente el doble del radio y encuentre un árbol de ocho vértices donde no lo sea.
+    Después escriba qué habría que cambiarle a <code>excentricidad</code> para que avise cuando el grafo
+    no es conexo, sin agregar un recorrido más.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="lib.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="excentricidad.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

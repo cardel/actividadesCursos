@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Una función recursiva sobre [n izq der], llamado por llamado</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Una función recursiva sobre [n izq der], llamado por llamado</h1>
+  <p class="intro">Un árbol es la lista vacía o una lista con el valor del nodo y sus dos subárboles.
+  <code>contarNodos</code> y <code>altura</code> siguen esa gramática renglón por renglón y se diferencian
+  en dos cosas: cuánto vale el caso base y qué se hace con lo que devuelven los dos subárboles. Aquí se
+  ejecutan paso a paso, con la pila de llamados a la vista.</p>
+
+  <div class="carta">
+    <h2>1. El árbol, la función y la predicción</h2>
+    <div class="presets" id="presets-arbol"></div>
+    <div class="presets" id="presets-func"></div>
+    <p class="nota" id="ver-texto"></p>
+    <div class="dibujo" id="panel-arbol"></div>
+    <div class="leyenda">En ámbar, el subárbol que recibió el llamado en curso. En verde, los nodos cuyo
+    llamado ya devolvió, con el valor devuelto encima.</div>
+    <div class="prediccion">
+      <span id="rot-prediccion">¿Cuántas veces se ejecuta la línea del caso base en toda la corrida?</span>
+      <input type="number" id="prediccion" placeholder="0">
+      <button id="btn-comprobar" class="primario">Comprobar</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Ejecute el código</h2>
+    <p class="nota" style="margin-top:0">Las dos funciones están en el panel. El contador de cada línea
+    dice cuántas veces se ejecutó, y las líneas de la función que no se está corriendo se quedan en cero.</p>
+    <div class="panel-doble">
+      <div class="codigo" id="panel-codigo"></div>
+      <div class="estado">
+        <div class="chips" id="chips"></div>
+        <div class="progreso">Paso <span id="ver-paso">0</span> de <span id="ver-total">0</span></div>
+        <div class="botones">
+          <button id="btn-paso" class="primario">Un paso</button>
+          <button id="btn-auto">Auto</button>
+          <button id="btn-fin">Al final</button>
+          <button id="btn-reiniciar">Reiniciar</button>
+        </div>
+        <div class="nota" id="ver-cuerpo"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>3. La pila de llamados</h2>
+    <div class="pila" id="panel-pila"></div>
+    <div class="leyenda">El llamado de arriba es el que se está ejecutando. Cada marco guarda su propio
+    <code>A</code> y su propio <code>ans</code>, y solo desaparece cuando devuelve.</div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Lo que cuesta</h2>
+    <div id="cuentas"></div>
+  </div>
+
+  <div class="carta">
+    <h2>5. Para llevarse</h2>
+    <p style="margin-top:0">Sin solución aquí. Corra <code>altura</code> sobre el árbol en fila y mire
+    hasta dónde llega la pila; después diga cuántos marcos tendría con mil nodos en fila y qué pasa en
+    Python cuando eso ocurre. Escriba además qué devolvería <code>altura</code> si el caso base valiera
+    0 en vez de −1, con el árbol de un solo nodo como prueba.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="lib.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="recursion.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

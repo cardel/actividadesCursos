@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reconocer un árbol y contar sus piezas</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Reconocer un árbol y contar sus piezas</h1>
+  <p class="intro">Un árbol es un grafo no dirigido, conexo y acíclico, y tiene <i>n</i> − 1 aristas.
+  Comprobar la conexidad o la ausencia de ciclos cuesta un recorrido; contar las aristas no cuesta nada.
+  Aquí se decide con lo más barato que alcance en cada caso, y donde no alcance se dice que no alcanza.</p>
+
+  <div class="carta">
+    <h2>1. Ocho grafos descritos por sus números</h2>
+    <p style="margin-top:0">De cada uno se dan la cantidad de vértices, la cantidad de aristas y, en
+    algunos, si es conexo o acíclico. Al escoger una opción aparece la retroalimentación de esa opción.</p>
+    <div><b>Resueltos: <span id="resueltos">0</span> de <span id="total">8</span></b></div>
+    <div id="casos"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Tres grafos dibujados</h2>
+    <div class="presets" id="presets"></div>
+    <p class="nota" id="ver-texto"></p>
+    <div class="dibujo" id="panel-grafo"></div>
+    <div class="leyenda">Los vértices van de <i>p</i> a <i>w</i> en los tres. Las aristas no tienen
+    sentido ni peso.</div>
+    <div id="cuentas"></div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-cuentas" class="primario">Comprobar las tres</button>
+    </div>
+    <div id="fb-cuentas"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Para llevarse</h2>
+    <p style="margin-top:0">Sin solución aquí. Tome el segundo grafo y quite la arista que cierra el
+    ciclo. La cuenta de hojas sube en uno: diga cuál de los dos extremos de esa arista se vuelve hoja y
+    por qué el otro no, mirando solo sus grados. Después escriba, para un grafo acíclico cualquiera,
+    cuántas componentes tiene en función de <i>n</i> y de |<i>E</i>|, y pruebe la fórmula con el tercer
+    grafo.</p>
+  </div>
+</div>
+<script src="lib.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="propiedades.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

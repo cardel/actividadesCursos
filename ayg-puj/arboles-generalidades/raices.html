@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El mismo árbol colgado de raíces distintas</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>El mismo árbol colgado de raíces distintas</h1>
+  <p class="intro">El grafo no trae raíz. Escoger una no cambia el grafo, cambia el dibujo: quién es padre
+  de quién, qué profundidad tiene cada nodo y cuánto mide el árbol. Aquí se predice lo que cambia antes de
+  verlo, y al final queda a la vista lo que no se movió en ninguna de las ocho.</p>
+
+  <div class="carta">
+    <h2>1. El árbol como llega</h2>
+    <div class="dibujo" id="panel-libre"></div>
+    <div class="leyenda">Ocho vértices y siete aristas: <i>pq</i>, <i>qr</i>, <i>qs</i>, <i>st</i>,
+    <i>tu</i>, <i>sv</i>, <i>vw</i>. Sin raíz, sin sentido en las aristas y sin niveles.</div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Escoja la raíz y prediga</h2>
+    <div class="presets" id="presets"></div>
+    <div class="fila-par">
+      <span class="rotulo" id="rot-altura">Altura del árbol colgado de esa raíz</span>
+      <input type="number" id="in-altura" class="corto" placeholder="0">
+      <span class="fb" id="fb-altura"></span>
+    </div>
+    <div class="fila-par">
+      <span class="rotulo" id="rot-prof">Profundidad del vértice</span>
+      <input type="number" id="in-prof" class="corto" placeholder="0">
+      <span class="fb" id="fb-prof"></span>
+    </div>
+    <div class="pregunta">¿Cuáles vértices son hojas con esa raíz? Marque todos los que lo sean.</div>
+    <div class="estrato" id="hojas"></div>
+    <div id="fb-hojas" class="fb"></div>
+    <div class="botones" style="margin-top:0.7rem">
+      <button id="btn-comprobar" class="primario">Comprobar las tres</button>
+      <button id="btn-ver">Ver el árbol colgado</button>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>3. El árbol colgado</h2>
+    <div class="dibujo" id="panel-colgado"></div>
+    <div class="leyenda" id="pie-colgado"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Lo que cambia y lo que no</h2>
+    <div id="tabla-raices"></div>
+    <div id="invariantes"></div>
+  </div>
+
+  <div class="carta">
+    <h2>5. Para llevarse</h2>
+    <p style="margin-top:0">Sin solución aquí. Una sola de las ocho raíces deja la altura más pequeña y
+    cuatro dejan la más grande. Diga cuáles son y qué tienen en común las cuatro del segundo grupo.
+    Después cuelgue un vértice nuevo de <i>t</i> y diga, sin volver a dibujar las ocho, si alguna raíz
+    cambia de altura; repítalo colgándolo de <i>u</i> y explique por qué los dos casos no se parecen.</p>
+  </div>
+</div>
+<script src="lib.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="raices.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
