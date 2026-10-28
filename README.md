@@ -49,13 +49,18 @@ tabla no existe para quien busca.
 
 ## Catálogo
 
-Son 365 actividades. El enlace lleva al archivo; para verlas funcionando hay que
+Son 416 actividades. El enlace lleva al archivo; para verlas funcionando hay que
 abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 
 ### Árboles y Grafos — `ayg-puj`
 
 | Tema | Actividad | Qué pide |
 |---|---|---|
+| `arboles-generalidades` | [`excentricidad`](ayg-puj/arboles-generalidades/excentricidad.html) | excentricidad de cada vértice, radio, diámetro y centro |
+|  | [`propiedades`](ayg-puj/arboles-generalidades/propiedades.html) | decidir si un grafo es árbol y contar aristas, hojas y ciclos |
+|  | [`raices`](ayg-puj/arboles-generalidades/raices.html) | el mismo árbol libre colgado de cada una de sus raíces |
+|  | [`recorridos`](ayg-puj/arboles-generalidades/recorridos.html) | los cuatro recorridos y la reconstrucción con dos de ellos |
+|  | [`recursion`](ayg-puj/arboles-generalidades/recursion.html) | contarNodos y altura con la pila de llamados a la vista |
 | `bellman-ford-moore` | [`bellman`](ayg-puj/bellman-ford-moore/bellman.html) | Bellman-Ford |
 |  | [`errores`](ayg-puj/bellman-ford-moore/errores.html) | Líneas cambiadas |
 |  | [`moore`](ayg-puj/bellman-ford-moore/moore.html) | Moore |
@@ -181,11 +186,22 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`potencias`](estructuras-de-datos/ciclos-dependientes-sumatorias/potencias.html) | contador de pasos |
 |  | [`suma_parejas`](estructuras-de-datos/ciclos-dependientes-sumatorias/suma_parejas.html) | contador de pasos |
 |  | [`triangulo`](estructuras-de-datos/ciclos-dependientes-sumatorias/triangulo.html) | contador de pasos |
+| `claves-compuestas` | [`comparador`](estructuras-de-datos/claves-compuestas/comparador.html) | un comparador para Persona |
+|  | [`hash-persona`](estructuras-de-datos/claves-compuestas/hash-persona.html) | funciones hash para Persona |
 | `cola-implementacion` | [`costoscola`](estructuras-de-datos/cola-implementacion/costoscola.html) | lo que cobra cada operación |
 |  | [`dosextremos`](estructuras-de-datos/cola-implementacion/dosextremos.html) | la cola necesita los dos extremos |
 |  | [`encolar`](estructuras-de-datos/cola-implementacion/encolar.html) | la cola sobre la lista enlazada |
 |  | [`residuo`](estructuras-de-datos/cola-implementacion/residuo.html) | la cola que ya tienen |
 |  | [`vaciar`](estructuras-de-datos/cola-implementacion/vaciar.html) | sin la lista de por medio |
+| `contenedor-map` | [`combinacion`](estructuras-de-datos/contenedor-map/combinacion.html) | una combinación como clave |
+|  | [`consultar`](estructuras-de-datos/contenedor-map/consultar.html) | consultar y eliminar |
+|  | [`corchetes`](estructuras-de-datos/contenedor-map/corchetes.html) | insertar con corchetes |
+|  | [`elegir`](estructuras-de-datos/contenedor-map/elegir.html) | tabla hash o map |
+|  | [`orden`](estructuras-de-datos/contenedor-map/orden.html) | orden de las claves |
+|  | [`palabras`](estructuras-de-datos/contenedor-map/palabras.html) | contar palabras |
+| `contenedor-unordered-map` | [`cubetas`](estructuras-de-datos/contenedor-unordered-map/cubetas.html) | cubetas y recorrido |
+|  | [`elegir`](estructuras-de-datos/contenedor-unordered-map/elegir.html) | map o unordered_map |
+|  | [`rehash`](estructuras-de-datos/contenedor-unordered-map/rehash.html) | factor de carga y rehash |
 | `contenedores-list-deque-stack-queue` | [`bloques`](estructuras-de-datos/contenedores-list-deque-stack-queue/bloques.html) | deque: bloques y mapa |
 |  | [`debajo`](estructuras-de-datos/contenedores-list-deque-stack-queue/debajo.html) | stack y queue: lo que va debajo |
 |  | [`dosclases`](estructuras-de-datos/contenedores-list-deque-stack-queue/dosclases.html) | Escoger por el costo: una fila o dos colas |
@@ -270,6 +286,15 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`casillas`](estructuras-de-datos/tabla-direccionamiento-directo/casillas.html) | la clave dice la casilla |
 |  | [`contar`](estructuras-de-datos/tabla-direccionamiento-directo/contar.html) | contadores en las casillas y lo que ocupa la tabla |
 |  | [`costos`](estructuras-de-datos/tabla-direccionamiento-directo/costos.html) | lo que cobra la tabla directa y cuándo sirve |
+| `tabla-hash` | [`buscar`](estructuras-de-datos/tabla-hash/buscar.html) | buscar y eliminar |
+|  | [`cadenas`](estructuras-de-datos/tabla-hash/cadenas.html) | el valor hash de una cadena |
+|  | [`carga`](estructuras-de-datos/tabla-hash/carga.html) | factor de carga y peor caso |
+|  | [`casilla`](estructuras-de-datos/tabla-hash/casilla.html) | la casilla de cada clave |
+|  | [`encadenar`](estructuras-de-datos/tabla-hash/encadenar.html) | insertar con encadenamiento |
+|  | [`escoger`](estructuras-de-datos/tabla-hash/escoger.html) | escoger m |
+|  | [`multiplicacion`](estructuras-de-datos/tabla-hash/multiplicacion.html) | el método de la multiplicación |
+|  | [`negativos`](estructuras-de-datos/tabla-hash/negativos.html) | claves negativas |
+|  | [`universo`](estructuras-de-datos/tabla-hash/universo.html) | pocas claves, universo enorme |
 | `tad-lista-pila-cola` | [`cola`](estructuras-de-datos/tad-lista-pila-cola/cola.html) | TAD Lista, Pila y Cola |
 |  | [`disciplinas`](estructuras-de-datos/tad-lista-pila-cola/disciplinas.html) | TAD Lista, Pila y Cola |
 |  | [`juntos`](estructuras-de-datos/tad-lista-pila-cola/juntos.html) | TAD Lista, Pila y Cola |
