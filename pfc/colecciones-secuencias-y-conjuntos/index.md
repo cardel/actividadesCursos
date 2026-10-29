@@ -1,6 +1,6 @@
 # Ejercicios · PFC · Colecciones: secuencias y conjuntos
 
-Nueve ejercicios para recorrer en el navegador, en el orden en que se presentan
+Once ejercicios para recorrer en el navegador, en el orden en que se presentan
 los temas. Ninguno muestra nada antes de que usted produzca algo: hay trazas
 que avanzan paso a paso, valores que hay que predecir antes de verlos y
 opciones entre las que hay que escoger, y cada opción equivocada dice en qué
@@ -71,6 +71,27 @@ alto orden que les corresponde. Hay cinco cadenas para las cuatro
 expresiones, y una de ellas usa `map` donde hace falta `flatMap`: no le
 corresponde a ninguna, y descubrir por qué es el ejercicio. Las dos
 escrituras de las parejas primas devuelven el mismo vector.
+
+### [traducir](traducir.html){ target=_blank rel=noopener }
+
+Lo mismo por el otro lado: en lugar de reconocer la equivalencia, derivarla.
+Se llega a la cadena por reescrituras, de un generador a dos con filtro, y en
+cada paso hay que decir qué función entra. Dos resultados medidos sostienen el
+ejercicio: con `filter` en lugar de `withFilter` el valor es el mismo, y lo
+que cambia es que `withFilter` no construye la colección intermedia; y poner
+`map` donde va `flatMap` deja cinco vectores anidados en lugar de las siete
+parejas. Cierra con el `for` sin `yield`, que devuelve `()` de tipo `Unit` y
+es el ciclo imperativo que aquí no se usa.
+
+### [ordenGeneradores](ordenGeneradores.html){ target=_blank rel=noopener }
+
+Con dos generadores, el de la derecha es el que varía más rápido, y la traza
+lo muestra pareja por pareja. Invertirlos da los mismos seis pares en otra
+secuencia, de modo que las dos versiones son iguales con `toSet` y distintas
+con `==`, que es donde cuesta no responder que da lo mismo. Después el
+generador que depende del anterior: recorre un triángulo y da seis pares donde
+el independiente da nueve, e invertirlo no compila. El mensaje del compilador
+está copiado de la corrida.
 
 ## Conjuntos
 

@@ -461,8 +461,10 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`flatmap`](pfc/colecciones-secuencias-y-conjuntos/flatmap.html) | por qué map deja el resultado anidado |
 |  | [`forExpr`](pfc/colecciones-secuencias-y-conjuntos/forExpr.html) | empareje el for con su cadena de alto orden |
 |  | [`jerarquia`](pfc/colecciones-secuencias-y-conjuntos/jerarquia.html) | qué colección resuelve cada necesidad |
+|  | [`ordenGeneradores`](pfc/colecciones-secuencias-y-conjuntos/ordenGeneradores.html) | qué generador varía más rápido y qué pasa al invertirlos |
 |  | [`rangos`](pfc/colecciones-secuencias-y-conjuntos/rangos.html) | to, until, by y lo que el rango no guarda |
 |  | [`ternas`](pfc/colecciones-secuencias-y-conjuntos/ternas.html) | prediga las candidatas y véalas descartarse |
+|  | [`traducir`](pfc/colecciones-secuencias-y-conjuntos/traducir.html) | derive la cadena, una reescritura por vez |
 |  | [`vector`](pfc/colecciones-secuencias-y-conjuntos/vector.html) | los dos agregados y lo que ya sabía de List |
 | `evaluacion-y-sustitucion` | [`evaluacion`](pfc/evaluacion-y-sustitucion/evaluacion.html) | por valor y por nombre |
 |  | [`sustituir`](pfc/evaluacion-y-sustitucion/sustituir.html) | la expresión que se encoge |

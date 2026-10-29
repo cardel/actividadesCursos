@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Del for a la cadena, una reescritura por vez</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .item {
+    border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem;
+  }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.95rem; font-weight: 700; color: var(--azul);
+    overflow-wrap: anywhere; white-space: pre-wrap;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.88rem; min-width: 4rem;
+  }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 16rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  .codigo { max-height: none; }
+  .peldano {
+    display: flex; gap: 0.6rem; align-items: baseline;
+    padding: 0.35rem 0.5rem; border-radius: 8px; background: var(--codigo-fondo);
+    border: 1px solid var(--borde); margin-bottom: 0.35rem;
+  }
+  .peldano .etiqueta {
+    flex: none; width: 1.5rem; height: 1.5rem; border-radius: 6px;
+    background: var(--azul); color: #fff; font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 0.85rem;
+  }
+  .peldano .cuerpo { font-size: 0.85rem; }
+  .peldano .cuerpo code { font-size: 0.82rem; }
+  table.derivacion td.izq { text-align: left; }
+  table.derivacion code { font-size: 0.8rem; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Del for a la cadena, una reescritura por vez</h1>
+  <p class="intro">Una expresión <code>for</code> no se ejecuta como está
+  escrita: el compilador la reescribe con funciones de alto orden y lo que
+  corre es esa cadena. La reescritura se puede seguir pieza por pieza, y cada
+  pieza que se agrega a la expresión agrega una función a la cadena: el
+  generador y el <code>yield</code> traen el <code>map</code>, el
+  <code>if</code> trae el <code>withFilter</code> y un segundo generador trae
+  el <code>flatMap</code>. Las nueve preguntas van de lo simple a lo compuesto,
+  y cada resultado salió de correr la expresión y su cadena con la versión de
+  Scala del curso.</p>
+
+  <div class="carta">
+    <h2>1. Un generador y un yield</h2>
+    <div class="codigo">
+      <div class="linea"><span class="num">1</span><span class="txt">val dobles = for (x &lt;- Vector(1, 2, 3)) yield x * 2</span></div>
+    </div>
+    <div id="uno"></div>
+    <div class="progreso" id="marcador-uno"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Se agrega un if</h2>
+    <div class="codigo">
+      <div class="linea"><span class="num">1</span><span class="txt">val cuadrPares = for (x &lt;- Vector(1, 2, 3, 4) if x % 2 == 0) yield x * x</span></div>
+    </div>
+    <p class="nota">El generador sigue trayendo el <code>map</code>. La
+    pregunta es qué función trae el <code>if</code> y qué cambia según cuál de
+    las dos se escriba.</p>
+    <div id="filtro"></div>
+    <div class="progreso" id="marcador-filtro"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Se agrega un segundo generador</h2>
+    <div class="codigo" id="codigo-primas"></div>
+    <p class="nota">Dos generadores y un <code>if</code>, con el segundo
+    generador dependiente del primero. La cadena tiene las tres funciones, y
+    las tres preguntas son dónde queda cada una.</p>
+    <div id="dos"></div>
+    <div class="progreso" id="marcador-dos"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Un for sin yield</h2>
+    <div class="codigo">
+      <div class="linea"><span class="num">1</span><span class="txt">for (x &lt;- Vector(1, 2, 3)) println(x)</span></div>
+    </div>
+    <div id="sin-yield"></div>
+    <div class="progreso" id="marcador-sin-yield"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>5. La derivación completa</h2>
+    <div class="peldano"><span class="etiqueta">1</span><span class="cuerpo">Un
+    generador y el <code>yield</code>: la colección del generador recibe la
+    llamada y el cuerpo del <code>yield</code> es la función que entra al
+    <code>map</code>.</span></div>
+    <div class="peldano"><span class="etiqueta">2</span><span class="cuerpo">Un
+    <code>if</code>: entra un <code>withFilter</code> delante del
+    <code>map</code>, con la condición tal como está escrita.</span></div>
+    <div class="peldano"><span class="etiqueta">3</span><span class="cuerpo">Un
+    segundo generador: el de afuera pasa a <code>flatMap</code> y todo lo que
+    viene después queda dentro de su función, filtro incluido.</span></div>
+    <div class="peldano"><span class="etiqueta">4</span><span class="cuerpo">Sin
+    <code>yield</code>: no hay <code>map</code> que construya nada, y la
+    expresión vale <code>()</code>.</span></div>
+    <div class="envoltura-tabla" style="margin-top:0.8rem">
+      <table class="derivacion">
+        <tr><th>La expresión for</th><th>La cadena que corre</th></tr>
+        <tr>
+          <td class="izq"><code>for (x &lt;- Vector(1, 2, 3)) yield x * 2</code></td>
+          <td class="izq"><code>Vector(1, 2, 3).map(x =&gt; x * 2)</code></td>
+        </tr>
+        <tr>
+          <td class="izq"><code>for (x &lt;- Vector(1, 2, 3, 4) if x % 2 == 0) yield x * x</code></td>
+          <td class="izq"><code>Vector(1, 2, 3, 4).withFilter(x =&gt; x % 2 == 0).map(x =&gt; x * x)</code></td>
+        </tr>
+        <tr>
+          <td class="izq"><code>for { i &lt;- 2 until 7; j &lt;- 1 until i; if esPrimo(i + j) } yield (i, j)</code></td>
+          <td class="izq"><code>(2 until 7).flatMap(i =&gt; (1 until i).withFilter(j =&gt; esPrimo(i + j)).map(j =&gt; (i, j)))</code></td>
+        </tr>
+      </table>
+    </div>
+    <p>Las tres filas se corrieron por los dos lados y los dos lados coinciden:
+    <code>Vector(2, 4, 6)</code>, <code>Vector(4, 16)</code> y
+    <code>Vector((2,1), (3,2), (4,1), (4,3), (5,2), (6,1), (6,5))</code>.</p>
+    <p>El <code>withFilter</code> de la segunda fila se puede cambiar por
+    <code>filter</code> y el resultado sigue siendo <code>Vector(4, 16)</code>.
+    La diferencia está en el camino: <code>filter</code> arma una colección con
+    los elementos que pasaron y el <code>map</code> recorre esa colección,
+    mientras <code>withFilter</code> no la arma y deja que el
+    <code>map</code> aplique la condición al pasar. Con cuatro elementos eso no
+    se mide; con una colección grande es una colección entera que no se
+    construye.</p>
+    <p>En la tercera fila está lo que decide la forma del resultado. El filtro
+    queda dentro de la función del <code>flatMap</code>, sobre <code>j</code>,
+    porque ahí la condición puede nombrar <code>i</code> y <code>j</code>. El
+    <code>map</code> interno arma la pareja y entrega un trozo por cada
+    <code>i</code>: <code>Vector((2,1))</code> con <code>i = 2</code>,
+    <code>Vector((4,1), (4,3))</code> con <code>i = 4</code>,
+    <code>Vector((5,2))</code> con <code>i = 5</code>. El
+    <code>flatMap</code> los concatena. Con <code>map</code> en ese lugar se
+    quedan separados, y lo corrido devuelve cinco vectores:
+    <code>Vector(Vector((2,1)), Vector((3,2)), Vector((4,1), (4,3)), Vector((5,2)), Vector((6,1), (6,5)))</code>.</p>
+    <p>El <code>yield</code> es lo que hace de la expresión un valor. Sin él no
+    hay <code>map</code> en la cadena ni colección que devolver:
+    <code>for (x &lt;- Vector(1, 2, 3)) println(x)</code> imprime 1, luego 2,
+    luego 3, y vale <code>()</code>, de tipo <code>Unit</code>. Con él, la
+    expresión vale una colección, se le puede poner nombre con un
+    <code>val</code> y se sigue usando.</p>
+  </div>
+</div>
+<script src="traducir.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
