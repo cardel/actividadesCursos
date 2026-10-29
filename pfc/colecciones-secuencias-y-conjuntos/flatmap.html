@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>flatMap: por qué map deja el resultado anidado</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .item {
+    border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem;
+  }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.95rem; font-weight: 700; color: var(--azul);
+    overflow-wrap: anywhere; white-space: pre-wrap;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.88rem; min-width: 4rem;
+  }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 16rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  .codigo { max-height: none; }
+  .acumulada {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 0.82rem;
+    background: var(--codigo-fondo); border: 1px solid var(--borde);
+    border-radius: 8px; padding: 0.4rem 0.6rem; overflow-wrap: anywhere;
+  }
+  .acumulada .rotulo {
+    font-family: system-ui, sans-serif; font-size: 0.78rem; color: var(--gris);
+    display: block;
+  }
+  .acumulada.plana b { color: var(--verde); }
+  .acumulada b { color: var(--azul); }
+  td.expr-celda {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    text-align: left; font-size: 0.8rem;
+  }
+  .leyenda { display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.8rem; color: var(--gris); margin-top: 0.5rem; }
+  .leyenda .m1 { color: var(--azul); }
+  .leyenda .m2 { color: #a86a12; }
+  .leyenda .m3 { color: var(--verde); }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>flatMap: por qué map deja el resultado anidado</h1>
+  <p class="intro"><code>map</code> deja un resultado por cada elemento, tal
+  como lo devolvió la función. Cuando esa función produce otra secuencia, el
+  resultado es una secuencia de secuencias, y las parejas que se buscaban
+  quedan repartidas en trozos. <code>flatMap</code> hace el mismo recorrido y
+  concatena los trozos. Las dos expresiones de abajo se diferencian en esa
+  palabra, y lo que imprime cada una salió de correr el código con
+  la versión de Scala del proyecto del curso.</p>
+
+  <div class="carta">
+    <h2>1. La misma expresión con map y con flatMap</h2>
+    <div class="codigo">
+      <div class="linea"><span class="num">1</span><span class="txt">val anidado = (1 to 3).map(x =&gt; (1 to 2).map(y =&gt; (x, y)))</span></div>
+      <div class="linea"><span class="num">2</span><span class="txt">val plano   = (1 to 3).flatMap(x =&gt; (1 to 2).map(y =&gt; (x, y)))</span></div>
+    </div>
+    <p class="nota">El map interno es idéntico en las dos líneas: con un
+    <code>x</code> fijo recorre <code>(1 to 2)</code> y arma una pareja por
+    cada <code>y</code>. Las dos preguntas son sobre la primera línea.</p>
+    <div id="anida"></div>
+    <div class="progreso" id="marcador-anida"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. ¿Cuántas parejas tiene plano?</h2>
+    <p class="nota" style="margin-top:0">Escriba el número antes de abrir la
+    traza.</p>
+    <div class="prediccion">
+      <input type="number" id="prediccion" min="0" max="40" placeholder="parejas">
+      <button id="btn-comprobar" class="primario">Comprobar</button>
+    </div>
+    <div class="veredicto" id="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. La traza, trozo por trozo</h2>
+    <p class="nota" style="margin-top:0">La expresión de la segunda línea,
+    repartida en varias para poder señalar cuál se está evaluando. El contador
+    de cada línea dice cuántas veces se evaluó.</p>
+    <div class="panel-doble" style="margin-top:0.8rem">
+      <div class="codigo" id="panel-codigo"></div>
+      <div class="estado">
+        <div class="chips" id="chips"></div>
+        <div class="progreso">paso <b id="ver-paso">0</b> de <b id="ver-total">0</b></div>
+        <div class="botones">
+          <button id="btn-paso">Paso</button>
+          <button id="btn-auto">Auto</button>
+          <button id="btn-fin">Al final</button>
+          <button id="btn-reiniciar">Reiniciar</button>
+        </div>
+        <div class="acumulada"><span class="rotulo">trozos reunidos</span><b id="caja-anidado">–</b></div>
+        <div class="acumulada plana"><span class="rotulo">lo que devuelve flatMap</span><b id="caja-plano">–</b></div>
+      </div>
+    </div>
+    <div class="leyenda">
+      <span class="m1"><b>■</b> línea 2: el generador de afuera le da un valor a x</span>
+      <span class="m2"><b>■</b> líneas 3 a 5: el map interno arma las parejas de ese x</span>
+      <span class="m3"><b>■</b> línea 6: flatMap concatena los trozos</span>
+    </div>
+    <p class="nota">La caja de arriba reúne los trozos que ya entregó el map
+    interno, uno por cada <code>x</code>. La de abajo queda en blanco hasta la
+    línea 6, que es donde los trozos se concatenan: hasta ese momento no existe
+    ninguna secuencia plana.</p>
+    <div class="envoltura-tabla" style="margin-top:0.8rem">
+      <table id="tabla-trozos"></table>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Componer zip, map y sum</h2>
+    <div class="codigo">
+      <div class="linea"><span class="num">1</span><span class="txt">def esPrimo(n: Int): Boolean =</span></div>
+      <div class="linea"><span class="num">2</span><span class="txt">  n &gt;= 2 &amp;&amp; (2 until n).forall(d =&gt; n % d != 0)</span></div>
+      <div class="linea"><span class="num"></span><span class="txt"></span></div>
+      <div class="linea"><span class="num">4</span><span class="txt">def prodEscalar(xs: Vector[Double], ys: Vector[Double]): Double =</span></div>
+      <div class="linea"><span class="num">5</span><span class="txt">  (xs zip ys).map { case (x, y) =&gt; x * y }.sum</span></div>
+    </div>
+    <p class="nota">La primera pregunta es sobre <code>prodEscalar</code>, donde
+    tres operaciones se encadenan en una línea. Las otras dos son sobre las
+    parejas <code>(i, j)</code> con <code>1 &lt;= j &lt; i &lt; 7</code> cuya
+    suma es prima, que se arman con <code>flatMap</code> y se escogen con
+    <code>filter</code>.</p>
+    <div id="componer"></div>
+    <div class="progreso" id="marcador-componer"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>5. Lo que se lleva de aquí</h2>
+    <p style="margin-top:0">La traza muestra que <code>flatMap</code> no hace un
+    recorrido distinto del de <code>map</code>. Las dos evalúan el map interno
+    una vez por cada <code>x</code> y obtienen los mismos tres trozos, que
+    juntos son exactamente lo que imprime la versión con <code>map</code>. La
+    diferencia está en la última línea: <code>map</code> entrega los tres
+    trozos tal como llegaron y <code>flatMap</code> los concatena. De ahí que
+    el primero tenga largo 3 y el segundo 6.</p>
+    <p>Esa diferencia decide cuál de las dos se usa. Si la función devuelve un
+    solo valor por elemento, <code>map</code> alcanza. Si devuelve una
+    secuencia, <code>map</code> deja el trabajo a medias y hay que aplanar
+    después; <code>flatMap</code> ahorra ese paso y es lo que permite que de
+    dos generadores salga una sola lista de parejas. El orden del resultado lo
+    fija el recorrido: el generador de adentro varía más rápido, así que las
+    dos parejas de <code>x = 1</code> salen antes que cualquiera de
+    <code>x = 2</code>.</p>
+    <p><code>prodEscalar</code> es la otra cara del mismo encadenamiento. Cada
+    operación cambia la forma del dato: <code>zip</code> pasa de dos vectores
+    de <code>Double</code> a uno de parejas, el <code>map</code> pasa de las
+    parejas a los productos y <code>sum</code> pasa del vector al número 32.0.
+    La definición entera cabe en una línea porque ninguna de las tres necesita
+    saber en qué posición va: la posición la maneja <code>zip</code>.</p>
+    <p>En las parejas primas el <code>filter</code> va al final, sobre el
+    vector plano, cuando cada pareja ya tiene sus dos componentes y la
+    condición <code>esPrimo(i + j)</code> puede evaluarse. Con <code>i = 4</code>
+    el map interno arma (4,1), (4,2) y (4,3), y el resultado conserva (4,1) y
+    (4,3).</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="flatmap.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ternas pitagóricas: tres generadores, un filtro y un conjunto</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .codigo { max-height: none; }
+  #presets button { font-family: ui-monospace, monospace; font-size: 0.85rem; }
+  .acumulada {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 0.85rem;
+    background: var(--codigo-fondo); border: 1px solid var(--borde);
+    border-radius: 8px; padding: 0.4rem 0.6rem; overflow-wrap: anywhere;
+  }
+  .acumulada b { color: var(--verde); }
+  td.si { color: var(--verde); font-weight: 700; background: var(--verde-suave); }
+  td.no { color: var(--gris); }
+  .leyenda { display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.8rem; color: var(--gris); margin-top: 0.7rem; }
+  .leyenda .m1 { color: var(--azul); }
+  .leyenda .m2 { color: #a86a12; }
+  .leyenda .m3 { color: var(--verde); }
+  #caja-impreso { display: none; margin-top: 0.7rem; }
+  .item { border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem; }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.93rem; font-weight: 700; color: var(--azul);
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.88rem; min-width: 4rem;
+  }
+  .opciones button.larga {
+    font-family: inherit; font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 18rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .item .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Ternas pitagóricas: tres generadores, un filtro y un conjunto</h1>
+  <p class="intro">Una terna pitagórica es una tupla <code>(a, b, c)</code> de
+  enteros positivos con <code>a * a + b * b == c * c</code>, como
+  <code>(3, 4, 5)</code>. Para encontrarlas todas hasta un tope <code>n</code>
+  no hay fórmula: se generan todas las combinaciones con
+  <code>1 &lt;= a &lt;= b &lt;= c &lt;= n</code> y se descarta lo que no
+  cumple. Los tres generadores encadenados de la expresión <code>for</code>
+  hacen lo primero y el <code>if</code> hace lo segundo. Avance paso a paso y
+  cuente cuántas candidatas hay que descartar por cada terna que sobrevive.</p>
+
+  <div class="carta">
+    <h2>1. Cuántas candidatas se prueban</h2>
+    <p style="margin-top:0">Con <code>n = 5</code>, los tres generadores son
+    <code>c &lt;- 1 to 5</code>, <code>b &lt;- 1 to c</code> y
+    <code>a &lt;- 1 to b</code>. Cada combinación que sale de ahí se prueba
+    contra la condición pitagórica, pase o no pase.</p>
+    <div class="prediccion">
+      <span>¿Cuántas combinaciones <code>(a, b, c)</code> se prueban con
+      <code>n = 5</code>?</span>
+      <input type="number" id="prediccion" min="0" placeholder="su número">
+      <button id="btn-comprobar" class="primario">Comprobar</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. El código y la búsqueda</h2>
+    <div class="presets" id="presets"></div>
+    <div class="panel-doble" style="margin-top:0.8rem">
+      <div class="codigo" id="panel-codigo"></div>
+      <div class="estado">
+        <div class="chips" id="chips"></div>
+        <div class="progreso">paso <b id="ver-paso">0</b> de <b id="ver-total">0</b></div>
+        <div class="botones">
+          <button id="btn-paso">Paso</button>
+          <button id="btn-auto">Auto</button>
+          <button id="btn-fin">Al final</button>
+          <button id="btn-reiniciar">Reiniciar</button>
+        </div>
+        <div class="acumulada">ternas encontradas:<br><b id="halladas">ninguna todavía</b></div>
+      </div>
+    </div>
+    <div class="leyenda">
+      <span class="m1"><b>■</b> líneas 3 a 5: los tres generadores arman una combinación</span>
+      <span class="m2"><b>■</b> línea 6: la condición pitagórica decide si pasa</span>
+      <span class="m3"><b>■</b> línea 7: solo las que pasan llegan al yield</span>
+    </div>
+    <p class="nota">Los contadores de la derecha de cada línea dicen cuántas
+    veces se evaluó cada parte. El de la línea 5 cuenta las combinaciones
+    armadas y el de la línea 7, las que sobrevivieron.</p>
+  </div>
+
+  <div class="carta">
+    <h2>3. Las candidatas, una por fila</h2>
+    <p class="nota" style="margin-top:0">Las últimas catorce combinaciones
+    probadas. Candidatas probadas hasta aquí: <b id="probadas">0</b>.</p>
+    <div class="envoltura-tabla">
+      <table id="tabla-candidatas"></table>
+    </div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-busqueda">
+    <h2>4. Esto es búsqueda exhaustiva</h2>
+    <p style="margin-top:0">Con <code>n = 5</code> la expresión prueba 35
+    combinaciones y deja una. El trabajo no está en encontrar
+    <code>(3, 4, 5)</code>: está en descartar las otras 34, una por una, y el
+    código no tiene ninguna forma de saltarse ese descarte. Con
+    <code>n = 20</code> el contador de candidatas se dispara y las que
+    sobreviven son seis.</p>
+    <p>Los tres generadores reparten el trabajo de forma desigual, y los
+    contadores lo muestran: con <code>n = 5</code>, la línea de <code>c</code>
+    se evalúa 5 veces, la de <code>b</code> 15 y la de <code>a</code> 35. Cada
+    generador multiplica lo que hay dentro, así que el costo lo pone el
+    generador más interno.</p>
+    <div id="caja-impreso">
+      <p class="nota" style="margin-bottom:0.3rem">Lo que imprime
+      <code>println</code> al terminar:</p>
+      <div class="acumulada" id="impreso"></div>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>5. Las piezas de la expresión</h2>
+    <p class="nota" style="margin-top:0">La misma búsqueda escrita con
+    <code>flatMap</code>, <code>map</code> y <code>filter</code>, sin
+    expresión <code>for</code>:</p>
+    <div class="codigo" id="panel-hof"></div>
+    <p class="nota">Seis preguntas sobre las dos versiones y sobre lo que
+    aporta cada pieza. Cada opción equivocada dice en qué consiste la
+    confusión.</p>
+    <div id="piezas"></div>
+    <div class="progreso" id="marcador-piezas"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>6. Lo que se lleva de aquí</h2>
+    <p style="margin-top:0">Los generadores encadenados hacen dos cosas a la
+    vez. Generan las combinaciones, como lo haría cualquier recorrido anidado,
+    y además imponen <code>a &lt;= b &lt;= c</code> sin que haga falta un
+    filtro: el extremo de cada rango es la variable del generador de afuera.
+    Con <code>b &lt;- 1 to n</code> y <code>a &lt;- 1 to n</code> el mismo
+    triángulo aparecería como <code>(3, 4, 5)</code> y como
+    <code>(4, 3, 5)</code>, y el filtro pitagórico no los distinguiría, porque
+    <code>16 + 9</code> da 25 igual que <code>9 + 16</code>.</p>
+    <p>El <code>if</code> de la expresión <code>for</code> y el
+    <code>.filter</code> de la versión con <code>flatMap</code> son la misma
+    cosa escrita en dos sitios. En la primera la condición queda al lado de
+    los generadores que la alimentan; en la segunda se aplica al final, sobre
+    la secuencia ya armada. Las dos devuelven el mismo conjunto, y eso es lo
+    que comprueba <code>ternasPHOF(20) == ternasPFor(20)</code>, que imprime
+    <code>true</code>.</p>
+    <p>El <code>.toSet</code> del final no quita nada aquí: con
+    <code>a &lt;= b &lt;= c</code> ninguna combinación se genera dos veces.
+    Lo que cambia es lo que la función promete devolver. Un
+    <code>Set[(Int, Int, Int)]</code> dice que lo que importa es qué ternas
+    hay, no en qué orden se encontraron ni en qué posición están, y de ahí que
+    <code>ternasPFor(20)</code> imprima las seis en un orden que no es el del
+    hallazgo.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="ternas.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

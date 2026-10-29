@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Range, Array y String: to, until, by y lo que el rango no guarda</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .item {
+    border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem;
+  }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.95rem; font-weight: 700; color: var(--azul);
+    overflow-wrap: anywhere;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.88rem; min-width: 4rem;
+  }
+  .opciones button.ancha {
+    white-space: normal; flex: 1 1 15rem; min-width: 0;
+  }
+  .opciones button.larga {
+    font-family: inherit; font-size: 0.88rem; text-align: left;
+    white-space: normal; flex: 1 1 14rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  .codigo { max-height: none; }
+  table.pred td.expr-celda {
+    text-align: left; font-family: ui-monospace, monospace; white-space: nowrap;
+  }
+  table.pred input[type="text"] {
+    width: 11rem; text-align: center; font-family: ui-monospace, monospace;
+    font-size: 0.92rem; padding: 0.25rem; border: 1px solid var(--borde); border-radius: 4px;
+  }
+  table.pred input.bien { border-color: var(--verde); background: var(--verde-suave); }
+  table.pred input.mal { border-color: var(--rojo); background: var(--rojo-suave); }
+  table.pred td.real {
+    font-family: ui-monospace, monospace; color: var(--verde);
+    font-weight: 700; min-width: 7rem;
+  }
+  table.pred td.pista {
+    text-align: left; font-size: 0.82rem; color: var(--rojo); min-width: 15rem;
+  }
+  p code, li code, td code { background: var(--codigo-fondo); padding: 0 0.2rem; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Range, Array y String: to, until, by y lo que el rango no guarda</h1>
+  <p class="intro">Tres secuencias que no se escriben con un literal de
+  elementos y que aun así aceptan las operaciones de siempre. Un
+  <code>Range</code> describe enteros con paso uniforme y se guarda con tres
+  valores, el inicio, el fin y el paso: <code>to</code> incluye el fin,
+  <code>until</code> lo deja fuera y <code>by</code> fija cada cuánto se avanza,
+  incluso hacia abajo. Un <code>Array</code> es el arreglo de Java con
+  <code>map</code> y <code>filter</code> encima. Un <code>String</code> es una
+  secuencia de caracteres, y al filtrarlo o transformarlo vuelve a salir un
+  texto. Prediga primero lo que imprime cada línea del archivo y después decida
+  entre opciones; los valores que la página da por correctos salieron de correr
+  el código con la versión de Scala del proyecto del curso.</p>
+
+  <div class="carta">
+    <h2>1. El archivo completo</h2>
+    <div class="codigo" id="panel-codigo"></div>
+    <p class="nota">Quince líneas, nueve de las cuales imprimen. Las cuatro
+    primeras son rangos; las de <code>demoArray</code> trabajan sobre
+    <code>Array(1, 2, 3)</code> y las de <code>demoString</code> sobre
+    <code>"Hola mundo"</code>.</p>
+  </div>
+
+  <div class="carta">
+    <h2>2. Prediga las nueve líneas</h2>
+    <p class="nota" style="margin-top:0">En las líneas que dan una colección
+    los espacios y las mayúsculas del nombre no importan:
+    <code>list(2,3)</code> cuenta igual que <code>List(2, 3)</code>. En las dos
+    líneas de <code>demoString</code> que devuelven texto sí se compara letra
+    por letra, mayúsculas y espacio incluidos.</p>
+    <div class="envoltura-tabla">
+      <table class="pred">
+        <thead><tr><th>línea</th><th>su respuesta</th><th>imprime</th><th></th></tr></thead>
+        <tbody id="cuerpo-predicciones"></tbody>
+      </table>
+    </div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-comprobar" class="primario">Comprobar las nueve</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. El rango sin toList</h2>
+    <p class="nota" style="margin-top:0">Las cuatro líneas de arriba terminan
+    en <code>toList</code>. Estas cinco preguntas son por lo que pasa cuando no
+    está: qué muestra el rango y cuántos elementos trae.</p>
+    <div id="rangos"></div>
+    <div class="progreso" id="marcador-rangos"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Array y String con las mismas operaciones</h2>
+    <p class="nota" style="margin-top:0">Lo que cambia de una colección a otra
+    es el tipo de lo que devuelven, y en el texto eso tiene una consecuencia
+    que se puede comprobar.</p>
+    <div id="reuso"></div>
+    <div class="progreso" id="marcador-reuso"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>5. Las tres secuencias, en claro</h2>
+    <p style="margin-top:0">Imprimir un rango no muestra sus elementos,
+    porque no los almacena: <code>(1 to 5)</code> sale como
+    <code>Range 1 to 5</code> y <code>(1 until 5)</code> como
+    <code>Range 1 until 5</code>, con los números y la palabra que recibió. Los elementos hay que pedirlos:
+    <code>(1 to 5).toList</code> da <code>List(1, 2, 3, 4, 5)</code> y
+    <code>(1 until 5).toList</code> da <code>List(1, 2, 3, 4)</code>. Contarlos
+    no necesita la lista: <code>(1 to 5).length</code> da <code>5</code> y
+    <code>(1 to 10 by 3).length</code> da <code>4</code>.</p>
+    <p>El paso llega con <code>by</code> y puede ser negativo:
+    <code>(6 to 1 by -2).toList</code> da <code>List(6, 4, 2)</code>. Impreso
+    sin <code>toList</code>, ese mismo rango sale como
+    <code>inexact Range 6 to 1 by -2</code>. La palabra <code>inexact</code>
+    señala que el fin no se alcanza exacto: bajando de dos en dos desde el 6
+    se llega al 2 y el 1 queda sin tocar.</p>
+    <p>Sin <code>by</code> el paso es 1 y el recorrido sube, de modo que un
+    inicio mayor que el fin deja el rango sin elementos:
+    <code>(5 to 1).toList</code> da <code>List()</code>. Para recorrer hacia
+    abajo hay que escribir el paso.</p>
+    <p><code>Array</code> y <code>String</code> aceptan las mismas operaciones
+    que <code>List</code> y <code>Vector</code>:
+    <code>Array(1, 2, 3).map(x =&gt; 2 * x).toList</code> da
+    <code>List(2, 4, 6)</code> y <code>"Hola mundo".length</code> da
+    <code>10</code>, con el espacio contado. Y el texto devuelve texto:
+    <code>"Hola mundo".filter(_.isUpper)</code> imprime <code>H</code> y es de
+    clase <code>java.lang.String</code>, no una colección de caracteres.
+    <code>"Hola mundo".map(_.toUpper)</code> da <code>HOLA MUNDO</code> por la
+    misma razón.</p>
+  </div>
+</div>
+<script src="rangos.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

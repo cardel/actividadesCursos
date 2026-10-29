@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conjuntos: sin orden, sin duplicados y con otro nombre al imprimirse</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .item { border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem; }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.95rem; font-weight: 700; color: var(--azul);
+    overflow-wrap: anywhere;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.88rem; min-width: 4rem;
+  }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 16rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  .codigo { max-height: none; }
+  #caja-divisiones { display: none; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Conjuntos: sin orden, sin duplicados y con otro nombre al imprimirse</h1>
+  <p class="intro">Un <code>Set</code> no guarda un orden y no admite elementos
+  repetidos. Las operaciones que ya se usan sobre un <code>Vector</code>
+  (<code>map</code>, <code>filter</code>, <code>exists</code>) siguen
+  funcionando, y además aparecen <code>union</code>, <code>intersect</code>,
+  <code>diff</code>, <code>contains</code> y <code>subsetOf</code>. Las quince
+  preguntas de abajo trabajan sobre las cuatro declaraciones del archivo de la
+  sesión. Cada valor correcto y cada línea impresa salieron de correr ese
+  archivo con la versión de Scala del proyecto del curso.</p>
+
+  <div class="carta">
+    <h2>1. Los cuatro conjuntos</h2>
+    <div class="codigo" id="panel-codigo"></div>
+    <p class="nota">El comentario es lo que <code>println(frutas)</code> saca
+    por pantalla. Qué saca <code>println(nums)</code> es una de las preguntas
+    de la última tarjeta.</p>
+  </div>
+
+  <div class="carta">
+    <h2>2. ¿Qué devuelve cada expresión?</h2>
+    <p class="nota" style="margin-top:0">Siete expresiones sobre
+    <code>frutas</code>, <code>nums</code>, <code>a</code> y <code>b</code>.
+    Elija el valor antes de seguir; cada opción equivocada dice en qué consiste
+    la confusión.</p>
+    <div id="valores"></div>
+    <div class="progreso" id="marcador-valores"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. ¿Cuántos elementos quedan?</h2>
+    <p class="nota" style="margin-top:0">Las dos preguntas aplican
+    <code>map</code> a los seis elementos de <code>nums</code>, con dos
+    funciones distintas, y preguntan por el tamaño del resultado.</p>
+    <div id="colapso"></div>
+    <div class="progreso" id="marcador-colapso"></div>
+    <div id="caja-divisiones">
+      <p class="nota">Las seis divisiones enteras, en el orden del rango:</p>
+      <div class="secuencia" id="divisiones"></div>
+      <p class="nota">El 1 sale de 2/2 y de 3/2; el 2, de 4/2 y de 5/2. Un
+      conjunto guarda cada valor una sola vez, así que de seis resultados
+      quedan cuatro elementos.</p>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>4. ¿Qué imprime exactamente?</h2>
+    <p class="nota" style="margin-top:0">Aquí no se pregunta por los elementos
+    sino por el texto que sale por pantalla, carácter por carácter. Las seis
+    respuestas correctas son la salida literal de la corrida.</p>
+    <div id="impreso"></div>
+    <div class="progreso" id="marcador-impreso"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>5. Lo que se lleva de aquí</h2>
+    <p style="margin-top:0">Un conjunto responde tres preguntas y no más: si un
+    valor pertenece (<code>contains</code>, o el conjunto aplicado al valor),
+    cuántos elementos distintos tiene (<code>size</code>) y cómo se combina con
+    otro conjunto (<code>union</code>, <code>intersect</code>,
+    <code>diff</code>, <code>subsetOf</code>). Fuera de eso están
+    <code>map</code>, <code>filter</code>, <code>exists</code> y
+    <code>forall</code>, que vienen de las secuencias y aquí también
+    funcionan.</p>
+    <p>Lo que no responde es en qué posición está cada elemento. No hay
+    primero ni último, <code>a(3)</code> no es un índice sino una pregunta de
+    pertenencia, y el orden en que los elementos salen por pantalla no es el
+    orden en que entraron: <code>(1 to 6).toSet</code> imprime
+    <code>HashSet(5, 1, 6, 2, 3, 4)</code>. El nombre tampoco es estable.
+    <code>(1 to 4).toSet</code> sale como <code>Set(1, 2, 3, 4)</code> y
+    <code>(1 to 6).toSet.map(_ / 2)</code>, que también tiene cuatro
+    elementos, sale como <code>HashSet(0, 1, 2, 3)</code>. Un programa que
+    dependa de ese nombre o de ese orden dependería de algo que el conjunto no
+    promete.</p>
+    <p>El colapso de duplicados es lo que hace que <code>map</code> pueda
+    devolver menos elementos de los que recibió. Sobre un <code>Vector</code>,
+    <code>map</code> devuelve siempre tantos elementos como había; sobre un
+    conjunto, tantos como <em>valores distintos</em> produzca la función. Esa
+    es la diferencia entre <code>nums.map(_ + 2).size</code>, que da 6, y
+    <code>nums.map(_ / 2).size</code>, que da 4. Y es la razón de que
+    <code>Vector(1, 2, 2, 3).toSet.size</code> dé 3: pasar a conjunto es la
+    forma corta de quedarse con los valores distintos.</p>
+  </div>
+</div>
+<script src="conjuntos.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test de primalidad: exists negado, forall y el rango sin elementos</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .codigo { max-height: none; }
+  #presets button { font-family: ui-monospace, monospace; font-size: 0.85rem; }
+  .resultados { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.6rem; }
+  .acumulada {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 0.85rem;
+    background: var(--codigo-fondo); border: 1px solid var(--borde);
+    border-radius: 8px; padding: 0.4rem 0.6rem; flex: 1 1 15rem;
+  }
+  .acumulada b { color: var(--verde); }
+  .leyenda { display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.8rem; color: var(--gris); margin-top: 0.7rem; }
+  .leyenda .m1 { color: var(--azul); }
+  .leyenda .m2 { color: #a86a12; }
+  .leyenda .m3 { color: var(--verde); }
+  .item { border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem; }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.93rem; font-weight: 700; color: var(--azul);
+    overflow-wrap: anywhere;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.88rem; min-width: 4rem;
+  }
+  .opciones button.larga {
+    font-family: inherit; font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 16rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .item .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Test de primalidad: exists negado, forall y el rango sin elementos</h1>
+  <p class="intro">Un número <code>n</code> es primo si <code>n &gt;= 2</code> y
+  ningún entero entre 2 y <code>n - 1</code> lo divide. Las dos versiones
+  escriben esa condición de maneras distintas: una niega que exista un divisor,
+  la otra pide que ninguno divida. Elija un valor de <code>n</code>, prediga
+  cuántos divisores alcanza a probar la búsqueda y avance paso a paso. Los
+  valores disponibles son los del <code>main</code>, donde la corrida con la
+  versión de Scala del proyecto del curso da
+  <code>(0 to 12).filter(esPrimo)</code> igual a
+  <code>Vector(2, 3, 5, 7, 11)</code>.</p>
+
+  <div class="carta">
+    <h2>1. Las dos versiones y el valor de n</h2>
+    <div class="presets" id="presets"></div>
+    <div class="codigo" id="panel-codigo" style="margin-top:0.8rem"></div>
+    <p class="nota">La guarda y la búsqueda van en líneas separadas para que
+    cada una lleve su propio contador. Es la misma expresión que el archivo de
+    el código del tema la escribe en una sola línea.</p>
+    <div class="prediccion">
+      <span>¿Cuántos divisores alcanza a probar la búsqueda antes de
+      responder?</span>
+      <input type="number" id="prediccion" min="0" placeholder="su número">
+      <button id="btn-comprobar" class="primario">Comprobar</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. La búsqueda, paso a paso</h2>
+    <div class="chips" id="chips"></div>
+    <div class="progreso" style="margin-top:0.6rem">paso
+      <b id="ver-paso">0</b> de <b id="ver-total">0</b></div>
+    <div class="botones bloqueado" id="botones" style="margin-top:0.4rem">
+      <button id="btn-paso">Paso</button>
+      <button id="btn-auto">Auto</button>
+      <button id="btn-fin">Al final</button>
+      <button id="btn-reiniciar">Reiniciar</button>
+    </div>
+    <div class="resultados">
+      <div class="acumulada">esPrimoExists(n) devuelve <b id="res-exists">–</b></div>
+      <div class="acumulada">esPrimoForall(n) devuelve <b id="res-forall">–</b></div>
+    </div>
+    <div class="leyenda">
+      <span class="m1"><b>■</b> líneas 2 y 6: la guarda <code>n &gt;= 2</code></span>
+      <span class="m2"><b>■</b> línea 3: un paso por cada divisor que prueba <code>exists</code></span>
+      <span class="m3"><b>■</b> línea 7: los mismos divisores con la condición de <code>forall</code></span>
+    </div>
+    <p class="nota">Cuando el rango no tiene elementos, la línea de la
+    búsqueda se visita una vez y el contador de divisores probados se queda en
+    cero. Cuando la guarda falla, el <code>&amp;&amp;</code> no llega a evaluar
+    la búsqueda y esa línea no se visita.</p>
+  </div>
+
+  <div class="carta">
+    <h2>3. Los divisores que se probaron</h2>
+    <p class="nota" style="margin-top:0">Una fila por divisor. Las dos últimas
+    columnas son las condiciones de las dos versiones sobre ese mismo
+    divisor.</p>
+    <div class="envoltura-tabla">
+      <table id="tabla-divisores"></table>
+    </div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-equivalencia">
+    <h2>4. Las dos condiciones son contrarias</h2>
+    <p style="margin-top:0">En ninguna fila de la tabla las dos últimas
+    columnas dicen lo mismo: donde <code>n % d == 0</code> es
+    <code>true</code>, <code>n % d != 0</code> es <code>false</code>. Esa es
+    toda la diferencia entre las dos versiones.</p>
+    <p><code>exists</code> se detiene en el primer divisor que cumple su
+    condición y responde <code>true</code>; la negación de delante lo
+    convierte en <code>false</code>. <code>forall</code> se detiene en el
+    primero que falla la suya, que es ese mismo divisor, y responde
+    <code>false</code>. Las dos paran en el mismo sitio, prueban los mismos
+    divisores y entregan el mismo valor, y eso es lo que se ve en el
+    <code>main</code>: las dos columnas coinciden en los trece números de 0 a
+    12.</p>
+  </div>
+
+  <div class="carta">
+    <h2>5. El rango sin elementos</h2>
+    <p class="nota" style="margin-top:0">Cinco preguntas sobre el caso que
+    decide si la guarda hace falta. Cada opción equivocada dice en qué consiste
+    la confusión.</p>
+    <div id="vacio"></div>
+    <div class="progreso" id="marcador-vacio"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>6. Lo que se lleva de aquí</h2>
+    <p style="margin-top:0">El <code>&amp;&amp;</code> evalúa su lado derecho
+    solo si el izquierdo es <code>true</code>. Con <code>n = 0</code> y
+    <code>n = 1</code> la guarda es falsa y la búsqueda no corre: el contador
+    de la línea 3 se queda en cero y la función responde <code>false</code> sin
+    mirar ningún divisor.</p>
+    <p>La guarda no está ahí para eso, sino para un caso más fino. Si se
+    quitara, con <code>n = 1</code> quedaría el rango <code>2 until 1</code>,
+    que no tiene ningún elemento, y <code>forall</code> sobre una colección sin
+    elementos devuelve <code>true</code>: el 1 pasaría por primo. Lo mismo con
+    <code>exists</code>, que devolvería <code>false</code> y la negación lo
+    volvería <code>true</code>. El rango sin elementos deja pasar las dos
+    versiones, y <code>n &gt;= 2</code> es lo único que lo descarta.</p>
+    <p>Ese mismo rango sin elementos es el que hace primo al 2 con todo
+    derecho: <code>2 until 2</code> no tiene divisores que probar, y un número
+    mayor o igual que 2 al que no se le encuentra divisor es primo. La guarda
+    lo deja pasar y la
+    búsqueda no prueba nada, que es el caso en que los contadores se quedan en
+    cero con una respuesta afirmativa.</p>
+    <p>Lo que cuesta cada respuesta también se ve en los contadores. Sobre un
+    compuesto la búsqueda se detiene en el primer divisor, y con
+    <code>n = 9</code> eso son dos pruebas. Sobre un primo no hay dónde
+    detenerse y el rango se recorre entero: <code>n = 11</code> pide nueve.
+    Para un mismo <code>n</code>, responder que es primo cuesta el rango
+    completo y responder que no lo es cuesta solo hasta el primer
+    divisor.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="esPrimo.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

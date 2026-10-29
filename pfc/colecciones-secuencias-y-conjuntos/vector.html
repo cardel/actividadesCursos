@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vector: los dos agregados y lo que ya sabía de List</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .item {
+    border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem;
+  }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.95rem; font-weight: 700; color: var(--azul);
+    overflow-wrap: anywhere;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.88rem; min-width: 4rem;
+  }
+  .opciones button.larga {
+    font-family: inherit; font-size: 0.88rem; text-align: left;
+    white-space: normal; flex: 1 1 14rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  .codigo { max-height: none; }
+  table.pred td.expr-celda {
+    text-align: left; font-family: ui-monospace, monospace; white-space: nowrap;
+  }
+  table.pred input[type="text"] {
+    width: 11rem; text-align: center; font-family: ui-monospace, monospace;
+    font-size: 0.92rem; padding: 0.25rem; border: 1px solid var(--borde); border-radius: 4px;
+  }
+  table.pred input.bien { border-color: var(--verde); background: var(--verde-suave); }
+  table.pred input.mal { border-color: var(--rojo); background: var(--rojo-suave); }
+  table.pred td.real {
+    font-family: ui-monospace, monospace; color: var(--verde);
+    font-weight: 700; min-width: 7rem;
+  }
+  table.pred td.pista {
+    text-align: left; font-size: 0.82rem; color: var(--rojo); min-width: 15rem;
+  }
+  p code, li code, td code { background: var(--codigo-fondo); padding: 0 0.2rem; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Vector: los dos agregados y lo que ya sabía de List</h1>
+  <p class="intro">Un <code>Vector</code> es una secuencia con acceso
+  balanceado: llegar a un elemento del medio no obliga a recorrer los
+  anteriores. Lo que cambia frente a una lista es cómo se agrega. Donde
+  <code>List</code> usa <code>::</code>, el vector tiene dos operaciones,
+  <code>+:</code> para el inicio y <code>:+</code> para el final, y los dos
+  puntos siempre quedan del lado de la colección. Lo demás sigue igual:
+  <code>head</code>, <code>tail</code>, <code>isEmpty</code>,
+  <code>map</code> y <code>filter</code> se escriben y se comportan como en una
+  lista. Escriba primero lo que espera de cada línea y después decida entre
+  opciones; los valores que la página da por correctos salieron de correr el
+  archivo con la versión de Scala del proyecto del curso.</p>
+
+  <div class="carta">
+    <h2>1. Las doce líneas</h2>
+    <div class="codigo" id="panel-codigo"></div>
+    <p class="nota">Las dos primeras declaran vectores de números y de textos.
+    Después queda <code>v</code>, con tres elementos, y sobre él trabajan las
+    siete últimas.</p>
+  </div>
+
+  <div class="carta">
+    <h2>2. Prediga lo que imprime cada línea</h2>
+    <p class="nota" style="margin-top:0">Los espacios y las mayúsculas del
+    nombre de la colección no importan: <code>vector(3,4)</code> cuenta igual
+    que <code>Vector(3, 4)</code>. Lo que sí se mira es lo que va dentro del
+    paréntesis, carácter por carácter.</p>
+    <div class="envoltura-tabla">
+      <table class="pred">
+        <thead><tr><th>línea</th><th>su respuesta</th><th>imprime</th><th></th></tr></thead>
+        <tbody id="cuerpo-predicciones"></tbody>
+      </table>
+    </div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-comprobar" class="primario">Comprobar las nueve</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Los dos agregados</h2>
+    <p class="nota" style="margin-top:0">Tres preguntas sobre
+    <code>+:</code> y <code>:+</code>: qué extremo toca cada uno y qué queda en
+    <code>v</code> después de usarlos.</p>
+    <div id="agregados"></div>
+    <div class="progreso" id="marcador-agregados"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Lo que ya venía de List</h2>
+    <p class="nota" style="margin-top:0">Las operaciones de recorrido y de alto
+    orden no cambian al pasar a un vector. Cambia una sola cosa.</p>
+    <div id="conocidas"></div>
+    <div class="progreso" id="marcador-conocidas"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>5. Qué queda de las doce líneas</h2>
+    <p style="margin-top:0">Los dos puntos apuntan hacia la colección.
+    En <code>1 +: v</code> el vector está a la derecha y el resultado es
+    <code>Vector(1, 2, 3, 4)</code>; en <code>v :+ 5</code> está a la izquierda
+    y el resultado es <code>Vector(2, 3, 4, 5)</code>. La regla no tiene más,
+    y con ella no hace falta recordar dos nombres distintos.</p>
+    <p>Ninguna de las dos toca <code>v</code>. Después de las dos líneas que
+    agregan, <code>v.head</code> sigue dando <code>2</code> y
+    <code>v.tail</code> sigue dando <code>Vector(3, 4)</code>: cada agregado
+    construye un vector nuevo y deja intacto el que recibió, igual que
+    <code>::</code> sobre una lista.</p>
+    <p><code>map</code> y <code>filter</code> devuelven un <code>Vector</code>,
+    no una lista: <code>v.map(_ * 10)</code> da <code>Vector(20, 30, 40)</code>
+    y <code>v.filter(_ &gt; 2)</code> da <code>Vector(3, 4)</code>. La del
+    filtro coincide con <code>v.tail</code>, que también da
+    <code>Vector(3, 4)</code>. La coincidencia es de este vector: el único
+    elemento que no supera al 2 es el que ocupa el primer puesto. En un vector
+    cuyo primer elemento sí superara al 2, las dos líneas se separarían.</p>
+    <p>Al imprimirse, un vector de textos muestra los elementos sin comillas:
+    <code>Vector(Juan, Pedro, Mariana)</code>. Las comillas estaban en la
+    expresión que construyó el valor, no en el valor.</p>
+  </div>
+</div>
+<script src="vector.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

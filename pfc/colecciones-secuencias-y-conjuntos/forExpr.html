@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Expresiones For: la misma cadena escrita de otro modo</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .item {
+    border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem;
+  }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.95rem; font-weight: 700; color: var(--azul);
+    overflow-wrap: anywhere; white-space: pre-wrap;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.88rem; min-width: 4rem;
+  }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 16rem; min-width: 0;
+  }
+  .opciones button.etiqueta-boton {
+    min-width: 2.6rem; font-weight: 700; font-size: 0.95rem;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  .codigo { max-height: none; }
+  .cadena {
+    display: flex; gap: 0.6rem; align-items: baseline;
+    padding: 0.35rem 0.5rem; border-radius: 8px; background: var(--codigo-fondo);
+    border: 1px solid var(--borde); margin-bottom: 0.35rem;
+  }
+  .cadena .etiqueta {
+    flex: none; width: 1.5rem; height: 1.5rem; border-radius: 6px;
+    background: var(--azul); color: #fff; font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 0.85rem;
+  }
+  .cadena .cuerpo {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.82rem; overflow-wrap: anywhere;
+  }
+  table.equivalencia td.izq { text-align: left; }
+  table.equivalencia code { font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Expresiones For: la misma cadena escrita de otro modo</h1>
+  <p class="intro">Una expresión <code>for</code> con <code>yield</code> no
+  recorre por recorrer: construye una colección nueva con el valor del
+  <code>yield</code> y la devuelve, de modo que se le puede asignar a un
+  <code>val</code>. Cada pieza de la expresión corresponde a una función de
+  alto orden: el generador y el <code>yield</code> a <code>map</code>, el
+  <code>if</code> a <code>filter</code>, y un segundo generador a
+  <code>flatMap</code>. Las diez preguntas trabajan sobre las cuatro
+  expresiones del código del tema, y lo que devuelve cada una salió de
+  correrlo con la versión de Scala del proyecto del curso.</p>
+
+  <div class="carta">
+    <h2>1. ¿Qué devuelve cada expresión?</h2>
+    <div class="codigo" id="codigo-personas"></div>
+    <p class="nota">Las dos últimas preguntas usan estas definiciones: la de
+    primalidad para el filtro de las parejas y el <code>case class</code> para
+    el vector de personas.</p>
+    <div id="valores"></div>
+    <div class="progreso" id="marcador-valores"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Empareje cada for con su cadena de funciones</h2>
+    <p class="nota" style="margin-top:0">Cinco cadenas de funciones de alto
+    orden y cuatro expresiones <code>for</code>. A cada expresión le
+    corresponde una, y una de las cinco no le corresponde a ninguna. Elija la
+    letra; cada letra equivocada dice qué hace esa cadena y qué pide la
+    expresión.</p>
+    <div id="pool"></div>
+    <div id="empareja" style="margin-top:0.8rem"></div>
+    <div class="progreso" id="marcador-empareja"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Las tres equivalencias</h2>
+    <div class="envoltura-tabla">
+      <table class="equivalencia">
+        <tr><th>En la expresión for</th><th>Se traduce a</th></tr>
+        <tr><td class="izq">un generador y el <code>yield</code></td><td class="izq"><code>map</code></td></tr>
+        <tr><td class="izq">un <code>if</code></td><td class="izq"><code>filter</code></td></tr>
+        <tr><td class="izq">un generador más, dentro del primero</td><td class="izq"><code>flatMap</code>, con el <code>map</code> adentro</td></tr>
+      </table>
+    </div>
+    <p class="nota">La tabla se lee en los dos sentidos. Una cadena de
+    <code>flatMap</code> con un <code>map</code> dentro y un <code>filter</code>
+    encima se puede reescribir como un <code>for</code> de dos generadores y un
+    <code>if</code>, y el resultado es el mismo vector.</p>
+    <div id="construye"></div>
+    <div class="progreso" id="marcador-construye"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>4. Lo que se lleva de aquí</h2>
+    <p style="margin-top:0">El <code>for</code> de Scala no es el ciclo de un
+    lenguaje imperativo. No hay una variable de control que avance ni un
+    contador que se modifique: hay un generador que recorre una colección y un
+    <code>yield</code> cuyo valor entra en otra colección. Como la expresión
+    completa vale esa colección, se escribe
+    <code>val dobles = for (x &lt;- Vector(1, 2, 3)) yield x * 2</code> y se
+    sigue usando <code>dobles</code>, que es <code>Vector(2, 4, 6)</code>. La
+    colección de partida no cambia.</p>
+    <p>El orden de la traducción importa y la expresión lo deja ver. Con un
+    generador y un <code>if</code>, el <code>filter</code> va antes del
+    <code>map</code>: se descarta primero y se transforma lo que quedó. Si
+    fuera al contrario, la condición decidiría sobre valores que el
+    <code>yield</code> ya cambió, y en
+    <code>for (p &lt;- personas if p.edad &gt; 20) yield p.nombre</code> eso ni
+    siquiera se podría escribir, porque el nombre no trae la edad.</p>
+    <p>Con dos generadores aparece el <code>flatMap</code>, y la razón es la
+    forma del resultado. El generador de adentro produce una secuencia por cada
+    valor del de afuera, de modo que un <code>map</code> dejaría una secuencia
+    de secuencias. Es lo que hace la cadena E, que no le corresponde a ninguna
+    de las cuatro expresiones. El <code>flatMap</code> concatena esos trozos y
+    entrega la secuencia plana de parejas que el <code>for</code> escribe en
+    tres líneas.</p>
+    <p>Las dos escrituras de las parejas primas se corrieron por separado y las
+    dos devuelven
+    <code>Vector((2,1), (3,2), (4,1), (4,3), (5,2), (6,1), (6,5))</code>. La
+    diferencia es de lectura: con una sola operación la cadena de funciones es
+    más corta, y en cuanto hay dos generadores y un filtro, el
+    <code>for</code> nombra <code>i</code> y <code>j</code> en vez de llegar a
+    ellos por <code>par._1</code> y <code>par._2</code>.</p>
+  </div>
+</div>
+<script src="forExpr.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

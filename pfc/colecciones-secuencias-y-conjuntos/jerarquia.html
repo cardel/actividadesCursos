@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>De listas a colecciones: qué resuelve cada una</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .item {
+    border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem;
+  }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.95rem; font-weight: 700; color: var(--azul);
+    overflow-wrap: anywhere;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.88rem; min-width: 4rem;
+  }
+  .opciones button.larga {
+    font-family: inherit; font-size: 0.88rem; text-align: left;
+    white-space: normal; flex: 1 1 14rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  .codigo { max-height: none; }
+  p code, li code { background: var(--codigo-fondo); padding: 0 0.2rem; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>De listas a colecciones: qué resuelve cada una</h1>
+  <p class="intro">Una lista guarda elementos del mismo tipo y se recorre desde
+  el frente con <code>head</code> y <code>tail</code>. Hay necesidades que esa
+  forma no cubre: que un valor no pueda repetirse, llegar a un elemento del
+  medio sin pasar por los anteriores, tener los enteros de 1 a 10 de tres en
+  tres sin escribirlos, recorrer los caracteres de un texto. Para cada una hay
+  otra colección que ya la trae resuelta, y las operaciones que usted conoce
+  siguen funcionando sobre todas. Abajo hay once preguntas. Cada valor salió de
+  correr el código con la misma versión de Scala del proyecto del curso, y cada
+  opción equivocada dice en qué consiste la confusión.</p>
+
+  <div class="carta">
+    <h2>1. Tres líneas sobre List</h2>
+    <div class="codigo" id="panel-codigo"></div>
+    <p class="nota">Las tres usan la lista como colección de partida.
+    <code>map</code> transforma, <code>filter</code> elige y
+    <code>length</code> mide.</p>
+  </div>
+
+  <div class="carta">
+    <h2>2. ¿Qué imprime cada línea?</h2>
+    <p class="nota" style="margin-top:0">Decida el valor antes de seguir. Las
+    dos primeras se diferencian en una sola cosa, y es justo la que se confunde.</p>
+    <div id="repaso"></div>
+    <div class="progreso" id="marcador-repaso"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Cuatro necesidades, cuatro colecciones</h2>
+    <p class="nota" style="margin-top:0">Cada enunciado describe lo que hay que
+    conseguir. Elija la colección que lo resuelve sin trabajo extra.</p>
+    <div id="eleccion"></div>
+    <div class="progreso" id="marcador-eleccion"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. La misma operación sobre otra colección</h2>
+    <p class="nota" style="margin-top:0"><code>map</code> y <code>filter</code>
+    no son de <code>List</code>: son de las colecciones. Lo que cambia de una a
+    otra es el tipo de lo que devuelven.</p>
+    <div id="mismas"></div>
+    <div class="progreso" id="marcador-mismas"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>5. Qué trae cada colección</h2>
+    <p style="margin-top:0">Las cinco comparten el mismo repertorio de
+    operaciones. <code>Vector(2, 3, 4).map(_ * 10)</code> da
+    <code>Vector(20, 30, 40)</code>, <code>Array(1, 2, 3).map(x =&gt; 2 * x).toList</code>
+    da <code>List(2, 4, 6)</code> y <code>"Hola mundo".map(_.toUpper)</code> da
+    <code>HOLA MUNDO</code>: la misma función, aplicada elemento por elemento, y
+    un resultado del mismo tipo que la colección de entrada.</p>
+    <p>Lo que distingue a cada una es la necesidad que cubre.
+    <code>Vector</code> es la secuencia con acceso balanceado, y agrega con
+    <code>+:</code> al inicio y <code>:+</code> al final en lugar de
+    <code>::</code>. <code>Range</code> describe enteros con paso uniforme
+    guardando solo el inicio, el fin y el paso, de modo que
+    <code>(1 to 10 by 3).toList</code> entrega <code>List(1, 4, 7, 10)</code>
+    sin que nadie escriba esos cuatro números. <code>Array</code> es el arreglo
+    de Java con las operaciones de Scala encima. <code>String</code> es una
+    secuencia de caracteres, y por eso <code>"Hola mundo".length</code> da
+    <code>10</code> sin convertirlo a nada.</p>
+    <p><code>Set</code> es el que cambia de verdad el contenido:
+    <code>Vector(1, 2, 2, 3).toSet</code> da <code>Set(1, 2, 3)</code> y
+    <code>size</code> baja de cuatro a <code>3</code>. A un conjunto no se le
+    pregunta por posiciones, se le pregunta por pertenencia, y de ahí que
+    <code>Set(1, 2, 3, 4)(3)</code> devuelva <code>true</code> en vez del
+    elemento que ocupa el tercer puesto.</p>
+  </div>
+</div>
+<script src="jerarquia.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

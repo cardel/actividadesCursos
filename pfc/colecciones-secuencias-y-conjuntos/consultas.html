@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Operaciones sobre secuencias: consultas, parejas y agregados</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .item {
+    border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem;
+  }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.95rem; font-weight: 700; color: var(--azul);
+    overflow-wrap: anywhere; white-space: pre-wrap;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.88rem; min-width: 4rem;
+  }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 16rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  .codigo { max-height: none; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Operaciones sobre secuencias: consultas, parejas y agregados</h1>
+  <p class="intro">Tres familias de operaciones que no devuelven lo mismo que
+  reciben. <code>exists</code> y <code>forall</code> resumen la colección en un
+  booleano; <code>zip</code> y <code>unzip</code> cambian su forma, de dos
+  secuencias a una de parejas y de vuelta; <code>sum</code>,
+  <code>product</code>, <code>max</code> y <code>min</code> la reducen a un
+  número. Las trece
+  preguntas trabajan sobre los mismos vectores del código del tema, y cada
+  valor correcto salió de correrlo con la versión de Scala del proyecto del
+  curso.</p>
+
+  <div class="carta">
+    <h2>1. ¿Hay alguno? ¿Son todos?</h2>
+    <div class="codigo" id="codigo-nums"></div>
+    <p class="nota">Las dos operaciones reciben la misma clase de función, de
+    <code>Int</code> en <code>Boolean</code>, y las dos devuelven un
+    <code>Boolean</code>. Lo que cambia es la pregunta:
+    <code>exists</code> busca un elemento que cumpla la condición y
+    <code>forall</code> busca uno que la falle.</p>
+    <div id="booleanos"></div>
+    <div class="progreso" id="marcador-booleanos"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. El caso de la colección vacía</h2>
+    <p class="nota" style="margin-top:0">Las dos preguntas se responden sin
+    mirar ningún elemento, porque no hay ninguno. Conviene decidir qué devuelve
+    cada una antes de leer la respuesta.</p>
+    <div id="vacia"></div>
+    <div class="progreso" id="marcador-vacia"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. zip y unzip</h2>
+    <div class="codigo" id="codigo-zip"></div>
+    <p class="nota">La tercera pregunta usa <code>parejas</code>, el vector que
+    deja la última línea. La segunda cambia los dos vectores de entrada por un
+    par de largos distintos.</p>
+    <div id="parejas"></div>
+    <div class="progreso" id="marcador-parejas"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Cuatro agregados numéricos</h2>
+    <div class="codigo" id="codigo-agregados"></div>
+    <p class="nota">Este vector repite el 1 y no está ordenado, así que el
+    primer elemento no es el menor ni el último es el mayor.</p>
+    <div id="agregados"></div>
+    <div class="progreso" id="marcador-agregados"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>5. Lo que se lleva de aquí</h2>
+    <p style="margin-top:0"><code>filter</code> y <code>exists</code> hacen el
+    mismo recorrido y devuelven cosas distintas. El primero entrega los
+    elementos que cumplen, de nuevo una secuencia; el segundo entrega un
+    <code>Boolean</code>. Por eso <code>nums.exists(_ &gt; 5)</code> no es
+    <code>Vector(6, 8)</code>: la pregunta era si existe alguno, no cuáles son.
+    Lo mismo separa <code>forall</code> de un <code>filter</code> que conserva
+    todo.</p>
+    <p>El caso vacío es el que fija el significado de las dos.
+    <code>forall</code> pregunta si algún elemento falla la condición, y en una
+    colección sin elementos no hay ninguno que la falle:
+    <code>Vector[Int]().forall(_ &gt; 3)</code> da <code>true</code>.
+    <code>exists</code> pregunta si alguno la cumple, y tampoco hay ninguno que
+    la cumpla: <code>Vector[Int]().exists(_ &gt; 3)</code> da
+    <code>false</code>. Las dos respuestas son el caso base de una función
+    recursiva que recorra la colección respondiendo una de las dos preguntas.</p>
+    <p><code>zip</code> empareja por posición y se detiene donde se agota la más
+    corta de las dos, sin avisar. Con
+    <code>Vector("Ana", "Luis") zip Vector(20, 22, 99)</code> el 99 se queda
+    fuera y el resultado tiene dos parejas. Eso hace que un desajuste de largos
+    pase como un recorte silencioso en vez de como un error, de modo que vale
+    comprobar los dos largos cuando las dos secuencias vienen de sitios
+    distintos. <code>unzip</code> es el camino contrario y devuelve una tupla de
+    dos secuencias, no una secuencia de dos: se reparte con
+    <code>val (ns, es) = parejas.unzip</code>.</p>
+    <p>Los cuatro agregados aceptan el mismo vector y resumen distinto, y los
+    dos pares se confunden entre sí: <code>sum</code> con <code>product</code>,
+    y <code>max</code> con <code>min</code>. Las cuatro operaciones recorren
+    todos los elementos, así que el orden del vector no cambia su resultado y
+    los repetidos cuentan cada vez que aparecen.</p>
+  </div>
+</div>
+<script src="consultas.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

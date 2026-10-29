@@ -455,6 +455,15 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`privados`](pfc/clases-y-abstraccion-de-datos/privados.html) | qué alcanza el cliente de Racional |
 |  | [`punto2d`](pfc/clases-y-abstraccion-de-datos/punto2d.html) | la tabla de Punto antes de correrla |
 |  | [`sustitucion`](pfc/clases-y-abstraccion-de-datos/sustitucion.html) | produzca cada reescritura antes de verla |
+| `colecciones-secuencias-y-conjuntos` | [`conjuntos`](pfc/colecciones-secuencias-y-conjuntos/conjuntos.html) | sin orden, sin duplicados y con otro nombre al imprimirse |
+|  | [`consultas`](pfc/colecciones-secuencias-y-conjuntos/consultas.html) | exists, forall, zip y los agregados |
+|  | [`esPrimo`](pfc/colecciones-secuencias-y-conjuntos/esPrimo.html) | el rango sin elementos y la guarda que hace falta |
+|  | [`flatmap`](pfc/colecciones-secuencias-y-conjuntos/flatmap.html) | por qué map deja el resultado anidado |
+|  | [`forExpr`](pfc/colecciones-secuencias-y-conjuntos/forExpr.html) | empareje el for con su cadena de alto orden |
+|  | [`jerarquia`](pfc/colecciones-secuencias-y-conjuntos/jerarquia.html) | qué colección resuelve cada necesidad |
+|  | [`rangos`](pfc/colecciones-secuencias-y-conjuntos/rangos.html) | to, until, by y lo que el rango no guarda |
+|  | [`ternas`](pfc/colecciones-secuencias-y-conjuntos/ternas.html) | prediga las candidatas y véalas descartarse |
+|  | [`vector`](pfc/colecciones-secuencias-y-conjuntos/vector.html) | los dos agregados y lo que ya sabía de List |
 | `evaluacion-y-sustitucion` | [`evaluacion`](pfc/evaluacion-y-sustitucion/evaluacion.html) | por valor y por nombre |
 |  | [`sustituir`](pfc/evaluacion-y-sustitucion/sustituir.html) | la expresión que se encoge |
 | `funciones-de-alto-orden` | [`alReves`](pfc/funciones-de-alto-orden/alReves.html) | arme la llamada que delata el error |
