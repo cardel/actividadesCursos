@@ -54,3 +54,10 @@ input.larga { width: 100%; max-width: 26rem; padding: 0.35rem 0.55rem; border: 1
 
 table.corta { width: auto; margin: 0.4rem 0; }
 td.izq, th.izq { text-align: left; }
+
+/* Las tablas que se llenan a mano: una casilla por campo del nodo. */
+table.rellenar input { width: 3.8rem; padding: 0.22rem 0.35rem; text-align: center;
+  border: 1px solid var(--borde); border-radius: 6px; font-size: 0.95rem;
+  font-family: ui-monospace, monospace; }
+table.rellenar input.acierto { border-color: var(--verde); background: var(--verde-suave); }
+table.rellenar input.falla { border-color: var(--rojo); background: var(--rojo-suave); }

@@ -49,7 +49,7 @@ tabla no existe para quien busca.
 
 ## Catálogo
 
-Son 416 actividades. El enlace lleva al archivo; para verlas funcionando hay que
+Son 417 actividades. El enlace lleva al archivo; para verlas funcionando hay que
 abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 
 ### Árboles y Grafos — `ayg-puj`
@@ -61,6 +61,7 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`raices`](ayg-puj/arboles-generalidades/raices.html) | el mismo árbol libre colgado de cada una de sus raíces |
 |  | [`recorridos`](ayg-puj/arboles-generalidades/recorridos.html) | los cuatro recorridos y la reconstrucción con dos de ellos |
 |  | [`recursion`](ayg-puj/arboles-generalidades/recursion.html) | contarNodos y altura con la pila de llamados a la vista |
+|  | [`representaciones`](ayg-puj/arboles-generalidades/representaciones.html) | hijoIzq y hermanoDer: leerlos, llenarlos y ver el binario que forman |
 | `bellman-ford-moore` | [`bellman`](ayg-puj/bellman-ford-moore/bellman.html) | Bellman-Ford |
 |  | [`errores`](ayg-puj/bellman-ford-moore/errores.html) | Líneas cambiadas |
 |  | [`moore`](ayg-puj/bellman-ford-moore/moore.html) | Moore |

@@ -1,13 +1,14 @@
 # Ejercicios · AyG PUJ · Generalidades de los árboles
 
-Cinco ejercicios para el navegador sobre el árbol visto de tres maneras: como grafo conexo y
+Seis ejercicios para el navegador sobre el árbol visto de tres maneras: como grafo conexo y
 acíclico, como nodos enlazados con una raíz escogida y como definición que se nombra a sí misma.
 Van en el orden en que se construye el tema y de lo más barato de comprobar a lo más laborioso:
 primero la cuenta de aristas que decide si un grafo es árbol, después lo que cambia al colgarlo de
-un nodo u otro, después una función recursiva llamado por llamado, después los cuatro recorridos y
-el camino de vuelta, y de último las ocho búsquedas en amplitud que dan el radio y el diámetro.
-Los cinco cuentan. Dos de ellos corren el código Python del tema línea por línea. Ninguno usa
-los árboles, los grafos ni los juegos de valores de las diapositivas.
+un nodo u otro, después los dos punteros con que se guarda un nodo de cualquier cantidad de hijos,
+después una función recursiva llamado por llamado, después los cuatro recorridos y el camino de
+vuelta, y de último las ocho búsquedas en amplitud que dan el radio y el diámetro. Los seis
+cuentan. Tres de ellos corren el código Python del tema línea por línea. Ninguno usa los árboles,
+los grafos ni los juegos de valores de las diapositivas.
 
 ## El árbol como grafo: reconocerlo y contar sus piezas
 
@@ -31,6 +32,21 @@ Al comprobar aparece el árbol colgado con la profundidad de cada nodo, y una ta
 cambió en las raíces que ya se probaron. Cuatro de los ocho vértices tienen grado 1, y cuando uno
 de ellos es la raíz deja de ser hoja sin perder su única arista: ahí está la excepción que separa
 la hoja del grafo de la hoja del árbol con raíz.
+
+## El árbol como estructura de datos
+
+### [Hijo izquierdo y hermano derecho: dos punteros por nodo](representaciones.html){ target=_blank rel=noopener }
+
+Tres árboles de aridad 4, 5 y 6 guardados en `padre`, `hijoIzq` y `hermanoDer`, con los tres
+arreglos a la vista. Lo primero es leer la cadena de hijos de cualquier nodo, con `hijos`
+corriendo línea por línea y la casilla que se lee marcada en cada paso; la retroalimentación separa
+los dos errores que se repiten, quedarse con `hijoIzq[x]` y seguir `hermanoDer` desde $x$ en vez de
+desde su primer hijo, que devuelve los hermanos. Después vienen dos árboles que llegan solo
+dibujados y hay que llenarles las dos tablas casilla por casilla, con la regla que fija cada $-1$.
+El tercer trabajo pide los dos grados de un mismo nodo, los hijos y las aristas, que coinciden
+únicamente en la raíz, y de ahí la aridad. El último lee los dos punteros como hijo izquierdo e
+hijo derecho: el árbol de aridad 6 y altura 2 se vuelve uno binario de altura 9, y la profundidad
+de un nodo deja de ser la que tenía.
 
 ## La especificación recursiva
 
@@ -72,13 +88,13 @@ hay vértices que la amplitud no alcanza, y por qué el $-1$ del arreglo nunca s
    inducción sobre $m$ y diga en qué paso se usa que el grafo no tiene ciclos. Después escriba qué
    queda de la fórmula cuando el grafo sí los tiene.
 
-2. En el árbol de ocho vértices de la segunda actividad, la altura toma solo tres valores entre
+2. En el árbol de ocho vértices del ejercicio de las raíces, la altura toma solo tres valores entre
    las ocho raíces posibles: 2, 3 y 4. Pruebe que dos vértices vecinos nunca dejan alturas que
    difieran en más de uno, y use esa cota para decir cuántos valores distintos puede tomar la
    altura en un árbol de diámetro 6.
 
 3. Escriba `contarVacios(A)`, que devuelve cuántos subárboles vacíos tiene un árbol, con un solo
-   `return` y sin librerías. Compruebe con los tres árboles de la tercera actividad que el
+   `return` y sin librerías. Compruebe con los tres árboles del ejercicio de la recursión que el
    resultado es siempre uno más que la cantidad de nodos, y diga en qué se parece su demostración
    a la de las $n - 1$ aristas.
 
@@ -113,7 +129,7 @@ UVa 112, Tree Summing: <https://onlinejudge.org/external/1/112.pdf>, envío en
 <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=48>.
 
 El árbol llega escrito con la misma gramática del tema, `() | (entero arbol arbol)`, así que la
-función que lo lee se escribe igual que las de la tercera actividad: un caso base para `()` y un
+función que lo lee se escribe igual que las del ejercicio de la recursión: un caso base para `()` y un
 caso que lee el entero y se llama dos veces. Dos trampas, y las dos cuestan el envío. Una, que la
 expresión puede venir repartida en varias líneas, de modo que hay que leer por símbolos y no por
 líneas. Otra, que una hoja es un nodo con sus dos subárboles vacíos: un nodo con un solo hijo no es

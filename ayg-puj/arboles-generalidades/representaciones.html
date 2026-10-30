@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hijo izquierdo y hermano derecho: dos punteros por nodo</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Hijo izquierdo y hermano derecho: dos punteros por nodo</h1>
+  <p class="intro">Un nodo con una cantidad cualquiera de hijos se guarda con dos campos:
+  <code>hijoIzq[x]</code>, el primero de sus hijos, y <code>hermanoDer[x]</code>, el hermano que le
+  sigue. Los hijos de un nodo quedan en una lista enlazada y el espacio es Θ(<i>n</i>) sin importar la
+  aridad. Aquí se lee esa lista con el código a la vista, se construyen las dos tablas desde un dibujo,
+  se separan los dos grados de un mismo nodo y se mira el árbol binario que los dos punteros dejan en
+  memoria.</p>
+
+  <div class="carta">
+    <h2>1. El árbol y sus tres arreglos</h2>
+    <div class="presets" id="presets-arbol"></div>
+    <p class="nota" id="ver-texto"></p>
+    <div class="dibujo" id="panel-arbol"></div>
+    <div id="panel-arreglos"></div>
+    <div class="leyenda"><code>padre</code> apunta hacia arriba y vale −1 en la raíz;
+    <code>hijoIzq</code> apunta al primer hijo y vale −1 en las hojas; <code>hermanoDer</code> encadena
+    a los hermanos de izquierda a derecha y vale −1 en el último. En ámbar, el nodo <i>x</i> del
+    llamado; en azul, la casilla que se está leyendo.</div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Los hijos de un nodo, siguiendo la cadena</h2>
+    <p style="margin-top:0">Escoja un nodo y escriba sus hijos antes de ejecutar nada. Los arreglos de
+    arriba son lo único que hace falta.</p>
+    <div class="estrato" id="presets-nodo"></div>
+    <div class="fila-par">
+      <span class="rotulo" id="rot-hijos">Los hijos del nodo</span>
+      <input type="text" id="in-hijos" class="corto" style="width:12rem" placeholder="B C D">
+      <span class="fb" id="fb-hijos"></span>
+    </div>
+    <div class="botones" style="margin-top:0.7rem">
+      <button id="btn-hijos" class="primario">Comprobar</button>
+    </div>
+    <div class="carta interno">
+      <div class="panel-doble">
+        <div class="codigo" id="panel-codigo"></div>
+        <div class="estado">
+          <div class="chips" id="chips"></div>
+          <div class="progreso">Paso <span id="ver-paso">0</span> de <span id="ver-total">0</span></div>
+          <div class="botones">
+            <button id="btn-paso" class="primario">Un paso</button>
+            <button id="btn-auto">Auto</button>
+            <button id="btn-fin">Al final</button>
+            <button id="btn-reiniciar">Reiniciar</button>
+          </div>
+          <div class="nota" id="ver-cuerpo"></div>
+        </div>
+      </div>
+    </div>
+    <div class="leyenda">Las dos líneas que leen memoria son la 37, que entra a la cadena por
+    <code>hijoIzq</code>, y la 40, que avanza por <code>hermanoDer</code>. La 37 corre una vez por
+    llamado; la 40, una vez por hijo.</div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Convertir un árbol a los dos punteros</h2>
+    <p style="margin-top:0">De este árbol solo se da el dibujo. Llene las dos tablas con el nombre del
+    nodo o con −1 donde no haya a quién apuntar.</p>
+    <div class="presets" id="presets-convertir"></div>
+    <div class="dibujo" id="panel-convertir"></div>
+    <div class="leyenda" id="pie-convertir"></div>
+    <div id="tabla-convertir"></div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-convertir" class="primario">Comprobar las dos tablas</button>
+    </div>
+    <div id="fb-convertir" class="fb"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. El grado y la aridad</h2>
+    <p style="margin-top:0">Para tres nodos del árbol de la primera tarjeta, cuántos hijos tiene y
+    cuántas aristas toca. Los dos números son distintos en todos los nodos menos en uno.</p>
+    <div id="tabla-grados"></div>
+    <div id="fb-grados" class="fb"></div>
+    <div class="fila-par">
+      <span class="rotulo">Aridad del árbol</span>
+      <input type="number" id="in-aridad" class="corto" placeholder="0">
+      <span class="fb" id="fb-aridad"></span>
+    </div>
+    <div class="botones" style="margin-top:0.7rem">
+      <button id="btn-grados" class="primario">Comprobar</button>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>5. El árbol binario que quedó en memoria</h2>
+    <p style="margin-top:0">Cada nodo guarda dos punteros, igual que en un árbol binario. Leyendo
+    <code>hijoIzq</code> como hijo izquierdo y <code>hermanoDer</code> como hijo derecho, lo que hay en
+    memoria es otro árbol, y las profundidades no son las mismas.</p>
+    <div class="fila-par">
+      <span class="rotulo" id="rot-prof-gen">Profundidad en el árbol de aridad libre</span>
+      <input type="number" id="in-prof-gen" class="corto" placeholder="0">
+      <span class="fb" id="fb-prof-gen"></span>
+    </div>
+    <div class="fila-par">
+      <span class="rotulo" id="rot-prof-bin">Profundidad en el árbol binario</span>
+      <input type="number" id="in-prof-bin" class="corto" placeholder="0">
+      <span class="fb" id="fb-prof-bin"></span>
+    </div>
+    <div class="fila-par">
+      <span class="rotulo">Altura del árbol binario</span>
+      <input type="number" id="in-alt-bin" class="corto" placeholder="0">
+      <span class="fb" id="fb-alt-bin"></span>
+    </div>
+    <div class="botones" style="margin-top:0.7rem">
+      <button id="btn-binario" class="primario">Comprobar las tres</button>
+    </div>
+    <div class="dibujo" id="panel-binario"></div>
+    <div class="leyenda" id="pie-binario"></div>
+  </div>
+
+  <div class="carta">
+    <h2>6. Para llevarse</h2>
+    <p style="margin-top:0">Sin solución aquí. Escriba <code>hermanos(x)</code>, que devuelve los
+    hermanos de <i>x</i> sin contarlo, con un solo <code>return</code> y usando los tres arreglos;
+    diga cuánto cuesta en el peor caso y qué nodo del árbol de aridad 6 lo provoca. Después escriba
+    <code>ultimoHijo(x)</code> y diga por qué agregar un hijo al final cuesta el grado de <i>x</i>
+    mientras agregarlo al principio cuesta Θ(1), y qué campo habría que añadir para que las dos cuesten
+    lo mismo. De último, sobre el árbol binario de la quinta tarjeta: su recorrido en preorden coincide
+    con uno de los recorridos del árbol de aridad libre; diga con cuál y por qué el posorden no
+    coincide con ninguno.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="lib.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="representaciones.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
