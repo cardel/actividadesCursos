@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C, epsilon y el escalador de SVR</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>C, epsilon y el escalador de SVR</h1>
+  <p class="intro">SVR con kernel RBF sobre la diferencia con hace 12 meses, con la misma tabla de rezagos, mes y media móvil. Epsilon es el ancho del tubo: los errores que caben en él no cuestan. C es cuánto cuesta cada error que queda fuera. El escalador pone todas las columnas en la misma escala antes de medir distancias.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Mueva un control a la vez</h2>
+    <div class="controles">
+      <label for="c">C</label>
+      <input type="range" id="c" min="0" max="16" value="8">
+      <span class="valor-n" id="c-valor">1</span>
+      <label for="e">epsilon</label>
+      <input type="range" id="e" min="0" max="12" value="2">
+      <span class="valor-n" id="e-valor">0,1</span>
+      <span class="selector" id="escalar">
+        <button data-valor="1" class="elegido">con escalador</button>
+        <button data-valor="0">sin escalador</button>
+      </span>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <div class="figura" id="figura"></div>
+    <p class="nota">Los pronósticos salen de <code>make_pipeline(StandardScaler(), SVR(kernel="rbf", C=C, epsilon=epsilon))</code> de scikit-learn, o de <code>SVR</code> solo cuando se quita el escalador, entrenado con los meses hasta diciembre de 2024 y en millones de pasajeros. C va de 0,01 a 100 en pasos de un cuarto de potencia de 10. Se calcularon fuera de la página con el mismo código del notebook de la sesión.</p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Lo que mueve cada control</h2>
+    <div id="cierre-tabla" class="envoltura-tabla"></div>
+    <div class="nota">Con C pequeño los errores casi no cuestan y la diferencia pronosticada queda casi constante: el pronóstico repite la forma de 2024; con C grande persigue cada mes del entrenamiento, pandemia incluida. El mejor queda en el medio. Epsilon trabaja en las mismas unidades del objetivo, millones de pasajeros: un tubo de 0,6 millones deja gratis el error de casi todos los meses normales, y lo que queda por aprender son los saltos de la pandemia. El escalador importa porque el kernel RBF mide distancias: sin él, la columna del mes, que va de 1 a 12, pesa mucho más que los rezagos de la diferencia, que andan cerca de cero. Estos números son de un solo año; C y epsilon se eligen con el <i>backtest</i> completo.</div>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["estacional", "pandemia"] });</script>
+<script src="datos.js"></script>
+<script src="pronostico.js"></script>
+<script src="svr.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

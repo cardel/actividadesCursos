@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Los vecinos de KNN</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Los vecinos de KNN</h1>
+  <p class="intro">La serie del curso hecha tabla: cada fila es un mes con sus doce rezagos, el número del mes y la media de los tres meses anteriores. KNN pronostica enero de 2025 con el promedio de los k meses cuya fila más se parece a la de enero, y sigue mes a mes hasta diciembre usando sus propios pronósticos. El objetivo puede ser el nivel o la diferencia con hace 12 meses.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Mueva k y cambie el objetivo</h2>
+    <div class="controles">
+      <label for="k">vecinos k</label>
+      <input type="range" id="k" min="1" max="15" value="5">
+      <span class="valor-n" id="k-valor">5</span>
+      <span class="selector" id="objetivo">
+        <button data-valor="nivel">nivel</button>
+        <button data-valor="dif12" class="elegido">diferencia con hace 12 meses</button>
+      </span>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <div class="figura" id="figura"></div>
+    <p class="nota">Los pronósticos salen de <code>make_pipeline(StandardScaler(), KNeighborsRegressor(n_neighbors=k))</code> de scikit-learn, entrenado con los meses hasta diciembre de 2024, en millones de pasajeros. Se calcularon fuera de la página con el mismo código del notebook de la sesión.</p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Lo que muestran los vecinos</h2>
+    <div id="cierre-tabla" class="envoltura-tabla"></div>
+    <div class="nota">KNN no inventa valores: promedia meses que ya vio. Sobre el nivel, por eso, nunca pasa el mes más alto del entrenamiento, aunque la serie siga subiendo. Sobre la diferencia sí puede pasarlo, porque suma el cambio promedio de sus vecinos al mismo mes del año anterior. El precio es que la fila de enero de 2025 se parece a las de 2020 y 2021, los meses de cambios enormes: con k pequeño esos vecinos mandan y el pronóstico se cae. Al subir k los vecinos tranquilos ganan el promedio. Ese k se escoge con el <i>backtest</i>, no mirando un solo año.</div>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["nivel", "estacional", "pandemia"] });</script>
+<script src="datos.js"></script>
+<script src="pronostico.js"></script>
+<script src="knn.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

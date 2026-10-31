@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Un árbol o un bosque</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Un árbol o un bosque</h1>
+  <p class="intro">Un árbol de regresión parte la tabla con preguntas del tipo «¿rezago_12 ≤ 0,3?» y en cada hoja pronostica el promedio de las filas que caen ahí. La profundidad limita cuántas preguntas seguidas puede hacer. Un Random Forest promedia cien árboles sin límite, cada uno entrenado con una muestra con reposición de las filas. Los dos pronostican la diferencia con hace 12 meses.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Mueva la profundidad y pruebe el bosque</h2>
+    <div class="controles">
+      <label for="p">profundidad</label>
+      <input type="range" id="p" min="0" max="10" value="4">
+      <span class="valor-n" id="p-valor">4</span>
+      <span class="selector" id="modelo">
+        <button data-valor="arbol" class="elegido">un árbol</button>
+        <button data-valor="bosque">Random Forest</button>
+      </span>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <div class="figura" id="figura"></div>
+    <p class="nota">Profundidad 0 quiere decir sin límite. Los pronósticos salen de <code>DecisionTreeRegressor(max_depth=profundidad, random_state=2026)</code> y de <code>RandomForestRegressor(n_estimators=100, random_state=2026)</code> de scikit-learn, entrenados con los meses hasta diciembre de 2024 y en millones de pasajeros. El bosque no usa la profundidad. Se calcularon fuera de la página con el mismo código del notebook de la sesión.</p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Por qué el bosque cambia menos</h2>
+    <div id="cierre-tabla" class="envoltura-tabla"></div>
+    <div class="nota">Un árbol con muchas preguntas termina con hojas de una o dos filas: memoriza el entrenamiento, y una sola pregunta de más puede mandar enero de 2025 a una hoja de la pandemia. Por eso el MAE salta de una profundidad a la siguiente sin ningún orden. El bosque promedia cien árboles que vieron muestras distintas: los errores de cada uno van en direcciones distintas y el promedio los cancela. No le gana siempre al mejor árbol, pero no depende de haber acertado la profundidad. Como KNN, un árbol pronostica promedios de lo que vio; por eso aquí trabaja sobre la diferencia.</div>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["estacional", "pandemia"] });</script>
+<script src="datos.js"></script>
+<script src="pronostico.js"></script>
+<script src="arbol.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
