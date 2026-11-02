@@ -160,17 +160,6 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 | `arbol-binario` | [`contener`](estructuras-de-datos/arbol-binario/contener.html) | datos que se contienen: un organigrama en una lista |
 |  | [`terminologia`](estructuras-de-datos/arbol-binario/terminologia.html) | vocabulario del árbol con raíz; primer hijo y hermano siguiente |
 |  | [`vacios`](estructuras-de-datos/arbol-binario/vacios.html) | nodos y vacíos de un árbol binario, crearNodo |
-| `arbol-binario-busqueda` | [`arreglo`](estructuras-de-datos/arbol-binario-busqueda/arreglo.html) | la búsqueda binaria ya dibuja un árbol |
-|  | [`borrar`](estructuras-de-datos/arbol-binario-busqueda/borrar.html) | borrar en sus tres casos |
-|  | [`buscar`](estructuras-de-datos/arbol-binario-busqueda/buscar.html) | buscar, mínimo y máximo; recursiva e iterativa |
-|  | [`esabb`](estructuras-de-datos/arbol-binario-busqueda/esabb.html) | decidir si un árbol es ABB |
-|  | [`forma`](estructuras-de-datos/arbol-binario-busqueda/forma.html) | la forma depende del orden de inserción |
-|  | [`insertar`](estructuras-de-datos/arbol-binario-busqueda/insertar.html) | insertar una secuencia |
-|  | [`preorden`](estructuras-de-datos/arbol-binario-busqueda/preorden.html) | del preorden al posorden, para el juez |
-|  | [`rango`](estructuras-de-datos/arbol-binario-busqueda/rango.html) | esABB con el rango permitido |
-|  | [`recorte`](estructuras-de-datos/arbol-binario-busqueda/recorte.html) | recorridos que se recortan por rango |
-|  | [`reenganche`](estructuras-de-datos/arbol-binario-busqueda/reenganche.html) | cómo insertar reengancha el árbol |
-|  | [`situaciones`](estructuras-de-datos/arbol-binario-busqueda/situaciones.html) | lo que cuesta cada operación según la forma |
 | `arbol-binario-busqueda` | [`arreglo`](estructuras-de-datos/arbol-binario-busqueda/arreglo.html) | la búsqueda binaria de un arreglo ordenado y el árbol de sus comparaciones |
 |   | [`borrar`](estructuras-de-datos/arbol-binario-busqueda/borrar.html) | una hoja, un nodo con un hijo y dos con dos hijos; el olvido de `raiz =` |
 |   | [`buscar`](estructuras-de-datos/arbol-binario-busqueda/buscar.html) | comparaciones, marcos de la recursiva y vueltas de `buscarIterativa` |
@@ -182,6 +171,13 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |   | [`recorte`](estructuras-de-datos/arbol-binario-busqueda/recorte.html) | `contarRango` y `kEsimo`, y los subárboles que se saltan |
 |   | [`reenganche`](estructuras-de-datos/arbol-binario-busqueda/reenganche.html) | qué asignación de `insertar` cambia de verdad un puntero |
 |   | [`situaciones`](estructuras-de-datos/arbol-binario-busqueda/situaciones.html) | qué cobra el ABB en cada caso y cuándo le gana un arreglo ordenado |
+| `arbol-rojinegro` | [`alturanegra`](estructuras-de-datos/arbol-rojinegro/alturanegra.html) | la altura negra, el camino largo frente al corto y la cota 2 log₂(n + 1) |
+|   | [`casos`](estructuras-de-datos/arbol-rojinegro/casos.html) | qué caso de la inserción toca según el padre, el tío y la forma |
+|   | [`dentromap`](estructuras-de-datos/arbol-rojinegro/dentromap.html) | el `map` como rojinegro: el recorrido en inorden y `++it` al sucesor |
+|   | [`insertar`](estructuras-de-datos/arbol-rojinegro/insertar.html) | nueve claves en un rojinegro vacío, caso por caso, contra el ABB |
+|   | [`reconstruir`](estructuras-de-datos/arbol-rojinegro/reconstruir.html) | claves en orden y lo que cobra reconstruir el árbol balanceado |
+|   | [`reglas`](estructuras-de-datos/arbol-rojinegro/reglas.html) | cinco árboles coloreados y la regla que rompe cada uno |
+|   | [`rotar`](estructuras-de-datos/arbol-rojinegro/rotar.html) | los tres enlaces de una rotación y el inorden que se conserva |
 | `ciclos-dependientes-sumatorias` | [`contar_incluida`](estructuras-de-datos/ciclos-dependientes-sumatorias/contar_incluida.html) | contador de pasos |
 |  | [`feynman`](estructuras-de-datos/ciclos-dependientes-sumatorias/feynman.html) | cuántos cuadrados caben y cuántas vueltas da el triple ciclo |
 |  | [`potencias`](estructuras-de-datos/ciclos-dependientes-sumatorias/potencias.html) | contador de pasos |
@@ -200,6 +196,10 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`elegir`](estructuras-de-datos/contenedor-map/elegir.html) | tabla hash o map |
 |  | [`orden`](estructuras-de-datos/contenedor-map/orden.html) | orden de las claves |
 |  | [`palabras`](estructuras-de-datos/contenedor-map/palabras.html) | contar palabras |
+| `contenedor-set` | [`bordes`](estructuras-de-datos/contenedor-set/bordes.html) | `lower_bound`, `upper_bound`, el anterior y los intervalos |
+|   | [`compuestas`](estructuras-de-datos/contenedor-set/compuestas.html) | un `set<string>` para palabras compuestas, UVa 10391 |
+|   | [`elegir`](estructuras-de-datos/contenedor-set/elegir.html) | `set`, `map`, `unordered_map` o un `vector` ordenado |
+|   | [`operaciones`](estructuras-de-datos/contenedor-set/operaciones.html) | `count`, `find`, `++it` y `erase` en un programa con `set<int>` |
 | `contenedor-unordered-map` | [`cubetas`](estructuras-de-datos/contenedor-unordered-map/cubetas.html) | cubetas y recorrido |
 |  | [`elegir`](estructuras-de-datos/contenedor-unordered-map/elegir.html) | map o unordered_map |
 |  | [`rehash`](estructuras-de-datos/contenedor-unordered-map/rehash.html) | factor de carga y rehash |
