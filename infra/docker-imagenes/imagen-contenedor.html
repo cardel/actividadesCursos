@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Imagen, contenedor y lo que el proceso cree</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Imagen, contenedor y lo que el proceso cree</h1>
+  <p class="intro">Un contenedor es un proceso del anfitrión al que se le cambió lo que ve. De
+  ahí salen las dos cuentas de esta página: cuánto disco cuesta el segundo contenedor de la
+  misma imagen, y por qué un programa adentro informa doce núcleos cuando tiene uno y medio.</p>
+
+  <div class="carta">
+    <h2>1. Máquina virtual o contenedor</h2>
+    <p style="margin-top:0">Una máquina virtual lleva su propio núcleo encima del hipervisor. Un
+    contenedor reusa el del anfitrión y se apoya en <em>namespaces</em> y <em>cgroups</em>.</p>
+    <p style="margin-bottom:0.3rem">¿Por qué un contenedor arranca en milisegundos y una máquina
+    virtual en segundos o minutos?</p>
+    <div class="opciones" id="op-arranque">
+      <button data-op="liviano">Porque la imagen del contenedor pesa mucho menos</button>
+      <button data-op="correcta">Porque no hay un segundo núcleo que iniciar: el proceso usa el del anfitrión</button>
+      <button data-op="cache">Porque Docker mantiene los contenedores precalentados</button>
+      <button data-op="red">Porque el contenedor no configura red</button>
+    </div>
+    <div id="ver-arranque" class="veredicto"></div>
+    <div class="nota">Aislado no es lo mismo que seguro. Ejecutar el contenedor como root,
+    montar la raíz del anfitrión o exponer el socket de Docker rompen las garantías que dan los
+    <em>namespaces</em>.</div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Una imagen, dos contenedores</h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker pull nginx:1.27-alpine</span></div>
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker run -d --name w1 nginx:1.27-alpine</span></div>
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker run -d --name w2 nginx:1.27-alpine</span></div>
+    </div>
+    <p style="margin-top:0.6rem">La imagen ocupa 74,5 MB en disco y su contenido comprimido son
+    21,9 MB. Los dos contenedores quedan arriba, cada uno con su identificador.</p>
+    <div class="prediccion">
+      <span>¿Cuánto disco más cuesta levantar un tercer contenedor de esa imagen, en megabytes?</span>
+      <input type="number" id="pred-tercero" min="0" step="0.1" placeholder="MB">
+      <button id="btn-tercero" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-tercero" class="veredicto"></div>
+    <div class="chips" id="chips-imagen" style="margin-top:0.7rem"></div>
+    <p style="margin-bottom:0.3rem;margin-top:1rem">La imagen es la receta y el contenedor el
+    plato cocinado. ¿Qué se sigue de esa analogía?</p>
+    <div class="opciones" id="op-analogia">
+      <button data-op="correcta">Una receta produce muchos platos idénticos, y cada plato se ensucia de forma distinta</button>
+      <button data-op="copia">Cada plato lleva su copia completa de la receta</button>
+      <button data-op="muta">Cocinar cambia la receta para la próxima vez</button>
+      <button data-op="uno">De una receta sale un solo plato a la vez</button>
+    </div>
+    <div id="ver-analogia" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Lo que el cgroup impone y lo que el programa cree</h2>
+    <div class="codigo">
+      <div class="linea bloque-2"><span class="num">$</span><span class="txt">docker run -d --name lim --cpus=1.5 --memory=256m --pids-limit=64 alpine:3.20 sleep 300</span></div>
+      <div class="linea"><span class="num">$</span><span class="txt">docker exec lim cat /sys/fs/cgroup/cpu.max /sys/fs/cgroup/memory.max /sys/fs/cgroup/pids.max</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">150000 100000</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">268435456</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">64</span></div>
+    </div>
+    <div class="prediccion">
+      <span>De <code>cpu.max</code>, ¿cuántos núcleos tiene ese contenedor?</span>
+      <input type="number" id="pred-cpu" min="0" step="0.1" placeholder="núcleos">
+      <button id="btn-cpu" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-cpu" class="veredicto"></div>
+    <div class="prediccion">
+      <span>Y <code>memory.max</code> en mebibytes, ¿cuánto es?</span>
+      <input type="number" id="pred-mem" min="0" step="1" placeholder="MiB">
+      <button id="btn-mem" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-mem" class="veredicto"></div>
+    <div class="envoltura-tabla" style="margin-top:0.6rem">
+      <table>
+        <thead><tr><th>Recurso</th><th>Límite del cgroup</th><th>Lo que reporta el contenedor</th></tr></thead>
+        <tbody id="cuerpo-limites"></tbody>
+      </table>
+    </div>
+    <div class="alerta" id="nota-limites" hidden><code>nproc</code>, <code>free</code> y
+    <code>os.cpu_count()</code> leen <code>/proc</code>, que sigue siendo el del anfitrión. Un
+    programa que dimensione su grupo de hilos con esas cifras crea doce hilos para uno y medio
+    de núcleo, y los doce se turnan. El tamaño que corresponde sale de <code>cpu.max</code>: el
+    primer número dividido entre el segundo.</div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Qué pone cada pieza</h2>
+    <p style="margin-top:0;margin-bottom:0.3rem">Un equipo reporta que su servicio <em>se quedó sin
+    memoria y nadie cambió nada</em>. El contenedor corre con <code>--memory=256m</code> y el
+    programa pide memoria según lo que informa <code>free</code>. ¿Dónde está el problema?</p>
+    <div class="opciones" id="op-diagnostico">
+      <button data-op="docker">En Docker, que informa mal la memoria disponible</button>
+      <button data-op="correcta">En el programa, que dimensiona con los 32 GB del anfitrión y choca contra los 256 MiB de su cgroup</button>
+      <button data-op="kernel">En el núcleo, que no aplica el límite</button>
+      <button data-op="imagen">En la imagen base, que trae herramientas que consumen memoria</button>
+    </div>
+    <div id="ver-diagnostico" class="veredicto"></div>
+    <div class="nota">El límite sí se aplica: <code>docker stats</code> lo muestra como
+    <code>388KiB / 256MiB</code>. Lo que no cambia es lo que el programa lee cuando pregunta por
+    el tamaño de la máquina.</div>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="imagen-contenedor.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

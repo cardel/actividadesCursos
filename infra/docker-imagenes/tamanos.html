@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dónde está el peso de una imagen</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Dónde está el peso de una imagen</h1>
+  <p class="intro">Una imagen de 197 MB para un programa de doce kilobytes. Reparta ese peso
+  entre las capas antes de verlo, y después compare el mismo programa empacado de cuatro formas
+  distintas.</p>
+
+  <div class="carta">
+    <h2>1. Reparta los 197 MB</h2>
+    <p style="margin-top:0">La imagen del ejemplo mide 197 MB. Se construyó sobre
+    <code>python:3.12-slim</code>, que sola mide 179 MB.</p>
+    <div class="prediccion">
+      <span>¿Qué porcentaje de la imagen es la base?</span>
+      <input type="number" id="pred-base" min="0" max="100" step="1" placeholder="%">
+      <button id="btn-base" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-base" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem;margin-top:1rem">Lo que agrega cada instrucción propia, según
+    <code>docker history</code>:</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Instrucción</th><th>Tamaño de su capa</th></tr></thead>
+        <tbody id="cuerpo-capas"></tbody>
+      </table>
+    </div>
+    <div class="chips" id="chips-peso" style="margin-top:0.7rem"></div>
+    <div class="alerta" id="nota-capas" hidden>Las instrucciones que solo escriben metadatos,
+    <code>ENV</code>, <code>EXPOSE</code> y <code>CMD</code>, ocupan 0 B y aun así cada una es
+    una capa con identificador propio. La capa más pesada de todas no es ninguna de las propias:
+    son los 87,4 MB del sistema Debian que trae la base. Bajar el tamaño pasa por cambiar de
+    base, no por acortar el código.</div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Entre dos versiones de la aplicación</h2>
+    <p style="margin-top:0;margin-bottom:0.3rem">Se corrige una línea de <code>app.py</code> y
+    se publica la imagen nueva. ¿Cuántos bytes tiene que descargar quien ya tenía la anterior?</p>
+    <div class="opciones" id="op-descarga">
+      <button data-op="todo">Los 197 MB completos, porque es otra imagen</button>
+      <button data-op="correcta">Los 12,3 kB de la capa del código, y las capas de metadatos que vienen después</button>
+      <button data-op="base">Los 179 MB de la base, que se revalida</button>
+      <button data-op="pip">Los 15,2 MB del pip install, porque está antes del código</button>
+    </div>
+    <div id="ver-descarga" class="veredicto"></div>
+    <div class="nota">Es la otra cara del orden de las instrucciones: con las dependencias
+    arriba, lo único que cambia entre una versión y la siguiente son esos doce kilobytes.</div>
+  </div>
+
+  <div class="carta">
+    <h2>3. El mismo programa en Go, cuatro veces</h2>
+    <p style="margin-top:0">Un programa que imprime una línea, empacado en cuatro imágenes
+    distintas. Las cuatro imprimen exactamente lo mismo.</p>
+    <div class="prediccion">
+      <span>La más grande mide 1,27 GB y la más pequeña 2,06 MB. ¿Cuántas veces cabe la pequeña
+      en la grande?</span>
+      <input type="number" id="pred-factor" min="1" step="1" placeholder="veces">
+      <button id="btn-factor" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-factor" class="veredicto"></div>
+    <div class="envoltura-tabla" style="margin-top:0.6rem">
+      <table>
+        <thead><tr><th>Variante</th><th>Tamaño</th><th>Veces la más pequeña</th><th>Qué trae</th></tr></thead>
+        <tbody id="cuerpo-go"></tbody>
+      </table>
+    </div>
+    <p style="margin-bottom:0.3rem;margin-top:1rem">¿Qué quita esos 1,25 GB de diferencia?</p>
+    <div class="opciones" id="op-multistage">
+      <button data-op="correcta">Separar la etapa de compilación de la etapa final, y copiar solo el binario</button>
+      <button data-op="comprimir">Comprimir las capas al publicar</button>
+      <button data-op="borrar">Borrar los archivos del compilador con un RUN rm al final</button>
+      <button data-op="flags">Compilar con banderas de optimización</button>
+    </div>
+    <div id="ver-multistage" class="veredicto"></div>
+    <div class="nota">En <code>distroless</code> y en <code>scratch</code> no hay intérprete de
+    órdenes, ni <code>ls</code>, ni <code>ps</code>: para depurar ahí se inyecta un contenedor
+    auxiliar. Y Alpine usa musl en vez de glibc, así que algunas ruedas de Python como NumPy no
+    traen versión compilada y hay que construirlas, lo que infla el tiempo y el tamaño.</div>
+  </div>
+
+  <div class="carta">
+    <h2>4. La misma versión de Python, dos tamaños</h2>
+    <p style="margin-top:0">Medidas en la máquina del curso: <code>python:3.12</code> pesa
+    1,62 GB y <code>python:3.12-slim</code>, 179 MB.</p>
+    <div class="prediccion">
+      <span>¿Cuántas veces más grande es la completa?</span>
+      <input type="number" id="pred-slim" min="1" step="1" placeholder="veces">
+      <button id="btn-slim" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-slim" class="veredicto"></div>
+    <div class="envoltura-tabla" style="margin-top:0.6rem">
+      <table>
+        <thead><tr><th>Imagen</th><th>Tamaño medido</th></tr></thead>
+        <tbody id="cuerpo-bases"></tbody>
+      </table>
+    </div>
+    <div class="nota">El mismo intérprete, nueve veces menos disco: la variante
+    <code>slim</code> deja fuera compiladores y documentación. La tabla de referencia de la
+    sesión da cifras aproximadas por familia, y estas son las que se midieron con
+    <code>docker images</code> en una máquina concreta; cuando las dos difieren, manda la
+    medida.</div>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="tamanos.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

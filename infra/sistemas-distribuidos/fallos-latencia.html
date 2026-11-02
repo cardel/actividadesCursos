@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Disponibilidad, demora y throughput</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Disponibilidad, demora y throughput</h1>
+  <p class="intro">Tres cifras que se confunden entre sí: cuánto tiempo responde un servicio,
+  cuánto tarda en contestar un paquete y cuántos bits por segundo sostiene el camino. Cada una
+  se mide distinto y ninguna se deduce de las otras.</p>
+
+  <div class="carta">
+    <h2>1. Los nueves, en tiempo caído</h2>
+    <p style="margin-top:0">Un servicio con 99,9 % de <em>uptime</em> tiene tres nueves. El año
+    tiene 365 días.</p>
+    <div class="prediccion">
+      <span>¿Cuántas horas al año puede estar caído?</span>
+      <input type="number" id="pred-nueves" min="0" step="0.01" placeholder="horas">
+      <button id="btn-nueves" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-nueves" class="veredicto"></div>
+    <div class="envoltura-tabla" style="margin-top:0.6rem">
+      <table>
+        <thead><tr><th>Uptime</th><th>Se dice</th><th>Caído al año</th></tr></thead>
+        <tbody id="cuerpo-nueves"></tbody>
+      </table>
+    </div>
+    <div class="alerta" id="nota-nueves" hidden>Cada nueve extra divide el tiempo caído entre
+    diez y multiplica el costo de la infraestructura. AWS ofrece seis nueves en varios de sus
+    servicios, y llegar ahí exige redundancia en más de una región. El día que S3 cayó cuatro
+    horas en <code>us-east-1</code>, en 2017, se llevó consigo a Slack, Trello y GitHub.</div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Leer bien la salida de ping</h2>
+    <p style="margin-top:0">Veinte paquetes a <code>google.com</code>, uno cada 0,2 segundos:</p>
+    <div class="codigo">
+      <div class="linea"><span class="num">$</span><span class="txt">ping -c 20 -i 0.2 google.com</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">20 packets transmitted, 20 received, 0% packet loss, time 3830ms</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">rtt min/avg/max/mdev = 11.394/23.377/172.228/37.439 ms</span></div>
+    </div>
+    <div class="prediccion">
+      <span>¿Cuántas veces el mínimo es el peor paquete?</span>
+      <input type="number" id="pred-pico" min="0" step="0.1" placeholder="veces">
+      <button id="btn-pico" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-pico" class="veredicto"></div>
+    <div class="envoltura-tabla" style="margin-top:0.6rem">
+      <table>
+        <thead><tr><th>Campo</th><th>Valor</th><th>Qué dice</th></tr></thead>
+        <tbody id="cuerpo-ping"></tbody>
+      </table>
+    </div>
+    <p style="margin-bottom:0.3rem;margin-top:1rem">De los cuatro campos, ¿cuál es el piso que
+    impone la distancia?</p>
+    <div class="opciones" id="op-piso">
+      <button data-op="correcta">min, 11,394 ms</button>
+      <button data-op="avg">avg, 23,377 ms</button>
+      <button data-op="max">max, 172,228 ms</button>
+      <button data-op="mdev">mdev, 37,439 ms</button>
+    </div>
+    <div id="ver-piso" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem;margin-top:1rem">Otra corrida da un promedio de 20 ms con
+    5 % de paquetes perdidos. ¿Es mejor noticia que un promedio de 60 ms sin pérdida?</p>
+    <div class="opciones" id="op-perdida">
+      <button data-op="mejor">Sí: 20 ms es menos de la mitad de 60 ms</button>
+      <button data-op="correcta">No: cada paquete que falta lo retransmite TCP, y eso se paga en segundos</button>
+      <button data-op="igual">Da lo mismo, porque el promedio ya incluye las pérdidas</button>
+      <button data-op="depende">Solo importa si la aplicación usa UDP</button>
+    </div>
+    <div id="ver-perdida" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Dos números que no se deducen uno del otro</h2>
+    <p style="margin-top:0">La demora de respuesta es lo que tarda un paquete pequeño en ir y
+    volver, y la fija sobre todo la distancia. El <em>throughput</em> son los bits por segundo
+    que sostiene el camino, y lo fija el enlace más angosto de la ruta.</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Enlace</th><th>Throughput</th><th>Demora de respuesta</th></tr></thead>
+        <tbody id="cuerpo-enlaces"></tbody>
+      </table>
+    </div>
+    <p style="margin-bottom:0.3rem;margin-top:1rem">Hay que elegir enlace para una videollamada
+    de una hora. Uno satelital entrega cientos de Mbit/s con medio segundo de
+    demora; un ADSL responde en 15 ms y no pasa de 5 Mbit/s. ¿Cuál sirve?</p>
+    <div class="opciones" id="op-enlace">
+      <button data-op="satelital">El satelital: una videollamada necesita ancho de banda</button>
+      <button data-op="correcta">El ADSL: medio segundo de demora hace la conversación imposible, y 5 Mbit/s alcanzan para video</button>
+      <button data-op="ninguno">Ninguno: una videollamada pide las dos cosas a la vez</button>
+      <button data-op="promedio">El satelital, porque en promedio los dos quedan parecidos</button>
+    </div>
+    <div id="ver-enlace" class="veredicto"></div>
+    <div class="nota">Bajar la demora es acortar el camino o quitar saltos. Subir el throughput
+    es ensanchar el enlace angosto. Son dos arreglos distintos, y una medición que no distingue
+    los dos números lleva a comprar el equivocado.</div>
+  </div>
+
+  <div class="carta">
+    <h2>4. De bytes por segundo a bits por segundo</h2>
+    <p style="margin-top:0">Una descarga de 50 MB medida con <code>curl</code>:</p>
+    <div class="codigo">
+      <div class="linea"><span class="num">$</span><span class="txt">curl -s -o /dev/null -w 'total: %{time_total} s velocidad: %{speed_download} B/s\n' …</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">total: 1.512595 s  velocidad: 34661538 B/s</span></div>
+    </div>
+    <div class="prediccion">
+      <span>¿A cuántos Mbit/s equivale esa velocidad?</span>
+      <input type="number" id="pred-mbit" min="0" step="1" placeholder="Mbit/s">
+      <button id="btn-mbit" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-mbit" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem;margin-top:1rem">Contra la propia máquina, <code>iperf3</code>
+    midió 27,9 Gbit/s y una descarga HTTP por el mismo camino dio 10,5 Gbit/s. ¿Qué explica el
+    tercio?</p>
+    <div class="opciones" id="op-brecha">
+      <button data-op="correcta">Un solo flujo TCP, el cifrado y el disco del destino, que iperf3 con cuatro flujos no paga</button>
+      <button data-op="miente">Que una de las dos herramientas informa mal</button>
+      <button data-op="loopback">Que el loopback no admite HTTP</button>
+      <button data-op="tamano">Que el archivo era muy pequeño para llenar el enlace</button>
+    </div>
+    <div id="ver-brecha" class="veredicto"></div>
+    <div class="nota">De la salida de <code>iperf3</code> el número que se reporta es el de la
+    línea de resumen, <code>sender</code> o <code>receiver</code>, nunca el pico de un intervalo
+    suelto. Y la columna <code>Retr</code> que crece delata congestión o pérdida aunque la tasa
+    se vea bien.</div>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="fallos-latencia.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Las capas y dónde se rompe la caché</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Las capas y dónde se rompe la caché</h1>
+  <p class="intro">Cada instrucción del Dockerfile produce una capa, y una capa que cambia
+  invalida todas las que vienen después. Mover dos líneas de sitio decide si el segundo
+  <code>build</code> tarda dos segundos o siete.</p>
+
+  <div class="carta">
+    <h2>1. La pila de capas</h2>
+    <p style="margin-top:0">De abajo hacia arriba, lo que construye la imagen de la aplicación
+    de ejemplo. El vacío es el punto de partida: un sistema de archivos que no existe todavía.</p>
+    <div class="secuencia" id="pila"></div>
+    <p style="margin-bottom:0.3rem;margin-top:1rem">Las capas son inmutables y se comparten
+    entre imágenes que las reutilicen. ¿Qué se sigue de eso?</p>
+    <div class="opciones" id="op-capas">
+      <button data-op="correcta">Dos imágenes con la misma base no duplican su contenido en disco</button>
+      <button data-op="editar">Se puede editar una capa sin reconstruir las de arriba</button>
+      <button data-op="orden">El orden de las instrucciones no afecta el resultado</button>
+      <button data-op="union">Cada capa guarda una copia completa del sistema de archivos</button>
+    </div>
+    <div id="ver-capas" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Dos órdenes para el mismo Dockerfile</h2>
+    <div class="panel-doble">
+      <div>
+        <p style="margin-top:0;margin-bottom:0.3rem"><b>Dependencias primero</b></p>
+        <div class="codigo">
+          <div class="linea bloque-1"><span class="num">1</span><span class="txt">FROM python:3.12-slim</span></div>
+          <div class="linea bloque-1"><span class="num">2</span><span class="txt">WORKDIR /app</span></div>
+          <div class="linea bloque-1"><span class="num">3</span><span class="txt">COPY requirements.txt .</span></div>
+          <div class="linea bloque-1"><span class="num">4</span><span class="txt">RUN pip install --no-cache-dir -r requirements.txt</span></div>
+          <div class="linea bloque-2"><span class="num">5</span><span class="txt">COPY app.py .</span></div>
+          <div class="linea bloque-2"><span class="num">6</span><span class="txt">CMD ["python", "app.py"]</span></div>
+        </div>
+      </div>
+      <div>
+        <p style="margin-top:0;margin-bottom:0.3rem"><b>Código primero</b></p>
+        <div class="codigo">
+          <div class="linea bloque-1"><span class="num">1</span><span class="txt">FROM python:3.12-slim</span></div>
+          <div class="linea bloque-1"><span class="num">2</span><span class="txt">WORKDIR /app</span></div>
+          <div class="linea bloque-2"><span class="num">3</span><span class="txt">COPY . /app</span></div>
+          <div class="linea bloque-2"><span class="num">4</span><span class="txt">RUN pip install --no-cache-dir -r requirements.txt</span></div>
+          <div class="linea bloque-2"><span class="num">5</span><span class="txt">CMD ["python", "app.py"]</span></div>
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:0.7rem">Se edita una línea de <code>app.py</code> y se vuelve a
+    construir.</p>
+    <div class="prediccion">
+      <span>Con dependencias primero, ¿cuántos de los seis pasos salen de la caché?</span>
+      <input type="number" id="pred-cacheados" min="0" max="6" step="1" placeholder="pasos">
+      <button id="btn-cacheados" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-cacheados" class="veredicto"></div>
+    <div class="secuencia" id="pasos-buena"></div>
+    <div class="secuencia" id="pasos-mala"></div>
+    <div class="chips" id="chips-cache" style="margin-top:0.7rem"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Lo que cuesta la línea mal puesta</h2>
+    <p style="margin-top:0">Las tres construcciones, medidas: la primera con
+    <code>--no-cache</code>, y las dos segundas tras la misma edición de una línea.</p>
+    <div class="prediccion">
+      <span>¿Cuántas veces más tarda la segunda construcción con el código arriba?</span>
+      <input type="number" id="pred-razon" min="0" step="0.1" placeholder="veces">
+      <button id="btn-razon" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-razon" class="veredicto"></div>
+    <div class="envoltura-tabla" style="margin-top:0.6rem">
+      <table>
+        <thead><tr><th>Construcción</th><th>Qué se vuelve a ejecutar</th><th>Tiempo</th></tr></thead>
+        <tbody id="cuerpo-tiempos"></tbody>
+      </table>
+    </div>
+    <div class="alerta" id="nota-tiempos" hidden>La regla práctica sale de ahí: lo que cambia
+    poco va arriba, cerca del <code>FROM</code>, y lo que cambia con cada commit va al final.
+    Una línea de <code>app.py</code> cambia el contenido de su capa y de todas las siguientes;
+    con las dependencias arriba, esa cadena empieza en el paso 5, y con <code>COPY . /app</code>
+    arriba empieza en el 3 y arrastra la instalación.</div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Qué invalida la caché</h2>
+    <p style="margin-top:0;margin-bottom:0.3rem">El equipo agrega un <code>RUN apt-get update</code>
+    al final del Dockerfile y nota que el <code>build</code> volvió a tardar lo mismo que antes.
+    ¿Qué pasó?</p>
+    <div class="opciones" id="op-invalida">
+      <button data-op="correcta">Nada raro: la instrucción nueva es la última, así que solo ella se ejecuta y el resto sigue viniendo de la caché</button>
+      <button data-op="todo">Agregar una instrucción invalida toda la imagen</button>
+      <button data-op="apt">apt-get update siempre invalida la caché de las capas anteriores</button>
+      <button data-op="azar">La caché de Docker se vence con el tiempo</button>
+    </div>
+    <div id="ver-invalida" class="veredicto"></div>
+    <div class="nota">El antipatrón del segundo apartado es el que se paga todos los días:
+    <code>COPY . /app</code> antes de instalar dependencias reinstala todo en cada cambio de
+    código, y el síntoma es un <code>build</code> que nunca baja de su tiempo completo.</div>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="capas-cache.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

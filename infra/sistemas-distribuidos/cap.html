@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El teorema CAP, paso a paso</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>El teorema CAP, paso a paso</h1>
+  <p class="intro">Mientras la red funciona, un sistema distribuido parece tenerlo todo. La
+  elección aparece cuando la red se parte, y entonces hay que decidir si se contesta con un dato
+  viejo o no se contesta. Aquí se recorre esa partición momento por momento.</p>
+
+  <div class="carta">
+    <h2>1. Las tres propiedades</h2>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Letra</th><th>Qué garantiza</th></tr></thead>
+        <tbody id="cuerpo-propiedades"></tbody>
+      </table>
+    </div>
+    <p style="margin-bottom:0.3rem;margin-top:1rem">La consistencia se define como <em>toda lectura
+    devuelve la escritura más reciente o un error</em>. ¿Qué permite esa última cláusula?</p>
+    <div class="opciones" id="op-clausula">
+      <button data-op="correcta">Contestar <em>no disponible</em> sin dejar de ser consistente</button>
+      <button data-op="viejo">Devolver un valor viejo cuando no hay nada mejor</button>
+      <button data-op="ignora">Ignorar la escritura que no se pudo propagar</button>
+      <button data-op="nada">Nada: es una forma de decir que el sistema falló</button>
+    </div>
+    <div id="ver-clausula" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. La partición, momento por momento</h2>
+    <p style="margin-top:0">Dos nodos, A y B, con el mismo dato <code>x = 3</code>. La red entre
+    ellos se cae. Un cliente escribe <code>x = 5</code> en A; otro cliente lee <code>x</code> en
+    B.</p>
+    <div class="secuencia" id="fichas-nodos"></div>
+    <div class="botones" style="margin-top:0.5rem">
+      <button id="btn-paso" class="primario">Siguiente momento</button>
+      <button id="btn-reiniciar">Volver al inicio</button>
+      <span class="progreso" id="progreso-cap"></span>
+    </div>
+    <div class="envoltura-tabla" style="margin-top:0.6rem">
+      <table>
+        <thead><tr><th>Momento</th><th>A</th><th>B</th><th>Responde CP</th><th>Responde AP</th></tr></thead>
+        <tbody id="cuerpo-traza"></tbody>
+      </table>
+    </div>
+    <p style="margin-bottom:0.3rem;margin-top:1rem">Con la red partida y <code>x = 5</code> ya
+    escrito en A, un cliente lee en B. ¿Qué contesta un sistema CP?</p>
+    <div class="opciones" id="op-cp">
+      <button data-op="tres">3, que es lo que B tiene</button>
+      <button data-op="cinco">5, porque es el valor más reciente</button>
+      <button data-op="correcta">Un error: no está disponible hasta que pueda sincronizar con A</button>
+      <button data-op="espera">Espera indefinidamente a que vuelva la red</button>
+    </div>
+    <div id="ver-cp" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem;margin-top:1rem">¿Y un sistema AP?</p>
+    <div class="opciones" id="op-ap">
+      <button data-op="correcta">3, el valor viejo, y avisa después cuando converja</button>
+      <button data-op="cinco">5, porque replica la escritura por otro camino</button>
+      <button data-op="error">Un error, igual que CP</button>
+      <button data-op="ambos">Los dos valores, para que el cliente elija</button>
+    </div>
+    <div id="ver-ap" class="veredicto"></div>
+    <div class="alerta" id="nota-traza" hidden>Cuando la red vuelve, los dos sistemas terminan
+    en <code>x = 5</code>. La diferencia es qué pasó durante la partición, y es irreversible:
+    el cliente de AP ya se fue con un 3 en la mano. El mismo dilema en un cajero: la opción CP
+    dice <em>fuera de servicio</em>; la AP deja retirar hasta cierto monto y reconcilia después,
+    aceptando que alguien se sobregire.</div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Seis sistemas, una decisión cada uno</h2>
+    <p style="margin-top:0">Para cada uno, qué conviene sacrificar durante una partición. La
+    regla general: si el costo de un dato incorrecto supera el costo de un error visible, CP; si
+    es al revés, AP.</p>
+    <div id="casos"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. ACID y BASE</h2>
+    <p style="margin-top:0">Dos conjuntos de garantías que acompañan las dos decisiones.</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Sigla</th><th>Qué promete</th><th>Dónde aparece</th></tr></thead>
+        <tbody id="cuerpo-acid"></tbody>
+      </table>
+    </div>
+    <p style="margin-bottom:0.3rem;margin-top:1rem"><em>Sin escrituras nuevas, todos los nodos
+    convergen al mismo valor</em>. ¿Qué garantiza esa frase?</p>
+    <div class="opciones" id="op-eventual">
+      <button data-op="correcta">Que las copias se igualan si se deja de escribir, y nada sobre cuándo</button>
+      <button data-op="rapido">Que las copias se igualan en milisegundos</button>
+      <button data-op="siempre">Que toda lectura devuelve el último valor escrito</button>
+      <button data-op="nunca">Que las copias nunca discrepan</button>
+    </div>
+    <div id="ver-eventual" class="veredicto"></div>
+    <div class="nota">PostgreSQL y MySQL en un solo nodo son CA, y dejan de serlo al replicar
+    entre regiones: ahí hay que elegir. Un sistema CA solo existe si la red no falla, que en
+    distribuido no pasa.</div>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="cap.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

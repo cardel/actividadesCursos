@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Qué cuesta cruzar la red</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Qué cuesta cruzar la red</h1>
+  <p class="intro">Entre un nivel de memoria y el siguiente hay un factor de mil, y aparece dos
+  veces seguidas. Calcule esos factores antes de verlos y decida qué compra el sistema cuando
+  acepta pagarlos.</p>
+
+  <div class="carta">
+    <h2>1. Cuatro operaciones, cuatro órdenes de magnitud</h2>
+    <p style="margin-top:0">La misma lectura de un dato, según de dónde venga. La columna de la
+    derecha es cuántas veces más lenta que leer la memoria de la propia máquina.</p>
+    <div class="prediccion">
+      <span>Un <em>ping</em> entre dos centros de datos lejanos tarda 50 ms. ¿Cuántas veces más
+      que leer RAM, que tarda 100 ns?</span>
+      <input type="number" id="pred-factor" min="1" step="1" placeholder="veces">
+      <button id="btn-factor" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-factor" class="veredicto"></div>
+    <div class="envoltura-tabla" style="margin-top:0.6rem">
+      <table>
+        <thead><tr><th>Operación</th><th>Tiempo típico</th><th>Veces más lenta que la RAM</th></tr></thead>
+        <tbody id="cuerpo-latencias"></tbody>
+      </table>
+    </div>
+    <div class="chips" id="chips-latencias" style="margin-top:0.7rem"></div>
+    <div class="alerta" id="nota-latencias" hidden>Se gana capacidad de cómputo y de
+    almacenamiento, y se pierde velocidad. Ninguna técnica quita ese costo: un buen diseño lo
+    paga pocas veces. Una consulta que haga diez llamadas seriales entre continentes tarda
+    segundos, y por eso se replica el dato cerca de quien lo pide.</div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Dos formas de sumar</h2>
+    <p style="margin-top:0">Sumar un arreglo de un millón de elementos con OpenMP en ocho hilos
+    toma milisegundos, y todo cabe en una memoria. Sumar mil millones con MapReduce en cien
+    máquinas toma segundos.</p>
+    <p style="margin-bottom:0.3rem">La segunda es más lenta por elemento. ¿Por qué se usa?</p>
+    <div class="opciones" id="op-sumar">
+      <button data-op="rapida">Porque cien máquinas siempre terminan antes que una</button>
+      <button data-op="correcta">Porque esos mil millones de elementos no caben en la memoria de ninguna máquina sola</button>
+      <button data-op="barata">Porque cien máquinas pequeñas cuestan menos que una grande</button>
+      <button data-op="tolerante">Porque si una máquina falla el cálculo sigue</button>
+    </div>
+    <div id="ver-sumar" class="veredicto"></div>
+    <div class="nota">La tolerancia a fallos y el costo también son razones para distribuir, y
+    no son las que deciden este caso: aquí el cálculo sencillamente no entra en una máquina.</div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Qué hace que un sistema sea distribuido</h2>
+    <p style="margin-top:0;margin-bottom:0.3rem">Un conjunto de computadoras conectadas por red
+    que trabajan juntas y se presentan al usuario como un solo sistema coherente. De las cuatro
+    afirmaciones, ¿cuál <em>no</em> se sigue de esa definición?</p>
+    <div class="opciones" id="op-definicion">
+      <button data-op="estado">Hay estado compartido entre los nodos</button>
+      <button data-op="concurrente">Los nodos operan de forma concurrente</button>
+      <button data-op="correcta">Todos los nodos tienen el mismo reloj, así que el orden de dos escrituras es claro</button>
+      <button data-op="falla">Un nodo puede fallar sin tumbar el servicio</button>
+    </div>
+    <div id="ver-definicion" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Un clic, tres regiones</h2>
+    <p style="margin-top:0">Un usuario en Cali abre <code>netflix.com</code>. El HTML sale de un
+    servidor en Bogotá, el video de un cache en Miami y el pago se procesa en
+    <code>us-east-1</code>, en Virginia.</p>
+    <p style="margin-bottom:0.3rem">¿Por qué el pago no se atiende también desde Bogotá?</p>
+    <div class="opciones" id="op-regiones">
+      <button data-op="ancho">Porque el enlace a Bogotá no tiene ancho de banda para eso</button>
+      <button data-op="correcta">Porque el pago necesita una sola fuente de verdad, y replicarlo cerca del usuario traería copias que pueden discrepar</button>
+      <button data-op="caro">Porque procesar pagos en Colombia cuesta más</button>
+      <button data-op="cdn">Porque las CDN no saben ejecutar código</button>
+    </div>
+    <div id="ver-regiones" class="veredicto"></div>
+    <div class="nota">El reparto del ejemplo no es arbitrario: lo que se puede copiar viaja al
+    borde de la red, y lo que tiene que decidirse una sola vez se queda en una región. Esa
+    tensión es la que el teorema CAP pone en forma.</div>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="que-es.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Escalar a lo alto o a lo ancho</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Escalar a lo alto o a lo ancho</h1>
+  <p class="intro">Más recursos en la misma máquina, o más máquinas. La primera opción tiene un
+  techo físico y la segunda exige software que coordine. Las cuentas de esta página dicen dónde
+  está cada techo.</p>
+
+  <div class="carta">
+    <h2>1. El costo de la máquina grande</h2>
+    <p style="margin-top:0">Un servidor con 1 TB de memoria cuesta más que diez servidores de
+    128 GB cada uno.</p>
+    <div class="prediccion">
+      <span>¿Cuánta memoria suman esos diez servidores, en gigabytes?</span>
+      <input type="number" id="pred-ram" min="0" step="1" placeholder="GB">
+      <button id="btn-ram" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-ram" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem;margin-top:1rem">Si el conjunto barato da más memoria por
+    menos dinero, ¿por qué alguien escala a lo alto?</p>
+    <div class="opciones" id="op-vertical">
+      <button data-op="rapido">Porque una máquina grande siempre responde más rápido</button>
+      <button data-op="correcta">Porque el programa que corre encima no tiene que repartirse ni coordinarse: es la misma memoria</button>
+      <button data-op="seguro">Porque una sola máquina es más segura ante fallos</button>
+      <button data-op="moda">Porque las bases de datos relacionales no saben usar varias máquinas</button>
+    </div>
+    <div id="ver-vertical" class="veredicto"></div>
+    <div class="nota">Stack Overflow atiende millones de usuarios al día con menos de veinte
+    servidores muy potentes. Google va por el otro camino, con millones de máquinas comunes, y
+    Netflix crea y destruye decenas de miles de instancias según la demanda.</div>
+  </div>
+
+  <div class="carta">
+    <h2>2. El techo que no se compra</h2>
+    <p style="margin-top:0">La ley de Amdahl pone el límite:
+    <code>S(n) = 1 / ((1 − p) + p/n)</code>, con <code>p</code> la fracción que se paraleliza.
+    Un servicio tiene <code>p = 0,95</code>.</p>
+    <div class="prediccion">
+      <span>¿Qué aceleración da con 10 máquinas?</span>
+      <input type="number" id="pred-amdahl" min="0" step="0.1" placeholder="veces">
+      <button id="btn-amdahl" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-amdahl" class="veredicto"></div>
+    <div class="prediccion">
+      <span>¿Y con infinitas máquinas?</span>
+      <input type="number" id="pred-techo" min="0" step="1" placeholder="veces">
+      <button id="btn-techo" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-techo" class="veredicto"></div>
+    <div class="envoltura-tabla" style="margin-top:0.6rem">
+      <table>
+        <thead><tr><th>Máquinas</th><th>Aceleración</th><th>Eficiencia</th></tr></thead>
+        <tbody id="cuerpo-amdahl"></tbody>
+      </table>
+    </div>
+    <div class="alerta" id="nota-amdahl" hidden>Entre máquinas hay algo que no estaba al
+    paralelizar con hilos: la coordinación viaja por red. Cada decisión por consenso son al
+    menos dos rondas entre la mayoría de los nodos, y esas rondas entran en la parte que no se
+    reparte, así que el techo real queda por debajo del que calcula la fórmula.</div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Partir los datos o copiarlos</h2>
+    <div class="secuencia" id="fichas-sharding"></div>
+    <div class="secuencia" id="fichas-replicacion"></div>
+    <p style="margin-bottom:0.3rem">Un servicio guarda el perfil de treinta millones de
+    usuarios y la consulta más frecuente es leer un perfil por su identificador. Los perfiles no
+    caben en un nodo. ¿Qué mecanismo resuelve eso?</p>
+    <div class="opciones" id="op-mecanismo">
+      <button data-op="correcta">Sharding: cada nodo es dueño de un rango de identificadores</button>
+      <button data-op="replica">Replicación: el mismo perfil en todos los nodos</button>
+      <button data-op="lider">Elección de líder: un nodo ordena las escrituras</button>
+      <button data-op="consenso">Consenso distribuido: la mayoría decide cada lectura</button>
+    </div>
+    <div id="ver-mecanismo" class="veredicto"></div>
+    <div class="nota">Casi todo sistema real usa los dos a la vez: se particiona, y cada
+    partición se replica. Lo que cuesta del sharding es la consulta que cruza particiones,
+    porque son varias idas por red en vez de una.</div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Cuántos nodos para aguantar dos caídas</h2>
+    <p style="margin-top:0">En un sistema que decide por consenso, con <code>2f + 1</code> nodos
+    se toleran <code>f</code> caídos: las decisiones salen por mayoría, y la mayoría tiene que
+    seguir existiendo entre los que quedan vivos.</p>
+    <div class="prediccion">
+      <span>¿Cuántos nodos hacen falta para seguir decidiendo con dos caídos?</span>
+      <input type="number" id="pred-consenso" min="1" step="1" placeholder="nodos">
+      <button id="btn-consenso" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-consenso" class="veredicto"></div>
+    <div class="envoltura-tabla" style="margin-top:0.6rem">
+      <table>
+        <thead><tr><th>Nodos</th><th>Mayoría</th><th>Caídas que tolera</th></tr></thead>
+        <tbody id="cuerpo-consenso"></tbody>
+      </table>
+    </div>
+    <div class="nota">Paxos fue el primer protocolo descrito; Raft se diseñó para poder
+    entenderse, y es el que usan etcd, Consul y CockroachDB. Agregar nodos sube la tolerancia y
+    también el costo de cada decisión, porque la mayoría a convencer es más grande.</div>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="escalabilidad.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
