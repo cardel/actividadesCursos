@@ -49,7 +49,7 @@ tabla no existe para quien busca.
 
 ## Catálogo
 
-Son 462 actividades. El enlace lleva al archivo; para verlas funcionando hay que
+Son 468 actividades. El enlace lleva al archivo; para verlas funcionando hay que
 abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 
 ### Árboles y Grafos — `ayg-puj`
@@ -277,6 +277,12 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 | `recursion-arboles` | [`casobase`](estructuras-de-datos/recursion-arboles/casobase.html) | el caso base: el producto de un árbol en cuatro versiones |
 |  | [`costos`](estructuras-de-datos/recursion-arboles/costos.html) | llamadas, altura y marcos; la pila de 1 MB |
 |  | [`llamadas`](estructuras-de-datos/recursion-arboles/llamadas.html) | la pila de llamadas de una función recursiva sobre un árbol |
+| `repaso-programacion` | [`advertencias`](estructuras-de-datos/repaso-programacion/advertencias.html) | una asignación dentro de un `if` y lo que dice `-Wall -Wextra` |
+|  | [`archivo`](estructuras-de-datos/repaso-programacion/archivo.html) | entrada y salida con `<` y `>`, y el salto de línea que compara el juez |
+|  | [`compilar`](estructuras-de-datos/repaso-programacion/compilar.html) | lo que deja `g++ -o` y por qué hace falta `./` |
+|  | [`menor`](estructuras-de-datos/repaso-programacion/menor.html) | el menor de cuatro y lo que rompe encadenar con `else if` |
+|  | [`reglas`](estructuras-de-datos/repaso-programacion/reglas.html) | buscar sin `break` y con un solo `return` |
+|  | [`traza`](estructuras-de-datos/repaso-programacion/traza.html) | el mínimo y la suma de seis notas, vuelta por vuelta |
 | `stl-contenedores` | [`algoritmos`](estructuras-de-datos/stl-contenedores/algoritmos.html) | la STL de C++ |
 |  | [`cadena`](estructuras-de-datos/stl-contenedores/cadena.html) | la STL de C++ |
 |  | [`contenedores`](estructuras-de-datos/stl-contenedores/contenedores.html) | la STL de C++ |
