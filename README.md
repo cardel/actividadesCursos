@@ -49,7 +49,7 @@ tabla no existe para quien busca.
 
 ## Catálogo
 
-Son 458 actividades. El enlace lleva al archivo; para verlas funcionando hay que
+Son 462 actividades. El enlace lleva al archivo; para verlas funcionando hay que
 abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 
 ### Árboles y Grafos — `ayg-puj`
@@ -183,6 +183,8 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`encolar`](estructuras-de-datos/cola-implementacion/encolar.html) | la cola sobre la lista enlazada |
 |  | [`residuo`](estructuras-de-datos/cola-implementacion/residuo.html) | la cola que ya tienen |
 |  | [`vaciar`](estructuras-de-datos/cola-implementacion/vaciar.html) | sin la lista de por medio |
+| `cola-prioridad` | [`contrato`](estructuras-de-datos/cola-prioridad/contrato.html) | lo que promete el TAD: operaciones, precondición, eventos y los k mayores |
+|  | [`priority-queue`](estructuras-de-datos/cola-prioridad/priority-queue.html) | push, top y pop, un comparador al revés y registros con desempate |
 | `contenedor-map` | [`combinacion`](estructuras-de-datos/contenedor-map/combinacion.html) | una combinación como clave |
 |  | [`consultar`](estructuras-de-datos/contenedor-map/consultar.html) | consultar y eliminar |
 |  | [`corchetes`](estructuras-de-datos/contenedor-map/corchetes.html) | insertar con corchetes |
@@ -218,6 +220,8 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`dospilas`](estructuras-de-datos/ejercicios-tad-lista-pila-cola/dospilas.html) | ejercicios con los TAD |
 |  | [`lista`](estructuras-de-datos/ejercicios-tad-lista-pila-cola/lista.html) | ejercicios con los TAD |
 |  | [`pila`](estructuras-de-datos/ejercicios-tad-lista-pila-cola/pila.html) | ejercicios con los TAD |
+| `heapsort` | [`construir`](estructuras-de-datos/heapsort/construir.html) | bajar desde n / 2 − 1 hasta la raíz, y por qué cuesta Θ(n) |
+|  | [`ordenar`](estructuras-de-datos/heapsort/ordenar.html) | el máximo a a[fin], dos rondas a mano y las claves iguales |
 | `implementaciones-y-quicksort` | [`caminar`](estructuras-de-datos/implementaciones-y-quicksort/caminar.html) | las tres implementaciones enlazadas |
 |  | [`comparaciones`](estructuras-de-datos/implementaciones-y-quicksort/comparaciones.html) | lo que cuesta quicksort |
 |  | [`concatenar`](estructuras-de-datos/implementaciones-y-quicksort/concatenar.html) | ejercicios sobre las implementaciones |
