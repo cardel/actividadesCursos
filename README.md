@@ -49,7 +49,7 @@ tabla no existe para quien busca.
 
 ## Catálogo
 
-Son 468 actividades. El enlace lleva al archivo; para verlas funcionando hay que
+Son 474 actividades. El enlace lleva al archivo; para verlas funcionando hay que
 abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 
 ### Árboles y Grafos — `ayg-puj`
@@ -230,6 +230,12 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`peorcaso`](estructuras-de-datos/implementaciones-y-quicksort/peorcaso.html) | lo que cuesta quicksort |
 |  | [`rotar`](estructuras-de-datos/implementaciones-y-quicksort/rotar.html) | ejercicios sobre las implementaciones |
 |  | [`zonas`](estructuras-de-datos/implementaciones-y-quicksort/zonas.html) | las cuatro zonas de particionar |
+| `introduccion-complejidad` | [`corte`](estructuras-de-datos/introduccion-complejidad/corte.html) | buscar el último cero: mejor y peor caso, y cuál se reporta |
+|  | [`cortocircuito`](estructuras-de-datos/introduccion-complejidad/cortocircuito.html) | cuántas veces se evalúa cada lado de `&&` y de `\|\|` |
+|  | [`cuadrados`](estructuras-de-datos/introduccion-complejidad/cuadrados.html) | un ciclo con `<=` desde 1, línea por línea, y T(m) |
+|  | [`parejas`](estructuras-de-datos/introduccion-complejidad/parejas.html) | dos ciclos anidados de tamaños n y m |
+|  | [`rango`](estructuras-de-datos/introduccion-complejidad/rango.html) | dos `if` dentro del ciclo: T en el mejor y el peor caso |
+|  | [`reloj`](estructuras-de-datos/introduccion-complejidad/reloj.html) | lo que mide `time` y por qué no mide el algoritmo |
 | `lista-enlazada` | [`agregar`](estructuras-de-datos/lista-enlazada/agregar.html) | la lista enlazada |
 |  | [`corrimientos`](estructuras-de-datos/lista-enlazada/corrimientos.html) | la lista enlazada |
 |  | [`costos`](estructuras-de-datos/lista-enlazada/costos.html) | la lista enlazada |

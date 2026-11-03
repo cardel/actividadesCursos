@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>rango · mejor y peor caso</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>rango: el conteo depende de los datos</h1>
+  <p class="intro">La diferencia entre el mayor y el menor de un arreglo. Cuatro entradas
+  del mismo tamaño, cuatro conteos que no coinciden.</p>
+
+  <div class="carta">
+    <h2>1. Antes de ejecutar, prediga</h2>
+    <div class="fila-n">
+      <span>Entrada:</span>
+      <span class="presets">
+        <button data-entrada="mezclado">mezclada</button>
+        <button data-entrada="iguales">iguales</button>
+        <button data-entrada="creciente">creciente</button>
+        <button data-entrada="decreciente">decreciente</button>
+      </span>
+      <span class="valor-n">datos = <span id="ver-datos"></span></span>
+    </div>
+    <div class="prediccion">
+      <span>¿Cuántas veces se ejecutan, sumadas, las asignaciones de las líneas 6 y 8?</span>
+      <input type="number" id="prediccion" min="0" placeholder="su número">
+      <button id="btn-comprobar" class="primario">Comprobar</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Ejecute y cuente</h2>
+    <div class="panel-doble">
+      <div class="codigo" id="panel-codigo"></div>
+      <div class="estado">
+        <div class="chips" id="chips"></div>
+        <div class="progreso">Paso <span id="ver-paso">0</span> de <span id="ver-total">0</span></div>
+        <div class="botones">
+          <button id="btn-paso" class="primario">Un paso</button>
+          <button id="btn-auto">Auto</button>
+          <button id="btn-fin">Al final</button>
+          <button id="btn-reiniciar">Reiniciar</button>
+        </div>
+        <div class="nota" id="total-t"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>3. El mejor caso</h2>
+    <p style="margin-top:0">Las cuatro entradas tienen seis datos. ¿Cuál ejecuta menos
+    instrucciones?</p>
+    <div class="opciones" id="opciones-mejor">
+      <button data-op="mezclado">la mezclada</button>
+      <button data-op="correcta">la de datos iguales</button>
+      <button data-op="creciente">la creciente</button>
+      <button data-op="decreciente">la decreciente</button>
+    </div>
+    <div id="veredicto-mejor" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Mejor y peor caso en términos de n</h2>
+    <p style="margin-top:0">Con k asignaciones en las líneas 6 y 8, T = 4n + 1 + k.
+    ¿Cuánto vale T en el mejor y en el peor caso?</p>
+    <div class="opciones" id="opciones-analisis">
+      <button data-op="correcta">4n + 1 y 5n</button>
+      <button data-op="nk">4n + 1 y 6n − 1</button>
+      <button data-op="cuad">4n + 1 y n²</button>
+      <button data-op="igual">5n en todos los casos</button>
+    </div>
+    <div id="veredicto-analisis" class="veredicto"></div>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="rango.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
