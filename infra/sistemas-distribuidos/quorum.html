@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quórums de lectura y escritura</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Quórums de lectura y escritura</h1>
+  <p class="intro">Entre CP y AP hay una perilla. Un dato con cinco réplicas se confirma
+  cuando W de ellas guardan la escritura, y se lee consultando R. Según cuánto valgan W y R, la
+  lectura ve siempre la última escritura o puede quedarse con un valor viejo.</p>
+
+  <div class="carta">
+    <h2>1. Cinco réplicas, W = 3 y R = 3</h2>
+    <p style="margin-top:0">Cada réplica guarda el valor y un número de versión. La lectura se
+    queda con el valor de la versión más alta entre las réplicas que consulta.</p>
+    <div class="secuencia" id="fichas-replicas"></div>
+    <p id="texto-paso" style="margin:0.3rem 0"></p>
+    <div class="botones">
+      <button id="btn-paso" class="primario">Siguiente paso</button>
+      <button id="btn-reiniciar">Volver al inicio</button>
+      <span class="progreso" id="progreso-quorum"></span>
+    </div>
+    <div id="pregunta-lectura" hidden>
+      <p style="margin-bottom:0.3rem;margin-top:1rem">Contestan r3, r4 y r5. ¿Qué devuelve la
+      lectura?</p>
+      <div class="opciones" id="op-lectura">
+        <button data-op="mayoria">3, porque dos de las tres réplicas dicen 3</button>
+        <button data-op="correcta">5, porque r3 trae la versión 2 y es la más alta</button>
+        <button data-op="error">Un error, porque las réplicas no coinciden</button>
+        <button data-op="esperar">Espera a que r4 y r5 se actualicen</button>
+      </div>
+      <div id="ver-lectura" class="veredicto"></div>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>2. La regla R + W &gt; N</h2>
+    <p style="margin-top:0">Si R + W supera N, cualquier grupo de lectura comparte al menos una
+    réplica con cualquier grupo de escritura, y esa réplica trae la última versión.</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Configuración, N = 5</th><th>R + W</th><th>¿Se cruzan siempre?</th><th>Réplicas en común, como mínimo</th></tr></thead>
+        <tbody id="cuerpo-combinaciones"></tbody>
+      </table>
+    </div>
+    <div class="prediccion" style="margin-top:0.6rem">
+      <span>Para escribir más rápido se baja W a 2. ¿Cuál es el R más pequeño que sigue
+      garantizando leer la última escritura?</span>
+      <input type="number" id="pred-r" min="1" max="5" step="1" placeholder="R">
+      <button id="btn-r" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-r" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. La red se parte</h2>
+    <p style="margin-top:0;margin-bottom:0.3rem">Con W = 3 y R = 3, la red deja de un lado a
+    r1 y r2, y del otro a r3, r4 y r5. ¿Qué pasa con las escrituras?</p>
+    <div class="opciones" id="op-particion">
+      <button data-op="ambos">Los dos lados siguen escribiendo y se reconcilian al volver la red</button>
+      <button data-op="correcta">El lado de tres sigue escribiendo y leyendo; el de dos contesta con error</button>
+      <button data-op="ninguno">Ningún lado puede escribir hasta que vuelva la red</button>
+      <button data-op="pequeno">El lado de dos escribe, porque tiene menos réplicas que poner de acuerdo</button>
+    </div>
+    <div id="ver-particion" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem;margin-top:1rem">Otra aplicación usa W = 1 y R = 1. ¿Qué
+    gana y qué pierde?</p>
+    <div class="opciones" id="op-rapido">
+      <button data-op="correcta">Cualquier réplica viva contesta sola, aun con la red partida, y una lectura puede devolver un valor viejo</button>
+      <button data-op="igual">Es más rápida y da las mismas garantías, porque las réplicas terminan sincronizándose</button>
+      <button data-op="error">Las escrituras fallan más, porque una sola réplica no basta</button>
+      <button data-op="durable">Los datos quedan más protegidos, porque se confirman antes</button>
+    </div>
+    <div id="ver-rapido" class="veredicto"></div>
+    <div class="nota">Es la misma mayoría que decide en un grupo de consenso: con cinco
+    réplicas, tres siguen operando con dos caídas, y dos grupos de tres no pueden formarse a la
+    vez en lados distintos de una partición.</div>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="quorum.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

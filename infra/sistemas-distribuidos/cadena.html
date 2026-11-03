@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Disponibilidad de una cadena de servicios</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Disponibilidad de una cadena de servicios</h1>
+  <p class="intro">Una solicitud web pasa por varias piezas antes de volver, y cada una tiene sus
+  nueves. Aquí se calcula qué queda de esos nueves cuando las piezas van una detrás de otra, qué
+  compra una copia y qué hacer con un nodo que no contesta.</p>
+
+  <div class="carta">
+    <h2>1. Tres piezas en serie</h2>
+    <p style="margin-top:0">Cada solicitud cruza un balanceador, un servidor de aplicación y una
+    base de datos. Si cualquiera de los tres está caído, la solicitud falla. Las tres fallan de
+    forma independiente.</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Pieza</th><th>Disponibilidad</th><th>Caída al año</th></tr></thead>
+        <tbody id="cuerpo-piezas"></tbody>
+      </table>
+    </div>
+    <div class="prediccion" style="margin-top:0.6rem">
+      <span>¿Cuántas horas al año queda caído el servicio completo?</span>
+      <input type="number" id="pred-serie" min="0" step="0.1" placeholder="horas">
+      <button id="btn-serie" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-serie" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Una copia de la base de datos</h2>
+    <p style="margin-top:0">Se agrega una segunda base de datos con el mismo 99,9 %, y el servicio
+    usa la que esté viva. La pieza solo cae si caen las dos copias a la vez.</p>
+    <div class="prediccion">
+      <span>¿Cuántas horas al año queda caído ahora el servicio?</span>
+      <input type="number" id="pred-copia" min="0" step="0.1" placeholder="horas">
+      <button id="btn-copia" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-copia" class="veredicto"></div>
+    <div class="chips" id="chips-cadena" style="margin-top:0.7rem"></div>
+    <div class="nota">La cuenta supone que las copias fallan por separado. Dos bases en el mismo
+    rack, con la misma fuente de poder, caen juntas, y entonces la copia no compra nada: por eso
+    las réplicas se reparten entre zonas.</div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Un nodo que no contesta</h2>
+    <p style="margin-top:0;margin-bottom:0.3rem">El servidor de aplicación le pide un dato a la
+    base y espera dos segundos. No llega respuesta. ¿Qué sabe en ese momento?</p>
+    <div class="opciones" id="op-silencio">
+      <button data-op="caido">Que la base de datos está caída</button>
+      <button data-op="red">Que la red entre los dos se cortó</button>
+      <button data-op="correcta">Solo que no hubo respuesta en dos segundos: la base puede estar caída, lenta, o haber contestado y perdido la respuesta</button>
+      <button data-op="reintentar">Que debe reintentar, porque la primera solicitud no se ejecutó</button>
+    </div>
+    <div id="ver-silencio" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem;margin-top:1rem">La solicitud era cobrar 50.000 pesos a una
+    tarjeta. ¿Cómo se reintenta sin arriesgar un cobro doble?</p>
+    <div class="opciones" id="op-reintento">
+      <button data-op="nunca">No se reintenta nunca un pago</button>
+      <button data-op="esperar">Se espera más tiempo antes de reintentar, hasta estar seguro</button>
+      <button data-op="correcta">Se envía con un identificador único, y si el servidor ya lo procesó devuelve la respuesta guardada sin cobrar otra vez</button>
+      <button data-op="revisar">Se revisa el saldo de la tarjeta antes de reintentar</button>
+    </div>
+    <div id="ver-reintento" class="veredicto"></div>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="cadena.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

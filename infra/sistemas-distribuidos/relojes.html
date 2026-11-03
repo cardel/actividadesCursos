@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El orden de los eventos sin un reloj común</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>El orden de los eventos sin un reloj común</h1>
+  <p class="intro">Cada nodo tiene su propio reloj, y por eso no hay forma de leer la hora para
+  saber cuál de dos escrituras ocurrió primero. El reloj lógico de Lamport reemplaza la hora por
+  un contador que viaja en los mensajes. Aquí se lleva la cuenta en tres procesos, evento por
+  evento.</p>
+
+  <div class="carta">
+    <h2>1. Tres procesos, tres mensajes</h2>
+    <p style="margin-top:0">Cada proceso empieza con su contador en 0 y sigue dos reglas:</p>
+    <ul>
+      <li>Antes de cada evento propio, local o de envío, suma uno. Un mensaje viaja con el valor
+      que quedó.</li>
+      <li>Al recibir un mensaje con marca <em>t</em>, el contador pasa a
+      <code>max(propio, t) + 1</code>.</li>
+    </ul>
+    <div class="botones">
+      <button id="btn-paso" class="primario">Siguiente evento</button>
+      <button id="btn-reiniciar">Volver al inicio</button>
+      <span class="progreso" id="progreso-relojes"></span>
+    </div>
+    <div class="envoltura-tabla" style="margin-top:0.6rem">
+      <table>
+        <thead><tr><th>Evento</th><th>Qué pasa</th><th>Cuenta</th><th>P1</th><th>P2</th><th>P3</th></tr></thead>
+        <tbody id="cuerpo-relojes"></tbody>
+      </table>
+    </div>
+    <div id="caja-prediccion" hidden>
+      <div class="prediccion" style="margin-top:0.6rem">
+        <span>P1 iba en 3 cuando llega m3. ¿En cuánto queda su reloj?</span>
+        <input type="number" id="pred-recepcion" min="0" step="1" placeholder="valor">
+        <button id="btn-recepcion" class="primario">Comprobar</button>
+      </div>
+      <div id="ver-recepcion" class="veredicto"></div>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Un reloj menor no dice qué pasó primero</h2>
+    <p style="margin-top:0;margin-bottom:0.3rem">Al final de la traza, el evento <b>c</b> de P2
+    tiene reloj 1 y el evento <b>d</b> de P1 tiene reloj 3. ¿Qué se puede afirmar de los dos?</p>
+    <div class="opciones" id="op-orden">
+      <button data-op="antes">c ocurrió antes que d, porque 1 es menor que 3</button>
+      <button data-op="despues">d ocurrió antes que c</button>
+      <button data-op="correcta">Ninguno ocurrió antes que el otro: son concurrentes, aunque los números difieran</button>
+      <button data-op="mismo">Ocurrieron al mismo tiempo, porque están en procesos distintos</button>
+    </div>
+    <div id="ver-orden" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. ¿Por qué no sincronizar los relojes y ya?</h2>
+    <p style="margin-top:0;margin-bottom:0.3rem">Las máquinas de un centro de datos corren NTP y
+    tienen la hora casi igual. ¿Por qué un sistema replicado sigue necesitando relojes
+    lógicos para ordenar escrituras?</p>
+    <div class="opciones" id="op-ntp">
+      <button data-op="caro">Porque sincronizar con NTP consume demasiada red</button>
+      <button data-op="correcta">Porque NTP deja milisegundos de diferencia, y dos escrituras más cercanas que eso quedan sin orden posible</button>
+      <button data-op="exacto">Porque existen protocolos que dejan los relojes exactos, y NTP no es uno de ellos</button>
+      <button data-op="red">Porque la red no puede transportar la hora</button>
+    </div>
+    <div id="ver-ntp" class="veredicto"></div>
+    <div class="nota">El reloj lógico ordena todo lo que está unido por una cadena de mensajes.
+    Lo que queda concurrente se ordena con una regla fija, por ejemplo el número de proceso,
+    y esa regla es una convención: no describe lo que pasó.</div>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="relojes.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

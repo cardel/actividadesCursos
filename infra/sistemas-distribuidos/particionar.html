@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Repartir claves entre nodos</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Repartir claves entre nodos</h1>
+  <p class="intro">Escalar a lo ancho con sharding es decidir en qué nodo vive cada dato. La
+  regla más corta funciona bien mientras el grupo no cambia de tamaño. Aquí se cuenta cuántos
+  datos hay que copiar por la red cuando llega un nodo más.</p>
+
+  <div class="carta">
+    <h2>1. Mil perfiles, cuatro nodos y uno más</h2>
+    <p style="margin-top:0">Los perfiles se numeran de 0 a 999 y hoy viven en cuatro nodos,
+    A, B, C y D. Hay dos reglas para decidir dónde va cada uno:</p>
+    <ul>
+      <li><b>Residuo</b>: el perfil <em>k</em> va al nodo <code>k mod n</code>, con
+      <em>n</em> el número de nodos. El 0 va a A, el 1 a B, el 4 otra vez a A.</li>
+      <li><b>Anillo</b>: cada nodo tiene una posición entre 0 y 999, y el perfil va al primer
+      nodo cuya posición sea mayor o igual que su número. A está en 249, B en 499, C en 749 y
+      D en 999.</li>
+    </ul>
+    <p>Llega el nodo E. Con el residuo, <em>n</em> pasa de 4 a 5; en el anillo, E se pone en
+    la posición 874.</p>
+    <div class="prediccion">
+      <span>Con el residuo, ¿cuántos de los mil perfiles cambian de nodo?</span>
+      <input type="number" id="pred-residuo" min="0" max="1000" step="1" placeholder="perfiles">
+      <button id="btn-residuo" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-residuo" class="veredicto"></div>
+    <div class="prediccion" style="margin-top:0.6rem">
+      <span>Con el anillo, ¿cuántos cambian de nodo?</span>
+      <input type="number" id="pred-anillo" min="0" max="1000" step="1" placeholder="perfiles">
+      <button id="btn-anillo" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-anillo" class="veredicto"></div>
+    <div class="envoltura-tabla" style="margin-top:0.6rem">
+      <table>
+        <thead><tr><th>Nodo</th><th>Residuo, 4 nodos</th><th>Residuo, 5 nodos</th><th>Anillo, 4 nodos</th><th>Anillo, 5 nodos</th></tr></thead>
+        <tbody id="cuerpo-carga"></tbody>
+      </table>
+    </div>
+    <div class="chips" id="chips-movidas" style="margin-top:0.7rem"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. El anillo que quedó desparejo</h2>
+    <p style="margin-top:0;margin-bottom:0.3rem">Después de agregar E, A, B y C guardan 250
+    perfiles cada uno, y D y E, 125. ¿Cómo se empareja sin volver a mover casi todo?</p>
+    <div class="opciones" id="op-desigual">
+      <button data-op="residuo">Volviendo al residuo, que reparte parejo</button>
+      <button data-op="correcta">Dándole a cada máquina muchas posiciones pequeñas en el anillo, para que el nodo nuevo tome un poco de cada una</button>
+      <button data-op="mitad">Corriendo las posiciones de A, B y C hasta que los cinco tramos midan lo mismo</button>
+      <button data-op="nada">No hace falta: la diferencia entre 250 y 125 no afecta el rendimiento</button>
+    </div>
+    <div id="ver-desigual" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Repartir por país</h2>
+    <p style="margin-top:0;margin-bottom:0.3rem">Una red social reparte los perfiles en cinco
+    nodos según el país del usuario, y el 60 % de sus usuarios está en Colombia. ¿Qué
+    falla?</p>
+    <div class="opciones" id="op-llave">
+      <button data-op="rapido">Averiguar el país de cada solicitud es lento</button>
+      <button data-op="correcta">Un nodo recibe el 60 % de la carga y los otros cuatro se reparten el resto</button>
+      <button data-op="consultas">Las consultas por país quedan repartidas entre todos los nodos</button>
+      <button data-op="replicas">Los perfiles no se pueden replicar si se reparten por país</button>
+    </div>
+    <div id="ver-llave" class="veredicto"></div>
+    <div class="nota">Sharding y replicación se combinan: cada tramo del anillo se guarda además
+    en los dos nodos que lo siguen, tres copias en total, y así una máquina caída no se lleva ningún
+    perfil.</div>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="particionar.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

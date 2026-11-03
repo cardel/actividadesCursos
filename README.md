@@ -49,7 +49,7 @@ tabla no existe para quien busca.
 
 ## Catálogo
 
-Son 417 actividades. El enlace lleva al archivo; para verlas funcionando hay que
+Son 458 actividades. El enlace lleva al archivo; para verlas funcionando hay que
 abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 
 ### Árboles y Grafos — `ayg-puj`
@@ -397,6 +397,10 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 
 | Tema | Actividad | Qué pide |
 |---|---|---|
+| `docker-imagenes` | [`capas-cache`](infra/docker-imagenes/capas-cache.html) | las capas y dónde se rompe la caché |
+|  | [`ciclo-vida`](infra/docker-imagenes/ciclo-vida.html) | el ciclo de vida y la parada ordenada |
+|  | [`imagen-contenedor`](infra/docker-imagenes/imagen-contenedor.html) | imagen, contenedor y lo que el proceso cree |
+|  | [`tamanos`](infra/docker-imagenes/tamanos.html) | dónde está el peso de una imagen |
 | `estrategias-de-paralelizacion` | [`balanceo`](infra/estrategias-de-paralelizacion/balanceo.html) | 64 tareas que no cuestan lo mismo |
 |  | [`elegir`](infra/estrategias-de-paralelizacion/elegir.html) | qué estrategia pide cada problema |
 |  | [`granularidad`](infra/estrategias-de-paralelizacion/granularidad.html) | cuándo repartir cuesta más que calcular |
@@ -445,6 +449,14 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`relojes`](infra/profiling-python-avx/relojes.html) | un programa por tramos |
 |  | [`repeticiones`](infra/profiling-python-avx/repeticiones.html) | la suma de las repeticiones y lo que el setup deja fuera |
 |  | [`techo`](infra/profiling-python-avx/techo.html) | cuánto rinde acelerar una función |
+| `sistemas-distribuidos` | [`cadena`](infra/sistemas-distribuidos/cadena.html) | tres piezas en serie, una copia y un nodo que no contesta |
+|  | [`cap`](infra/sistemas-distribuidos/cap.html) | la partición entre dos nodos, momento por momento |
+|  | [`escalabilidad`](infra/sistemas-distribuidos/escalabilidad.html) | escalar a lo alto o a lo ancho |
+|  | [`fallos-latencia`](infra/sistemas-distribuidos/fallos-latencia.html) | disponibilidad, demora y throughput |
+|  | [`particionar`](infra/sistemas-distribuidos/particionar.html) | cuántas claves se mueven al llegar un nodo |
+|  | [`que-es`](infra/sistemas-distribuidos/que-es.html) | qué cuesta cruzar la red |
+|  | [`quorum`](infra/sistemas-distribuidos/quorum.html) | R + W > N y qué lado de la partición escribe |
+|  | [`relojes`](infra/sistemas-distribuidos/relojes.html) | el reloj lógico de Lamport, evento por evento |
 
 ### Programación Funcional y Concurrente — `pfc`
 
