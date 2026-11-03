@@ -171,13 +171,6 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |   | [`recorte`](estructuras-de-datos/arbol-binario-busqueda/recorte.html) | `contarRango` y `kEsimo`, y los subárboles que se saltan |
 |   | [`reenganche`](estructuras-de-datos/arbol-binario-busqueda/reenganche.html) | qué asignación de `insertar` cambia de verdad un puntero |
 |   | [`situaciones`](estructuras-de-datos/arbol-binario-busqueda/situaciones.html) | qué cobra el ABB en cada caso y cuándo le gana un arreglo ordenado |
-| `arbol-rojinegro` | [`alturanegra`](estructuras-de-datos/arbol-rojinegro/alturanegra.html) | la altura negra, el camino largo frente al corto y la cota 2 log₂(n + 1) |
-|   | [`casos`](estructuras-de-datos/arbol-rojinegro/casos.html) | qué caso de la inserción toca según el padre, el tío y la forma |
-|   | [`dentromap`](estructuras-de-datos/arbol-rojinegro/dentromap.html) | el `map` como rojinegro: el recorrido en inorden y `++it` al sucesor |
-|   | [`insertar`](estructuras-de-datos/arbol-rojinegro/insertar.html) | nueve claves en un rojinegro vacío, caso por caso, contra el ABB |
-|   | [`reconstruir`](estructuras-de-datos/arbol-rojinegro/reconstruir.html) | claves en orden y lo que cobra reconstruir el árbol balanceado |
-|   | [`reglas`](estructuras-de-datos/arbol-rojinegro/reglas.html) | cinco árboles coloreados y la regla que rompe cada uno |
-|   | [`rotar`](estructuras-de-datos/arbol-rojinegro/rotar.html) | los tres enlaces de una rotación y el inorden que se conserva |
 | `ciclos-dependientes-sumatorias` | [`contar_incluida`](estructuras-de-datos/ciclos-dependientes-sumatorias/contar_incluida.html) | contador de pasos |
 |  | [`feynman`](estructuras-de-datos/ciclos-dependientes-sumatorias/feynman.html) | cuántos cuadrados caben y cuántas vueltas da el triple ciclo |
 |  | [`potencias`](estructuras-de-datos/ciclos-dependientes-sumatorias/potencias.html) | contador de pasos |
@@ -248,6 +241,13 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 | `memoria-en-c` | [`dos_punteros`](estructuras-de-datos/memoria-en-c/dos_punteros.html) | valores contra direcciones |
 |  | [`errores`](estructuras-de-datos/memoria-en-c/errores.html) | el fragmento que compila y falla |
 |  | [`punteros`](estructuras-de-datos/memoria-en-c/punteros.html) | la primera traza |
+| `monticulo` | [`completo`](estructuras-de-datos/monticulo/completo.html) | el árbol completo en un arreglo, padre e hijos desde 0 |
+|  | [`costos`](estructuras-de-datos/monticulo/costos.html) | la altura y cuántos intercambios hace cada operación |
+|  | [`cuales`](estructuras-de-datos/monticulo/cuales.html) | forma y orden: cuáles arreglos son montículos de máximos |
+|  | [`errores`](estructuras-de-datos/monticulo/errores.html) | bajar con el primer hijo mayor, el padre en `i / 2` y extraer con hueco |
+|  | [`extraer`](estructuras-de-datos/monticulo/extraer.html) | extraer el máximo bajando, el empate y el error de un solo hijo |
+|  | [`insertar`](estructuras-de-datos/monticulo/insertar.html) | insertar subiendo, con el árbol y el arreglo en cada intercambio |
+|  | [`urgente`](estructuras-de-datos/monticulo/urgente.html) | atender al más urgente con un arreglo, uno ordenado o un `set` |
 | `notacion-o` | [`escalera`](estructuras-de-datos/notacion-o/escalera.html) | clases de crecimiento |
 |  | [`testigos`](estructuras-de-datos/notacion-o/testigos.html) | la notación O |
 | `paso-por-referencia` | [`objetos`](estructuras-de-datos/paso-por-referencia/objetos.html) | repaso de POO |
@@ -301,6 +301,18 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`juntos`](estructuras-de-datos/tad-lista-pila-cola/juntos.html) | TAD Lista, Pila y Cola |
 |  | [`lista`](estructuras-de-datos/tad-lista-pila-cola/lista.html) | TAD Lista, Pila y Cola |
 |  | [`pila`](estructuras-de-datos/tad-lista-pila-cola/pila.html) | TAD Lista, Pila y Cola |
+
+### Fundamentos de Análisis y Diseño de Algoritmos — `fada`
+
+| Tema | Actividad | Qué pide |
+|---|---|---|
+| `arbol-rojinegro` | [`alturanegra`](fada/arbol-rojinegro/alturanegra.html) | la altura negra, el camino largo frente al corto y la cota 2 log₂(n + 1) |
+|   | [`casos`](fada/arbol-rojinegro/casos.html) | qué caso de la inserción toca según el padre, el tío y la forma |
+|   | [`dentromap`](fada/arbol-rojinegro/dentromap.html) | el `map` como rojinegro: el recorrido en inorden y `++it` al sucesor |
+|   | [`insertar`](fada/arbol-rojinegro/insertar.html) | nueve claves en un rojinegro vacío, caso por caso, contra el ABB |
+|   | [`reconstruir`](fada/arbol-rojinegro/reconstruir.html) | claves en orden y lo que cobra reconstruir el árbol balanceado |
+|   | [`reglas`](fada/arbol-rojinegro/reglas.html) | cinco árboles coloreados y la regla que rompe cada uno |
+|   | [`rotar`](fada/arbol-rojinegro/rotar.html) | los tres enlaces de una rotación y el inorden que se conserva |
 
 ### Interpretación y Compilación de Lenguajes — `flp`
 
