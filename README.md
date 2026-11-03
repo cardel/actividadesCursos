@@ -49,7 +49,7 @@ tabla no existe para quien busca.
 
 ## Catálogo
 
-Son 474 actividades. El enlace lleva al archivo; para verlas funcionando hay que
+Son 480 actividades. El enlace lleva al archivo; para verlas funcionando hay que
 abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 
 ### Árboles y Grafos — `ayg-puj`
@@ -236,6 +236,10 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`parejas`](estructuras-de-datos/introduccion-complejidad/parejas.html) | dos ciclos anidados de tamaños n y m |
 |  | [`rango`](estructuras-de-datos/introduccion-complejidad/rango.html) | dos `if` dentro del ciclo: T en el mejor y el peor caso |
 |  | [`reloj`](estructuras-de-datos/introduccion-complejidad/reloj.html) | lo que mide `time` y por qué no mide el algoritmo |
+| `lenguajes-y-paradigmas` | [`bordes`](estructuras-de-datos/lenguajes-y-paradigmas/bordes.html) | los bordes de los enteros de C y el mismo cálculo en Python |
+|  | [`paradigmas`](estructuras-de-datos/lenguajes-y-paradigmas/paradigmas.html) | una traza imperativa, una sustitución en Scheme y el estado de una clase |
+|  | [`sintaxis`](estructuras-de-datos/lenguajes-y-paradigmas/sintaxis.html) | tokens, identificadores válidos y una regla en BNF |
+|  | [`traduccion`](estructuras-de-datos/lenguajes-y-paradigmas/traduccion.html) | intérprete y compilador: cuándo aparece el error y cuánto cuesta |
 | `lista-enlazada` | [`agregar`](estructuras-de-datos/lista-enlazada/agregar.html) | la lista enlazada |
 |  | [`corrimientos`](estructuras-de-datos/lista-enlazada/corrimientos.html) | la lista enlazada |
 |  | [`costos`](estructuras-de-datos/lista-enlazada/costos.html) | la lista enlazada |
@@ -272,6 +276,8 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`tope`](estructuras-de-datos/pila-implementacion/tope.html) | la pila que ya tienen |
 | `punteros-arreglos` | [`aritmetica`](estructuras-de-datos/punteros-arreglos/aritmetica.html) | punteros y arreglos |
 |  | [`rowmajor`](estructuras-de-datos/punteros-arreglos/rowmajor.html) | la tabla en una sola calle |
+| `proceso-de-compilacion` | [`etapas`](estructuras-de-datos/proceso-de-compilacion/etapas.html) | lo que deja cada etapa con `-E`, `-S` y `-c` |
+|  | [`fases`](estructuras-de-datos/proceso-de-compilacion/fases.html) | en qué fase se detiene cada programa roto |
 | `recorridos-arreglos` | [`maximo-acumulado`](estructuras-de-datos/recorridos-arreglos/maximo-acumulado.html) | la mayor diferencia en un solo recorrido, UVa 11078 |
 |  | [`mejor-tramo`](estructuras-de-datos/recorridos-arreglos/mejor-tramo.html) | el mejor tramo: sigue o se reinicia, UVa 507 |
 | `recorridos-arbol` | [`columnas`](estructuras-de-datos/recorridos-arbol/columnas.html) | un árbol en preorden con sus vacíos, UVa 699 |
