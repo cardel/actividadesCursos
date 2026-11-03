@@ -1,8 +1,8 @@
 /* Ejercicio interactivo: estrategia para UVa 10391, Compound Words, con un
    set<string>. Las salidas las calcula la simulacion de los cortes. */
 var EJERCICIO = (function () {
-  var ENUNCIADO = "https://onlinejudge.org/external/103/10391.pdf";
-  var ENVIO = "https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=1332";
+  var ENUNCIADO = "https://vjudge.net/problem/UVA-10391";
+  var ENVIO = "https://vjudge.net/problem/UVA-10391";
   var EJEMPLO = ["a", "alien", "born", "less", "lien", "never", "nevertheless", "new", "newborn", "the", "zebra"];
   var PROPIO = ["a", "ar", "bar", "barco", "co", "copa", "cos", "cosa", "gira", "girasol", "pa", "sa", "sol", "solar"];
   var MAX = 120000;
@@ -35,7 +35,7 @@ var EJERCICIO = (function () {
       cierre: "<p>El diccionario entra a un set&lt;string&gt;, y cada palabra se parte en todos los cortes posibles, del primero al penúltimo carácter, preguntando si las dos partes están. Ninguna parte puede quedar vacía, la búsqueda para en el primer corte que sirve y la palabra se imprime una vez. Como la entrada ya llega en orden alfabético, recorrerla en ese orden da la salida en orden.</p>",
       cartas: [
         { tipo: "opciones", titulo: "UVa 10391, Compound Words", columna: true, correcta: "tres",
-          html: "<p>Enunciado: <code>" + ENUNCIADO + "</code><br>Envío: <code>" + ENVIO.replace(/&/g, "&amp;") + "</code></p>" +
+          html: "<p>Enunciado y envío: <code>" + ENUNCIADO + "</code></p>" +
                 "<p>Llegan hasta " + MAX + " palabras en minúscula, una por línea y en orden alfabético. Hay que imprimir, en orden, las que son la unión de exactamente dos palabras del diccionario.</p>" +
                 "<p>En el ejemplo del enunciado el diccionario es <code>" + EJEMPLO.join(" ") + "</code> y la salida es <code>" + salEj.join(" ") + "</code>. ¿Por qué no sale <code>nevertheless</code>, si todas sus partes están?</p>",
           opciones: [
