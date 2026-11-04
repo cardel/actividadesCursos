@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dos réplicas que divergen y vuelven a juntarse</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .opciones button { text-align: left; }
+  td code { font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Dos réplicas que divergen y vuelven a juntarse</h1>
+  <p class="intro">Un contador repartido entre dos réplicas, A y B. Cada una guarda un vector
+  con una casilla por réplica, solo incrementa la suya y el total es la suma de las casillas.
+  Para juntarse toman el máximo casilla por casilla, sin preguntarse nada. Aquí se parte la red,
+  se incrementa en los dos lados y se mira qué queda al fusionar.</p>
+
+  <div class="carta">
+    <h2>1. Dos réplicas que cuentan aparte</h2>
+    <p style="margin-top:0">A escribe la primera casilla y B la segunda. Con la red sana, cada
+    incremento llega a la otra de inmediato; con la red partida, se queda en casa.</p>
+    <div class="secuencia" id="red"></div>
+    <div class="botones">
+      <button id="btn-a" class="primario">Incrementar en A</button>
+      <button id="btn-b" class="primario">Incrementar en B</button>
+      <button id="btn-partir">Partir la red</button>
+      <button id="btn-sanar">Sanar la red</button>
+      <button id="btn-reiniciar">Volver al inicio</button>
+    </div>
+    <div class="envoltura-tabla" style="margin-top:0.6rem">
+      <table>
+        <thead><tr><th>Réplica</th><th>Vector</th><th>Total</th></tr></thead>
+        <tbody id="cuerpo-replicas"></tbody>
+      </table>
+    </div>
+    <div class="secuencia" id="historial"></div>
+    <div class="chips" id="marcador-replicas"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. El total que deja la fusión</h2>
+    <p style="margin-top:0;margin-bottom:0.3rem">Con los dos vectores de arriba a la vista, antes
+    de fusionar: ¿en qué total queda el contador cuando las dos réplicas se junten?</p>
+    <div class="prediccion">
+      <span>Total después de la fusión</span>
+      <input type="number" id="pred-total" min="0" step="1" placeholder="total">
+      <button id="btn-total" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-total" class="veredicto"></div>
+    <div class="botones" style="margin-top:0.7rem">
+      <button id="btn-fusionar">Fusionar las dos</button>
+    </div>
+    <div id="detalle-fusion" style="margin-top:0.5rem"></div>
+    <div id="ver-fusion" class="veredicto"></div>
+    <div class="nota">El total no es el mayor de los dos totales: es la suma del vector que deja
+    el máximo casilla por casilla. Vale la pena repetir el ejercicio partiendo la red en otro
+    momento y repartiendo los incrementos de otra forma.</div>
+  </div>
+
+  <div class="carta">
+    <h2>3. La misma secuencia con un entero suelto</h2>
+    <p style="margin-top:0">La versión ingenua guarda un solo número por réplica y fusiona
+    quedándose con el mayor. Las dos últimas columnas son esa versión, corrida con la misma
+    secuencia de la izquierda.</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Paso</th><th>A</th><th>B</th><th>Total</th>
+        <th>Con un entero suelto, A y B</th></tr></thead>
+        <tbody id="cuerpo-corrida"></tbody>
+      </table>
+    </div>
+    <div class="prediccion">
+      <span>¿Cuántos incrementos pierde la versión del entero suelto?</span>
+      <input type="number" id="pred-perdidos" min="0" step="1" placeholder="incrementos">
+      <button id="btn-perdidos" class="primario">Comprobar y destapar</button>
+    </div>
+    <div id="ver-perdidos" class="veredicto"></div>
+    <div class="chips" id="marcador-corrida" style="margin-top:0.7rem"></div>
+    <div class="alerta" id="nota-corrida" hidden>Con un entero por réplica, el número de A y el
+    de B cuentan trabajo distinto, y quedarse con el mayor tira el del otro lado. La casilla por
+    réplica separa ese trabajo antes de que haya que compararlo: el máximo se aplica entre dos
+    versiones de la misma casilla, nunca entre los incrementos de dos réplicas.</div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Por qué converge sin coordinarse</h2>
+    <p style="margin-top:0;margin-bottom:0.3rem">Las réplicas incrementan mientras la red está
+    partida, nadie pide permiso y al fusionar coinciden. ¿Qué lo hace funcionar?</p>
+    <div class="opciones" id="op-maximo">
+      <button data-op="acuerdo">Las réplicas se ponen de acuerdo en quién gana antes de
+      fusionar</button>
+      <button data-op="correcta">Cada casilla solo crece y solo la escribe su dueña, así que el
+      máximo nunca descarta trabajo ajeno</button>
+      <button data-op="reciente">El máximo de dos números se queda con el valor más
+      reciente</button>
+      <button data-op="orden">Las fusiones se aplican siempre en el mismo orden y una sola
+      vez</button>
+      <button data-op="unica">Una sola réplica recibe las escrituras y la otra la copia</button>
+    </div>
+    <div id="ver-maximo" class="veredicto"></div>
+    <div class="nota">De ahí sale la propiedad que importa en producción: la fusión da lo mismo
+    en cualquier orden y repetirla no cambia nada, así que un mensaje duplicado o que llega tarde
+    no daña la cuenta. Lo que este contador no admite es restar, porque una casilla que baja sí
+    perdería trabajo al pasar por el máximo.</div>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="replicas.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

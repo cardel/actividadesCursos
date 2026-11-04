@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Siete estilos, casos reales</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .situacion { font-size: 1.05rem; padding: 0.8rem 1rem; border-left: 4px solid var(--azul);
+               background: var(--azul-suave); border-radius: 6px; margin: 0.6rem 0; min-height: 3.6rem; }
+  .opciones button.elegida { outline: 3px solid var(--azul); outline-offset: 1px; }
+  table td.izq, table th.izq { text-align: left; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Siete estilos, casos reales</h1>
+  <p class="intro">Cliente-servidor, en capas, microservicios, entre pares (P2P), centrada en
+  datos, orientada a servicios (SOA) y basada en eventos. Los siete se distinguen por tres
+  preguntas: dónde vive el estado, qué tan acoplados quedan los componentes y qué se paga por
+  ello. Aquí se destapa esa tabla y después se clasifican diez sistemas que existen de verdad.</p>
+
+  <div class="carta">
+    <h2>1. Tres preguntas, siete respuestas</h2>
+    <p style="margin-top:0">Toque un estilo para destapar su fila. Antes de tocarlo, intente
+    responder las tres columnas de memoria.</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th class="izq">Estilo</th><th class="izq">Dónde vive el estado</th>
+          <th class="izq">Acoplamiento</th><th class="izq">Qué cuesta</th></tr></thead>
+        <tbody id="cuerpo-estilos"></tbody>
+      </table>
+    </div>
+    <div class="progreso" id="progreso-estilos"></div>
+    <div class="opciones" id="op-destapar">
+      <button data-clave="cliente-servidor">Cliente-servidor</button>
+      <button data-clave="capas">En capas</button>
+      <button data-clave="microservicios">Microservicios</button>
+      <button data-clave="p2p">Entre pares (P2P)</button>
+      <button data-clave="datos">Centrada en datos</button>
+      <button data-clave="soa">Orientada a servicios (SOA)</button>
+      <button data-clave="eventos">Basada en eventos</button>
+    </div>
+    <div id="ver-destapar" class="veredicto"></div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-reiniciar-estilos">Tapar la tabla otra vez</button>
+    </div>
+    <div class="alerta" id="nota-estilos" hidden>Las tres columnas no son independientes:
+    dónde vive el estado decide qué tan acoplados quedan los componentes, y de ahí sale lo que
+    se paga. Un repositorio compartido acopla por el esquema, un servicio dueño de su dato
+    acopla por el contrato, y un registro de eventos casi no acopla porque traslada al
+    consumidor el trabajo de ordenar lo que llega.</div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Diez sistemas, un estilo cada uno</h2>
+    <div class="chips" id="datos-banco"></div>
+    <div class="progreso" id="progreso-casos" style="margin-top:0.7rem"></div>
+    <div class="situacion" id="texto-caso"></div>
+    <div class="opciones" id="op-casos">
+      <button data-clave="cliente-servidor" data-op="cliente-servidor">Cliente-servidor</button>
+      <button data-clave="capas" data-op="capas">En capas</button>
+      <button data-clave="microservicios" data-op="microservicios">Microservicios</button>
+      <button data-clave="p2p" data-op="p2p">Entre pares (P2P)</button>
+      <button data-clave="datos" data-op="datos">Centrada en datos</button>
+      <button data-clave="soa" data-op="soa">Orientada a servicios (SOA)</button>
+      <button data-clave="eventos" data-op="eventos">Basada en eventos</button>
+    </div>
+    <div id="ver-casos" class="veredicto"></div>
+    <div class="botones" style="margin-top:0.8rem">
+      <button id="btn-siguiente" class="primario" hidden>Siguiente caso</button>
+      <button id="btn-otra" hidden>Otra vez, en otro orden</button>
+    </div>
+    <div class="chips" id="panel-marcador" style="margin-top:0.8rem"></div>
+    <div class="envoltura-tabla" style="margin-top:0.6rem">
+      <table>
+        <thead><tr><th class="izq">Caso</th><th>Primera respuesta</th><th>El estilo</th></tr></thead>
+        <tbody id="cuerpo-marcador"></tbody>
+      </table>
+    </div>
+    <p id="resumen" hidden style="font-weight:600"></p>
+  </div>
+
+  <div class="carta">
+    <h2>3. Dos sistemas que usan dos estilos a la vez</h2>
+    <p style="margin-top:0;margin-bottom:0.3rem">Una plataforma de domicilios: el pedido, el
+    cobro y el reparto son servicios separados, con su propia base de datos y su propio
+    despliegue, y en lugar de llamarse entre ellos publican <code>pedido confirmado</code> y
+    <code>pago aprobado</code> en un registro que los demás leen.</p>
+    <div class="opciones" id="op-mixto-a">
+      <button data-op="correcta">Microservicios en el despliegue y basada en eventos en la comunicación</button>
+      <button data-op="solo-micro">Solo microservicios: el registro de eventos es un detalle de implementación</button>
+      <button data-op="solo-eventos">Solo basada en eventos: todo pasa por el registro</button>
+      <button data-op="ninguno">Ninguno de los dos, porque un sistema pertenece a un solo estilo</button>
+    </div>
+    <div id="ver-mixto-a" class="veredicto"></div>
+
+    <p style="margin-top:1.2rem;margin-bottom:0.3rem">Una aplicación de nómina organizada en
+    interfaz, reglas y acceso a datos, cuya base de datos es la misma que usan el sistema de
+    personal y el de pensiones, que escriben directo en sus tablas.</p>
+    <div class="opciones" id="op-mixto-b">
+      <button data-op="correcta">En capas por dentro y centrada en datos por fuera</button>
+      <button data-op="solo-capas">Solo en capas: la base de datos es la capa de abajo y punto</button>
+      <button data-op="cliente-servidor">Cliente-servidor: al final los tres hablan con un servidor de base de datos</button>
+      <button data-op="microservicios">Microservicios: son tres sistemas separados</button>
+    </div>
+    <div id="ver-mixto-b" class="veredicto"></div>
+    <div class="nota">Los estilos responden preguntas distintas sobre el mismo sistema, así
+    que se combinan: uno dice cómo se parte y se despliega, otro cómo se comunican las partes,
+    otro dónde queda el estado. Nombrar dos estilos sirve cuando cada uno explica una decisión
+    que el otro no toca.</div>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="estilos.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

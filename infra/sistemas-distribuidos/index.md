@@ -73,3 +73,21 @@ Cinco réplicas, una escritura que se confirma con tres y una lectura que
 consulta otras tres. Siga los pasos y diga qué devuelve la lectura, calcule el R
 más pequeño cuando W baja a 2 y decida qué lado de una partición sigue
 escribiendo. Cierra con lo que gana y lo que pierde W = 1 y R = 1.
+
+### [Dos réplicas que divergen y vuelven a juntarse](replicas.html){ target=_blank rel=noopener }
+
+Un contador con una casilla por réplica y una red que se parte en el medio.
+Incremente a los dos lados mientras no se hablan, prediga el total antes de
+destapar la fusión y vea que el máximo casilla por casilla no descarta nada;
+después corra la misma secuencia con un entero suelto por réplica y cuente los
+dos incrementos que desaparecen.
+
+## Estilos de arquitectura
+
+### [Siete estilos, casos reales](estilos.html){ target=_blank rel=noopener }
+
+Cliente-servidor, capas, microservicios, entre pares, centrada en datos,
+orientada a servicios y basada en eventos. Destape dónde vive el estado y qué
+cuesta cada uno, clasifique diez sistemas conocidos con el marcador a la vista,
+y vea por qué dos casos que parecen el mismo se separan por un solo dato del
+enunciado. Cierra con dos sistemas que mezclan dos estilos.

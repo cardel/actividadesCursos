@@ -49,7 +49,7 @@ tabla no existe para quien busca.
 
 ## Catálogo
 
-Son 480 actividades. El enlace lleva al archivo; para verlas funcionando hay que
+Son 482 actividades. El enlace lleva al archivo; para verlas funcionando hay que
 abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 
 ### Árboles y Grafos — `ayg-puj`
@@ -474,11 +474,13 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 | `sistemas-distribuidos` | [`cadena`](infra/sistemas-distribuidos/cadena.html) | tres piezas en serie, una copia y un nodo que no contesta |
 |  | [`cap`](infra/sistemas-distribuidos/cap.html) | la partición entre dos nodos, momento por momento |
 |  | [`escalabilidad`](infra/sistemas-distribuidos/escalabilidad.html) | escalar a lo alto o a lo ancho |
+|  | [`estilos`](infra/sistemas-distribuidos/estilos.html) | los siete estilos sobre diez sistemas conocidos |
 |  | [`fallos-latencia`](infra/sistemas-distribuidos/fallos-latencia.html) | disponibilidad, demora y throughput |
 |  | [`particionar`](infra/sistemas-distribuidos/particionar.html) | cuántas claves se mueven al llegar un nodo |
 |  | [`que-es`](infra/sistemas-distribuidos/que-es.html) | qué cuesta cruzar la red |
 |  | [`quorum`](infra/sistemas-distribuidos/quorum.html) | R + W > N y qué lado de la partición escribe |
 |  | [`relojes`](infra/sistemas-distribuidos/relojes.html) | el reloj lógico de Lamport, evento por evento |
+|  | [`replicas`](infra/sistemas-distribuidos/replicas.html) | dos réplicas que divergen y la fusión que no pierde |
 
 ### Programación Funcional y Concurrente — `pfc`
 
