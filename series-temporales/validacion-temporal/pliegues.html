@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Los pliegues de TimeSeriesSplit</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Los pliegues de TimeSeriesSplit</h1>
+  <p class="intro" id="intro"></p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Mueva n_splits, test_size y gap</h2>
+    <div class="controles">
+      <label for="n">n_splits</label>
+      <input type="range" id="n" min="2" max="8" value="5">
+      <span class="valor-n" id="n-valor">5</span>
+    </div>
+    <div class="controles">
+      <label for="t">test_size</label>
+      <input type="range" id="t" min="3" max="12" value="6">
+      <span class="valor-n" id="t-valor">6</span>
+    </div>
+    <div class="controles">
+      <label for="g">gap</label>
+      <input type="range" id="g" min="0" max="6" value="0">
+      <span class="valor-n" id="g-valor">0</span>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <div class="figura" id="figura"></div>
+    <p class="nota"><span style="color:#1f5fa8;font-weight:700">Azul</span>: meses con que entrena el pliegue. <span style="color:#d9822b;font-weight:700">Naranja</span>: meses que valida. <span style="color:#9ca3af;font-weight:700">Gris</span>: meses sin usar. Los pliegues se calculan en la página con la regla de <code>TimeSeriesSplit(n_splits, test_size, gap)</code> de scikit-learn, sobre los meses de la tabla de búsqueda.</p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Cada pliegue es un origen del backtest</h2>
+    <div class="nota" id="cierre-texto"></div>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["muestra", "transformaciones"] });</script>
+<script src="datos.js"></script>
+<script src="cortes.js"></script>
+<script src="pliegues.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

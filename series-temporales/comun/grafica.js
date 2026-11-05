@@ -1,5 +1,6 @@
 /* Gráficas en SVG para las actividades del curso: líneas, correlogramas con
-   su banda y diagramas de dispersión. Cada función devuelve el texto del SVG
+   su banda, diagramas de dispersión, barras horizontales y franjas de
+   celdas. Cada función devuelve el texto del SVG
    y la página lo pone en un contenedor con innerHTML. */
 var Grafica = (function () {
   "use strict";
@@ -148,8 +149,67 @@ var Grafica = (function () {
     return lienzo(f.W, f.H, s);
   }
 
+  /* Barras horizontales: op.barras es una lista de { rotulo, valor, color };
+     op.maximo fija el largo del eje; op.referencia = { valor, rotulo } dibuja
+     una línea punteada vertical; op.formato escribe el número de cada barra. */
+  function barras(op) {
+    var W = op.ancho || 640, alto = 34, sep = 16, izq = op.izquierda || 150, der = 70;
+    var arr = op.titulo ? 30 : 12, n = op.barras.length;
+    var H = arr + n * alto + (n - 1) * sep + (op.referencia ? 46 : 30);
+    var maximo = op.maximo || Math.max.apply(null, op.barras.map(function (b) { return b.valor; }));
+    var formato = op.formato || numero;
+    function sx(v) { return izq + v / maximo * (W - izq - der); }
+    var s = op.titulo ? texto(8, 18, op.titulo, 'font-size="13" font-weight="600" fill="#24292f"') : "";
+    var base = arr + n * alto + (n - 1) * sep;
+    marcas(0, maximo, 5).forEach(function (v) {
+      s += '<line x1="' + sx(v) + '" x2="' + sx(v) + '" y1="' + arr + '" y2="' + base + '" stroke="#eef1f5"/>';
+      s += texto(sx(v), base + 15, op.formatoEje ? op.formatoEje(v) : numero(v),
+        'text-anchor="middle" font-size="11" fill="' + GRIS + '"');
+    });
+    op.barras.forEach(function (b, i) {
+      var y = arr + i * (alto + sep), largo = Math.max(0, sx(Math.min(b.valor, maximo)) - izq);
+      s += texto(izq - 8, y + alto / 2 + 4, b.rotulo, 'text-anchor="end" font-size="12" fill="#24292f"');
+      s += '<rect x="' + izq + '" y="' + y + '" width="' + largo.toFixed(1) + '" height="' + alto +
+        '" fill="' + (b.color || AZUL) + '"/>';
+      s += texto(izq + largo + 6, y + alto / 2 + 4, formato(b.valor), 'font-size="12" fill="#24292f"');
+    });
+    if (op.referencia) {
+      var xr = sx(op.referencia.valor);
+      s += '<line x1="' + xr + '" x2="' + xr + '" y1="' + (arr - 4) + '" y2="' + (base + 2) +
+        '" stroke="' + GRIS + '" stroke-width="1.5" stroke-dasharray="4 3"/>';
+      s += texto(xr, base + 32, op.referencia.rotulo, 'text-anchor="middle" font-size="11" fill="' + GRIS + '"');
+    }
+    return lienzo(W, H, s);
+  }
+
+  /* Franjas: una fila por elemento de op.filas = { rotulo, colores }, con una
+     celda por posición en el color que diga colores[j]. op.marcasX y
+     op.rotuloX ponen las marcas del eje horizontal debajo de la última fila. */
+  function franjas(op) {
+    var W = op.ancho || 640, alto = 18, sep = 6, izq = 70, der = 10, arr = op.titulo ? 28 : 8;
+    var n = op.filas.length, largo = op.filas[0].colores.length;
+    var paso = (W - izq - der) / largo, base = arr + n * (alto + sep) - sep;
+    var H = base + 24;
+    var s = op.titulo ? texto(8, 18, op.titulo, 'font-size="13" font-weight="600" fill="#24292f"') : "";
+    op.filas.forEach(function (f, i) {
+      var y = arr + i * (alto + sep);
+      s += texto(izq - 6, y + alto / 2 + 4, f.rotulo, 'text-anchor="end" font-size="11" fill="#24292f"');
+      f.colores.forEach(function (c, j) {
+        s += '<rect x="' + (izq + j * paso).toFixed(1) + '" y="' + y + '" width="' + Math.max(1, paso - 1).toFixed(1) +
+          '" height="' + alto + '" fill="' + c + '">' + (op.titulos ? "<title>" + op.titulos(i, j) + "</title>" : "") + "</rect>";
+      });
+    });
+    (op.marcasX || []).forEach(function (j) {
+      var x = izq + j * paso;
+      s += '<line x1="' + x + '" x2="' + x + '" y1="' + base + '" y2="' + (base + 5) + '" stroke="' + GRIS + '"/>';
+      s += texto(x + 2, base + 17, op.rotuloX ? op.rotuloX(j) : String(j), 'font-size="11" fill="' + GRIS + '"');
+    });
+    return lienzo(W, H, s);
+  }
+
   return {
     lineas: lineas, correlograma: correlograma, dispersion: dispersion,
+    barras: barras, franjas: franjas,
     numero: numero, AZUL: AZUL, ROJO: ROJO
   };
 })();

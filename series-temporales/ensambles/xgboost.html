@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tasa, árboles y profundidad de XGBoost</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Tasa, árboles y profundidad de XGBoost</h1>
+  <p class="intro">XGBoost empieza con un mismo valor para todas las filas y suma árboles uno tras otro: cada árbol se entrena con lo que les falta a las filas, y su aporte entra multiplicado por la tasa de aprendizaje, <code>F<sub>m</sub> = F<sub>m−1</sub> + η f<sub>m</sub></code>. Tres controles lo gobiernan: <code>learning_rate</code> (η), <code>n_estimators</code>, cuántos árboles se suman, y <code>max_depth</code>, cuántas preguntas tiene cada uno. El objetivo es la diferencia con hace 12 meses.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Mueva un control a la vez</h2>
+    <div class="controles">
+      <label>learning_rate</label>
+      <span class="selector" id="tasa">
+        <button data-valor="0.01">0,01</button>
+        <button data-valor="0.03">0,03</button>
+        <button data-valor="0.05">0,05</button>
+        <button data-valor="0.1">0,1</button>
+        <button data-valor="0.2">0,2</button>
+        <button data-valor="0.3" class="elegido">0,3</button>
+        <button data-valor="0.5">0,5</button>
+      </span>
+    </div>
+    <div class="controles">
+      <label>n_estimators</label>
+      <span class="selector" id="arboles">
+        <button data-valor="25">25</button>
+        <button data-valor="50">50</button>
+        <button data-valor="100" class="elegido">100</button>
+        <button data-valor="200">200</button>
+        <button data-valor="300">300</button>
+      </span>
+    </div>
+    <div class="controles">
+      <label for="d">max_depth</label>
+      <input type="range" id="d" min="1" max="8" value="6">
+      <span class="valor-n" id="d-valor">6</span>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <div class="figura" id="figura"></div>
+    <p class="nota">Los controles arrancan en los valores por defecto: tasa 0,3, 100 árboles y profundidad 6. Los pronósticos salen de <code>XGBRegressor(n_estimators, learning_rate, max_depth, random_state=2026)</code> de xgboost, entrenado con los meses hasta diciembre de 2024, en millones de pasajeros, y se calcularon fuera de la página con el mismo código del notebook de la sesión. El MAE se calcula aquí.</p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Un año bueno no es un backtest bueno</h2>
+    <div id="cierre-tabla" class="envoltura-tabla"></div>
+    <div class="nota" id="cierre-texto"></div>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["nivel", "transformaciones"] });</script>
+<script src="datos.js"></script>
+<script src="pronostico.js"></script>
+<script src="xgboost.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

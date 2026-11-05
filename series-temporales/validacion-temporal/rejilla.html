@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Validación frente a backtest</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Validación frente a backtest</h1>
+  <p class="intro">Una búsqueda en rejilla prueba cada pareja de <code>max_depth</code> y <code>learning_rate</code> de XGBoost, con 100 árboles, y se queda con la de menor MAE de validación. La validación usa <code>TimeSeriesSplit(n_splits=5, test_size=6)</code> sobre la tabla de búsqueda; el <em>backtest</em> pronostica doce meses desde cada origen sobre los meses que la búsqueda no vio. La página pone las dos cifras de cada pareja lado a lado.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Elija profundidad y tasa</h2>
+    <div class="controles">
+      <label for="d">max_depth</label>
+      <input type="range" id="d" min="1" max="8" value="6">
+      <span class="valor-n" id="d-valor">6</span>
+    </div>
+    <div class="controles">
+      <label>learning_rate</label>
+      <span class="selector" id="tasa">
+        <button data-valor="0.02">0,02</button>
+        <button data-valor="0.05">0,05</button>
+        <button data-valor="0.1">0,1</button>
+        <button data-valor="0.2">0,2</button>
+        <button data-valor="0.3" class="elegido">0,3</button>
+        <button data-valor="0.5">0,5</button>
+      </span>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <div class="figura" id="figura"></div>
+    <p class="nota">Los dos MAE salen de <code>cross_val_score</code> de scikit-learn y del <em>backtest</em> del curso con <code>XGBRegressor(n_estimators=100, learning_rate, max_depth, random_state=2026)</code>, en pasajeros, y se calcularon fuera de la página con el mismo código del notebook de la sesión. Los meses de cada medida se calculan aquí.</p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Qué mide cada cifra</h2>
+    <div id="cierre-tabla" class="envoltura-tabla"></div>
+    <div class="nota" id="cierre-texto"></div>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["nivel", "estacional"] });</script>
+<script src="datos.js"></script>
+<script src="cortes.js"></script>
+<script src="rejilla.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
