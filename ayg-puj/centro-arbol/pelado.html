@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pelar capas de hojas, línea por línea</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Pelar capas de hojas, línea por línea</h1>
+  <p class="intro">Nada se borra: lo único que pasa es que los grados bajan. El número que lleva cada
+  vértice es su grado en lo que queda vivo, y el naranja marca la capa que se está yendo. Siga la
+  ejecución y vea en qué momento un vértice interno se vuelve hoja.</p>
+
+  <div class="carta">
+    <h2>1. Antes de correrlo</h2>
+    <div class="presets" id="presets"></div>
+    <p>¿Cuántas vueltas del ciclo <i>while</i> va a dar el algoritmo sobre este árbol?</p>
+    <div class="fila-par">
+      <span class="rotulo">Vueltas</span>
+      <input type="number" id="prediccion" class="corto" placeholder="0">
+      <button id="btn-comprobar" class="primario">Comprobar</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. La ejecución</h2>
+    <div class="dibujo" id="panel-grafo"></div>
+    <div class="dos-columnas">
+      <div class="codigo" id="panel-codigo"></div>
+      <div>
+        <div class="chips" id="chips"></div>
+        <div class="progreso">Paso <span id="ver-paso">0</span> de <span id="ver-total">0</span></div>
+        <div class="botones">
+          <button id="btn-paso" class="primario">Un paso</button>
+          <button id="btn-auto">Auto</button>
+          <button id="btn-fin">Al final</button>
+          <button id="btn-reiniciar">Reiniciar</button>
+        </div>
+        <div class="tira"><span class="rot">capa</span><span id="ver-capa"></span></div>
+        <div class="tira"><span class="rot">siguiente</span><span id="ver-siguiente"></span></div>
+        <div class="nota" id="ver-final"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Para llevarse</h2>
+    <p style="margin-top:0">Sin solución aquí. Mire el momento en que un vértice entra a
+    <i>siguiente</i>: siempre es al bajarle el grado a uno, nunca a cero. Explique por qué nunca llega
+    a cero mientras el ciclo siga corriendo. Después cambie mentalmente la línea 13 por
+    <i>if grado[u] &lt;= 1</i> y diga qué árbol rompería con ese cambio.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="../comun/arbol.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="pelado.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

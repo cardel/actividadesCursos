@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quién no puede ser el centro</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Quién no puede ser el centro</h1>
+  <p class="intro">El centro es el vértice de menor excentricidad, y encontrarlo parecería pedir las
+  nueve excentricidades. No hace falta: mirando una sola hoja y su vecino ya se descarta la hoja. Aquí
+  se descarta primero y se calcula después.</p>
+
+  <div class="carta">
+    <h2>1. El árbol</h2>
+    <div class="dibujo" id="panel"></div>
+    <div class="leyenda">Nueve vértices: <i>ab</i>, <i>bc</i>, <i>bd</i>, <i>de</i>, <i>df</i>,
+    <i>fg</i>, <i>ch</i>, <i>hi</i>.</div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Descarte sin calcular</h2>
+    <div class="pregunta">Marque los vértices que seguro <b>no</b> son el centro, sin calcular ninguna
+    excentricidad.</div>
+    <div class="estrato" id="descartar"></div>
+    <div id="fb-descartar" class="fb"></div>
+    <div class="botones" style="margin-top:0.7rem">
+      <button id="btn-descartar" class="primario">Comprobar</button>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>3. La cuenta de una hoja</h2>
+    <div class="pregunta" id="pregunta-hoja"></div>
+    <div class="fila-par">
+      <span class="rotulo" id="rot-hoja"></span>
+      <input type="number" id="in-hoja" class="corto" placeholder="0">
+      <span class="fb" id="fb-hoja"></span>
+    </div>
+    <div class="botones" style="margin-top:0.7rem">
+      <button id="btn-hoja" class="primario">Comprobar</button>
+      <button id="btn-otra">Otra hoja</button>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Las nueve, para comparar</h2>
+    <div class="botones"><button id="btn-ver">Ver las excentricidades</button></div>
+    <div id="tabla-ecc"></div>
+  </div>
+
+  <div class="carta">
+    <h2>5. Para llevarse</h2>
+    <p style="margin-top:0">Sin solución aquí. Descartadas las cuatro hojas quedan cinco candidatos, y
+    de esos uno es el centro. Encuentre un argumento que descarte tres de los cinco sin calcular
+    excentricidades, usando solo la cuenta de la hoja aplicada al árbol que queda cuando se quitan las
+    hojas. Después diga qué árbol de nueve vértices deja más candidatos en pie tras el primer descarte,
+    y cuál deja menos.</p>
+  </div>
+</div>
+<script src="../comun/arbol.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="hojas.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

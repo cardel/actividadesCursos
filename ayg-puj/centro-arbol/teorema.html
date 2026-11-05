@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Qué le pasa a cada excentricidad al pelar una capa</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Qué le pasa a cada excentricidad al pelar una capa</h1>
+  <p class="intro">El teorema del centro dice que quitar todas las hojas a la vez deja el centro donde
+  estaba. Lo que hay detrás es una cuenta que se puede predecir vértice por vértice: aquí se predice
+  primero y se comprueba después.</p>
+
+  <div class="carta">
+    <h2>1. El árbol y sus excentricidades</h2>
+    <div class="dibujo" id="panel"></div>
+    <div id="tabla-antes"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Prediga la fila de después</h2>
+    <p>Se quitan de un golpe todas las hojas. Escriba la excentricidad que tendrá cada sobreviviente
+    en el árbol que queda.</p>
+    <div id="entradas"></div>
+    <div class="botones" style="margin-top:0.7rem">
+      <button id="btn-comprobar" class="primario">Comprobar la fila</button>
+      <button id="btn-pelar">Pelar y ver</button>
+    </div>
+    <div id="fb-fila" class="fb"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. El árbol que queda</h2>
+    <div class="dibujo" id="panel2"></div>
+    <div id="tabla-despues"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Para llevarse</h2>
+    <p style="margin-top:0">Sin solución aquí. La cuenta dice que cada sobreviviente baja exactamente
+    uno. Encuentre un árbol donde algún vértice <b>no</b> baje uno al quitar las hojas, o explique por
+    qué no existe. Después piense qué pasa si en vez de quitar todas las hojas se quita una sola: ¿baja
+    algo?, ¿se mueve el centro?</p>
+  </div>
+</div>
+<script src="../comun/arbol.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="teorema.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
