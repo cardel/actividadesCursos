@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Un Map recorrido como colección de parejas</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .item {
+    border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem;
+  }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.95rem; font-weight: 700; color: var(--azul);
+    overflow-wrap: anywhere; white-space: pre-wrap;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.88rem; min-width: 4rem;
+  }
+  .opciones button.larga {
+    font-family: inherit; font-size: 0.86rem; text-align: left;
+    white-space: normal; flex: 1 1 17rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  .codigo { max-height: none; }
+  table.pred td.expr-celda {
+    text-align: left; font-family: ui-monospace, monospace; white-space: nowrap;
+  }
+  table.pred input[type="text"] {
+    width: 14rem; text-align: center; font-family: ui-monospace, monospace;
+    font-size: 0.9rem; padding: 0.25rem; border: 1px solid var(--borde); border-radius: 4px;
+  }
+  table.pred input.bien { border-color: var(--verde); background: var(--verde-suave); }
+  table.pred input.mal { border-color: var(--rojo); background: var(--rojo-suave); }
+  table.pred td.real {
+    font-family: ui-monospace, monospace; color: var(--verde);
+    font-weight: 700; min-width: 7rem; text-align: left;
+  }
+  table.pred td.pista {
+    text-align: left; font-size: 0.82rem; color: var(--rojo); min-width: 15rem;
+  }
+  p code, li code, td code { background: var(--codigo-fondo); padding: 0 0.2rem; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Un Map recorrido como colección de parejas</h1>
+  <p class="intro">Buscar por la llave es una cara del <code>Map</code>. La otra
+  es que sus entradas se pueden recorrer: cada elemento es la pareja de una
+  llave con su valor, y de ahí que el mapa acepte <code>toList</code>,
+  <code>map</code>, <code>filter</code> y expresiones <code>for</code> con la
+  misma escritura de una lista. Lo que hay que mirar de cerca es cómo sale el
+  resultado, porque no siempre vuelve en la misma colección en que entró:
+  pedirle las llaves y pedirle los valores devuelve dos cosas distintas, y
+  transformar las parejas devuelve otro mapa. Prediga primero y después decida
+  entre opciones; todo valor que la página da por correcto salió de correr el
+  código con Scala 2.13.11.</p>
+
+  <div class="carta">
+    <h2>1. El archivo</h2>
+    <div class="codigo" id="panel-codigo"></div>
+    <p class="nota">Las cuatro primeras líneas que imprimen trabajan sobre el
+    mapa de dos entradas. La última agrupa cinco palabras por su primera letra
+    y cuenta cuántas quedaron en cada grupo.</p>
+  </div>
+
+  <div class="carta">
+    <h2>2. Prediga las cuatro líneas del mapa</h2>
+    <p class="nota" style="margin-top:0">Los espacios, las mayúsculas y las
+    comillas de más no cambian la respuesta. El nombre de la colección que sale
+    sí: es parte de lo que se pregunta.</p>
+    <div class="envoltura-tabla">
+      <table class="pred">
+        <thead><tr><th>línea</th><th>su respuesta</th><th>imprime</th><th></th></tr></thead>
+        <tbody id="cuerpo-predicciones"></tbody>
+      </table>
+    </div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-comprobar" class="primario">Comprobar las cuatro</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Cada elemento es una pareja</h2>
+    <p class="nota" style="margin-top:0">De eso sale todo lo demás: lo que
+    recibe la función de <code>map</code>, en qué colección cae el resultado y
+    por qué las llaves y los valores no se piden de la misma forma.</p>
+    <div id="pareja"></div>
+    <div class="progreso" id="marcador-pareja"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Agrupar y contar</h2>
+    <div class="codigo">
+      <div class="linea"><span class="num">1</span><span class="txt">val palabras = List("sol", "sal", "mar", "luna", "mes")</span></div>
+      <div class="linea"><span class="num">2</span><span class="txt">println(palabras.groupBy(_.head).map { case (c, ps) =&gt; (c, ps.length) })</span></div>
+    </div>
+    <p class="nota">Dos pasos en una línea: agrupar las palabras por su primera
+    letra y cambiar cada grupo por cuántas palabras tiene. El segundo paso es
+    un <code>map</code> sobre un mapa, con el mismo <code>case</code> que
+    desarma la pareja.</p>
+    <div id="agrupar"></div>
+    <div class="progreso" id="marcador-agrupar"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>5. Las cinco líneas, en claro</h2>
+    <div class="envoltura-tabla">
+      <table>
+        <tr><th>La línea</th><th>Lo que imprimió</th></tr>
+        <tr><td><code>capital.toList</code></td><td><code>List((USA,Washington), (COLOMBIA,Bogota))</code></td></tr>
+        <tr><td><code>capital.map { case (k, v) =&gt; (v, k) }</code></td><td><code>Map(Washington -&gt; USA, Bogota -&gt; COLOMBIA)</code></td></tr>
+        <tr><td><code>capital.keys</code></td><td><code>Set(USA, COLOMBIA)</code></td></tr>
+        <tr><td><code>capital.values</code></td><td><code>Iterable(Washington, Bogota)</code></td></tr>
+        <tr><td><code>palabras.groupBy(_.head).map { case (c, ps) =&gt; (c, ps.length) }</code></td><td><code>HashMap(s -&gt; 2, m -&gt; 2, l -&gt; 1)</code></td></tr>
+      </table>
+    </div>
+    <p><code>capital.toList</code> muestra de qué está hecho un mapa: dos
+    elementos, y cada uno es la pareja de una entrada,
+    <code>(USA,Washington)</code>. La flecha es la forma de escribir esa pareja
+    al construir el mapa; recorrida, la pareja sale con sus dos componentes
+    entre paréntesis.</p>
+    <p>Por eso <code>map</code> se escribe sobre un mapa igual que sobre una
+    lista, y el <code>case (k, v)</code> es lo que le pone nombre a las dos
+    partes del elemento que llegó. La función de
+    <code>capital.map { case (k, v) =&gt; (v, k) }</code> devuelve una pareja
+    por cada entrada, con el valor primero, y con parejas hay con qué armar
+    entradas: el resultado vuelve a ser un mapa,
+    <code>Map(Washington -&gt; USA, Bogota -&gt; COLOMBIA)</code>. Cada pareja
+    se invierte dentro de su propia entrada, de modo que Washington sigue junto
+    a USA.</p>
+    <p>Pedir las llaves y pedir los valores devuelve dos colecciones
+    distintas, y eso se lee en lo impreso: <code>Set(USA, COLOMBIA)</code>
+    frente a <code>Iterable(Washington, Bogota)</code>. Las llaves de un mapa
+    no se repiten, así que forman un conjunto. Dos entradas distintas sí pueden
+    compartir el valor, de modo que los valores llegan en la colección más
+    general, la que solo promete que se puede recorrer.</p>
+    <p>La última línea compone las dos ideas.
+    <code>groupBy(_.head)</code> reparte las cinco palabras y entrega un mapa
+    de cada inicial a las palabras que empiezan con ella; el <code>map</code>
+    que sigue lo recorre como colección de parejas y cambia cada grupo por su
+    largo. Quedan tres entradas, con sol y sal en la s, mar y mes en la m y
+    luna en la l: <code>HashMap(s -&gt; 2, m -&gt; 2, l -&gt; 1)</code>. El
+    nombre impreso es la implementación que sostiene ese mapa y el orden de las
+    entradas no es el de la lista de partida, dos cosas que un mapa no promete.
+    Lo que promete es la asociación entre cada llave y su valor, y que se puede
+    recorrer pareja por pareja.</p>
+  </div>
+</div>
+<script src="parejas.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

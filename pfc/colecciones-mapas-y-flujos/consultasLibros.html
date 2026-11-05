@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Consultas con expresiones for: un molde y cuatro filtros</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .item {
+    border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem;
+  }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.95rem; font-weight: 700; color: var(--azul);
+    overflow-wrap: anywhere; white-space: pre-wrap;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.88rem; min-width: 4rem;
+  }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 18rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  .codigo { max-height: none; }
+  .codigo + .codigo { margin-top: 0.5rem; }
+  .peldano {
+    display: flex; gap: 0.6rem; align-items: baseline;
+    padding: 0.35rem 0.5rem; border-radius: 8px; background: var(--codigo-fondo);
+    border: 1px solid var(--borde); margin-bottom: 0.35rem;
+  }
+  .peldano .etiqueta {
+    flex: none; width: 1.5rem; height: 1.5rem; border-radius: 6px;
+    background: var(--azul); color: #fff; font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 0.85rem;
+  }
+  .peldano .cuerpo { font-size: 0.85rem; }
+  .peldano .cuerpo code { font-size: 0.82rem; }
+  table.consultas td.izq { text-align: left; }
+  table.consultas code { font-size: 0.8rem; }
+  p code, li code, td code { background: var(--codigo-fondo); padding: 0 0.2rem; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Consultas con expresiones for: un molde y cuatro filtros</h1>
+  <p class="intro">Cuatro libros con sus autores alcanzan para hacer las
+  preguntas que se le hacen a una base de datos: qué títulos cumplen algo, qué
+  escribió una persona, quién aparece en más de un sitio. Las cuatro consultas
+  se escriben con el mismo molde, un generador que recorre, un
+  <code>if</code> que decide y un <code>yield</code> que dice qué se guarda, y
+  de una a la siguiente cambia una sola línea. La última rompe el patrón: pide
+  dos generadores sobre la misma lista y devuelve un resultado con una copia de
+  más, que además se imprime de una forma que engaña. Cada opción equivocada
+  dice en qué consiste la confusión, y todo valor que la página da por correcto
+  salió de correr el código con Scala 2.13.11.</p>
+
+  <div class="carta">
+    <h2>1. La base</h2>
+    <div class="codigo" id="codigo-base"></div>
+    <p class="nota">Cuatro libros. Uno tiene dos autores, uno tiene tres y dos
+    tienen uno solo. Cada autor se escribe como una sola cadena, con el
+    apellido primero y una coma antes del nombre, y eso tiene consecuencias más
+    abajo. <code>Odersky, Martin</code> es la única cadena de autor que se
+    repite entre dos libros.</p>
+  </div>
+
+  <div class="carta">
+    <h2>2. Un generador, un filtro, un yield</h2>
+    <div class="codigo" id="codigo-program"></div>
+    <div class="codigo" id="codigo-uno"></div>
+    <p class="nota">Las dos consultas tienen la misma forma y devuelven
+    títulos. Lo que cambia entre ellas está en una sola parte de la expresión.</p>
+    <div id="molde"></div>
+    <div class="progreso" id="marcador-molde"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Cuando el filtro se pregunta por un autor</h2>
+    <div class="codigo" id="codigo-odersky"></div>
+    <p class="nota">Los autores de un libro son una lista, de modo que la
+    condición no se puede escribir sobre el libro: hay que llegar a cada autor.</p>
+    <div id="odersky"></div>
+    <div class="progreso" id="marcador-odersky"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Dos generadores sobre la misma lista</h2>
+    <div class="codigo" id="codigo-repetidos"></div>
+    <p class="nota">La consulta busca los autores que aparecen en al menos dos
+    libros: toma dos libros distintos, un autor de cada uno, y guarda el autor
+    cuando los dos coinciden. Lo que imprimió fue
+    <code>List(Odersky, Martin, Odersky, Martin)</code>, y la primera pregunta
+    es cuántos elementos trae eso.</p>
+    <div id="repetidos"></div>
+    <div class="progreso" id="marcador-repetidos"></div>
+  </div>
+
+  <div class="carta">
+    <h2>5. Quitar la copia de más</h2>
+    <p class="nota" style="margin-top:0">Dos maneras de quedarse con un solo
+    nombre: pedirle a la lista que descarte sus repetidos, o recorrer un
+    conjunto en lugar de una lista.</p>
+    <div id="sin-repetir"></div>
+    <div class="progreso" id="marcador-sin-repetir"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>6. Las cuatro consultas, en claro</h2>
+    <div class="peldano"><span class="etiqueta">1</span><span class="cuerpo">El
+    generador dice qué se recorre, el <code>if</code> dice qué pasa y el
+    <code>yield</code> dice qué se guarda de cada elemento que pasó.</span></div>
+    <div class="peldano"><span class="etiqueta">2</span><span class="cuerpo">Una
+    consulta nueva sobre los mismos datos suele ser la anterior con otra
+    condición.</span></div>
+    <div class="peldano"><span class="etiqueta">3</span><span class="cuerpo">Cuando
+    la condición se pregunta por algo que está dentro de una lista, entra un
+    segundo generador que la recorre.</span></div>
+    <div class="peldano"><span class="etiqueta">4</span><span class="cuerpo">Dos
+    generadores sobre la misma colección forman cada par en los dos órdenes, y
+    eso aparece en el resultado.</span></div>
+    <div class="envoltura-tabla" style="margin-top:0.8rem">
+      <table class="consultas">
+        <tr><th>La consulta</th><th>Lo que devolvió</th></tr>
+        <tr>
+          <td class="izq"><code>for (l &lt;- libros if l.titulo.contains("Program")) yield l.titulo</code></td>
+          <td class="izq"><code>List(Structure and Interpretation of Computer Programs, Programming in Scala, Learning Concurrent Programming in Scala)</code></td>
+        </tr>
+        <tr>
+          <td class="izq"><code>for (l &lt;- libros if l.autores.length == 1) yield l.titulo</code></td>
+          <td class="izq"><code>List(Learning Concurrent Programming in Scala, Working Hard to Keep it Simple)</code></td>
+        </tr>
+        <tr>
+          <td class="izq"><code>for { l &lt;- libros; a &lt;- l.autores if a.startsWith("Odersky,") } yield l.titulo</code></td>
+          <td class="izq"><code>List(Programming in Scala, Working Hard to Keep it Simple)</code></td>
+        </tr>
+        <tr>
+          <td class="izq"><code>for { l1 &lt;- libros; l2 &lt;- libros if l1 != l2; a1 &lt;- l1.autores; a2 &lt;- l2.autores if a1 == a2 } yield a1</code></td>
+          <td class="izq"><code>List(Odersky, Martin, Odersky, Martin)</code></td>
+        </tr>
+      </table>
+    </div>
+    <p>Las tres primeras consultas se diferencian en poco: la segunda es la
+    primera con otra condición, y la tercera agrega el generador que hacía falta
+    para preguntar por un autor. La coma de
+    <code>startsWith("Odersky,")</code> está puesta a propósito: cierra el
+    apellido, de modo que la condición compara el apellido completo.</p>
+    <p>La última salida es la que hay que leer con cuidado.
+    <code>List(Odersky, Martin, Odersky, Martin)</code> muestra cuatro trozos
+    separados por coma y tiene dos elementos, porque cada autor se escribe
+    apellido, nombre y lleva una coma adentro, la misma con que la lista separa
+    sus elementos. Los dos elementos son la cadena
+    <code>Odersky, Martin</code>.</p>
+    <p>La copia sale del recorrido, no de los datos. Los dos generadores
+    recorren <code>libros</code> completo, de modo que el par formado por
+    <code>Programming in Scala</code> y <code>Working Hard to Keep it Simple</code>
+    aparece dos veces, una con cada libro en el papel de <code>l1</code>, y las
+    dos veces la condición <code>a1 == a2</code> se cumple. La guarda
+    <code>l1 != l2</code> evita comparar un libro consigo mismo y nada más.</p>
+    <p>De ahí las dos salidas que quitan la copia.
+    <code>.distinct</code> al final devuelve
+    <code>List(Odersky, Martin)</code>: descarta sobre lo que ya se construyó.
+    Los mismos dos generadores sobre <code>libros.toSet</code> devuelven
+    <code>Set(Odersky, Martin)</code>: el tipo del resultado lo fija el primer
+    generador, y un conjunto no deja entrar la copia. El recorrido es el mismo
+    en los tres casos y lo que cambia es dónde se descarta.</p>
+  </div>
+</div>
+<script src="consultasLibros.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

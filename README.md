@@ -504,6 +504,12 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`privados`](pfc/clases-y-abstraccion-de-datos/privados.html) | qué alcanza el cliente de Racional |
 |  | [`punto2d`](pfc/clases-y-abstraccion-de-datos/punto2d.html) | la tabla de Punto antes de correrla |
 |  | [`sustitucion`](pfc/clases-y-abstraccion-de-datos/sustitucion.html) | produzca cada reescritura antes de verla |
+| `colecciones-mapas-y-flujos` | [`consultasLibros`](pfc/colecciones-mapas-y-flujos/consultasLibros.html) | cuatro consultas con el mismo molde y la salida que se lee mal |
+|  | [`criba`](pfc/colecciones-mapas-y-flujos/criba.html) | prediga cabeza, filtro y cola en cada paso |
+|  | [`infinitos`](pfc/colecciones-mapas-y-flujos/infinitos.html) | qué se materializa al pedir un índice, y dónde sí compila fibs |
+|  | [`mapas`](pfc/colecciones-mapas-y-flujos/mapas.html) | la clave ausente y el mapa que no respeta el orden escrito |
+|  | [`parejas`](pfc/colecciones-mapas-y-flujos/parejas.html) | keys y values no devuelven lo mismo |
+|  | [`perezoso`](pfc/colecciones-mapas-y-flujos/perezoso.html) | el flujo que se imprime sin calcular nada |
 | `colecciones-secuencias-y-conjuntos` | [`conjuntos`](pfc/colecciones-secuencias-y-conjuntos/conjuntos.html) | sin orden, sin duplicados y con otro nombre al imprimirse |
 |  | [`consultas`](pfc/colecciones-secuencias-y-conjuntos/consultas.html) | exists, forall, zip y los agregados |
 |  | [`esPrimo`](pfc/colecciones-secuencias-y-conjuntos/esPrimo.html) | el rango sin elementos y la guarda que hace falta |

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La criba sobre un flujo que no termina</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .item {
+    border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem;
+  }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.95rem; font-weight: 700; color: var(--azul);
+    overflow-wrap: anywhere; white-space: pre-wrap;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.88rem; min-width: 4rem;
+  }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 16rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  .codigo { max-height: none; }
+  #traza table { margin-bottom: 0.6rem; }
+  #traza td { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 0.85rem; }
+  #traza td.pend { font-weight: 700; }
+  .peldano {
+    display: flex; gap: 0.6rem; align-items: baseline;
+    padding: 0.35rem 0.5rem; border-radius: 8px; background: var(--codigo-fondo);
+    border: 1px solid var(--borde); margin-bottom: 0.35rem;
+  }
+  .peldano .etiqueta {
+    flex: none; width: 1.5rem; height: 1.5rem; border-radius: 6px;
+    background: var(--azul); color: #fff; font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 0.85rem;
+  }
+  .peldano .cuerpo { font-size: 0.85rem; }
+  .peldano .cuerpo code { font-size: 0.82rem; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>La criba sobre un flujo que no termina</h1>
+  <p class="intro">La criba de Eratóstenes toma el primer número de la
+  secuencia, descarta sus múltiplos y repite el procedimiento con lo que
+  queda. Sobre una lista eso obliga a fijar un tope: hay que decidir de
+  antemano hasta dónde cribar. Sobre un <code>LazyList</code> no hace falta
+  tope, porque la cola de cada paso queda descrita y sin calcular. Las ocho
+  preguntas van de lo que devuelve cada llamada a la traza de los cuatro
+  primeros pasos, con la cola que deja cada filtro, y los dos resultados del
+  final salieron de correr el código con la versión de Scala del curso.</p>
+
+  <div class="carta">
+    <h2>1. Qué devuelve cada llamada</h2>
+    <div class="codigo" id="codigo-criba"></div>
+    <div id="piezas"></div>
+    <div class="progreso" id="marcador-piezas"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. La traza, un paso a la vez</h2>
+    <p class="nota">La fila del paso aparece cuando se predice. El paso 0 es
+    el flujo que llega a la primera llamada, <code>enterosDesde(2)</code>.</p>
+    <div class="envoltura-tabla" id="traza"></div>
+    <div id="paso"></div>
+    <div class="progreso" id="marcador-traza"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Lo que devuelve el flujo</h2>
+    <div class="codigo">
+      <div class="linea"><span class="num">1</span><span class="txt">primos.take(10).toList</span></div>
+      <div class="linea"><span class="num">2</span><span class="txt">primos(20)</span></div>
+    </div>
+    <div id="resultados"></div>
+    <div class="progreso" id="marcador-resultados"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>4. Por qué el proceso termina</h2>
+    <div class="peldano"><span class="etiqueta">1</span><span class="cuerpo">Cada
+    llamada a <code>criba</code> devuelve dos cosas de naturaleza distinta:
+    <code>s.head</code>, que es un número concreto, y una cola que es la
+    llamada siguiente sin evaluar.</span></div>
+    <div class="peldano"><span class="etiqueta">2</span><span class="cuerpo">El
+    filtro no recorre nada al escribirse. <code>s.tail.filter(...)</code>
+    deja la condición encima de la cola y la aplica cuando alguien pide un
+    elemento.</span></div>
+    <div class="peldano"><span class="etiqueta">3</span><span class="cuerpo">Los
+    filtros se apilan: el de 2, el de 3, el de 5 y el de 7 siguen todos
+    puestos en el cuarto paso, y cada número que llega los atraviesa en
+    orden.</span></div>
+    <div class="peldano"><span class="etiqueta">4</span><span class="cuerpo">El
+    índice pedido decide cuánto se calcula. <code>primos.take(10).toList</code>
+    devuelve <code>List(2, 3, 5, 7, 11, 13, 17, 19, 23, 29)</code> y
+    <code>primos(20)</code> devuelve <code>73</code>, cada uno tras mirar
+    solo los números que hicieron falta.</span></div>
+    <p>Que la recursión no tenga caso base y el flujo de partida no se agote
+    son dos razones para esperar un cálculo sin fin, y ninguna lo produce. La
+    pieza que lo explica es el <code>#::</code> de
+    <code>s.head #:: criba(...)</code>: su lado izquierdo se evalúa, su lado
+    derecho no. Cada paso entrega entonces un número y una descripción de lo
+    que vendría después, y la cadena de llamadas se detiene ahí hasta que
+    alguien pida el elemento siguiente.</p>
+    <p>De ahí sale la forma de contar el trabajo. Pedir el elemento del índice
+    20 obliga a abrir veintiún pasos de la criba, y cada paso solo mira los
+    números que los pasos anteriores le dejaron pasar. Lo que no se pide no se
+    filtra: sobre la cola del cuarto paso quedan cuatro condiciones puestas
+    que no se han evaluado en ningún número todavía.</p>
+    <p>La comparación con una lista cierra el asunto. Cribar una lista obliga
+    a declarar el tope antes de empezar, y con el tope viene la decisión de
+    cuántos primos se quieren: si el tope queda corto hay que repetir el
+    cálculo entero con otro. El flujo invierte el orden: la criba se escribe
+    una vez, sin tope, y quien consulta fija cuánto se calcula.</p>
+  </div>
+</div>
+<script src="criba.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

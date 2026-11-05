@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lo que un flujo perezoso no calcula</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .item {
+    border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem;
+  }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.95rem; font-weight: 700; color: var(--azul);
+    overflow-wrap: anywhere; white-space: pre-wrap;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.88rem; min-width: 4rem;
+  }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 16rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  .codigo { max-height: none; }
+  .peldano {
+    display: flex; gap: 0.6rem; align-items: baseline;
+    padding: 0.35rem 0.5rem; border-radius: 8px; background: var(--codigo-fondo);
+    border: 1px solid var(--borde); margin-bottom: 0.35rem;
+  }
+  .peldano .etiqueta {
+    flex: none; width: 1.5rem; height: 1.5rem; border-radius: 6px;
+    background: var(--azul); color: #fff; font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 0.85rem;
+  }
+  .peldano .cuerpo { font-size: 0.85rem; }
+  .peldano .cuerpo code { font-size: 0.82rem; }
+  table.cuentas td.izq { text-align: left; }
+  table.cuentas code { font-size: 0.8rem; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Lo que un flujo perezoso no calcula</h1>
+  <p class="intro">Un rango calcula sus elementos todos de una vez. Pedir
+  <code>((1000 to 10000).filter(esPrimo))(1)</code> prueba
+  <code>esPrimo</code> en los números del rango de punta a punta y arma la
+  secuencia entera de primos para entregar uno solo. Un <code>LazyList</code>
+  cambia el momento del cálculo: con <code>#::</code> la cabeza y la cola
+  quedan descritas, y cada una se calcula cuando algo la pide. Las siete
+  preguntas van del costo del rango a lo que aparece al imprimir un flujo que
+  nadie ha consultado, y cada resultado salió de correr el código con la
+  versión de Scala del curso.</p>
+
+  <div class="carta">
+    <h2>1. Filtrar un rango entero para quedarse con uno</h2>
+    <div class="codigo" id="codigo-rango"></div>
+    <div id="rango"></div>
+    <div class="progreso" id="marcador-rango"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. El flujo recién construido</h2>
+    <div class="codigo">
+      <div class="linea"><span class="num">1</span><span class="txt">1 #:: 2 #:: LazyList.empty</span></div>
+    </div>
+    <p class="nota">Dos elementos y el final, escritos a mano con
+    <code>#::</code>. La pregunta es qué contesta el intérprete.</p>
+    <div id="cabeza"></div>
+    <div class="progreso" id="marcador-cabeza"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. El mismo filtro sobre un flujo</h2>
+    <div class="codigo" id="codigo-flujo"></div>
+    <p class="nota"><code>streamRange</code> entrega su primer número y deja
+    la llamada recursiva a la derecha de <code>#::</code>, sin evaluar. El
+    filtro es el mismo <code>esPrimo</code> del rango.</p>
+    <div id="indices"></div>
+    <div class="progreso" id="marcador-indices"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>4. Qué se calcula y cuándo</h2>
+    <div class="peldano"><span class="etiqueta">1</span><span class="cuerpo"><code>#::</code>
+    describe la cabeza y la cola sin evaluar ninguna de las dos. Por eso
+    <code>1 #:: 2 #:: LazyList.empty</code> imprime
+    <code>LazyList(&lt;not computed&gt;)</code>: no hay un elemento
+    calculado del que informar.</span></div>
+    <div class="peldano"><span class="etiqueta">2</span><span class="cuerpo">Pedir
+    un elemento es lo que lo calcula. <code>.toList</code> pide todos, y
+    sobre ese flujo devuelve <code>List(1, 2)</code>.</span></div>
+    <div class="peldano"><span class="etiqueta">3</span><span class="cuerpo">Un
+    índice obliga a calcular los elementos anteriores, no al que se pide:
+    <code>primos(4)</code> devuelve <code>1031</code> tras encontrar los
+    cuatro primos que lo preceden, y del 1032 en adelante nada se
+    calcula.</span></div>
+    <div class="peldano"><span class="etiqueta">4</span><span class="cuerpo">El
+    filtro de un flujo pide elementos mientras le falten; el de un rango
+    recorre todo antes de devolver.</span></div>
+    <div class="envoltura-tabla" style="margin-top:0.8rem">
+      <table class="cuentas">
+        <tr><th>Expresión</th><th>Resultado</th></tr>
+        <tr>
+          <td class="izq"><code>1 #:: 2 #:: LazyList.empty</code></td>
+          <td class="izq"><code>LazyList(&lt;not computed&gt;)</code></td>
+        </tr>
+        <tr>
+          <td class="izq"><code>(1 #:: 2 #:: LazyList.empty).toList</code></td>
+          <td class="izq"><code>List(1, 2)</code></td>
+        </tr>
+        <tr>
+          <td class="izq"><code>primos(0)</code></td>
+          <td class="izq"><code>1009</code></td>
+        </tr>
+        <tr>
+          <td class="izq"><code>primos(1)</code></td>
+          <td class="izq"><code>1013</code></td>
+        </tr>
+        <tr>
+          <td class="izq"><code>primos(4)</code></td>
+          <td class="izq"><code>1031</code></td>
+        </tr>
+      </table>
+    </div>
+    <p>Las dos primeras filas son el mismo flujo antes y después de que algo
+    le pida sus elementos. La impresión de un flujo informa de lo que ya está
+    calculado, y recién construido eso es nada: ni la cabeza, que es la parte
+    que se suele dar por hecha.</p>
+    <p>Las tres últimas filas salen del mismo <code>val primos</code>. El
+    filtro no recorre el flujo al escribirse: queda encima de él, y cada
+    índice que se pide lo hace avanzar justo hasta encontrar el primo que
+    falta. Con <code>filter</code> sobre <code>1000 to 10000</code> el reparto
+    es otro: la secuencia de primos se arma completa y el índice la consulta
+    después.</p>
+    <p>Las dos formas devuelven <code>1013</code> en el índice 1, así que la
+    diferencia no está en el resultado sino en el trabajo. También difieren en
+    el extremo del rango: <code>streamRange</code> para cuando
+    <code>min &gt;= max</code> y produce hasta 9999, mientras
+    <code>1000 to 10000</code> incluye el 10000.</p>
+  </div>
+</div>
+<script src="perezoso.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

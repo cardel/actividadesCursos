@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Map: la asociación que además se aplica como una función</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .item {
+    border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem;
+  }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.95rem; font-weight: 700; color: var(--azul);
+    overflow-wrap: anywhere; white-space: pre-wrap;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.88rem; min-width: 4rem;
+  }
+  .opciones button.larga {
+    font-family: inherit; font-size: 0.86rem; text-align: left;
+    white-space: normal; flex: 1 1 17rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  .codigo { max-height: none; }
+  table.pred td.expr-celda {
+    text-align: left; font-family: ui-monospace, monospace; white-space: nowrap;
+  }
+  table.pred input[type="text"] {
+    width: 13rem; text-align: center; font-family: ui-monospace, monospace;
+    font-size: 0.9rem; padding: 0.25rem; border: 1px solid var(--borde); border-radius: 4px;
+  }
+  table.pred input.bien { border-color: var(--verde); background: var(--verde-suave); }
+  table.pred input.mal { border-color: var(--rojo); background: var(--rojo-suave); }
+  table.pred td.real {
+    font-family: ui-monospace, monospace; color: var(--verde);
+    font-weight: 700; min-width: 7rem; text-align: left;
+  }
+  table.pred td.pista {
+    text-align: left; font-size: 0.82rem; color: var(--rojo); min-width: 15rem;
+  }
+  p code, li code, td code { background: var(--codigo-fondo); padding: 0 0.2rem; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Map: la asociación que además se aplica como una función</h1>
+  <p class="intro">Un <code>Map</code> guarda parejas de llave y valor, y la
+  operación que lo hace útil es buscar por la llave. Esa búsqueda se escribe de
+  dos maneras y las dos aparecen aquí: aplicar el mapa a la llave, igual que se
+  aplica una función, o pedirle la llave con <code>get</code>. Lo que las
+  separa es lo que ocurre cuando la llave no está, y eso decide cuál de las dos
+  se escribe. Al final queda un mapa de cinco entradas que no se imprime como
+  los demás. Prediga primero lo que imprime cada línea y después decida entre
+  opciones; todo valor que la página da por correcto salió de correr el código
+  con Scala 2.13.11.</p>
+
+  <div class="carta">
+    <h2>1. El archivo</h2>
+    <div class="codigo" id="panel-codigo"></div>
+    <p class="nota">Dos países y sus capitales. Siete líneas imprimen y todas
+    parten del mismo mapa de dos entradas.</p>
+  </div>
+
+  <div class="carta">
+    <h2>2. Prediga las siete líneas</h2>
+    <p class="nota" style="margin-top:0">Los espacios, las mayúsculas y las
+    comillas de más no cambian la respuesta: <code>map(usa -> washington, colombia -> bogota)</code>
+    cuenta igual que <code>Map(USA -> Washington, COLOMBIA -> Bogota)</code>.
+    Lo que se compara es qué sale, no cómo se teclea.</p>
+    <div class="envoltura-tabla">
+      <table class="pred">
+        <thead><tr><th>línea</th><th>su respuesta</th><th>imprime</th><th></th></tr></thead>
+        <tbody id="cuerpo-predicciones"></tbody>
+      </table>
+    </div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-comprobar" class="primario">Comprobar las siete</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. La llave que no está</h2>
+    <p class="nota" style="margin-top:0">Falta una línea del archivo, la que no
+    imprime un valor: <code>println(capital("US"))</code>. Las tres preguntas
+    son por ella y por las dos formas de consultar que la rodean.</p>
+    <div id="ausente"></div>
+    <div class="progreso" id="marcador-ausente"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Un mapa de cinco entradas</h2>
+    <div class="codigo">
+      <div class="linea"><span class="num">1</span><span class="txt">println(Map("a" -&gt; 1, "b" -&gt; 2, "c" -&gt; 3, "d" -&gt; 4, "e" -&gt; 5))</span></div>
+    </div>
+    <p class="nota">Las cinco entradas están escritas en orden alfabético y
+    ninguna llave se repite. La línea se corrió tal cual.</p>
+    <div id="orden"></div>
+    <div class="progreso" id="marcador-orden"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>5. El mapa, en claro</h2>
+    <div class="envoltura-tabla">
+      <table>
+        <tr><th>La línea</th><th>Lo que imprimió</th></tr>
+        <tr><td><code>capital</code></td><td><code>Map(USA -&gt; Washington, COLOMBIA -&gt; Bogota)</code></td></tr>
+        <tr><td><code>capital("COLOMBIA")</code></td><td><code>Bogota</code></td></tr>
+        <tr><td><code>capital("US")</code></td><td><code>java.util.NoSuchElementException: key not found: US</code></td></tr>
+        <tr><td><code>capital.get("COLOMBIA")</code></td><td><code>Some(Bogota)</code></td></tr>
+        <tr><td><code>capital.get("US")</code></td><td><code>None</code></td></tr>
+        <tr><td><code>capital.withDefaultValue("Desconocida")("US")</code></td><td><code>Desconocida</code></td></tr>
+        <tr><td><code>capital + ("PERU" -&gt; "Lima")</code></td><td><code>Map(USA -&gt; Washington, COLOMBIA -&gt; Bogota, PERU -&gt; Lima)</code></td></tr>
+        <tr><td><code>capital.size</code></td><td><code>2</code></td></tr>
+      </table>
+    </div>
+    <p>Las tres primeras líneas son el mapa como función.
+    <code>capital("COLOMBIA")</code> se escribe igual que la aplicación de una
+    función a su argumento y entrega el valor sin envolver. Como función, el
+    mapa está definido solo donde tiene llaves: con <code>US</code> la
+    aplicación lanza
+    <code>java.util.NoSuchElementException: key not found: US</code> y la
+    ejecución se detiene ahí.</p>
+    <p>Las dos de <code>get</code> son la otra forma de consultar.
+    <code>Some(Bogota)</code> cuando la llave está y <code>None</code> cuando
+    no, de modo que la ausencia también es un valor: se puede guardar en un
+    <code>val</code>, comparar y pasar a otra función. Aplicar el mapa sirve
+    cuando se sabe que la llave está; <code>get</code> sirve cuando puede
+    faltar.</p>
+    <p><code>withDefaultValue("Desconocida")</code> devuelve otro mapa, con las
+    mismas entradas y un valor para cualquier llave ausente, y aplicarlo a
+    <code>US</code> da <code>Desconocida</code>. El original no cambió:
+    <code>capital + ("PERU" -&gt; "Lima")</code> imprime tres entradas y
+    <code>capital.size</code> sigue dando <code>2</code>. Agregar a un mapa
+    devuelve otro mapa, como agregar a una lista devuelve otra lista.</p>
+    <p>Y queda el mapa de cinco entradas.
+    <code>Map("a" -&gt; 1, "b" -&gt; 2, "c" -&gt; 3, "d" -&gt; 4, "e" -&gt; 5)</code>
+    imprime <code>HashMap(e -&gt; 5, a -&gt; 1, b -&gt; 2, c -&gt; 3, d -&gt; 4)</code>:
+    otro nombre y otro orden. Con dos entradas el mismo tipo salía como
+    <code>Map</code> y en el orden escrito, de modo que ninguna de las dos
+    cosas es parte de lo que un mapa promete. Lo que promete es que cada llave
+    lleva a su valor, y un código que dependa del orden en que salen las
+    entradas está apoyado en lo que vio imprimir una vez.</p>
+  </div>
+</div>
+<script src="mapas.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flujos sin final, y qué se calcula al consultarlos</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .item {
+    border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem;
+  }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.95rem; font-weight: 700; color: var(--azul);
+    overflow-wrap: anywhere; white-space: pre-wrap;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.88rem; min-width: 4rem;
+  }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 16rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  .codigo { max-height: none; }
+  .peldano {
+    display: flex; gap: 0.6rem; align-items: baseline;
+    padding: 0.35rem 0.5rem; border-radius: 8px; background: var(--codigo-fondo);
+    border: 1px solid var(--borde); margin-bottom: 0.35rem;
+  }
+  .peldano .etiqueta {
+    flex: none; width: 1.5rem; height: 1.5rem; border-radius: 6px;
+    background: var(--azul); color: #fff; font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 0.85rem;
+  }
+  .peldano .cuerpo { font-size: 0.85rem; }
+  .peldano .cuerpo code { font-size: 0.82rem; }
+  table.cuentas td.izq { text-align: left; }
+  table.cuentas code { font-size: 0.8rem; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Flujos sin final, y qué se calcula al consultarlos</h1>
+  <p class="intro">Una definición como
+  <code>def enterosDesde(n: Int): LazyList[Int] = n #:: enterosDesde(n + 1)</code>
+  no tiene caso base y describe un flujo que no se agota. Se puede escribir
+  porque <code>#::</code> deja la cola sin evaluar, y cada consulta calcula
+  exactamente el tramo que necesita y lo conserva. Las siete preguntas
+  recorren ese tramo sobre los enteros y sobre una sucesión definida en
+  términos de sí misma, incluido el mensaje con que el compilador rechaza esa
+  definición según dónde esté escrita. Cada salida y el mensaje salieron de
+  correr el código con la versión de Scala del curso.</p>
+
+  <div class="carta">
+    <h2>1. Los enteros desde 0</h2>
+    <div class="codigo" id="codigo-enteros"></div>
+    <div id="enteros"></div>
+    <div class="progreso" id="marcador-enteros"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Fibonacci en términos de sí misma</h2>
+    <div class="codigo" id="codigo-fibs"></div>
+    <p class="nota">Los dos primeros elementos están escritos y la cola suma
+    el flujo con su propia cola, de modo que cada elemento nuevo sale de los
+    dos anteriores.</p>
+    <div id="fibs"></div>
+    <div class="progreso" id="marcador-fibs"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>3. El tramo que queda calculado</h2>
+    <div class="peldano"><span class="etiqueta">1</span><span class="cuerpo">Una
+    definición sin caso base se escribe sin error porque la llamada recursiva
+    queda a la derecha de <code>#::</code>. Lo que imprime un flujo recién
+    construido es <code>LazyList(&lt;not computed&gt;)</code>.</span></div>
+    <div class="peldano"><span class="etiqueta">2</span><span class="cuerpo">Una
+    consulta calcula desde el principio hasta donde la pregunta obliga:
+    <code>enteros(5)</code> devuelve <code>5</code> y deja calculados los seis
+    primeros elementos.</span></div>
+    <div class="peldano"><span class="etiqueta">3</span><span class="cuerpo">Lo
+    calculado se conserva. El mismo val, impreso después, muestra
+    <code>LazyList(0, 1, 2, 3, 4, 5, &lt;not computed&gt;)</code>.</span></div>
+    <div class="peldano"><span class="etiqueta">4</span><span class="cuerpo">Un
+    flujo puede nombrarse en su propia definición cuando los primeros
+    elementos están dados y cada nuevo elemento solo necesita elementos ya
+    calculados.</span></div>
+    <div class="envoltura-tabla" style="margin-top:0.8rem">
+      <table class="cuentas">
+        <tr><th>Expresión</th><th>Resultado</th></tr>
+        <tr>
+          <td class="izq"><code>enteros</code>, recién construido</td>
+          <td class="izq"><code>LazyList(&lt;not computed&gt;)</code></td>
+        </tr>
+        <tr>
+          <td class="izq"><code>enteros(5)</code></td>
+          <td class="izq"><code>5</code></td>
+        </tr>
+        <tr>
+          <td class="izq"><code>enteros</code>, después de la consulta</td>
+          <td class="izq"><code>LazyList(0, 1, 2, 3, 4, 5, &lt;not computed&gt;)</code></td>
+        </tr>
+        <tr>
+          <td class="izq"><code>fibs.take(10).toList</code></td>
+          <td class="izq"><code>List(0, 1, 1, 2, 3, 5, 8, 13, 21, 34)</code></td>
+        </tr>
+      </table>
+    </div>
+    <p>Las dos impresiones de <code>enteros</code> son el mismo valor antes y
+    después de una consulta. La primera dice que no hay nada calculado; la
+    segunda enumera el tramo que la consulta obligó a producir y vuelve a
+    marcar lo que sigue como pendiente. La consulta no agota el flujo ni lo
+    convierte en una lista: le añade elementos calculados.</p>
+    <p><code>fibs</code> funciona porque su cola solo mira hacia atrás.
+    <code>fibs.zip(fibs.tail)</code> empareja cada elemento con el siguiente,
+    y la suma de ese par es el elemento que viene después; los dos primeros,
+    <code>BigInt(0)</code> y <code>BigInt(1)</code>, están escritos con
+    <code>#::</code> y no dependen de nada.</p>
+    <p>Donde se escribe esa definición decide si compila. Dentro de un método
+    el compilador rechaza el nombre usado en su propia definición:
+    <code>forward reference to value fibs defined on line N extends over
+    definition of value fibs</code>. Como miembro de un objeto o de una clase
+    la misma definición compila, y
+    <code>fibs.take(10).toList</code> devuelve
+    <code>List(0, 1, 1, 2, 3, 5, 8, 13, 21, 34)</code>. El mensaje habla del
+    sitio, no de la forma: quien copie la definición dentro de
+    <code>main</code> la verá rechazada sin que nada en la definición esté
+    mal.</p>
+  </div>
+</div>
+<script src="infinitos.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
