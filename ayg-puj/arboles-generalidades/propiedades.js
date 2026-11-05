@@ -2,7 +2,7 @@
    piezas. La decision sale de tres hechos: un arbol tiene n - 1
    aristas, un grafo conexo tiene al menos n - 1 y un grafo aciclico
    tiene a lo sumo n - 1. */
-var ARB = (typeof module !== "undefined") ? require("./lib.js") : ARB;
+var ARB = (typeof module !== "undefined") ? require("../comun/arbol.js") : ARB;
 var GRAFOSVG = (typeof module !== "undefined") ? require("../comun/grafo-svg.js") : GRAFOSVG;
 
 var EJERCICIO = (function () {

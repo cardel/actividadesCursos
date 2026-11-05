@@ -1,8 +1,8 @@
 /* Ejercicio interactivo: la excentricidad de cada vertice con una
    amplitud, y de ahi el radio, el diametro y el centro. La traza
    reproduce excentricidad.py, lineas 22 a 33, y las cifras salen de las
-   lineas 35 a 46. El nucleo vive en lib.js. */
-var ARB = (typeof module !== "undefined") ? require("./lib.js") : ARB;
+   lineas 35 a 46. El nucleo vive en comun/arbol.js. */
+var ARB = (typeof module !== "undefined") ? require("../comun/arbol.js") : ARB;
 var GRAFOSVG = (typeof module !== "undefined") ? require("../comun/grafo-svg.js") : GRAFOSVG;
 
 var EJERCICIO = (function () {

@@ -5,8 +5,8 @@
    arreglos recibidos en un objeto en vez de leidos del modulo:
    A.padre[x], A.hijoIzq[x] y A.hermanoDer[x]. Los numeros de linea de
    la traza son los de ese archivo. El dibujo y la adyacencia vienen de
-   lib.js. */
-var ARB = (typeof module !== "undefined") ? require("./lib.js") : ARB;
+   comun/arbol.js. */
+var ARB = (typeof module !== "undefined") ? require("../comun/arbol.js") : ARB;
 var GRAFOSVG = (typeof module !== "undefined") ? require("../comun/grafo-svg.js") : GRAFOSVG;
 
 var EJERCICIO = (function () {

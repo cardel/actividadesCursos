@@ -2,7 +2,7 @@
    sus ocho raices. La altura del arbol colgado de v es la mayor
    distancia desde v, de modo que las distancias del grafo deciden lo
    que se ve en cada dibujo. */
-var ARB = (typeof module !== "undefined") ? require("./lib.js") : ARB;
+var ARB = (typeof module !== "undefined") ? require("../comun/arbol.js") : ARB;
 var GRAFOSVG = (typeof module !== "undefined") ? require("../comun/grafo-svg.js") : GRAFOSVG;
 
 var EJERCICIO = (function () {

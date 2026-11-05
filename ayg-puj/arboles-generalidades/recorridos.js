@@ -1,7 +1,7 @@
 /* Ejercicio interactivo: los cuatro recorridos de un arbol binario y la
    reconstruccion del arbol a partir de dos de ellos. Los recorridos
    salen de recorridos.py, lineas 19 a 48. */
-var ARB = (typeof module !== "undefined") ? require("./lib.js") : ARB;
+var ARB = (typeof module !== "undefined") ? require("../comun/arbol.js") : ARB;
 var GRAFOSVG = (typeof module !== "undefined") ? require("../comun/grafo-svg.js") : GRAFOSVG;
 
 var EJERCICIO = (function () {

@@ -228,6 +228,35 @@ var ARB = (function () {
     return { ecc: ecc, radio: radio, diametro: diametro, centro: centro };
   }
 
+  /* centro.py: se pelan capas de hojas bajando el grado, sin borrar nada.
+     Devuelve las capas en orden, el centro y lo que de ahi sale. */
+  function pelarCapas(G) {
+    var n = G.length, grado = G.map(function (l) { return l.length; });
+    var capa = [], v = 0, vivos = n, vueltas = 0, capas = [], centro, radio, diametro;
+    while (v < n) { if (grado[v] <= 1) { capa.push(v); } v = v + 1; }
+    capas.push(capa.slice());
+    while (vivos > 2) {
+      var siguiente = [];
+      capa.forEach(function (u) {
+        G[u].forEach(function (w) {
+          if (grado[w] > 0) {
+            grado[w] = grado[w] - 1;
+            if (grado[w] === 1) { siguiente.push(w); }
+          }
+        });
+        grado[u] = 0;
+      });
+      vivos = vivos - capa.length;
+      capa = siguiente.slice().sort(function (a, b) { return a - b; });
+      vueltas = vueltas + 1;
+      capas.push(capa.slice());
+    }
+    centro = capa.slice().sort(function (a, b) { return a - b; });
+    radio = (centro.length === 1) ? vueltas : vueltas + 1;
+    diametro = (centro.length === 1) ? 2 * vueltas : 2 * vueltas + 1;
+    return { capas: capas, centro: centro, vueltas: vueltas, radio: radio, diametro: diametro };
+  }
+
   function componentes(G) {
     var comp = G.map(function () { return -1; }), c = 0, v = 0;
     while (v < G.length) {
@@ -393,7 +422,8 @@ var ARB = (function () {
     CODIGO_CONTAR: CODIGO_CONTAR, CODIGO_ALTURA: CODIGO_ALTURA,
     adyacencia: adyacencia, grados: grados,
     amplitud: amplitud, excentricidad: excentricidad,
-    radioDiametroCentro: radioDiametroCentro, componentes: componentes,
+    radioDiametroCentro: radioDiametroCentro, pelarCapas: pelarCapas,
+    componentes: componentes,
     simAmplitud: simAmplitud, CODIGO_AMPLITUD: CODIGO_AMPLITUD,
     layoutBinario: layoutBinario, layoutColgado: layoutColgado,
     leerSecuencia: leerSecuencia, divergeEn: divergeEn, txt: txt

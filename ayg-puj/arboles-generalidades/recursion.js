@@ -3,8 +3,8 @@
    la linea del def marca la entrada del llamado, la del caso base el
    arbol vacio, la del caso recursivo el momento en que ans recibe su
    valor con los dos subarboles ya resueltos, y la del return la
-   salida. El nucleo vive en lib.js. */
-var ARB = (typeof module !== "undefined") ? require("./lib.js") : ARB;
+   salida. El nucleo vive en comun/arbol.js. */
+var ARB = (typeof module !== "undefined") ? require("../comun/arbol.js") : ARB;
 var GRAFOSVG = (typeof module !== "undefined") ? require("../comun/grafo-svg.js") : GRAFOSVG;
 
 var EJERCICIO = (function () {
