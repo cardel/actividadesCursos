@@ -184,17 +184,17 @@ if (typeof document !== "undefined") {
     Motor.prediccionNumerica(function (valor) {
       var m = E.medidas(E.CASOS[p.c]);
       if (valor === m.vueltas) {
-        return { ok: true, txt: "Son " + m.vueltas + ". Quedan " + m.centro.length +
+        return { ok: true, msg: "Son " + m.vueltas + ". Quedan " + m.centro.length +
           (m.centro.length === 1 ? " centro, así que el radio también es " : " centros, así que el radio es uno más: ") + m.radio + "." };
       }
       if (valor === m.radio) {
-        return { ok: false, txt: "Ese es el radio. Las vueltas son " + m.vueltas +
+        return { ok: false, msg: "Ese es el radio. Las vueltas son " + m.vueltas +
           ", que es el piso de " + m.diametro + " sobre dos." };
       }
       if (valor === m.capas.length) {
-        return { ok: false, txt: "Esa es la cantidad de capas que se listan, contando la que queda al final. Vueltas del ciclo hay " + m.vueltas + "." };
+        return { ok: false, msg: "Esa es la cantidad de capas que se listan, contando la que queda al final. Vueltas del ciclo hay " + m.vueltas + "." };
       }
-      return { ok: false, txt: "Son " + m.vueltas + ". Cada vuelta quita una capa entera y el ciclo para apenas quedan dos vértices o menos." };
+      return { ok: false, msg: "Son " + m.vueltas + ". Cada vuelta quita una capa entera y el ciclo para apenas quedan dos vértices o menos." };
     });
 
     el("presets").innerHTML = E.CASOS.map(function (c, i) {
