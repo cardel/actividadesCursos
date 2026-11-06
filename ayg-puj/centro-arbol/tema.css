@@ -127,3 +127,16 @@ table.rellenar input.falla { border-color: var(--rojo); background: var(--rojo-s
   padding: 0.2rem 0.45rem;
   display: inline-block;
 }
+
+.tabla tr.optima td {
+  background: #e7f2e8;
+  font-weight: 600;
+}
+.lectura {
+  background: #f6f8fa;
+  border: 1px solid #ccd2da;
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  overflow-x: auto;
+  font-size: 0.92rem;
+}

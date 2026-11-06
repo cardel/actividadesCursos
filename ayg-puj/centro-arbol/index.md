@@ -1,10 +1,11 @@
 # Ejercicios · AyG PUJ · El centro de un árbol
 
-Cinco ejercicios para el navegador sobre el centro, el radio y el diámetro de un árbol calculados
+Seis ejercicios para el navegador sobre el centro, el radio y el diámetro de un árbol calculados
 sin mirar una sola excentricidad. Van en el orden del tema: primero el descarte local que hace
 innecesaria la cuenta global, después el teorema que permite repetirlo, después el algoritmo línea
 por línea, después la traducción de vueltas a radio y a diámetro, y de último los cambios que lo
-rompen. Los cinco cuentan. Ninguno usa los árboles ni los juegos de valores de las diapositivas.
+rompen. Los seis cuentan. Ninguno usa los árboles ni los juegos de valores de las diapositivas, salvo el
+último, que es el problema de juez de la sesión y para eso está.
 
 ## Una hoja nunca es el centro
 
@@ -55,3 +56,22 @@ Cuatro versiones cambiadas del algoritmo, una por pregunta: la condición de par
 los vértices nuevos agregados a la capa que se está recorriendo, el mismo código sobre un grafo
 con un ciclo y las vueltas leídas como el radio. Cada pregunta trae el árbol más pequeño donde el
 cambio se nota, y cada opción su propia explicación.
+
+## El problema de cierre
+
+### [Cambiar un vuelo para acortar el peor trayecto](vuelos.html){ target=_blank rel=noopener }
+
+**UVa 11695, Flight Planning**, el problema con el que cierra la sesión. Hay $n$ ciudades y $n-1$
+vuelos, se quita uno y se pone otro, y se busca que el mayor número de trasbordos quede lo más
+pequeño posible.
+
+Se prueba corte por corte sobre tres redes, una de ellas la del enunciado. Cada corte parte el árbol
+en dos y la actividad muestra el diámetro de cada pedazo, cuál es su centro y qué diámetro queda al
+unirlos por ahí, con la cuenta
+$\max(d_1, d_2, \lceil d_1/2 \rceil + \lceil d_2/2 \rceil + 1)$ escrita con los números del caso.
+Se predice el mejor resultado alcanzable y, al acertar, aparece la tabla con las $n-1$ aristas y las
+que lo logran marcadas: siempre caen cerca de la mitad del camino más largo.
+
+La última tarjeta trae la lectura de la entrada con `scanf` y el enlace de envío.
+
+- Enunciado y envío: <https://vjudge.net/problem/UVA-11695>

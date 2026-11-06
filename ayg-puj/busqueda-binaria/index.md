@@ -58,8 +58,26 @@ las decisiones de las tarjetas anteriores, y llenarlos es el ejercicio. La
 última tarjeta cierra con lo que hay que revisar antes de enviar y con qué
 significa cada veredicto que no sea *Accepted*.
 
-- Enunciado: <https://onlinejudge.org/external/103/10341.pdf>
-- Enviar: <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=1282>
+- Enunciado y envío: <https://vjudge.net/problem/UVA-10341>
+
+## [la escalera y el factor de fuerza](escalera.html){ target=_blank rel=noopener }
+
+**UVa 12032, The Monkey and the Oiled Bamboo**, el problema donde la función de
+decisión hay que inventarla. Se sube peldaño por peldaño con un factor de fuerza
+que se gasta solo cuando un salto lo iguala, y se busca el menor factor con el
+que se llega arriba.
+
+Primero se predice la respuesta mirando la escalera, que es donde se ve que el
+salto más grande no basta. Después corre el código de la sesión completo, las
+dos funciones: `alcanza`, que simula la subida y es la función de decisión, y
+`minimaFuerza`, que la bisecta. Los chips llevan el intervalo y la fuerza
+actual, de modo que se ve en qué salto se queda corto cada candidato que falla.
+
+Cuatro escaleras, entre ellas las dos del enunciado, una de escalones iguales
+donde la respuesta no es el salto más grande y una con un salto enorme donde sí
+lo es.
+
+- Enunciado y envío: <https://vjudge.net/problem/UVA-12032>
 
 ## De los temas anteriores
 

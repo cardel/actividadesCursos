@@ -76,3 +76,17 @@ pila crece al bajar y, al subir, cada marco muestra lo que devuelve.
 
 La expansión de $T(m) = T(m/2) + c$ aparece nivel por nivel, y la lista
 completa de $2^n$ códigos solo al final, para comprobar la respuesta.
+
+## [contar parejas fuera de orden](inversiones.html){ target=_blank rel=noopener }
+
+**UVa 10810, Ultra-QuickSort**, dividir y vencerás con una combinación que no es
+solo pegar las dos mitades. Contar las parejas una por una cuesta $\Theta(n^2)$;
+partiendo por la mitad, las de cada lado son el mismo problema más chico y las
+que cruzan se cuentan mientras se mezcla.
+
+Se predice el número de parejas sobre un arreglo chico y después corre el código
+de la sesión, `mezclar` y `contar`, con las posiciones `i` y `j` marcadas en el
+arreglo y el aporte de cada elemento que sale de la derecha. Cuatro arreglos:
+el del enunciado, uno ya ordenado, uno al revés del todo y uno de ocho valores.
+
+- Enunciado y envío: <https://vjudge.net/problem/UVA-10810>

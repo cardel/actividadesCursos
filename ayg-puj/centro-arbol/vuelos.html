@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cambiar un vuelo para acortar el peor trayecto</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Cambiar un vuelo para acortar el peor trayecto</h1>
+  <p class="intro">El problema de cierre de la sesión, UVa 11695. Hay <i>n</i> ciudades y
+  <i>n−1</i> vuelos, de modo que entre dos cualesquiera hay una sola ruta. Se quita un vuelo y se
+  pone otro, buscando que el mayor número de trasbordos quede lo más pequeño posible. Aquí se prueba
+  cada corte y se ve por qué conviene volver a unir por los centros.</p>
+
+  <div class="carta">
+    <h2>1. La red de vuelos</h2>
+    <div class="presets" id="presets"></div>
+    <div class="dibujo" id="panel"></div>
+    <p>Diámetro actual: <b id="ver-diametro"></b> trasbordos.</p>
+  </div>
+
+  <div class="carta">
+    <h2>2. Quite un vuelo</h2>
+    <p>Al quitarlo quedan dos pedazos. Cada uno tiene su diámetro y su centro, y la mejor forma de
+    volver a unirlos es con un vuelo entre los dos centros.</p>
+    <div class="presets" id="aristas"></div>
+    <div class="leyenda" id="ver-corte"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. El mejor cambio posible</h2>
+    <div class="fila-par">
+      <span class="rotulo">Menor diámetro que se puede dejar</span>
+      <input type="number" id="in-mejor" class="corto" placeholder="0">
+      <button id="btn-mejor" class="primario">Comprobar</button>
+    </div>
+    <div id="fb-mejor" class="fb"></div>
+    <div id="tabla"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Cómo leer la entrada</h2>
+    <p>La primera línea trae el número de casos. Cada caso trae <i>n</i> y después <i>n−1</i> líneas
+    con un par de ciudades. Con <code>scanf</code> alcanzan dos ciclos:</p>
+<pre class="lectura"><code>int casos;
+scanf("%d", &amp;casos);
+for (int caso = 0; caso &lt; casos; caso++) {
+  int n;
+  scanf("%d", &amp;n);
+  vector&lt;int&gt; a(n - 1), b(n - 1);
+  for (int i = 0; i &lt; n - 1; i++) {
+    scanf("%d %d", &amp;a[i], &amp;b[i]);
+  }
+  /* aquí se prueban las n-1 aristas */
+}</code></pre>
+    <p>Las ciudades vienen numeradas desde 1, así que o se les resta uno al leerlas o se reservan
+    <i>n+1</i> casillas. La salida son tres líneas por caso: el diámetro nuevo, el vuelo que se
+    quita y el que se pone.</p>
+  </div>
+
+  <div class="carta">
+    <h2>5. Para llevarse</h2>
+    <p style="margin-top:0">Sin solución aquí. Pruebe las tres redes y mire dónde caen las aristas
+    que dan el mejor resultado: siempre están cerca de la mitad del camino más largo. Explique por
+    qué unir dos pedazos por sus centros no se puede mejorar, y después calcule cuánto cuesta el
+    algoritmo completo si por cada una de las <i>n−1</i> aristas se resuelven las dos mitades en
+    tiempo lineal.</p>
+    <p>Enunciado y envío: <a href="https://vjudge.net/problem/UVA-11695" target="_blank" rel="noopener">vjudge.net/problem/UVA-11695</a></p>
+  </div>
+</div>
+<script src="../comun/arbol.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="vuelos.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
