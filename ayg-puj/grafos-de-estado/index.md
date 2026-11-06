@@ -66,8 +66,8 @@ cuántos de los estados que caben llegó a sacar de la cola la búsqueda.
 ## Problema de juez
 
 UVa 321, The New Villa:
-<https://onlinejudge.org/external/3/321.pdf>, envío en
-<https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=257>.
+<https://vjudge.net/problem/UVA-321>, envío en
+<https://vjudge.net/problem/UVA-321>.
 
 Los estados son $(h, L)$ y la máscara de luces es el vector de bits que se actualiza con `^`. El
 parámetro de la búsqueda es el número de pasos, la propiedad que la hace correcta es que todas las

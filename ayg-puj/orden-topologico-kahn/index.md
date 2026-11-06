@@ -150,14 +150,14 @@ propusieron en clase.
 ## Para programar
 
 - **UVa 10305 — Ordering Tasks.** Enunciado en
-  <https://onlinejudge.org/external/103/10305.pdf>, envío en
-  <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=1246>.
+  <https://vjudge.net/problem/UVA-10305>, envío en
+  <https://vjudge.net/problem/UVA-10305>.
   El problema de la clase, tal cual: para enviar la solución y ver el
   veredicto.
 
 - **UVa 11686 — Pick up sticks.** Enunciado en
-  <https://onlinejudge.org/external/116/11686.pdf>, envío en
-  <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=2733>.
+  <https://vjudge.net/problem/UVA-11686>, envío en
+  <https://vjudge.net/problem/UVA-11686>.
   $n$ palitos y $m$ parejas *$a$ está encima de $b$*, con $n$ y $m$ hasta un
   millón; un orden para recogerlos sin levantar uno que tenga otro encima, o
   `IMPOSSIBLE`. Es la segunda variante de la clase, con `len(orden) < n`
@@ -165,8 +165,8 @@ propusieron en clase.
   `sys.stdin.read()`.
 
 - **UVa 11060 — Beverages.** Enunciado en
-  <https://onlinejudge.org/external/110/11060.pdf>, envío en
-  <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=2001>.
+  <https://vjudge.net/problem/UVA-11060>, envío en
+  <https://vjudge.net/problem/UVA-11060>.
   $N$ bebidas con nombre y $M$ parejas *$B_1$ antes que $B_2$*; cuando dos no
   están relacionadas va primero la que apareció primero en la entrada. Es el
   ejercicio 3 con los nombres numerados por orden de aparición. La salida

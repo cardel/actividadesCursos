@@ -31,7 +31,7 @@ var EJERCICIO = (function () {
     {
       id: "11078",
       titulo: "Open Credit System",
-      url: "https://onlinejudge.org/external/110/11078.pdf",
+      url: "https://vjudge.net/problem/UVA-11078",
       archivo: "open-credit-system.py",
       codigo: [
         "# UVa 11078 - Open Credit System",
@@ -138,7 +138,7 @@ var EJERCICIO = (function () {
     {
       id: "507",
       titulo: "Jill Rides Again",
-      url: "https://onlinejudge.org/external/5/507.pdf",
+      url: "https://vjudge.net/problem/UVA-507",
       archivo: "jill-rides-again.py",
       codigo: [
         "# UVa 507 - Jill Rides Again",
@@ -256,7 +256,7 @@ var EJERCICIO = (function () {
     {
       id: "108",
       titulo: "Maximum Sum",
-      url: "https://onlinejudge.org/external/1/108.pdf",
+      url: "https://vjudge.net/problem/UVA-108",
       archivo: "maximum-sum.py",
       codigo: [
         "# UVa 108 - Maximum Sum",
@@ -402,7 +402,7 @@ var EJERCICIO = (function () {
     {
       id: "100",
       titulo: "The 3n + 1 problem",
-      url: "https://onlinejudge.org/external/1/100.pdf",
+      url: "https://vjudge.net/problem/UVA-100",
       archivo: "3n-plus-1.py",
       codigo: [
         "import sys",
@@ -533,7 +533,7 @@ var EJERCICIO = (function () {
     {
       id: "10189",
       titulo: "Minesweeper",
-      url: "https://onlinejudge.org/external/101/10189.pdf",
+      url: "https://vjudge.net/problem/UVA-10189",
       archivo: "minesweeper.py",
       codigo: [
         "import sys",
@@ -692,7 +692,7 @@ var EJERCICIO = (function () {
     {
       id: "10920",
       titulo: "Spiral Tap",
-      url: "https://onlinejudge.org/external/109/10920.pdf",
+      url: "https://vjudge.net/problem/UVA-10920",
       archivo: "spiral-tap.py",
       codigo: [
         "import sys",
@@ -811,7 +811,7 @@ var EJERCICIO = (function () {
     {
       id: "839",
       titulo: "Not so Mobile",
-      url: "https://onlinejudge.org/external/8/839.pdf",
+      url: "https://vjudge.net/problem/UVA-839",
       archivo: "not-so-mobile.py",
       codigo: [
         "# UVa 839 - Not so Mobile",
@@ -933,7 +933,7 @@ var EJERCICIO = (function () {
     {
       id: "620",
       titulo: "Cellular Structure",
-      url: "https://onlinejudge.org/external/6/620.pdf",
+      url: "https://vjudge.net/problem/UVA-620",
       archivo: "cellular-structure.py",
       codigo: [
         "import sys",

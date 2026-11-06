@@ -113,21 +113,21 @@ diapositivas.
 Los cuatro de las diapositivas, con el enunciado y el enlace de envío:
 
 - UVa 796 — Critical Links:
-  <https://onlinejudge.org/external/7/796.pdf>, envío en
-  <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=737>.
+  <https://vjudge.net/problem/UVA-796>, envío en
+  <https://vjudge.net/problem/UVA-796>.
   Los puentes de una red, ordenados y con el extremo menor primero.
 - UVa 315 — Network:
-  <https://onlinejudge.org/external/3/315.pdf>, envío en
-  <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=251>.
+  <https://vjudge.net/problem/UVA-315>, envío en
+  <https://vjudge.net/problem/UVA-315>.
   Cuántos puntos de articulación hay; la lectura trae los vecinos de cada
   vértice en una línea de largo variable.
 - UVa 247 — Calling Circles:
-  <https://onlinejudge.org/external/2/247.pdf>, envío en
-  <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=183>.
+  <https://vjudge.net/problem/UVA-247>, envío en
+  <https://vjudge.net/problem/UVA-247>.
   Los círculos de llamadas son los componentes fuertemente conexos.
 - UVa 11838 — Come and Go:
-  <https://onlinejudge.org/external/118/11838.pdf>, envío en
-  <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=2938>.
+  <https://vjudge.net/problem/UVA-11838>, envío en
+  <https://vjudge.net/problem/UVA-11838>.
   La ciudad es fuertemente conexa si Tarjan saca un solo componente.
 
 ## De los temas anteriores

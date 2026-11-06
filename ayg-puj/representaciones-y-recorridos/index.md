@@ -155,8 +155,8 @@ Estos ejercicios entran en el material del parcial.
    mismo orden de visita desde el mismo arranque.
 
 10. **UVa 11902 — Dominator.** Enunciado en
-   <https://onlinejudge.org/external/119/11902.pdf> y envío en
-   <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=3053>.
+   <https://vjudge.net/problem/UVA-11902> y envío en
+   <https://vjudge.net/problem/UVA-11902>.
    La entrada llega como matriz de adyacencia de un grafo dirigido. Se recorre
    desde el $0$ una vez para saber a quién se alcanza, y después una vez por
    cada vértice $v$, borrándolo y volviendo a recorrer: los que dejaron de

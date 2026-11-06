@@ -130,18 +130,18 @@ Estos ejercicios entran en el material del parcial.
   celda; con $k \geq 2$ el vértice es la celda más la racha.
 
 - **UVa 439 — Knight Moves.** Enunciado en
-  <https://onlinejudge.org/external/4/439.pdf>, envío en
-  <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=380>.
+  <https://vjudge.net/problem/UVA-439>, envío en
+  <https://vjudge.net/problem/UVA-439>.
   Las 64 casillas y los ocho saltos del caballo: `dr`, `dc` con ocho entradas.
 
 - **UVa 469 — Wetlands of Florida.** Enunciado en
-  <https://onlinejudge.org/external/4/469.pdf>, envío en
-  <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=410>.
+  <https://vjudge.net/problem/UVA-469>, envío en
+  <https://vjudge.net/problem/UVA-469>.
   El tamaño del lago que contiene a una celda es el tamaño de su componente.
 
 - **UVa 10653 — Bombs! NO they are Mines!!** Enunciado en
-  <https://onlinejudge.org/external/106/10653.pdf>, envío en
-  <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=1594>.
+  <https://vjudge.net/problem/UVA-10653>, envío en
+  <https://vjudge.net/problem/UVA-10653>.
   El laberinto de Jaimico con las minas descritas por filas; con
   $1000 \times 1000$ celdas la amplitud cabe y la profundidad recursiva no.
 

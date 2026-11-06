@@ -87,14 +87,14 @@ diapositivas.
 Los tres de las diapositivas, con el enunciado y el enlace de envío:
 
 - UVa 558, Wormholes:
-  <https://onlinejudge.org/external/5/558.pdf>, envío en
-  <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=499>.
+  <https://vjudge.net/problem/UVA-558>, envío en
+  <https://vjudge.net/problem/UVA-558>.
 - UVa 11280, Flying to Fredericton:
-  <https://onlinejudge.org/external/112/11280.pdf>, envío en
-  <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=2255>.
+  <https://vjudge.net/problem/UVA-11280>, envío en
+  <https://vjudge.net/problem/UVA-11280>.
 - UVa 321, The New Villa:
-  <https://onlinejudge.org/external/3/321.pdf>, envío en
-  <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=257>.
+  <https://vjudge.net/problem/UVA-321>, envío en
+  <https://vjudge.net/problem/UVA-321>.
 
 ## De los temas anteriores
 

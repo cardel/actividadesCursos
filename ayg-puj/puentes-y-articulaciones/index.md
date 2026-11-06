@@ -186,20 +186,20 @@ Sean $K$ y $L$ los grafos no dirigidos siguientes:
 Los tres de las diapositivas, con el enunciado y el enlace de envío:
 
 - UVa 610 — Street Directions:
-  <https://onlinejudge.org/external/6/610.pdf>, envío en
-  <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=551>.
+  <https://vjudge.net/problem/UVA-610>, envío en
+  <https://vjudge.net/problem/UVA-610>.
   El parámetro es la calle y la propiedad está en que un puente no puede ser de
   una vía. La trampa es el formato: línea en blanco tras el número de caso y
   una línea con `#` al cerrar.
 - UVa 10765 — Doves and Bombs:
-  <https://onlinejudge.org/external/107/10765.pdf>, envío en
-  <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=1706>.
+  <https://vjudge.net/problem/UVA-10765>, envío en
+  <https://vjudge.net/problem/UVA-10765>.
   El parámetro es la estación y la propiedad es el conteo de hijos con
   $w.low \geq v.d$. La trampa es doble: el `-1 -1` que cierra las vías y los
   diez mil vértices, que obligan a la pila explícita.
 - UVa 796 — Critical Links:
-  <https://onlinejudge.org/external/7/796.pdf>, envío en
-  <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=737>.
+  <https://vjudge.net/problem/UVA-796>, envío en
+  <https://vjudge.net/problem/UVA-796>.
   Pide la lista de puentes ordenada, con el extremo menor primero. Sirve para
   probar la primera de las tres pasadas por separado antes de armar el árbol.
 

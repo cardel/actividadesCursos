@@ -42,8 +42,8 @@ Diez escenarios descritos en palabras. Se escoge entre BFS, caminos en un DAG, D
 ## Problema de juez
 
 UVa 10269, Adventure of Super Mario:
-<https://onlinejudge.org/external/102/10269.pdf>, envío en
-<https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=1210>.
+<https://vjudge.net/problem/UVA-10269>, envío en
+<https://vjudge.net/problem/UVA-10269>.
 
 El estado es el lugar, la carga que queda en la bota y los usos que faltan, y el parámetro de la búsqueda es el
 tiempo. La propiedad que hace funcionar a Dijkstra es que las carreras con la bota no cuestan tiempo, así que

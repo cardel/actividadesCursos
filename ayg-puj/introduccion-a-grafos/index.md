@@ -39,9 +39,7 @@ $\{2,5\}$.
 
 ## UVa 10928 — My Dear Neighbours
 
-Enunciado: <https://onlinejudge.org/external/109/10928.pdf>
-
-Envío: <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=1869>
+Enunciado y envío: <https://vjudge.net/problem/UVA-10928>
 
 Cada línea de la entrada trae los vecinos de un lugar, y no dice cuántos
 son: hay que partir la línea y contar cuántos quedaron. El enunciado avisa
@@ -52,9 +50,7 @@ Los casos van separados por una línea en blanco.
 
 ## UVa 11550 — Demanding Dilemma
 
-Enunciado: <https://onlinejudge.org/external/115/11550.pdf>
-
-Envío: <https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=2545>
+Enunciado y envío: <https://vjudge.net/problem/UVA-11550>
 
 Dan una matriz de $n \times m$ y preguntan si puede ser la matriz de
 incidencia de un grafo simple no dirigido. Las dos condiciones salen de la

@@ -67,15 +67,15 @@ finito equivocado en vez de un $\infty$, que es lo difícil de notar.
 
 ## Problemas de juez
 
-UVa 11463, Commandos: <https://onlinejudge.org/external/114/11463.pdf>, envío en
-<https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=2458>.
+UVa 11463, Commandos: <https://vjudge.net/problem/UVA-11463>, envío en
+<https://vjudge.net/problem/UVA-11463>.
 
 Con $n \leq 100$ la matriz completa sale gratis. Las vías no tienen peso, así que la matriz
 arranca con unos, y la respuesta es el mayor de $d(s,x) + d(x,t)$ sobre todos los edificios
 $x$. La trampa del enunciado es el caso de un solo edificio, donde la respuesta es $0$.
 
-UVa 821, Page Hopping: <https://onlinejudge.org/external/8/821.pdf>, envío en
-<https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=762>.
+UVa 821, Page Hopping: <https://vjudge.net/problem/UVA-821>, envío en
+<https://vjudge.net/problem/UVA-821>.
 
 Se pide el promedio de las distancias entre todas las parejas de una red fuertemente conexa.
 Los nodos vienen numerados sin orden y hay que mapearlos a $0 \ldots n-1$ antes de armar la

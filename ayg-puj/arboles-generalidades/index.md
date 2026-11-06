@@ -105,8 +105,8 @@ hay vértices que la amplitud no alcanza, y por qué el $-1$ del arreglo nunca s
 
 ## Problemas de juez
 
-UVa 615, Is It A Tree?: <https://onlinejudge.org/external/6/615.pdf>, envío en
-<https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=556>.
+UVa 615, Is It A Tree?: <https://vjudge.net/problem/UVA-615>, envío en
+<https://vjudge.net/problem/UVA-615>.
 
 Las aristas llegan dirigidas y los números de los nodos son arbitrarios, así que lo primero es
 mapearlos a $0 \ldots n-1$ con un diccionario. Un árbol con raíz, en esa forma, es un grafo donde
@@ -115,8 +115,8 @@ llega a todos. La trampa está en los extremos del enunciado: un caso vacío, el
 `0 0`, es un árbol, y dos árboles sueltos cumplen la cuenta de grados de entrada sin ser un árbol,
 de modo que la conexidad hay que comprobarla aparte.
 
-UVa 536, Tree Recovery: <https://onlinejudge.org/external/5/536.pdf>, envío en
-<https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=477>.
+UVa 536, Tree Recovery: <https://vjudge.net/problem/UVA-536>, envío en
+<https://vjudge.net/problem/UVA-536>.
 
 Es la reconstrucción de la segunda parte del ejercicio de los recorridos, con letras en vez de
 números y con el posorden como respuesta. La primera letra del preorden es la raíz, su posición en
@@ -125,8 +125,8 @@ pedazos. Las
 letras no se repiten, que es justo lo que hace única la reconstrucción, y la entrada termina en fin
 de archivo y no con un centinela.
 
-UVa 112, Tree Summing: <https://onlinejudge.org/external/1/112.pdf>, envío en
-<https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=submit_problem&problemid=48>.
+UVa 112, Tree Summing: <https://vjudge.net/problem/UVA-112>, envío en
+<https://vjudge.net/problem/UVA-112>.
 
 El árbol llega escrito con la misma gramática del tema, `() | (entero arbol arbol)`, así que la
 función que lo lee se escribe igual que las del ejercicio de la recursión: un caso base para `()` y un
