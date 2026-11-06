@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Node Too Far: el recorrido con tope de pasos</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+#panel-grafo { text-align: center; margin: 0.4rem 0 0.2rem; }
+.tabla-corrida { border-collapse: collapse; margin: 0.6rem 0; }
+.tabla-corrida th, .tabla-corrida td { border: 1px solid #ccd2da; padding: 0.22rem 0.6rem; text-align: center; font-variant-numeric: tabular-nums; }
+.tabla-corrida th { background: #f3f5f9; font-weight: 600; }
+.tabla-corrida tr.fila-mal td { background: var(--rojo-suave); color: var(--rojo); font-weight: 600; }
+.leyenda { font-size: 0.85rem; color: var(--gris); text-align: center; margin: 0; }
+.aviso-paso { min-height: 1.4rem; font-size: 0.92rem; color: #a86a12; font-weight: 600; margin-top: 0.4rem; }
+.linea-cola { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; margin-top: 0.4rem; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>A Node Too Far: el recorrido con tope de pasos</h1>
+  <p class="intro">El problema de la sesión, UVa 336, sobre las dos redes de la muestra del enunciado.
+  Un mensaje sale de un nodo con un TTL, y cada estación lo reenvía solo si le quedan saltos. Se pide
+  cuántos nodos quedan por fuera. Aquí corre el mismo código del ejercicio: la cola, las distancias y
+  el punto donde el mensaje deja de avanzar.</p>
+
+  <div class="carta">
+    <h2>1. La consulta</h2>
+    <div class="presets" id="presets"></div>
+    <div id="panel-grafo"></div>
+    <p class="leyenda">Ámbar: en la cola. Azul: se revisaron sus vecinos. Verde: llegó a distancia TTL y
+    no reenvía. Borde negro: el nodo <code>u</code>.</p>
+    <div class="prediccion">
+      <span>¿Cuántos nodos quedan por fuera?</span>
+      <input type="number" id="prediccion" min="0" placeholder="su número">
+      <button id="btn-comprobar" class="primario">Comprobar</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. El código, paso a paso</h2>
+    <div class="codigo" id="panel-codigo"></div>
+    <div class="chips" id="chips" style="margin-top:0.6rem"></div>
+    <div class="linea-cola"><span class="nota" style="margin:0">Cola, con el número de cada nodo:</span><span id="ver-cola"></span></div>
+    <div class="aviso-paso" id="ver-aviso"></div>
+    <div class="progreso">Paso <span id="ver-paso">0</span> de <span id="ver-total">0</span></div>
+    <div class="botones">
+      <button id="btn-paso" class="primario">Un paso</button>
+      <button id="btn-auto">Auto</button>
+      <button id="btn-fin">Al final</button>
+      <button id="btn-reiniciar">Reiniciar</button>
+    </div>
+    <div class="nota" id="ver-final"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Dónde se atasca</h2>
+    <p style="margin-top:0">Tres errores que compilan y corren. Cada uno se aplica a la consulta elegida arriba, y
+    en rojo queda la fila donde se ve el daño.</p>
+    <div class="presets" id="errores">
+      <button data-error="menor">Expandir a distancia TTL</button>
+      <button data-error="tarde">Marcar tarde</button>
+      <button data-error="ausente">Nodo ausente</button>
+    </div>
+    <div id="panel-error"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Para llevarse</h2>
+    <p style="margin-top:0">Sin solución aquí. ¿Qué cambia en el código si el mensaje sale de dos nodos a la vez, cada
+    uno con el mismo TTL? Después piense por qué basta mirar <code>dist[u] &lt; ttl</code> al sacar de la cola: ¿qué
+    garantiza que ningún nodo reciba una distancia mayor que la mínima?</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="tope.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

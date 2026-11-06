@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pick up sticks: los tres estados y los ciclos</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+.grafo-caja { text-align: center; margin: 0.4rem 0 0.2rem; }
+.tabla-corrida { border-collapse: collapse; margin: 0.6rem 0; }
+.tabla-corrida th, .tabla-corrida td { border: 1px solid #ccd2da; padding: 0.22rem 0.6rem; text-align: center; }
+.tabla-corrida th { background: #f3f5f9; font-weight: 600; }
+.tabla-corrida tr.fila-mal td { background: var(--rojo-suave); color: var(--rojo); font-weight: 600; }
+.aviso-paso { min-height: 1.4rem; font-size: 0.92rem; color: #a86a12; font-weight: 600; margin-top: 0.4rem; }
+.tira-dato { font-size: 0.92rem; margin-top: 0.3rem; }
+.tira-dato b { font-family: ui-monospace, monospace; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Pick up sticks: los tres estados y los ciclos</h1>
+  <p class="intro">El problema de la sesión, UVa 11686. Un par <code>a b</code> dice que el palito <code>a</code> está
+  encima del <code>b</code>, y se pide un orden de recogida o <code>IMPOSSIBLE</code> si los palitos se cierran en
+  un ciclo. La pregunta del recorrido en profundidad es la misma en cada arista: ¿el nodo al que llega está en el
+  camino actual, o ya terminó?</p>
+
+  <div class="carta">
+    <h2>1. Decida en cada arista</h2>
+    <div class="presets" id="presets"></div>
+    <div class="grafo-caja" id="grafo-decision"></div>
+    <p id="pregunta-arista"></p>
+    <div class="opciones">
+      <button id="btn-si">Cierra un ciclo</button>
+      <button id="btn-no">No cierra ciclo</button>
+      <button id="btn-otra-vez">Otra vez</button>
+    </div>
+    <div class="progreso" id="cuenta-arista" style="margin-top:0.5rem"></div>
+    <div id="veredicto-arista" class="veredicto"></div>
+    <p class="nota">El recorrido arranca desde todo nodo sin visitar, en orden, que es lo que hace <code>main</code>
+    con su ciclo sobre los palitos. En el juez los palitos van de 1 a <code>n</code>; el diamante arranca en 0.</p>
+  </div>
+
+  <div class="carta">
+    <h2>2. El código, paso a paso</h2>
+    <div class="grafo-caja" id="grafo-pasos"></div>
+    <div class="codigo" id="panel-codigo"></div>
+    <div class="chips" id="chips" style="margin-top:0.6rem"></div>
+    <div class="tira-dato">Camino actual: <b id="ver-camino"></b></div>
+    <div class="tira-dato">orden: <b id="ver-orden"></b></div>
+    <div class="aviso-paso" id="ver-aviso"></div>
+    <div class="progreso">Paso <span id="ver-paso">0</span> de <span id="ver-total">0</span></div>
+    <div class="botones">
+      <button id="btn-paso" class="primario">Un paso</button>
+      <button id="btn-auto">Auto</button>
+      <button id="btn-fin">Al final</button>
+      <button id="btn-reiniciar">Reiniciar</button>
+    </div>
+    <div class="nota" id="ver-final"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Con dos estados</h2>
+    <p style="margin-top:0">Quien solo lleva <code>visitado</code> no distingue entre un nodo del camino actual y uno
+    que ya terminó, así que toda arista hacia un nodo visto le parece un ciclo. En rojo, los grafos donde esa versión
+    responde mal.</p>
+    <div class="envoltura-tabla"><table class="tabla-corrida" id="tabla-dos"></table></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Para llevarse</h2>
+    <p style="margin-top:0">Sin solución aquí. Cuando un nodo termina, todo lo que sale de él ya terminó: explique por qué
+    de ahí sale que el orden de terminación al revés respeta todas las aristas. Después piense en una cadena de un
+    millón de palitos: ¿cuántas llamadas abiertas tiene la recursión al llegar al último, y qué guarda la versión con
+    pila en lugar de cada una?</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="palitos.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

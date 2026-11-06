@@ -108,6 +108,20 @@ diapositivas.
    tres vértices, puede tener puentes? Dé un ejemplo o una demostración para
    cada pregunta.
 
+## Ciclos con tres estados
+
+### [los tres estados y los ciclos](palitos.html){ target=_blank rel=noopener }
+
+**UVa 11686, Pick up sticks.** En cada arista que el recorrido revisa se decide
+si cierra un ciclo, con los nodos marcados como sin visitar, en camino o
+terminados, y una respuesta equivocada explica qué mirar. Después corre la
+función `dfs` de la solución paso a paso, y una tabla muestra en qué grafos
+responde mal quien lleva solo dos estados. Cinco grafos: el diamante, el
+diamante con una arista de regreso, la muestra del enunciado, uno donde cada
+nodo es su propia raíz y uno con el ciclo lejos del primer nodo.
+
+- Enunciado y envío: <https://vjudge.net/problem/UVA-11686>
+
 ## Problemas de juez
 
 Los cuatro de las diapositivas, con el enunciado y el enlace de envío:

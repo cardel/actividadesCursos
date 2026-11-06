@@ -4,7 +4,8 @@ Siete ejercicios para el navegador, uno por cada tema de la sesión y en el
 mismo orden en que se dieron. Ninguno usa los programas ni los grafos de las
 diapositivas: aquí aparecen $H_1$, no dirigido de seis vértices y siete
 aristas, y $H_2$, dirigido, más un tercero para el caso del vértice al que no
-se llega.
+se llega. Un octavo, al final de la lista, es un problema de juez completo con
+su propio código.
 
 La mecánica cambia de uno a otro a propósito. En unos hay que predecir un
 número antes de ejecutar; en otros, recorrer paso a paso y leer los
@@ -109,6 +110,22 @@ equivocada cada uno. Al señalarla aparece la salida de las dos versiones.
 El tercero es el más incómodo: poner la marca al desencolar en lugar de al
 encolar no cambia ni el orden de visita ni las distancias sobre un grafo
 pequeño, así que pasa las pruebas. Lo único que crece es la cola.
+
+## Un problema de juez
+
+### [el recorrido con tope de pasos](tope.html){ target=_blank rel=noopener }
+
+**UVa 336, A Node Too Far.** Corre el código de la solución sobre las dos redes
+de la muestra, con la cola y las distancias a la vista, hasta el momento en que
+un nodo llega a distancia TTL y el mensaje deja de avanzar. Antes se predice
+cuántos nodos quedan por fuera.
+
+La última tarjeta aplica tres errores a la misma consulta. Expandir con
+`dist[u] <= ttl` da un salto de más. Marcar al sacar de la cola mete dos veces a
+un nodo con dos vecinos, y la respuesta puede salir negativa. Consultar
+`indice[nodo]` sin revisar corta en Python y en C++ imprime un número falso.
+
+- Enunciado y envío: <https://vjudge.net/problem/UVA-336>
 
 ## Para resolver en papel
 
