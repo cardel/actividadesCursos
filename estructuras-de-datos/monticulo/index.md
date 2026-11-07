@@ -40,3 +40,9 @@ subiendo hijos: qué arreglo deja cada versión y qué se rompe.
 
 La altura para 12, 200 y 70 000 claves, cuántos intercambios hacen insertar y
 extraer en un árbol lleno, y por qué el montículo cabe en un arreglo.
+
+## [stl-heap](./stl-heap.html){ target=_blank rel=noopener }
+
+Lo que deja cada llamada de `make_heap`, `push_heap` y `pop_heap` sobre un
+`vector`, en qué orden van con `push_back` y `pop_back`, cómo se ordena con
+`sort_heap` y el montículo de mínimos con `greater<int>()`.
