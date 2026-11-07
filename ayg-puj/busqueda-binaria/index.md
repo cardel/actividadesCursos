@@ -79,6 +79,14 @@ lo es.
 
 - Enunciado y envío: <https://vjudge.net/problem/UVA-12032>
 
+## [repartir textos entre empleados](turnos.html){ target=_blank rel=noopener }
+
+Bisección sobre la respuesta, desde el planteamiento. Unas preguntas llevan a qué
+se busca, qué se comprueba para cada tope, por qué esa comprobación es monótona y
+dónde arrancan los límites. Después se decide cada corte de la fila de textos y cada
+movimiento de `lo` y de `hi` hasta llegar a 1700. Una tarjeta corre cinco errores
+y otra trae textos distintos para intentarlo sin ayuda.
+
 ## De los temas anteriores
 
 Los ejercicios de invariantes de ciclo y de divide y vencerás siguen

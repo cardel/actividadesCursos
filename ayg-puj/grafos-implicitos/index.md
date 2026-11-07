@@ -145,6 +145,17 @@ Estos ejercicios entran en el material del parcial.
   El laberinto de Jaimico con las minas descritas por filas; con
   $1000 \times 1000$ celdas la amplitud cabe y la profundidad recursiva no.
 
+## Plantear antes de programar
+
+### [una rejilla con zonas prohibidas](zonas.html){ target=_blank rel=noopener }
+
+Unas preguntas llevan a qué son los nodos y las aristas, por qué se marca antes de
+recorrer y qué distancia se usa. Después se marcan las zonas a mano, con la cuenta de
+cada casilla a la vista, y en cada salida de la cola se tocan las vecinas que entran.
+Una tarjeta corre cuatro errores: medir en cuadrado, medir en rombo, empezar sin
+revisar la entrada y marcar tarde en la cola. La última trae tres tableros para
+intentarlo sin ayuda.
+
 ## De los temas anteriores
 
 Los ejercicios de [representaciones y recorridos](../representaciones-y-recorridos/index.md)

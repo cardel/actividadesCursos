@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Una rejilla con zonas prohibidas: marcar y después recorrer</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/planteo.css">
+<style>
+.tablero { display: grid; gap: 2px; margin: 0.5rem auto; max-width: 430px; font-family: ui-monospace, Consolas, monospace; }
+.tablero .rot { font-size: 0.72rem; color: var(--gris); display: flex; align-items: center; justify-content: center; }
+.cas { aspect-ratio: 1; width: 100%; min-width: 0; padding: 0; border: 1px solid #aeb6c2; border-radius: 3px; background: #fff; color: var(--tinta);
+  font: 700 clamp(0.72rem, 3vw, 0.92rem) ui-monospace, Consolas, monospace; display: flex; align-items: center; justify-content: center; }
+.cas:hover { border-color: var(--azul); color: var(--tinta); }
+.cas.quieta { cursor: default; }
+.cas.roca { background: #7a8494; border-color: #5e6876; color: #fff; }
+.cas.prohibida { background: #f4b6b0; border-color: #c9716a; }
+.cas.criatura { background: #d9635a; border-color: #a33d35; color: #fff; }
+.cas.vista { background: #bcd4ec; }
+.cas.en-cola { background: #fbcf9b; }
+.cas.frente { background: #f39a36; outline: 3px solid #24292f; outline-offset: -2px; }
+.cas.elegida { outline: 3px solid var(--azul); outline-offset: -3px; background: #e3edf8; }
+.cas.camino { background: #a7d8aa; border-color: var(--verde); }
+.cas.rango { box-shadow: inset 0 0 0 1px #c77c0e; }
+.cas.extremo { color: var(--gris); font-weight: 400; }
+.leyenda-t { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.25rem 0.8rem; font-size: 0.8rem; color: var(--gris); margin: 0.2rem 0 0.5rem; }
+.leyenda-t span::before { content: ""; display: inline-block; width: 0.8rem; height: 0.8rem; margin-right: 0.25rem; vertical-align: -0.1rem; border: 1px solid #aeb6c2; }
+.l-roca::before { background: #7a8494; }
+.l-prohibida::before { background: #f4b6b0; }
+.l-criatura::before { background: #d9635a; }
+.l-vista::before { background: #bcd4ec; }
+.l-cola::before { background: #fbcf9b; }
+.l-frente::before { background: #f39a36; }
+.l-camino::before { background: #a7d8aa; }
+.tres-zonas { display: flex; flex-wrap: wrap; gap: 0.8rem; justify-content: center; margin: 0.3rem 0 0.5rem; }
+.zona-mini { display: grid; grid-template-columns: repeat(7, 13px); gap: 1px; }
+.zona-mini i { width: 13px; height: 13px; display: block; background: #f1f3f6; border: 1px solid #d3d8df; }
+.zona-mini i.z { background: #f4b6b0; }
+.zona-mini i.c { background: #d9635a; }
+.pie-mini { text-align: center; font-size: 0.8rem; color: var(--gris); margin-top: 0.15rem; }
+.linea-cola { display: flex; flex-wrap: wrap; gap: 0.3rem; align-items: center; margin: 0.4rem 0; min-height: 1.8rem; }
+.linea-cola .ficha { font-size: 0.78rem; padding: 0.15rem 0.4rem; }
+.calculo { font-family: ui-monospace, Consolas, monospace; font-size: 0.86rem; background: var(--codigo-fondo); border-radius: 6px; padding: 0.3rem 0.55rem; min-height: 1.9rem; margin: 0.4rem 0; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Una rejilla con zonas prohibidas: marcar y después recorrer</h1>
+  <p class="intro">Los obstáculos de este problema no vienen todos en el tablero: una parte se calcula
+  con una distancia. La actividad tiene tres tramos: unas preguntas para plantear el problema, la
+  corrida del código sobre un ejemplo, donde usted marca las casillas y decide quién entra a la cola, y
+  un tablero distinto para intentarlo sin ayuda. Una respuesta equivocada explica qué falló y se puede
+  volver a intentar.</p>
+
+  <div class="carta" id="parte-1">
+    <h2>1. El planteamiento</h2>
+    <div class="enunciado">Un bosque es una rejilla de <i>R</i> × <i>C</i>. Se entra por la esquina superior
+    izquierda y se sale por la inferior derecha. Hay casillas bloqueadas, y en algunas vive una criatura que canta.
+    Lo que esté a no más de <code>radio</code> unidades de ella, en cualquier dirección, es peligroso y se evita. Se pide la
+    menor cantidad de pasos, o −1 si no se puede.</div>
+    <p style="margin-bottom:0">Ejemplo: cinco filas, siete columnas y dos criaturas, dadas como tripletas
+    <code>(fila, columna, radio)</code>, contadas desde 0: <code>(4, 0, 2)</code> y <code>(3, 4, 1)</code>. E es la entrada, S la salida, y cada criatura lleva su radio escrito.</p>
+    <div id="p-tablero"></div>
+    <div class="leyenda-t"><span class="l-roca">bloqueada</span><span class="l-criatura">criatura, con su radio</span></div>
+    <div id="preguntas"></div>
+    <div class="ayudas"><button type="button" id="abrir-partes">Ya hice las preguntas: abrir la corrida</button></div>
+  </div>
+
+  <div class="carta espera" id="parte-2">
+    <h2>2. La corrida sobre el ejemplo</h2>
+    <p class="aviso-espera">Se abre al terminar las preguntas.</p>
+    <div class="cuerpo">
+      <p class="subtitulo">Primero marcar</p>
+      <div class="instruccion" id="m-instruccion"></div>
+      <div id="m-tablero"></div>
+      <div class="leyenda-t"><span class="l-roca">bloqueada</span><span class="l-criatura">criatura, con su radio</span><span class="l-prohibida">marcada</span></div>
+      <div class="calculo" id="m-calculo">Toque una casilla y aquí aparece su cuenta.</div>
+      <div class="decision"><button type="button" id="m-comprobar" class="primario">Comprobar esta zona</button></div>
+      <div class="veredicto" id="m-veredicto"></div>
+      <div class="lugar-codigo" id="m-lugar"><div class="codigo" id="panel-codigo"></div></div>
+      <div class="ayudas">
+        <button type="button" id="m-ayuda">Marcar esta zona por mí</button>
+        <button type="button" id="m-reinicio">Volver a empezar</button>
+      </div>
+
+      <div id="r-bloque" class="oculto">
+        <p class="subtitulo">Ahora el recorrido en amplitud</p>
+        <div class="instruccion" id="r-instruccion"></div>
+        <div id="r-tablero"></div>
+        <div class="leyenda-t"><span class="l-prohibida">prohibida</span><span class="l-vista">ya salió de la cola</span><span class="l-cola">en la cola</span><span class="l-frente">la que sale ahora</span><span class="l-camino">un camino más corto</span></div>
+        <div class="linea-cola"><span class="nota" style="margin:0">Cola:</span><span id="r-cola"></span></div>
+        <div class="decision" id="r-decision"><button type="button" id="r-confirmar" class="primario">Confirmar</button></div>
+        <div class="veredicto" id="r-veredicto"></div>
+        <div class="lugar-codigo" id="r-lugar"></div>
+        <div class="ayudas">
+          <button type="button" id="r-ayuda">Hacer este paso por mí</button>
+          <button type="button" id="r-fin">Terminar el recorrido</button>
+          <button type="button" id="r-reinicio">Volver a empezar</button>
+        </div>
+        <div class="cierre-parte" id="r-cierre"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="carta espera" id="parte-3">
+    <h2>3. Qué responde el código con cada error</h2>
+    <p class="aviso-espera">Se abre al terminar las preguntas.</p>
+    <div class="cuerpo">
+      <p style="margin-top:0">Son errores que compilan y corren. Escoja uno y compare lo que responde con lo correcto.</p>
+      <div class="presets" id="errores"></div>
+      <div class="resultado-error" id="error-panel"></div>
+    </div>
+  </div>
+
+  <div class="carta espera" id="parte-4">
+    <h2>4. Inténtelo sin ayuda</h2>
+    <p class="aviso-espera">Se abre al terminar las preguntas.</p>
+    <div class="cuerpo">
+      <p style="margin-top:0">Otro tablero y otras criaturas. Las casillas se pueden tocar para ir marcando, y esas marcas
+      son solo suyas: el tablero no las corrige. Escriba la menor cantidad de pasos de E a S, o −1 si no se puede.</p>
+      <div class="presets" id="cierres"></div>
+      <div class="lectura" id="cierre-datos" style="margin-top:0.6rem"></div>
+      <div id="cierre-tablero"></div>
+      <div class="prediccion">
+        <label for="cierre-valor">Pasos:</label>
+        <input type="number" id="cierre-valor" placeholder="su número">
+        <button type="button" id="cierre-comprobar" class="primario">Comprobar</button>
+        <button type="button" id="cierre-solucion">Ver la solución</button>
+      </div>
+      <div class="veredicto" id="cierre-veredicto"></div>
+    </div>
+  </div>
+</div>
+<script src="../comun/planteo.js"></script>
+<script src="zonas.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

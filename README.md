@@ -49,7 +49,7 @@ tabla no existe para quien busca.
 
 ## Catálogo
 
-Son 482 actividades. El enlace lleva al archivo; para verlas funcionando hay que
+Son 485 actividades. El enlace lleva al archivo; para verlas funcionando hay que
 abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 
 ### Árboles y Grafos — `ayg-puj`
@@ -70,6 +70,7 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 | `busqueda-binaria` | [`biseccion`](ayg-puj/busqueda-binaria/biseccion.html) | el intervalo que encierra la respuesta |
 |  | [`buscar`](ayg-puj/busqueda-binaria/buscar.html) | la ventana que se encoge |
 |  | [`resolver`](ayg-puj/busqueda-binaria/resolver.html) | resolver un problema con bisección, paso a paso |
+|  | [`turnos`](ayg-puj/busqueda-binaria/turnos.html) | plantear y correr la bisección sobre la respuesta, repartiendo textos entre empleados |
 | `caminos-dag-dijkstra` | [`cual`](ayg-puj/caminos-dag-dijkstra/cual.html) | el algoritmo de caminos más cortos para cada escenario |
 |  | [`dag`](ayg-puj/caminos-dag-dijkstra/dag.html) | topoSort y una pasada en orden topológico |
 |  | [`dijkstra`](ayg-puj/caminos-dag-dijkstra/dijkstra.html) | Dijkstra con la cola de prioridad a la vista |
@@ -103,6 +104,7 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`estados`](ayg-puj/grafos-implicitos/estados.html) | cuando el vértice no es la celda |
 |  | [`laberinto`](ayg-puj/grafos-implicitos/laberinto.html) | la cuadrícula como grafo |
 |  | [`ruta`](ayg-puj/grafos-implicitos/ruta.html) | la ruta con menos saltos |
+|  | [`zonas`](ayg-puj/grafos-implicitos/zonas.html) | plantear una rejilla con zonas prohibidas: marcar con la distancia y avanzar la cola |
 | `invariantes` | [`burbuja`](ayg-puj/invariantes/burbuja.html) | un lema adentro, un teorema afuera |
 |  | [`comprimir`](ayg-puj/invariantes/comprimir.html) | la lista que crece y el invariante que la sostiene |
 |  | [`credito`](ayg-puj/invariantes/credito.html) | los invariantes de la mayor diferencia, UVa 11078 |
@@ -144,6 +146,7 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 |  | [`ordenar`](ayg-puj/recursion/ordenar.html) | bajar partiendo, subir mezclando |
 |  | [`sumar`](ayg-puj/recursion/sumar.html) | descubra los invariantes |
 | `representaciones-y-recorridos` | [`amplitud`](ayg-puj/representaciones-y-recorridos/amplitud.html) | el vértice más lejano |
+|  | [`colores`](ayg-puj/representaciones-y-recorridos/colores.html) | plantear y correr el recorrido en profundidad con dos colores |
 |  | [`construir`](ayg-puj/representaciones-y-recorridos/construir.html) | las cuatro representaciones, a mano |
 |  | [`consultas`](ayg-puj/representaciones-y-recorridos/consultas.html) | la misma pregunta, cuatro costos |
 |  | [`costo`](ayg-puj/representaciones-y-recorridos/costo.html) | V + E contra V² |

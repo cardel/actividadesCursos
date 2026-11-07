@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bisección sobre la respuesta: repartir textos entre empleados</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/planteo.css">
+<style>
+.fila-textos { display: grid; gap: 3px 2px; margin: 0.5rem 0; font-family: ui-monospace, Consolas, monospace; }
+.fila-textos .ind { text-align: center; font-size: 0.7rem; color: var(--gris); }
+.fila-textos .txt-c { text-align: center; padding: 0.3rem 0; border: 1px solid #aeb6c2; border-radius: 4px; background: #fff; font-size: clamp(0.68rem, 2.7vw, 0.92rem); font-weight: 700; }
+.fila-textos .t-a { background: #bcd4ec; }
+.fila-textos .t-b { background: #f9d3ae; }
+.fila-textos .t-mal { background: #f1a8a2; border-color: var(--rojo); }
+.fila-textos .t-ahora { outline: 3px solid #24292f; outline-offset: -1px; }
+.fila-textos .suma { text-align: center; border-top: 2px solid #7a8494; font-size: clamp(0.68rem, 2.7vw, 0.86rem); }
+.fila-textos .suma.mal { color: var(--rojo); font-weight: 700; border-top-color: var(--rojo); }
+.lectura { font-size: 0.95rem; margin: 0.2rem 0 0.4rem; }
+.lectura b { color: var(--azul); }
+.recta { position: relative; height: 26px; border-radius: 6px; background: #eef1f5; border: 1px solid var(--borde); margin-top: 1.3rem; }
+.recta div { position: absolute; top: 0; bottom: 0; }
+.recta .no { background: #f4c3bf; }
+.recta .si { background: #bfe0c1; }
+.recta .vivo { background: var(--azul); }
+.recta .medio { width: 3px; top: -6px; bottom: -6px; background: #24292f; transform: translateX(-1px); }
+.recta .rot-medio { top: -1.35rem; bottom: auto; transform: translateX(-50%); font-family: ui-monospace, monospace; font-size: 0.74rem; font-weight: 700; white-space: nowrap; }
+.pie-recta { display: flex; justify-content: space-between; font-family: ui-monospace, monospace; font-size: 0.74rem; color: var(--gris); margin-top: 0.3rem; }
+.ley-recta { font-size: 0.8rem; color: var(--gris); margin: 0.1rem 0 0.5rem; }
+#t-barra { width: 100%; max-width: 420px; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Bisección sobre la respuesta: repartir textos entre empleados</h1>
+  <p class="intro">Aquí no hay un arreglo donde buscar: lo que se recorre con la bisección son los
+  valores posibles de la respuesta. La actividad tiene tres tramos: unas preguntas para plantear el
+  problema, la corrida del código sobre un ejemplo, donde usted decide cada paso, y un ejemplo
+  distinto para intentarlo sin ayuda. Una respuesta equivocada explica qué falló y se puede volver a
+  intentar.</p>
+
+  <div class="carta" id="parte-1">
+    <h2>1. El planteamiento</h2>
+    <div class="enunciado">Hay <i>M</i> textos en orden y <i>k</i> empleados. Cada empleado recibe textos
+    seguidos, y cada texto queda entero con uno solo. Se tarda un minuto por página. Se pide repartir de modo
+    que el empleado con más páginas tenga las menos posibles.</div>
+    <p style="margin-bottom:0">Ejemplo: nueve textos de 100 a 900 páginas y <code>k = 3</code>. Mueva
+    <code>t</code>, el máximo de páginas que se le permite a un empleado, y mire dónde caen los cortes: cada empleado
+    toma textos mientras quepan y el siguiente sigue desde ahí. En rojo queda un texto más largo que
+    <code>t</code>.</p>
+    <p class="lectura" style="margin-top:0.5rem"><label for="t-barra"><code>t</code> = <b id="t-valor">2000</b></label><br>
+    <input type="range" id="t-barra" min="100" max="4500" step="100" value="2000"></p>
+    <div id="t-fila"></div>
+    <p class="lectura" id="t-lectura"></p>
+    <div id="preguntas"></div>
+    <div class="ayudas"><button type="button" id="abrir-partes">Ya hice las preguntas: abrir la corrida</button></div>
+  </div>
+
+  <div class="carta espera" id="parte-2">
+    <h2>2. La corrida sobre el ejemplo</h2>
+    <p class="aviso-espera">Se abre al terminar las preguntas.</p>
+    <div class="cuerpo">
+      <p class="subtitulo">Primero la comprobación: empleados_necesarios con t = 2000</p>
+      <div id="c-fila"></div>
+      <div class="instruccion" id="c-instruccion"></div>
+      <div class="decision" id="c-decision">
+        <button type="button" class="mono" data-cabe="1">turno = turno + p</button>
+        <button type="button" class="mono" data-cabe="0">empleados + 1; turno = p</button>
+      </div>
+      <div class="veredicto" id="c-veredicto"></div>
+      <div class="lugar-codigo" id="c-lugar"><div class="codigo" id="panel-codigo"></div></div>
+      <div class="ayudas">
+        <button type="button" id="c-ayuda">Hacer este paso por mí</button>
+        <button type="button" id="c-reinicio">Volver a empezar</button>
+      </div>
+
+      <div id="b-bloque" class="oculto">
+        <p class="subtitulo">Ahora la bisección con k = 3</p>
+        <div id="b-recta"></div>
+        <p class="ley-recta">Azul: los topes que siguen en duda. Rojo: descartados porque no alcanzan. Verde: descartados
+        porque alcanzan y ya hay uno menor o igual en el intervalo.</p>
+        <div id="b-fila"></div>
+        <div class="instruccion" id="b-instruccion"></div>
+        <div class="decision" id="b-decision">
+          <button type="button" class="mono" data-mov="hi=medio">hi = medio</button>
+          <button type="button" class="mono" data-mov="hi=medio-1">hi = medio - 1</button>
+          <button type="button" class="mono" data-mov="lo=medio">lo = medio</button>
+          <button type="button" class="mono" data-mov="lo=medio+1">lo = medio + 1</button>
+        </div>
+        <div class="veredicto" id="b-veredicto"></div>
+        <div class="lugar-codigo" id="b-lugar"></div>
+        <div class="envoltura-tabla"><table class="corrida" id="b-tabla"></table></div>
+        <div class="ayudas">
+          <button type="button" id="b-ayuda">Hacer esta vuelta por mí</button>
+          <button type="button" id="b-fin">Terminar la bisección</button>
+          <button type="button" id="b-reinicio">Volver a empezar</button>
+        </div>
+        <div class="cierre-parte" id="b-cierre"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="carta espera" id="parte-3">
+    <h2>3. Qué responde el código con cada error</h2>
+    <p class="aviso-espera">Se abre al terminar las preguntas.</p>
+    <div class="cuerpo">
+      <p style="margin-top:0">Son errores que compilan y corren. Escoja uno: la fila muestra los cortes del tope que ese
+      programa responde.</p>
+      <div class="presets" id="errores"></div>
+      <div class="resultado-error" id="error-panel"></div>
+    </div>
+  </div>
+
+  <div class="carta espera" id="parte-4">
+    <h2>4. Inténtelo sin ayuda</h2>
+    <p class="aviso-espera">Se abre al terminar las preguntas.</p>
+    <div class="cuerpo">
+      <p style="margin-top:0">Otros textos y otro <code>k</code>. Haga la bisección en papel y escriba el menor tope.</p>
+      <div class="presets" id="cierres"></div>
+      <div class="lectura" id="cierre-datos" style="margin-top:0.6rem"></div>
+      <div class="prediccion">
+        <label for="cierre-valor">Menor tope:</label>
+        <input type="number" id="cierre-valor" min="0" placeholder="su número">
+        <button type="button" id="cierre-comprobar" class="primario">Comprobar</button>
+        <button type="button" id="cierre-solucion">Ver la solución</button>
+      </div>
+      <div class="veredicto" id="cierre-veredicto"></div>
+      <div id="cierre-solucion-panel"></div>
+    </div>
+  </div>
+</div>
+<script src="../comun/planteo.js"></script>
+<script src="turnos.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

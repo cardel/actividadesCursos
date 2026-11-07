@@ -1,0 +1,35 @@
+/* Piezas de las actividades que recorren el planteamiento de un problema:
+   preguntas con una explicacion por opcion, partes que se abren en orden y
+   tablas de la corrida. */
+.enunciado { background: #f8fafc; border-left: 4px solid var(--azul); padding: 0.6rem 0.9rem; margin: 0.5rem 0 0.8rem; font-size: 0.95rem; }
+.pregunta { border-left: 4px solid var(--borde); padding: 0.3rem 0 0.3rem 0.8rem; margin: 0.9rem 0; }
+.pregunta.hecha { border-left-color: var(--verde); }
+.pregunta .cuenta-preg { font-size: 0.78rem; color: var(--gris); }
+.pregunta .enun { font-weight: 600; margin: 0.1rem 0 0.4rem; }
+.opciones.columna { flex-direction: column; align-items: stretch; }
+.opciones.columna button { text-align: left; font-weight: 500; }
+button.op-bien, button.op-bien:hover { border-color: var(--verde); background: var(--verde-suave); color: var(--verde); }
+button.op-mal, button.op-mal:hover { border-color: var(--rojo); background: var(--rojo-suave); color: var(--rojo); }
+.carta.espera > .cuerpo { display: none; }
+.carta.espera > h2 { color: var(--gris); margin-bottom: 0.2rem; }
+.aviso-espera { display: none; font-size: 0.88rem; color: var(--gris); margin: 0; }
+.carta.espera > .aviso-espera { display: block; }
+.subtitulo { font-weight: 700; margin: 1rem 0 0.2rem; }
+.instruccion { background: var(--ambar-suave); border-radius: 8px; padding: 0.5rem 0.8rem; margin: 0.6rem 0; font-size: 0.95rem; }
+.decision { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0.5rem 0; }
+.decision button.mono { font-family: ui-monospace, Consolas, monospace; font-weight: 600; font-size: 0.88rem; }
+.ayudas { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 0.7rem; }
+.ayudas button { font-weight: 500; font-size: 0.86rem; padding: 0.3rem 0.7rem; }
+.corrida { margin: 0.6rem 0; }
+.corrida th, .corrida td { font-variant-numeric: tabular-nums; padding: 0.22rem 0.45rem; }
+.corrida tr.mal td { background: var(--rojo-suave); color: var(--rojo); font-weight: 600; }
+.cierre-parte { display: none; margin-top: 0.8rem; padding: 0.6rem 0.9rem; background: var(--verde-suave); color: #1d5c21; border-radius: 8px; }
+.cierre-parte.visible { display: block; }
+.oculto { display: none; }
+.presets button.primario { color: #fff; }
+.resultado-error { margin-top: 0.6rem; }
+.lugar-codigo { margin: 0.7rem 0; }
+@media (max-width: 480px) {
+  .codigo { font-size: 0.74rem; }
+  .linea .num { width: 1.1rem; margin-right: 0.35rem; }
+}

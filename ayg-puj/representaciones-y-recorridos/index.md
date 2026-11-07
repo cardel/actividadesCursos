@@ -127,6 +127,16 @@ un nodo con dos vecinos, y la respuesta puede salir negativa. Consultar
 
 - Enunciado y envío: <https://vjudge.net/problem/UVA-336>
 
+## Plantear antes de programar
+
+### [dos colores](colores.html){ target=_blank rel=noopener }
+
+Decidir si un grafo es bipartito con un recorrido en profundidad. Unas preguntas
+llevan a qué significa cada color, qué decide que no se pueda y qué pasa con varios
+pedazos. Después se escoge el color de cada nodo, con la pila de llamadas a la vista,
+y el triángulo muestra el choque. Una tarjeta corre dos errores, arrancar solo del
+nodo 0 y aceptar un color igual, y la última trae tres grafos para pintar sin ayuda.
+
 ## Para resolver en papel
 
 Estos ejercicios entran en el material del parcial.

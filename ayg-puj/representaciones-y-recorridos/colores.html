@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dos colores: el recorrido en profundidad que decide si un grafo es bipartito</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/planteo.css">
+<style>
+.dibujo { text-align: center; margin: 0.4rem 0; }
+.dibujo text { pointer-events: none; }
+.tocable circle { cursor: pointer; }
+.leyenda-g { text-align: center; font-size: 0.82rem; color: var(--gris); margin: 0.1rem 0 0.4rem; }
+.pila { font-family: ui-monospace, Consolas, monospace; font-size: 0.86rem; border: 1px solid var(--borde); border-radius: 8px; padding: 0.35rem 0.6rem; background: var(--codigo-fondo); margin: 0.4rem 0; }
+.pila .rot { font-family: system-ui, sans-serif; font-size: 0.78rem; color: var(--gris); display: block; margin-bottom: 0.15rem; }
+.pila .marco { display: block; padding: 0.05rem 0.3rem; border-radius: 4px; }
+.pila .marco.tope { background: var(--resalte); font-weight: 700; }
+.pila .choque { color: var(--rojo); font-weight: 700; }
+.color-azul, .color-azul:hover { background: #bcd4ec; color: #15416f; border-color: #6b97c4; }
+.color-naranja, .color-naranja:hover { background: #f9d3ae; color: #7a4310; border-color: #d8964f; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Dos colores: el recorrido en profundidad que decide si un grafo es bipartito</h1>
+  <p class="intro">Un recorrido en profundidad donde la marca de visitado lleva además un color. La
+  actividad tiene tres tramos: unas preguntas para plantear el problema, la corrida del código sobre
+  tres grafos, donde usted decide el color de cada nodo, y un grafo distinto para intentarlo sin ayuda.
+  Una respuesta equivocada explica qué falló y se puede volver a intentar.</p>
+
+  <div class="carta" id="parte-1">
+    <h2>1. El planteamiento</h2>
+    <div class="enunciado">Se tiene un grafo no dirigido. Se quiere pintar cada nodo con uno de dos colores de modo
+    que ninguna arista una dos nodos del mismo color. Un grafo así se llama bipartito. Se pide decidir si un grafo dado
+    lo es.</div>
+    <div class="dibujo" id="p-grafo"></div>
+    <div id="preguntas"></div>
+    <div class="ayudas"><button type="button" id="abrir-partes">Ya hice las preguntas: abrir la corrida</button></div>
+  </div>
+
+  <div class="carta espera" id="parte-2">
+    <h2>2. La corrida sobre tres grafos</h2>
+    <p class="aviso-espera">Se abre al terminar las preguntas.</p>
+    <div class="cuerpo">
+      <div class="presets" id="grafos"></div>
+      <div class="dibujo" id="r-grafo"></div>
+      <p class="leyenda-g">Borde negro: el nodo <code>u</code> de la llamada de arriba. Arista ámbar: la que se está mirando. Arista roja: un choque.</p>
+      <div class="instruccion" id="r-instruccion"></div>
+      <div class="decision" id="r-decision"></div>
+      <div class="veredicto" id="r-veredicto"></div>
+      <div class="pila" id="r-pila"></div>
+      <div class="codigo" id="panel-codigo"></div>
+      <div class="ayudas">
+        <button type="button" id="r-ayuda">Hacer este paso por mí</button>
+        <button type="button" id="r-fin">Terminar este grafo</button>
+        <button type="button" id="r-reinicio">Volver a empezar</button>
+      </div>
+      <div class="cierre-parte" id="r-cierre"></div>
+    </div>
+  </div>
+
+  <div class="carta espera" id="parte-3">
+    <h2>3. Qué responde el código con cada error</h2>
+    <p class="aviso-espera">Se abre al terminar las preguntas.</p>
+    <div class="cuerpo">
+      <p style="margin-top:0">Son errores que compilan y corren. Escoja uno y mire cómo queda el grafo.</p>
+      <div class="presets" id="errores"></div>
+      <div class="dibujo" id="error-grafo"></div>
+      <div class="resultado-error" id="error-panel"></div>
+    </div>
+  </div>
+
+  <div class="carta espera" id="parte-4">
+    <h2>4. Inténtelo sin ayuda</h2>
+    <p class="aviso-espera">Se abre al terminar las preguntas.</p>
+    <div class="cuerpo">
+      <p style="margin-top:0">Toque un nodo para cambiarle el color. Cuando termine, diga si su coloreo funciona o si este
+      grafo no se puede pintar.</p>
+      <div class="presets" id="cierres"></div>
+      <div class="dibujo tocable" id="cierre-grafo"></div>
+      <div class="decision">
+        <button type="button" id="cierre-sirve" class="primario">Este coloreo funciona</button>
+        <button type="button" id="cierre-nose">No se puede pintar</button>
+        <button type="button" id="cierre-solucion">Ver la solución</button>
+      </div>
+      <div class="veredicto" id="cierre-veredicto"></div>
+    </div>
+  </div>
+</div>
+<script src="../comun/grafo-svg.js"></script>
+<script src="../comun/planteo.js"></script>
+<script src="colores.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
