@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El TAD tipo y el ambiente de tipos</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>El TAD tipo y el ambiente de tipos</h1>
+  <p class="intro">Un tipo es un valor de un datatype con dos variantes, <code>atomic-type</code> y <code>proc-type</code>, y el ambiente de tipos es el ambiente de siempre con tipos adentro (EOPL §7.1). Tres retos: escribir un tipo de vuelta en la notación del lenguaje, intercalar los asteriscos entre los parámetros y buscar un nombre en el ambiente de tipos.</p>
+
+  <div class="alerta">
+    Esto no es Racket. Es un evaluador pequeño que entiende <code>define</code>,
+    <code>lambda</code>, <code>if</code>, <code>cond</code>, <code>let</code>,
+    <code>define-datatype</code> y <code>cases</code>, con las primitivas de
+    listas y aritmética; no tiene <code>map</code>. Un valor de un datatype se
+    imprime como <code>(atomic-type int)</code> para poder leerlo; Racket lo
+    muestra como <code>#(struct:atomic-type int)</code>. Lo que se entrega se
+    escribe y se corre en DrRacket.
+  </div>
+
+  <div id="retos"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Resueltos</h2>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Reto</th><th>Lo que quedó claro</th></tr></thead>
+        <tbody>
+          <tr><td>del tipo a su escritura</td><td>el resultado se escribe con una llamada recursiva, y por eso <code>(int -&gt; (bool -&gt; int))</code> sale con sus paréntesis</td></tr>
+          <tr><td>los asteriscos</td><td>el caso de un solo parámetro es el que evita el asterisco colgando al final</td></tr>
+          <tr><td><code>apply-tenv</code></td><td>es <code>apply-env</code> con tipos: con dos <code>x</code> en la cadena gana la del eslabón más nuevo</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="nota">El chequeo recorre el programa con la misma forma del evaluador, llevando tipos donde el otro lleva valores. Esa simetría es lo que hace que las dos funciones se parezcan tanto.</div>
+  </div>
+
+  <div class="carta">
+    <h2>Consola</h2>
+    <p style="margin-top:0">Para probar cualquier cosa. Las definiciones se
+    acumulan entre corridas hasta que se reinicie la sesión.</p>
+    <textarea id="consola-entrada" class="editor" rows="8" spellcheck="false">(define-datatype type type?
+  (atomic-type (name symbol?))
+  (proc-type (arg-types (list-of type?)) (result-type type?)))
+(define int-type (atomic-type 'int))
+(define bool-type (atomic-type 'bool))
+(list int-type (proc-type (list int-type bool-type) int-type))</textarea>
+    <div class="botones">
+      <button id="btn-consola" class="primario">Ejecutar</button>
+      <button id="btn-limpiar">Reiniciar sesión</button>
+      <span class="atajo">Ctrl + Enter también ejecuta</span>
+    </div>
+    <div id="consola-salida" class="consola-salida">(sin valor)</div>
+  </div>
+
+</div>
+<script src="../comun/mini-scheme.js"></script>
+<script src="../comun/motor-retos.js"></script>
+
+<script src="tad-tipo.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El lenguaje de tipos</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>El lenguaje de tipos</h1>
+  <p class="intro">Un tipo es <code>int</code>, <code>bool</code> o un tipo de procedimiento, que se escribe con los tipos de sus parámetros separados por <code>*</code>, una flecha y el tipo del resultado. Dos bloques: qué tipo tiene cada expresión y cómo se escriben las anotaciones que el programador pone en <code>proc</code> y en <code>letrec</code>. Los tipos de esta página se midieron con <code>type-of-program</code>.</p>
+
+  <div class="alerta">
+    El lenguaje es CHECKED (EOPL §7.1): números, variables, <code>true</code> y
+    <code>false</code>, las primitivas antes del paréntesis y con comas
+    (<code>+(e,e)</code>, <code>-(e,e)</code>, <code>*(e,e)</code>,
+    <code>add1(e)</code>, <code>sub1(e)</code>, <code>&lt;(e,e)</code>,
+    <code>&gt;(e,e)</code>, <code>and(e,e)</code>, <code>zero?(e)</code>),
+    <code>if e then e else e</code>, <code>let id = e … in e</code>,
+    <code>proc (tipo id, …) cuerpo</code>, <code>letrec tipo nombre(tipo id, …) = e … in e</code>
+    y la aplicación <code>(rator rand …)</code>, que va sin comas. Aquí no
+    existe <code>==</code> y sí existe <code>zero?</code>, al revés que en los
+    interpretadores del primer corte. El ambiente inicial está vacío.
+  </div>
+
+  <div id="bloques"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Resueltos</h2>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Expresión</th><th>Tipo</th></tr></thead>
+        <tbody>
+          <tr><td><code>zero?(0)</code></td><td><code>bool</code>, porque la primitiva ya está aplicada</td></tr>
+          <tr><td><code>proc (int x) add1(x)</code></td><td><code>(int -&gt; int)</code></td></tr>
+          <tr><td><code>proc () 5</code></td><td><code>(-&gt; int)</code>: sigue siendo un procedimiento</td></tr>
+          <tr><td><code>proc (int x) proc (bool b) …</code></td><td><code>(int -&gt; (bool -&gt; int))</code>, no <code>(int * bool -&gt; int)</code></td></tr>
+          <tr><td><code>letrec int fact(int n) = … in fact</code></td><td><code>(int -&gt; int)</code>: el cuerpo entrega el procedimiento</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="nota">La coma separa parámetros cuando se declaran y el asterisco cuando se escribe el tipo. La flecha aparece una sola vez por procedimiento.</div>
+  </div>
+
+</div>
+<script src="../comun/motor-decisiones.js"></script>
+
+<script src="tipos.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

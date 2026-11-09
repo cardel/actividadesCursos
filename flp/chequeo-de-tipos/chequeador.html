@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dos reglas escritas como código</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Dos reglas escritas como código</h1>
+  <p class="intro">La regla del condicional y la de la aplicación, que son las dos que más comprobaciones hacen (EOPL §7.1, Figura 7.4). En el interpretador abortan con <code>check-equal-type!</code>; aquí devuelven <code>'error</code>, porque una prueba no puede esperar un error como resultado. Los dos retos reciben los tipos ya calculados, de modo que lo que se escribe es la regla y nada más.</p>
+
+  <div class="alerta">
+    Esto no es Racket. Es un evaluador pequeño que entiende <code>define</code>,
+    <code>lambda</code>, <code>if</code>, <code>cond</code>, <code>and</code>,
+    <code>or</code>, <code>not</code>, <code>define-datatype</code> y
+    <code>cases</code>, con las primitivas de listas; no tiene <code>map</code>.
+    <code>equal?</code> compara dos valores de datatype por estructura, así que
+    sirve para decidir si dos tipos son el mismo. Lo que se entrega se escribe
+    y se corre en DrRacket.
+  </div>
+
+  <div id="retos"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Resueltos</h2>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Regla</th><th>Lo que comprueba</th></tr></thead>
+        <tbody>
+          <tr><td>condicional</td><td>prueba contra <code>bool</code>, y las dos ramas entre sí; devuelve el tipo de las ramas</td></tr>
+          <tr><td>aplicación</td><td>que el operador sea <code>proc-type</code>, que los largos casen y que cada tipo case; devuelve el resultado</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="nota">El evaluador de este lenguaje no cuenta los argumentos de una aplicación: <code>(proc (int x) add1(x) 5 6)</code> corre y entrega 6. Que el chequeador lo rechace es exactamente lo que se gana con el chequeo estático.</div>
+  </div>
+
+  <div class="carta">
+    <h2>Consola</h2>
+    <p style="margin-top:0">Para probar cualquier cosa. Las definiciones se
+    acumulan entre corridas hasta que se reinicie la sesión.</p>
+    <textarea id="consola-entrada" class="editor" rows="8" spellcheck="false">(define-datatype type type?
+  (atomic-type (name symbol?))
+  (proc-type (arg-types (list-of type?)) (result-type type?)))
+(define int-type (atomic-type 'int))
+(define bool-type (atomic-type 'bool))
+(list (equal? int-type int-type) (equal? int-type bool-type))</textarea>
+    <div class="botones">
+      <button id="btn-consola" class="primario">Ejecutar</button>
+      <button id="btn-limpiar">Reiniciar sesión</button>
+      <span class="atajo">Ctrl + Enter también ejecuta</span>
+    </div>
+    <div id="consola-salida" class="consola-salida">(sin valor)</div>
+  </div>
+
+</div>
+<script src="../comun/mini-scheme.js"></script>
+<script src="../comun/motor-retos.js"></script>
+
+<script src="chequeador.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

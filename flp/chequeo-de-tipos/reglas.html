@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Las reglas de tipamiento</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Las reglas de tipamiento</h1>
+  <p class="intro">Una regla por forma de expresión, y cada una decide antes de correr el programa (EOPL §7.1, Figura 7.4). Tres bloques: qué exige cada regla, cuál de ellas falla en programas que el chequeador rechaza, y qué habría hecho la máquina con esos mismos programas si los dejaran correr. Los veredictos y los valores se midieron con <code>type-of-program</code> y <code>eval-program</code>.</p>
+
+  <div class="alerta">
+    Las comprobaciones se hacen con <code>check-equal-type!</code>, que
+    compara dos tipos y aborta con <code>Types didn't match</code> cuando
+    difieren. El ambiente de tipos tiene la misma forma que el de valores:
+    <code>extend-tenv</code> agrega un eslabón y <code>apply-tenv</code> busca
+    desde el más nuevo. El ambiente inicial está vacío, así que una variable
+    suelta es un error de tipo y no un valor.
+  </div>
+
+  <div id="bloques"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Resueltos</h2>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Programa</th><th>Qué dice el chequeador</th><th>Qué haría la máquina</th></tr></thead>
+        <tbody>
+          <tr><td><code>if 1 then 2 else 3</code></td><td>la prueba es int y debe ser bool</td><td>también falla</td></tr>
+          <tr><td><code>if zero?(0) then 1 else true</code></td><td>las ramas no coinciden</td><td>entrega 1</td></tr>
+          <tr><td><code>and(1, true)</code></td><td>and pide dos bool</td><td>entrega #t</td></tr>
+          <tr><td><code>(proc (int x) add1(x) 5 6)</code></td><td>sobra un argumento</td><td>entrega 6</td></tr>
+          <tr><td><code>(5 3)</code></td><td>el operador no es procedimiento</td><td>también falla</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="nota">El chequeador es conservador: rechaza programas que no habrían fallado, y a cambio garantiza que ninguno de los que acepta falle por tipos. Decidir exactamente cuáles fallan no se puede.</div>
+  </div>
+
+</div>
+<script src="../comun/motor-decisiones.js"></script>
+
+<script src="reglas.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
