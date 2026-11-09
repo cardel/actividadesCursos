@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quién alcanza a quién</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Quién alcanza a quién</h1>
+  <p class="intro">Tres contenedores, dos de ellos en una red creada a mano y el tercero en la
+  que Docker trae de fábrica. Diga qué contesta cada <code>ping</code> antes de ver la tabla:
+  los dos modos de fallar no son el mismo.</p>
+
+  <div class="carta">
+    <h2>1. Tres contenedores, dos redes</h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker network create red-app</span></div>
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker run -d --name db  --network red-app alpine sleep 3600</span></div>
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker run -d --name api --network red-app alpine sleep 3600</span></div>
+      <div class="linea bloque-2"><span class="num">$</span><span class="txt">docker run -d --name fuera                 alpine sleep 3600</span></div>
+    </div>
+    <p style="margin-top:0.7rem">Para cada orden, elija lo que contesta. La dirección
+    <code>172.19.0.2</code> es de un contenedor de <code>red-app</code>.</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Desde</th><th>Orden</th><th>Qué contesta</th><th>Por qué</th></tr></thead>
+        <tbody id="cuerpo-alcance"></tbody>
+      </table>
+    </div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-reiniciar-alcance">Empezar de nuevo</button>
+      <span class="progreso" id="progreso-alcance"></span>
+    </div>
+    <div class="chips" id="chips-alcance" style="margin-top:0.7rem"></div>
+    <div class="alerta" id="nota-alcance" hidden>Los dos fallos del contenedor de fuera dicen
+    cosas distintas. Con el nombre, el <code>ping</code> nunca sale: no hay quién traduzca
+    <code>db</code> a una dirección. Con la dirección no hay nada que traducir, y el paquete
+    sale y no llega, porque ese contenedor no está en esa red.</div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Qué hizo posible el ping por nombre</h2>
+    <div class="opciones" id="op-dns">
+      <button data-op="correcta">El DNS interno que Docker levanta en cada red creada por el usuario, que traduce el nombre del contenedor a su dirección</button>
+      <button data-op="hosts">Que Docker escribe los nombres en el <code>/etc/hosts</code> de todos los contenedores de la máquina</button>
+      <button data-op="dns-externo">El DNS del anfitrión, que resuelve los nombres de los contenedores</button>
+      <button data-op="broadcast">Que <code>ping</code> busca el nombre por difusión en la red local</button>
+    </div>
+    <div id="ver-dns" class="veredicto"></div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">La API se conecta a la base de datos con
+    <code>db:5432</code>. ¿Qué gana esa cadena frente a escribir la dirección?</p>
+    <div class="opciones" id="op-cadena">
+      <button data-op="correcta">Sigue siendo válida aunque la dirección cambie, y cambia en cada arranque del contenedor</button>
+      <button data-op="rapido">Resuelve más rápido que una dirección</button>
+      <button data-op="cifrado">El tráfico va cifrado cuando se usa el nombre</button>
+      <button data-op="igual">Nada: las dos formas son equivalentes</button>
+    </div>
+    <div id="ver-cadena" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Conectar en caliente</h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker network connect red-app fuera</span></div>
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker exec fuera ping -c 1 db</span></div>
+      <div class="linea bloque-2"><span class="num">$</span><span class="txt">docker network disconnect red-app fuera</span></div>
+    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">¿Qué contesta ese <code>ping</code>
+    ahora?</p>
+    <div class="opciones" id="op-caliente">
+      <button data-op="correcta">Responde: al entrar a la red, el contenedor queda con una dirección en ella y el DNS interno ya traduce <code>db</code></button>
+      <button data-op="reinicio">Sigue fallando hasta que se reinicie el contenedor</button>
+      <button data-op="bad">Sigue dando <code>bad address</code>: el nombre solo se resuelve si la red se indicó al crearlo</button>
+      <button data-op="ip">Responde solo por dirección, no por nombre</button>
+    </div>
+    <div id="ver-caliente" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Qué red pide cada caso</h2>
+    <p style="margin-top:0">Tres contenedores que tienen que hablar entre sí, un agente que
+    necesita ver los puertos del anfitrión y un proceso que solo hace cuentas con lo que trae
+    adentro.</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Caso</th><th>Red</th><th>Respuesta</th></tr></thead>
+        <tbody id="cuerpo-casos"></tbody>
+      </table>
+    </div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-reiniciar-casos">Empezar de nuevo</button>
+      <span class="progreso" id="progreso-casos"></span>
+    </div>
+    <div class="nota">La red por omisión queda para el contenedor suelto que solo necesita
+    salir a Internet. En cuanto dos servicios se buscan por nombre, va una red propia.</div>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="redes.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

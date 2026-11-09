@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Namespaces y cgroups: lo que ve y lo que le toca</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Namespaces y cgroups: lo que ve y lo que le toca</h1>
+  <p class="intro">Un contenedor es un proceso del anfitrión con dos cosas cambiadas: lo que ve
+  y cuánto puede consumir. Las dos se pueden leer en el sistema de archivos, y leerlas dice
+  dónde está la frontera y dónde no la hay.</p>
+
+  <div class="carta">
+    <h2>1. Los cinco identificadores</h2>
+    <p style="margin-top:0">El núcleo numera cada namespace. Estos son los del proceso número
+    uno del contenedor y los del intérprete de órdenes del anfitrión, leídos en la misma
+    máquina:</p>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker exec web ls -l /proc/1/ns/</span></div>
+      <div class="linea bloque-2"><span class="num">$</span><span class="txt">for n in pid net mnt uts user; do echo "$n -> $(readlink /proc/self/ns/$n)"; done</span></div>
+    </div>
+    <div class="prediccion">
+      <span>De los cinco, ¿cuántos identificadores son distintos dentro del contenedor?</span>
+      <input type="number" id="pred-distintos" min="0" max="5" step="1" placeholder="0 a 5">
+      <button id="btn-distintos" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-distintos" class="veredicto"></div>
+    <div class="envoltura-tabla" style="margin-top:0.6rem">
+      <table>
+        <thead><tr><th>Namespace</th><th>Qué aísla</th><th>Anfitrión</th><th>Contenedor</th><th></th></tr></thead>
+        <tbody id="cuerpo-ns"></tbody>
+      </table>
+    </div>
+    <div class="chips" id="chips-ns" style="margin-top:0.7rem"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. La fila que no cambia</h2>
+    <p style="margin-top:0;margin-bottom:0.3rem">El namespace de usuario trae el mismo número a
+    los dos lados. ¿Qué consecuencia tiene?</p>
+    <div class="opciones" id="op-user">
+      <button data-op="correcta">El <code>root</code> del contenedor es el <code>root</code> de la máquina: quien salga del namespace de montaje sale con UID 0 real</button>
+      <button data-op="suerte">Es una coincidencia de números, sin efecto</button>
+      <button data-op="root">Significa que dentro del contenedor no hay usuario <code>root</code></button>
+      <button data-op="bug">Es un defecto de esta instalación de Docker</button>
+    </div>
+    <div id="ver-user" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Levantarlo con la red del anfitrión</h2>
+    <div class="codigo">
+      <div class="linea"><span class="num">$</span><span class="txt">docker run -d --name web2 --network host nginx:alpine</span></div>
+    </div>
+    <p style="margin-top:0.6rem;margin-bottom:0.3rem">¿Qué cambia en la tabla del primer
+    apartado si el contenedor se levanta así?</p>
+    <div class="opciones" id="op-host">
+      <button data-op="correcta">El identificador <code>net</code> pasa a coincidir con el del anfitrión y los otros tres siguen distintos</button>
+      <button data-op="todos">Todos los identificadores coinciden: el contenedor deja de estar aislado</button>
+      <button data-op="ninguno">Ninguno cambia: la bandera solo afecta al mapeo de puertos</button>
+      <button data-op="pid">Coinciden <code>net</code> y <code>pid</code>, porque la red depende del árbol de procesos</button>
+    </div>
+    <div id="ver-host" class="veredicto"></div>
+    <div class="nota">Cada bandera de ese tipo quita un namespace de la lista. El contenedor
+    sigue siendo un proceso con cgroup propio, solo que con una frontera menos.</div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Namespace o cgroup</h2>
+    <p style="margin-top:0">Los namespaces deciden qué ve el proceso; los cgroups, cuánto
+    consume. Clasifique cada pregunta según el mecanismo que la responde.</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Pregunta</th><th>Mecanismo</th><th>Respuesta</th></tr></thead>
+        <tbody id="cuerpo-mec"></tbody>
+      </table>
+    </div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-reiniciar-mec">Empezar de nuevo</button>
+      <span class="progreso" id="progreso-mec"></span>
+    </div>
+    <div class="alerta" id="nota-mec" hidden>Las tres del cgroup se leen en
+    <code>/sys/fs/cgroup</code>: <code>cpu.max</code>, <code>memory.max</code> y
+    <code>pids.max</code>. Las tres del namespace se notan al mirar: <code>ps</code> no ve los
+    procesos del anfitrión, <code>ip addr</code> no ve sus interfaces y
+    <code>hostname</code> devuelve el identificador del contenedor. Ninguna herramienta de
+    dentro informa el límite del cgroup, y de ahí sale el error de dimensionar un
+    <em>pool</em> con <code>nproc</code>.</div>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="namespaces.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

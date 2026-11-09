@@ -42,7 +42,9 @@ var Motor = (function () {
 
   /* Conecta una caja de prediccion: el boton lee el numero, lo compara con
      lo que devuelva esperado() y escribe en la caja de veredicto el texto
-     que arme explicar(bien, esperado, dicho).                              */
+     que arme explicar(bien, esperado, dicho). El texto se pinta como HTML,
+     de modo que admite <code> y <b>; un signo menor que literal va escrito
+     como &lt;.                                                             */
   function conectarPrediccion(ids, esperado, explicar) {
     var caja = document.getElementById(ids.veredicto);
     document.getElementById(ids.boton).addEventListener("click", function () {
@@ -50,7 +52,7 @@ var Motor = (function () {
       var real = esperado();
       var v = veredictoNumerico(dicho, real);
       caja.className = "veredicto " + (v.bien ? "bien" : "mal");
-      caja.textContent = isNaN(dicho) ? v.motivo : explicar(v.bien, real, dicho);
+      caja.innerHTML = isNaN(dicho) ? v.motivo : explicar(v.bien, real, dicho);
     });
   }
 
@@ -62,7 +64,7 @@ var Motor = (function () {
       b.addEventListener("click", function () {
         var op = b.dataset.op;
         caja.className = "veredicto " + (op === "correcta" ? "bien" : "mal");
-        caja.textContent = razones[op];
+        caja.innerHTML = razones[op];
       });
     });
   }

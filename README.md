@@ -29,6 +29,14 @@ directo, quita el enlace.
 Por eso las actividades se sirven desde el mismo origen que los apuntes: entre
 dominios distintos el navegador recorta el referente y el enlace se pierde.
 
+## El veredicto admite etiquetas
+
+Las piezas compartidas de un curso, como `infra/comun/motor.js`, escriben la
+caja de veredicto con `innerHTML`, de modo que un texto de retroalimentación
+puede llevar `<code>` o `<b>`. Lo que cuesta encontrar es el caso contrario: un
+signo menor que literal, como en `C(x) < C(y)`, se escribe `&lt;` o el
+navegador se come lo que sigue.
+
 ## Cómo se nombra una actividad
 
 El título dice el **tema**, nunca el curso ni el número de clase. Una actividad
@@ -49,7 +57,7 @@ tabla no existe para quien busca.
 
 ## Catálogo
 
-Son 485 actividades. El enlace lleva al archivo; para verlas funcionando hay que
+Son 527 actividades. El enlace lleva al archivo; para verlas funcionando hay que
 abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 
 ### Árboles y Grafos — `ayg-puj`
@@ -422,10 +430,17 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 
 | Tema | Actividad | Qué pide |
 |---|---|---|
-| `docker-imagenes` | [`capas-cache`](infra/docker-imagenes/capas-cache.html) | las capas y dónde se rompe la caché |
+| `docker-imagenes` | [`buenas-practicas`](infra/docker-imagenes/buenas-practicas.html) | seis problemas de un Dockerfile y el archivo corregido |
+|  | [`capas-cache`](infra/docker-imagenes/capas-cache.html) | las capas y dónde se rompe la caché |
 |  | [`ciclo-vida`](infra/docker-imagenes/ciclo-vida.html) | el ciclo de vida y la parada ordenada |
+|  | [`dockerfile`](infra/docker-imagenes/dockerfile.html) | armar las ocho instrucciones, EXPOSE, CMD y ENTRYPOINT |
 |  | [`imagen-contenedor`](infra/docker-imagenes/imagen-contenedor.html) | imagen, contenedor y lo que el proceso cree |
+|  | [`namespaces`](infra/docker-imagenes/namespaces.html) | los cinco identificadores a los dos lados y lo que limita el cgroup |
+|  | [`puertos`](infra/docker-imagenes/puertos.html) | el mapeo, el servicio que escucha en su loopback y quién hizo la petición |
+|  | [`redes`](infra/docker-imagenes/redes.html) | siete pings, dos redes y los dos modos de fallar |
+|  | [`registros`](infra/docker-imagenes/registros.html) | las partes del nombre de una imagen y el tag que se despliega |
 |  | [`tamanos`](infra/docker-imagenes/tamanos.html) | dónde está el peso de una imagen |
+|  | [`volumenes`](infra/docker-imagenes/volumenes.html) | la capa escribible, el volumen y lo que se lleva prune |
 | `estrategias-de-paralelizacion` | [`balanceo`](infra/estrategias-de-paralelizacion/balanceo.html) | 64 tareas que no cuestan lo mismo |
 |  | [`elegir`](infra/estrategias-de-paralelizacion/elegir.html) | qué estrategia pide cada problema |
 |  | [`granularidad`](infra/estrategias-de-paralelizacion/granularidad.html) | cuándo repartir cuesta más que calcular |

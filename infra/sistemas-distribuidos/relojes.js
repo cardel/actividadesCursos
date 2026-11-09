@@ -103,7 +103,7 @@ var RAZONES_ORDEN = {
   correcta: "Es la respuesta. Ningún mensaje lleva de c hasta d: m3 sale de P2 después de c, " +
     "pero llega a P1 después de d. Los dos eventos son concurrentes, y aun así " +
     "C(c) = " + valorDe("c") + " es menor que C(d) = " + valorDe("d") + ". Lamport garantiza " +
-    "una sola dirección: si x ocurre antes que y, entonces C(x) < C(y). La recíproca es falsa.",
+    "una sola dirección: si x ocurre antes que y, entonces C(x) &lt; C(y). La recíproca es falsa.",
   antes: "Los números lo sugieren, y es la trampa. Para que c ocurra antes que d tendría que " +
     "haber una cadena de mensajes de P2 a P1 que llegue antes de d, y m3 llega después. Un " +
     "reloj menor no prueba nada sobre el orden.",

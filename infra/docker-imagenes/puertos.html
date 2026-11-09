@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El servicio en marcha: puertos, registros y quién llamó</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>El servicio en marcha: puertos, registros y quién llamó</h1>
+  <p class="intro">El contenedor arrancó y responde. Las tres órdenes de diagnóstico dicen por
+  qué puerto se llega, qué escribió el servicio y desde dónde le entró la petición, y cada
+  número de su salida sale de un sitio concreto.</p>
+
+  <div class="carta">
+    <h2>1. El mapeo de puerto</h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker run -d -p 8081:5000 --name hola hola-mundo:clase</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">a1dc782247fd987f5fdfd00b20c1f673cde47a6cce83ce4e80818eb8d92c74e9</span></div>
+    </div>
+    <div class="prediccion">
+      <span>¿A qué puerto se le hace <code>curl</code> desde el anfitrión?</span>
+      <input type="number" id="pred-puerto" min="1" max="65535" step="1" placeholder="puerto">
+      <button id="btn-puerto" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-puerto" class="veredicto"></div>
+    <div class="chips" id="chips-puerto" style="margin-top:0.7rem"></div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">Y <code>curl http://localhost:5000</code>
+    desde el anfitrión, ¿qué devuelve?</p>
+    <div class="opciones" id="op-cinco-mil">
+      <button data-op="correcta"><code>Connection refused</code>: en el anfitrión no hay nada escuchando en el 5000</button>
+      <button data-op="igual">Lo mismo que el 8081: los dos puertos llevan al servicio</button>
+      <button data-op="lento">Lo mismo, pero sin pasar por la traducción, así que responde más rápido</button>
+      <button data-op="otro">La respuesta de otro contenedor de la misma imagen</button>
+    </div>
+    <div id="ver-cinco-mil" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Cuando el servicio escucha en su propio loopback</h2>
+    <div class="codigo">
+      <div class="linea bloque-2"><span class="num">1</span><span class="txt">app.run(port=5000)                      # Flask escucha en 127.0.0.1</span></div>
+      <div class="linea bloque-1"><span class="num">2</span><span class="txt">app.run(host="0.0.0.0", port=5000)      # escucha en todas las interfaces</span></div>
+    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">Con la primera versión y
+    <code>-p 8080:5000</code>, el <code>curl</code> desde el anfitrión devuelve
+    <code>Connection reset</code>. ¿Por qué?</p>
+    <div class="opciones" id="op-loopback">
+      <button data-op="correcta">El mapeo entra por la interfaz del contenedor, y el servicio solo atiende en su loopback: desde dentro responde, desde fuera no</button>
+      <button data-op="mapeo">El mapeo está al revés: debería ser <code>-p 5000:8080</code></button>
+      <button data-op="firewall">El cortafuegos del anfitrión corta el 8080</button>
+      <button data-op="arranque">El contenedor se cayó al arrancar y no hay nada escuchando</button>
+    </div>
+    <div id="ver-loopback" class="veredicto"></div>
+    <div class="nota">El síntoma se separa del segundo caso con <code>docker logs</code>: si el
+    servicio arrancó, las líneas de Flask están ahí y dicen en qué direcciones quedó
+    escuchando.</div>
+  </div>
+
+  <div class="carta">
+    <h2>3. De dónde sale cada número</h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">curl -s http://localhost:8081</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">{"host":"a1dc782247fd","mensaje":"Hola desde el contenedor","version":"0.1.0"}</span></div>
+      <div class="linea bloque-2"><span class="num">$</span><span class="txt">docker port hola</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">5000/tcp -&gt; 0.0.0.0:8081</span></div>
+    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">El JSON trae
+    <code>"host":"a1dc782247fd"</code>, que es lo que devolvió <code>socket.gethostname()</code>
+    dentro del contenedor. ¿De dónde viene ese texto?</p>
+    <div class="opciones" id="op-host">
+      <button data-op="correcta">Son los doce primeros caracteres del identificador del contenedor: el namespace <code>uts</code> lo puso como nombre de la máquina</button>
+      <button data-op="imagen">Es un identificador de la imagen, igual en todos sus contenedores</button>
+      <button data-op="anfitrion">Es el nombre de la máquina anfitriona</button>
+      <button data-op="nombre">Es el nombre que puso <code>--name</code>, abreviado</button>
+    </div>
+    <div id="ver-host" class="veredicto"></div>
+    <div class="envoltura-tabla" style="margin-top:0.6rem">
+      <table>
+        <thead><tr><th>Dónde aparece</th><th>Qué se lee</th></tr></thead>
+        <tbody id="cuerpo-numeros"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Quién hizo la petición</h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker logs hola</span></div>
+      <div class="linea"><span class="num"></span><span class="txt"> * Running on http://127.0.0.1:5000</span></div>
+      <div class="linea"><span class="num"></span><span class="txt"> * Running on http://172.17.0.2:5000</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">172.17.0.1 - - [09/Sep/2026 01:06:15] "GET / HTTP/1.1" 200 -</span></div>
+    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">El registro dice que la petición llegó de
+    <code>172.17.0.1</code>, y el <code>curl</code> se hizo en el anfitrión. ¿Qué es esa
+    dirección?</p>
+    <div class="opciones" id="op-gateway">
+      <button data-op="correcta">La puerta de enlace de la red <code>bridge</code>: la petición entró por el mapeo y el anfitrión aparece con la dirección que tiene en esa red</button>
+      <button data-op="contenedor">La dirección del contenedor, que se llamó a sí mismo</button>
+      <button data-op="externa">Una dirección de Internet: alguien llamó desde fuera</button>
+      <button data-op="docker">La dirección del demonio de Docker, que reenvía todas las peticiones</button>
+    </div>
+    <div id="ver-gateway" class="veredicto"></div>
+    <div class="nota">El contenedor quedó en <code>172.17.0.2</code> y la puerta de enlace en
+    <code>172.17.0.1</code>: dos direcciones de la misma red, una del contenedor y otra del
+    anfitrión. Por eso el servicio nunca ve la dirección real de quien llamó cuando la
+    petición pasa por un mapeo.</div>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="puertos.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

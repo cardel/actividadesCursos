@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lo que sobrevive al contenedor</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Lo que sobrevive al contenedor</h1>
+  <p class="intro">La capa escribible nace con el contenedor y muere con él. Siga la secuencia
+  que lo demuestra con un archivo de texto, repítala con una base de datos de verdad y decida
+  qué pasa cuando dos contenedores montan el mismo volumen.</p>
+
+  <div class="carta">
+    <h2>1. Un archivo que no estaba</h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker run --name efimero alpine sh -c 'echo dato &gt; /archivo.txt; cat /archivo.txt'</span></div>
+      <div class="linea bloque-2"><span class="num">$</span><span class="txt">docker rm efimero</span></div>
+      <div class="linea bloque-3"><span class="num">$</span><span class="txt">docker run --rm alpine cat /archivo.txt</span></div>
+    </div>
+    <div class="secuencia" id="estado-volumen"></div>
+    <div class="botones" style="margin-top:0.5rem">
+      <button id="btn-paso" class="primario">Ejecutar el siguiente paso</button>
+      <button id="btn-reiniciar">Volver al inicio</button>
+      <span class="progreso" id="progreso-pasos"></span>
+    </div>
+    <div class="envoltura-tabla" style="margin-top:0.6rem">
+      <table>
+        <thead><tr><th>Paso</th><th>Resultado</th><th>Dónde vivía el dato</th></tr></thead>
+        <tbody id="cuerpo-pasos"></tbody>
+      </table>
+    </div>
+    <div class="alerta" id="nota-pasos" hidden>El tercer contenedor es otro: arranca de las
+    mismas capas de la imagen, en modo lectura, y con una capa escribible vacía. El archivo no
+    desapareció del disco al leerlo, desapareció al borrar el contenedor que lo tenía.</div>
+  </div>
+
+  <div class="carta">
+    <h2>2. La misma secuencia con una base de datos</h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker volume create pgdata</span></div>
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker run -d --name pg -e POSTGRES_PASSWORD=clave -v pgdata:/var/lib/postgresql/data postgres:16-alpine</span></div>
+      <div class="linea bloque-2"><span class="num">$</span><span class="txt">docker exec -it pg psql -U postgres -c "CREATE TABLE nota(t text); INSERT INTO nota VALUES ('persiste');"</span></div>
+      <div class="linea bloque-3"><span class="num">$</span><span class="txt">docker rm -f pg   # y se vuelve a levantar igual</span></div>
+      <div class="linea bloque-3"><span class="num">$</span><span class="txt">docker exec -it pg psql -U postgres -c "SELECT * FROM nota;"</span></div>
+    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">¿Qué devuelve ese último
+    <code>SELECT</code>?</p>
+    <div class="opciones" id="op-pg">
+      <button data-op="correcta"><code>persiste</code>: la tabla y su fila están en el volumen, no en el contenedor</button>
+      <button data-op="vacia">La tabla existe pero sin filas: el contenedor nuevo la volvió a crear</button>
+      <button data-op="error"><code>relation "nota" does not exist</code>: el contenedor se recreó desde cero</button>
+      <button data-op="conexion">Un error de conexión: la base de datos tarda en volver a arrancar</button>
+    </div>
+    <div id="ver-pg" class="veredicto"></div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">Y la misma secuencia sin
+    <code>-v</code>, ¿qué devuelve?</p>
+    <div class="opciones" id="op-sin-volumen">
+      <button data-op="correcta"><code>relation "nota" does not exist</code>: al recrear el contenedor la base se inicializa vacía</button>
+      <button data-op="persiste">Lo mismo, <code>persiste</code>: Postgres guarda sus datos en la imagen</button>
+      <button data-op="niega">Un error de permisos: sin volumen el directorio de datos no se puede escribir</button>
+      <button data-op="arranca">Nada: sin <code>-v</code> el contenedor no arranca</button>
+    </div>
+    <div id="ver-sin-volumen" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Un volumen, dos contenedores</h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker run -d --name escritor -v datos:/var/datos alpine \</span></div>
+      <div class="linea bloque-1"><span class="num"> </span><span class="txt">  sh -c 'while true; do date &gt;&gt; /var/datos/log.txt; sleep 5; done'</span></div>
+      <div class="linea bloque-2"><span class="num">$</span><span class="txt">docker run --rm -v datos:/var/datos alpine tail -n 3 /var/datos/log.txt</span></div>
+    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">El segundo contenedor no escribió nada y
+    se borra al salir. ¿Qué imprime su <code>tail</code>?</p>
+    <div class="opciones" id="op-compartido">
+      <button data-op="correcta">Las tres últimas fechas que escribió el otro contenedor: los dos montan el mismo volumen</button>
+      <button data-op="vacio">Nada, porque el archivo vive en la capa escribible del escritor</button>
+      <button data-op="noexiste">Un error: <code>log.txt</code> no existe para este contenedor</button>
+      <button data-op="copia">Una copia del archivo congelada en el momento del montaje</button>
+    </div>
+    <div id="ver-compartido" class="veredicto"></div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">Y <code>docker volume prune</code>, ¿qué
+    borra?</p>
+    <div class="opciones" id="op-prune">
+      <button data-op="correcta">Los volúmenes que ningún contenedor está usando, incluidos los de contenedores ya borrados</button>
+      <button data-op="todos">Todos los volúmenes de la máquina</button>
+      <button data-op="contenido">El contenido de los volúmenes, dejándolos vacíos</button>
+      <button data-op="imagenes">Las imágenes y las capas que ninguna imagen usa</button>
+    </div>
+    <div id="ver-prune" class="veredicto"></div>
+    <div class="nota">Un volumen que nadie monta no avisa de que está ahí, y ocupa lo que
+    ocupaba: <code>docker volume ls</code> los lista y <code>docker volume inspect</code> dice
+    en qué ruta del anfitrión quedó cada uno.</div>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="volumenes.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

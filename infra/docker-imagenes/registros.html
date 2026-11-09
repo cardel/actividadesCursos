@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El nombre de una imagen y de dónde se baja</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>El nombre de una imagen y de dónde se baja</h1>
+  <p class="intro">El nombre de una imagen dice de qué registro sale, de quién es y qué versión
+  se baja, y lo que no está escrito lo completa Docker por su cuenta. Separe las partes de los
+  nombres que se usaron en la sesión y decida qué tag sirve para producción.</p>
+
+  <div class="carta">
+    <h2>1. Las partes del nombre</h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num"></span><span class="txt">registro/usuario/imagen:tag</span></div>
+    </div>
+    <p style="margin-top:0.7rem">Estos cuatro nombres aparecieron en la sesión. Destape las
+    partes de cada uno:</p>
+    <div class="botones">
+      <button id="btn-partes" class="primario">Separar las partes</button>
+      <button id="btn-tapar">Volver a taparlas</button>
+    </div>
+    <div class="envoltura-tabla" style="margin-top:0.6rem">
+      <table>
+        <thead><tr><th>Nombre escrito</th><th>Registro</th><th>Usuario</th><th>Imagen</th><th>Tag</th></tr></thead>
+        <tbody id="cuerpo-partes"></tbody>
+      </table>
+    </div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">En
+    <code>cardel87/hola-mundo:0.1.0</code> falta una de las cuatro partes. ¿Cuál, y qué pasa
+    con ella?</p>
+    <div class="opciones" id="op-falta">
+      <button data-op="correcta">El registro: si no se escribe, Docker asume Docker Hub</button>
+      <button data-op="tag">El tag: sin él la descarga falla</button>
+      <button data-op="usuario">El usuario: <code>cardel87</code> es el nombre de la imagen</button>
+      <button data-op="ninguna">Ninguna: las cuatro partes están ahí</button>
+    </div>
+    <div id="ver-falta" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Publicar y descargar</h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker tag hola-mundo cardel87/hola-mundo:0.1.0</span></div>
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker login</span></div>
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker push cardel87/hola-mundo:0.1.0</span></div>
+      <div class="linea bloque-2"><span class="num">$</span><span class="txt">docker pull cardel87/hola-mundo:0.1.0   # en otra maquina</span></div>
+    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">La imagen ya existía como
+    <code>hola-mundo</code>. ¿Para qué hace falta la primera orden?</p>
+    <div class="opciones" id="op-tag">
+      <button data-op="correcta">Para darle un nombre que diga a qué cuenta del registro va: sin eso, <code>push</code> no sabe dónde publicarla</button>
+      <button data-op="copia">Para hacer una copia de la imagen, que es la que se publica</button>
+      <button data-op="comprime">Para empaquetar las capas en un archivo que se pueda subir</button>
+      <button data-op="version">Para incrementar la versión de la imagen</button>
+    </div>
+    <div id="ver-tag" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. El tag que se despliega</h2>
+    <p style="margin-top:0;margin-bottom:0.3rem">Dos despliegues seguidos de
+    <code>cardel87/hola-mundo:latest</code> pueden traer imágenes distintas. ¿Por qué?</p>
+    <div class="opciones" id="op-latest">
+      <button data-op="correcta">Porque <code>latest</code> no está fijo: apunta a lo último que alguien haya publicado con ese tag</button>
+      <button data-op="cache">Porque la caché del segundo despliegue reutiliza capas viejas</button>
+      <button data-op="azar">Porque el registro reparte entre varias copias de la imagen</button>
+      <button data-op="nunca">No pueden: un tag siempre apunta a la misma imagen</button>
+    </div>
+    <div id="ver-latest" class="veredicto"></div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">¿Con qué se reemplaza en producción?</p>
+    <div class="opciones" id="op-fijar">
+      <button data-op="correcta">Con una versión semántica, <code>0.1.0</code>, o con el digest <code>sha256:…</code>, que identifica un contenido exacto</button>
+      <button data-op="fecha">Con la fecha del despliegue en el nombre de la imagen</button>
+      <button data-op="pull">Con <code>docker pull</code> antes de cada arranque</button>
+      <button data-op="local">Construyendo la imagen en cada máquina en vez de bajarla</button>
+    </div>
+    <div id="ver-fijar" class="veredicto"></div>
+    <div class="nota">Es el mismo problema del <code>FROM imagen:latest</code> en el
+    <code>Dockerfile</code>, una capa más arriba: ahí cambia la base con que se construye y
+    aquí, la imagen que se ejecuta.</div>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="registros.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

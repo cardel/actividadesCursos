@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seis problemas en un Dockerfile</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Seis problemas en un Dockerfile</h1>
+  <p class="intro">Este archivo construye y la aplicación arranca, y aun así tiene seis cosas
+  que se pagan después: en la caché, en el tamaño, en la seguridad y en cada despliegue.
+  Encuéntrelas, diga qué le falta y compare con el corregido.</p>
+
+  <div class="carta">
+    <h2>1. Marque los problemas</h2>
+    <p style="margin-top:0">Haga clic en cada línea que convenga cambiar. Hay seis problemas y
+    una de las líneas está bien.</p>
+    <div class="codigo" id="codigo-malo"></div>
+    <div id="ver-linea" class="veredicto"></div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-reiniciar-malo">Empezar de nuevo</button>
+      <span class="progreso" id="progreso-malo"></span>
+    </div>
+    <div class="chips" id="chips-malo" style="margin-top:0.7rem"></div>
+    <div class="alerta" id="nota-malo" hidden>Los seis se pagan en momentos distintos: el tag
+    móvil, en la construcción que un día deja de reproducirse; el contexto arriba y la caché de
+    <code>pip</code>, en el tiempo y el peso de cada imagen; la contraseña, en cuanto alguien
+    descarga la imagen; la forma del <code>CMD</code>, en cada parada.</div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Lo que falta y no se puede marcar</h2>
+    <p style="margin-top:0;margin-bottom:0.3rem">Hay un problema que no está en ninguna línea
+    porque es una instrucción ausente. ¿Cuál?</p>
+    <div class="opciones" id="op-falta">
+      <button data-op="correcta">Un <code>USER</code>: sin él la aplicación corre como <code>root</code> dentro del contenedor</button>
+      <button data-op="healthcheck">Un <code>HEALTHCHECK</code> que diga si el servicio responde</button>
+      <button data-op="expose">Un <code>EXPOSE</code> que abra el puerto del servicio</button>
+      <button data-op="volume">Un <code>VOLUME</code> para los datos de la aplicación</button>
+    </div>
+    <div id="ver-falta" class="veredicto"></div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">Con la instrucción puesta, ¿qué debe
+    mostrar <code>docker run --rm app:bueno id</code>?</p>
+    <div class="opciones" id="op-id">
+      <button data-op="correcta">Un UID distinto de 0, el del usuario creado con <code>useradd</code></button>
+      <button data-op="cero"><code>uid=0(root)</code>, que es el usuario del contenedor</button>
+      <button data-op="anfitrion">El UID de quien ejecutó <code>docker run</code> en el anfitrión</button>
+      <button data-op="vacio">Nada: <code>id</code> no funciona dentro de un contenedor</button>
+    </div>
+    <div id="ver-id" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. El archivo corregido</h2>
+    <div class="codigo" id="codigo-bueno"></div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">Las líneas resaltadas son las que
+    cambiaron. ¿Cuál de esos cambios evita que la caché de <code>pip</code> viaje dentro de la
+    imagen?</p>
+    <div class="opciones" id="op-cache">
+      <button data-op="correcta"><code>--no-cache-dir</code> en el <code>pip install</code></button>
+      <button data-op="version">La versión fija en la imagen base</button>
+      <button data-op="user">El <code>USER appuser</code></button>
+      <button data-op="orden">Copiar <code>requirements.txt</code> antes del código</button>
+    </div>
+    <div id="ver-cache" class="veredicto"></div>
+    <div class="nota">Lo que se descarga durante un <code>RUN</code> queda en la capa que ese
+    <code>RUN</code> escribe, y borrarlo en una instrucción posterior no lo quita: la capa
+    anterior sigue ahí. Por eso la limpieza va dentro de la misma orden que lo creó.</div>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="buenas-practicas.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
