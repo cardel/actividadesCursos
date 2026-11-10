@@ -102,10 +102,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Mismo preorden, mismo inorden", columna: true, correcta: "derecha",
           html: "<p>Un árbol binario de varios nodos tiene el preorden igual a su inorden. ¿Qué se puede decir de él?</p>",
           opciones: [
-            { op: "derecha", texto: "Ningún nodo tiene hijo izquierdo", msg: "Correcto. Si un nodo tuviera hijo izquierdo, en preorden saldría antes que ese hijo y en inorden después. Sin hijos izquierdos, los dos imprimen cada nodo al llegar a él: el árbol es una cadena que baja hacia la derecha." },
-            { op: "lleno", texto: "Es un árbol lleno", msg: "En un árbol lleno la raíz sale primera en preorden y a la mitad en inorden." },
             { op: "uno", texto: "Tiene un solo nodo", msg: "Con un nodo pasa, pero también con 1, 2, 3 colgados cada uno a la derecha del anterior: los dos dan 1 2 3." }
-          ] }
+          ,
+            { op: "derecha", texto: "Ningún nodo tiene hijo izquierdo", msg: "Correcto. Si un nodo tuviera hijo izquierdo, en preorden saldría antes que ese hijo y en inorden después. Sin hijos izquierdos, los dos imprimen cada nodo al llegar a él: el árbol es una cadena que baja hacia la derecha." },
+            { op: "lleno", texto: "Es un árbol lleno", msg: "En un árbol lleno la raíz sale primera en preorden y a la mitad en inorden." }] }
       ]
     };
   }

@@ -156,11 +156,11 @@
       pregunta: "Las cinco palabras son sol, sal, mar, luna y mes. ¿Qué imprime?",
       cierre: CUENTAS + ". El map recorre el mapa agrupado como recorrería cualquier colección de parejas, y cambia cada grupo por su largo. Tres entradas: sol y sal con s, mar y mes con m, luna con l.",
       opciones: [
+        { txt: "HashMap(l -> 1, m -> 2, s -> 2)", fallo: "Las tres entradas y sus cuentas son esas, y el orden no es el que salió: lo corrido imprimió " + CUENTAS + ". Un mapa no promete orden, de modo que el de la salida se lee, no se deduce.", larga: true }
+      ,
         { txt: CUENTAS, correcta: true, larga: true },
         { txt: "HashMap(s -> 3, m -> 1, l -> 1)", fallo: "mes empieza con m, no con s. Los grupos quedan sol y sal con s, mar y mes con m, luna con l, de modo que lo impreso es " + CUENTAS + ".", larga: true },
-        { txt: "Map(s -> 2, m -> 2, l -> 1)", fallo: "Las tres cuentas son esas, y el nombre impreso es HashMap. Lo que sale al imprimir incluye la implementación que sostiene el mapa.", larga: true },
-        { txt: "HashMap(l -> 1, m -> 2, s -> 2)", fallo: "Las tres entradas y sus cuentas son esas, y el orden no es el que salió: lo corrido imprimió " + CUENTAS + ". Un mapa no promete orden, de modo que el de la salida se lee, no se deduce.", larga: true }
-      ]
+        { txt: "Map(s -> 2, m -> 2, l -> 1)", fallo: "Las tres cuentas son esas, y el nombre impreso es HashMap. Lo que sale al imprimir incluye la implementación que sostiene el mapa.", larga: true }]
     },
     {
       expr: CAPITAL + "   ·   " + CUENTAS,

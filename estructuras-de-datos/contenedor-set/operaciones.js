@@ -124,10 +124,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Sin el count", columna: true, correcta: "igual",
           html: "<p>Si el <code>if</code> se cambia por un <code>buses.insert(pasan[i]);</code> a secas, ¿qué pasa con el set?</p>",
           opciones: [
-            { op: "igual", texto: "Queda igual: insert de una clave que ya está no hace nada. Lo que se pierde es la cuenta de repetidos.", msg: "Correcto. insert busca la clave y, si la encuentra, no la agrega. Para contar repetidos hace falta saber si estaba." },
-            { op: "dobles", texto: "Quedan los repetidos dos veces y size() vale 10.", msg: "El set nunca guarda una clave dos veces. Para contar repeticiones se usa un map con la cuenta." },
             { op: "error", texto: "El programa falla al insertar el segundo 18.", msg: "Insertar una clave que ya está es válido; simplemente no cambia nada." }
-          ] }
+          ,
+            { op: "igual", texto: "Queda igual: insert de una clave que ya está no hace nada. Lo que se pierde es la cuenta de repetidos.", msg: "Correcto. insert busca la clave y, si la encuentra, no la agrega. Para contar repetidos hace falta saber si estaba." },
+            { op: "dobles", texto: "Quedan los repetidos dos veces y size() vale 10.", msg: "El set nunca guarda una clave dos veces. Para contar repeticiones se usa un map con la cuenta." }] }
       ]
     };
   }

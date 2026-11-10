@@ -100,10 +100,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Antes del primero", columna: true, correcta: "begin",
           html: "<p>Alguien cambia el 52 por un 5 en las dos líneas del anterior: <code>it = t.lower_bound(5); --it;</code>. ¿Qué pasa?</p>",
           opciones: [
-            { op: "begin", texto: "lower_bound(5) es begin(), el 12, y antes de begin() no hay nada: retroceder ahí es un error del programa.", msg: "Correcto. Antes de retroceder hay que preguntar si el iterador es begin(). Si lo es, no hay tren antes." },
             { op: "end", texto: "--it da end(), y la línea imprime basura sin más consecuencias.", msg: "end() queda después del mayor, no antes del menor. Retroceder desde begin() no tiene ningún lugar válido a donde ir." },
             { op: "ultimo", texto: "--it da la vuelta y llega al 86, el último.", msg: "El set no es circular: retroceder desde begin() no lleva al último." }
-          ] },
+          ,
+            { op: "begin", texto: "lower_bound(5) es begin(), el 12, y antes de begin() no hay nada: retroceder ahí es un error del programa.", msg: "Correcto. Antes de retroceder hay que preguntar si el iterador es begin(). Si lo es, no hay tren antes." }] },
         { tipo: "opciones", titulo: "El lower_bound de afuera", columna: true, correcta: "lineal",
           html: "<p>En lugar de <code>t.lower_bound(a)</code>, alguien escribe <code>lower_bound(t.begin(), t.end(), a)</code>, el de <code>&lt;algorithm&gt;</code>. Con n salidas, ¿qué cuesta?</p>",
           opciones: [

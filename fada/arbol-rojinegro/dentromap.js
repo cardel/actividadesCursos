@@ -72,10 +72,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Rutas que llegan en orden", columna: true, correcta: "log",
           html: "<p>Una empresa crea sus rutas con números consecutivos 1, 2, 3, … y las guarda en un map. Ya van n. ¿Cuánto cuesta <code>lineas[k]</code> para una ruta que existe?</p>",
           opciones: [
-            { op: "log", texto: "O(log n), también en el peor caso.", msg: "Correcto. Las claves en orden habrían hecho una lista con el ABB del curso. El rojinegro se repara en cada inserción y su altura queda en O(log n)." },
-            { op: "n", texto: "Θ(n): con claves crecientes el árbol se vuelve una lista.", msg: "Eso le pasa al ABB sin balancear. El map rota y recolorea al insertar, y nunca degenera." },
             { op: "uno", texto: "O(1) en promedio, como en un unordered_map.", msg: "El map compara un nodo por nivel. El O(1) en promedio es de la tabla hash." }
-          ] },
+          ,
+            { op: "log", texto: "O(log n), también en el peor caso.", msg: "Correcto. Las claves en orden habrían hecho una lista con el ABB del curso. El rojinegro se repara en cada inserción y su altura queda en O(log n)." },
+            { op: "n", texto: "Θ(n): con claves crecientes el árbol se vuelve una lista.", msg: "Eso le pasa al ABB sin balancear. El map rota y recolorea al insertar, y nunca degenera." }] },
         { tipo: "respuesta", titulo: "Trescientas mil rutas",
           html: "<p>Un map guarda " + N + " claves. ¿Cuál es la mayor altura que permite la cota h &lt; 2 log₂(n + 1)? ¿Cuántas comparaciones hace, como mucho, una búsqueda? ¿Y en un ABB sin balancear, en el peor caso?</p>",
           campos: [

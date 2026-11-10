@@ -45,13 +45,6 @@ var EJERCICIO = (function () {
       dominio: ARREGLO, tipo: "arreglo", prueba: { vals: [3, 9, 10, 12], minN: 0, maxN: 3 },
       ref: function (A) { return A.every(function (x) { return x < 10; }); },
       opciones: [
-        { f: "∀i (0 ≤ i < n ∧ A[i] < 10)",
-          ev: function (A) { var n = A.length; return todos(n, function (i) { return dentro(i, 0, n) && A[i] < 10; }); },
-          por: "Con ∧ la fórmula exige que todo entero i esté entre 0 y n − 1. Con i = −1 eso falla, así que es falsa para cualquier arreglo.",
-          contra: [3, 4] },
-        { f: "∀i (0 ≤ i < n → A[i] < 10)", ok: true,
-          ev: function (A) { var n = A.length; return todos(n, function (i) { return !dentro(i, 0, n) || A[i] < 10; }); },
-          por: "El rango va como antecedente de la implicación. En las posiciones de A se exige A[i] < 10; en cualquier otro entero el antecedente es falso y la implicación se cumple sola." },
         { f: "∃i (0 ≤ i < n ∧ A[i] < 10)",
           ev: function (A) { var n = A.length; return alguno(n, function (i) { return dentro(i, 0, n) && A[i] < 10; }); },
           por: "Dice que al menos un elemento es menor que 10, no que todos lo sean.",
@@ -59,13 +52,24 @@ var EJERCICIO = (function () {
         { f: "∀i (0 ≤ i ≤ n → A[i] < 10)", fuera: true,
           ev: function (A) { var n = A.length; return todos(n, function (i) { return !(0 <= i && i <= n) || A[i] < 10; }); },
           por: "El rango llega hasta i = n, y A[n] no existe: la fórmula pregunta por una casilla que está por fuera del arreglo." }
-      ]
+      ,
+        { f: "∀i (0 ≤ i < n ∧ A[i] < 10)",
+          ev: function (A) { var n = A.length; return todos(n, function (i) { return dentro(i, 0, n) && A[i] < 10; }); },
+          por: "Con ∧ la fórmula exige que todo entero i esté entre 0 y n − 1. Con i = −1 eso falla, así que es falsa para cualquier arreglo.",
+          contra: [3, 4] },
+        { f: "∀i (0 ≤ i < n → A[i] < 10)", ok: true,
+          ev: function (A) { var n = A.length; return todos(n, function (i) { return !dentro(i, 0, n) || A[i] < 10; }); },
+          por: "El rango va como antecedente de la implicación. En las posiciones de A se exige A[i] < 10; en cualquier otro entero el antecedente es falso y la implicación se cumple sola." }]
     },
     {
       frase: "Algún elemento de A es negativo.",
       dominio: ARREGLO, tipo: "arreglo", prueba: { vals: [-3, 0, 2], minN: 0, maxN: 3 },
       ref: function (A) { return A.some(function (x) { return x < 0; }); },
       opciones: [
+        { f: "∃i (0 ≤ i < n ∧ A[i] < 0)", ok: true,
+          ev: function (A) { var n = A.length; return alguno(n, function (i) { return dentro(i, 0, n) && A[i] < 0; }); },
+          por: "Pide un testigo i con A[i] < 0. Con ∃ el rango va unido por ∧, porque el testigo tiene que ser una posición del arreglo." }
+      ,
         { f: "∀i (0 ≤ i < n → A[i] < 0)",
           ev: function (A) { var n = A.length; return todos(n, function (i) { return !dentro(i, 0, n) || A[i] < 0; }); },
           por: "Pide que todos los elementos sean negativos, y la frase se conforma con uno.",
@@ -77,11 +81,7 @@ var EJERCICIO = (function () {
         { f: "∃i (1 ≤ i < n ∧ A[i] < 0)",
           ev: function (A) { var n = A.length; return alguno(n, function (i) { return dentro(i, 1, n) && A[i] < 0; }); },
           por: "El rango arranca en 1 y deja por fuera a A[0].",
-          contra: [-3, 4] },
-        { f: "∃i (0 ≤ i < n ∧ A[i] < 0)", ok: true,
-          ev: function (A) { var n = A.length; return alguno(n, function (i) { return dentro(i, 0, n) && A[i] < 0; }); },
-          por: "Pide un testigo i con A[i] < 0. Con ∃ el rango va unido por ∧, porque el testigo tiene que ser una posición del arreglo." }
-      ]
+          contra: [-3, 4] }]
     },
     {
       frase: "A tiene al menos un valor repetido.",
@@ -139,13 +139,6 @@ var EJERCICIO = (function () {
       dominio: ARREGLO, tipo: "arreglo", prueba: { vals: [0, 3, 5], minN: 0, maxN: 3 },
       ref: function (A) { return !A.some(function (x) { return x === 0; }); },
       opciones: [
-        { f: "∃i (0 ≤ i < n ∧ A[i] ≠ 0)",
-          ev: function (A) { var n = A.length; return alguno(n, function (i) { return dentro(i, 0, n) && A[i] !== 0; }); },
-          por: "Dice que hay un elemento distinto de cero; los demás pueden ser cero.",
-          contra: [0, 5] },
-        { f: "∀i (0 ≤ i < n → A[i] ≠ 0)", ok: true,
-          ev: function (A) { var n = A.length; return todos(n, function (i) { return !dentro(i, 0, n) || A[i] !== 0; }); },
-          por: "La frase es ¬∃i (0 ≤ i < n ∧ A[i] = 0). El ¬∃ pasa a ∀, y el ∧ del rango pasa a → porque ¬(p ∧ q) ≡ p → ¬q. El rango queda igual y lo único que se niega es A[i] = 0." },
         { f: "∀i (¬(0 ≤ i < n) → A[i] ≠ 0)", fuera: true,
           ev: function (A) { var n = A.length; return todos(n, function (i) { return dentro(i, 0, n) || A[i] !== 0; }); },
           por: "Niega el rango: habla de las posiciones por fuera del arreglo y no dice nada de las de adentro." },
@@ -153,13 +146,27 @@ var EJERCICIO = (function () {
           ev: function (A) { var n = A.length; return !alguno(n, function (i) { return !dentro(i, 0, n) || A[i] === 0; }); },
           por: "Dentro del ∃ el rango quedó con →. Esa fórmula interior es verdadera con i = −1 en cualquier arreglo, así que su negación es falsa siempre.",
           contra: [3, 5] }
-      ]
+      ,
+        { f: "∃i (0 ≤ i < n ∧ A[i] ≠ 0)",
+          ev: function (A) { var n = A.length; return alguno(n, function (i) { return dentro(i, 0, n) && A[i] !== 0; }); },
+          por: "Dice que hay un elemento distinto de cero; los demás pueden ser cero.",
+          contra: [0, 5] },
+        { f: "∀i (0 ≤ i < n → A[i] ≠ 0)", ok: true,
+          ev: function (A) { var n = A.length; return todos(n, function (i) { return !dentro(i, 0, n) || A[i] !== 0; }); },
+          por: "La frase es ¬∃i (0 ≤ i < n ∧ A[i] = 0). El ¬∃ pasa a ∀, y el ∧ del rango pasa a → porque ¬(p ∧ q) ≡ p → ¬q. El rango queda igual y lo único que se niega es A[i] = 0." }]
     },
     {
       frase: "No todos los elementos de A son pares.",
       dominio: ARREGLO, tipo: "arreglo", prueba: { vals: [2, 3, 4], minN: 0, maxN: 3 },
       ref: function (A) { return !A.every(function (x) { return x % 2 === 0; }); },
       opciones: [
+        { f: "∃i (0 ≤ i < n ∧ A[i] mod 2 ≠ 0)", ok: true,
+          ev: function (A) { var n = A.length; return alguno(n, function (i) { return dentro(i, 0, n) && A[i] % 2 !== 0; }); },
+          por: "El ¬∀ pasa a ∃, y ¬(p → q) ≡ p ∧ ¬q convierte la implicación del rango en una conjunción. Se niega la propiedad, no el rango." },
+        { f: "∃i (¬(0 ≤ i < n) ∧ A[i] mod 2 ≠ 0)", fuera: true,
+          ev: function (A) { var n = A.length; return alguno(n, function (i) { return !dentro(i, 0, n) && A[i] % 2 !== 0; }); },
+          por: "Niega también el rango y termina hablando de posiciones por fuera del arreglo." }
+      ,
         { f: "∀i (0 ≤ i < n → A[i] mod 2 ≠ 0)",
           ev: function (A) { var n = A.length; return todos(n, function (i) { return !dentro(i, 0, n) || A[i] % 2 !== 0; }); },
           por: "Dice que todos son impares, y eso es más fuerte que la frase. Para negar que todos son pares basta un elemento impar.",
@@ -167,20 +174,18 @@ var EJERCICIO = (function () {
         { f: "∃i (0 ≤ i < n → A[i] mod 2 ≠ 0)",
           ev: function (A) { var n = A.length; return alguno(n, function (i) { return !dentro(i, 0, n) || A[i] % 2 !== 0; }); },
           por: "Un ∃ con → se cumple con cualquier i por fuera del rango: con i = −1 la fórmula es verdadera para cualquier arreglo.",
-          contra: [2, 4] },
-        { f: "∃i (0 ≤ i < n ∧ A[i] mod 2 ≠ 0)", ok: true,
-          ev: function (A) { var n = A.length; return alguno(n, function (i) { return dentro(i, 0, n) && A[i] % 2 !== 0; }); },
-          por: "El ¬∀ pasa a ∃, y ¬(p → q) ≡ p ∧ ¬q convierte la implicación del rango en una conjunción. Se niega la propiedad, no el rango." },
-        { f: "∃i (¬(0 ≤ i < n) ∧ A[i] mod 2 ≠ 0)", fuera: true,
-          ev: function (A) { var n = A.length; return alguno(n, function (i) { return !dentro(i, 0, n) && A[i] % 2 !== 0; }); },
-          por: "Niega también el rango y termina hablando de posiciones por fuera del arreglo." }
-      ]
+          contra: [2, 4] }]
     },
     {
       frase: "Algún estudiante aprobó todas las materias.",
       dominio: MATERIAS, tipo: "materias",
       ref: function (w) { return w.E.some(function (_, e) { return w.M.every(function (__, m) { return w.ap[e][m]; }); }); },
       opciones: [
+        { f: "∀e ∀m Ap(e, m)",
+          ev: function (w) { return paraTodo(w.E.length, function (e) { return paraTodo(w.M.length, function (m) { return w.ap[e][m]; }); }); },
+          por: "Exige que todos los estudiantes aprobaran todas las materias.",
+          contra: { E: ["Carla", "Dana"], M: ["Álgebra", "Programación"], ap: [[true, true], [false, false]] } }
+      ,
         { f: "∃e ∀m Ap(e, m)", ok: true,
           ev: function (w) { return existe(w.E.length, function (e) { return paraTodo(w.M.length, function (m) { return w.ap[e][m]; }); }); },
           por: "El estudiante se escoge primero y queda fijo; después se recorren todas las materias con ese mismo estudiante." },
@@ -191,12 +196,7 @@ var EJERCICIO = (function () {
         { f: "∃e ∃m Ap(e, m)",
           ev: function (w) { return existe(w.E.length, function (e) { return existe(w.M.length, function (m) { return w.ap[e][m]; }); }); },
           por: "Dice que algún estudiante aprobó alguna materia.",
-          contra: { E: ["Carla"], M: ["Álgebra", "Programación"], ap: [[true, false]] } },
-        { f: "∀e ∀m Ap(e, m)",
-          ev: function (w) { return paraTodo(w.E.length, function (e) { return paraTodo(w.M.length, function (m) { return w.ap[e][m]; }); }); },
-          por: "Exige que todos los estudiantes aprobaran todas las materias.",
-          contra: { E: ["Carla", "Dana"], M: ["Álgebra", "Programación"], ap: [[true, true], [false, false]] } }
-      ]
+          contra: { E: ["Carla"], M: ["Álgebra", "Programación"], ap: [[true, false]] } }]
     },
     {
       frase: "Ninguna materia la perdieron todos los estudiantes.",
@@ -225,6 +225,11 @@ var EJERCICIO = (function () {
       dominio: EXAMEN, tipo: "examen",
       ref: function (w) { return w.E.every(function (_, e) { return !w.es[e] || w.pa[e]; }); },
       opciones: [
+        { f: "∃e (Es(e) ∧ Pa(e))",
+          ev: function (w) { return existe(w.E.length, function (e) { return w.es[e] && w.pa[e]; }); },
+          por: "Solo dice que alguien estudió y pasó.",
+          contra: { E: ["Ana", "Beto"], es: [true, true], pa: [true, false] } }
+      ,
         { f: "∀e (Es(e) ∧ Pa(e))",
           ev: function (w) { return paraTodo(w.E.length, function (e) { return w.es[e] && w.pa[e]; }); },
           por: "Exige que todos estudiaran y que todos pasaran. La frase no dice nada de quien no estudió.",
@@ -235,12 +240,7 @@ var EJERCICIO = (function () {
           contra: { E: ["Ana"], es: [true], pa: [false] } },
         { f: "∀e (Es(e) → Pa(e))", ok: true,
           ev: function (w) { return paraTodo(w.E.length, function (e) { return !w.es[e] || w.pa[e]; }); },
-          por: "Haber estudiado es el antecedente. Para quien no estudió la implicación es verdadera, haya pasado o no." },
-        { f: "∃e (Es(e) ∧ Pa(e))",
-          ev: function (w) { return existe(w.E.length, function (e) { return w.es[e] && w.pa[e]; }); },
-          por: "Solo dice que alguien estudió y pasó.",
-          contra: { E: ["Ana", "Beto"], es: [true, true], pa: [true, false] } }
-      ]
+          por: "Haber estudiado es el antecedente. Para quien no estudió la implicación es verdadera, haya pasado o no." }]
     },
     {
       frase: "No es cierto que todo estudiante que estudió pasó el examen.",
@@ -269,14 +269,6 @@ var EJERCICIO = (function () {
       dominio: ARREGLO, tipo: "arreglo", prueba: { vals: [1, 2, 5], minN: 1, maxN: 4 },
       ref: function (A) { return !A.some(function (x) { return x < A[0]; }); },
       opciones: [
-        { f: "∀i (1 ≤ i < n → A[0] < A[i])",
-          ev: function (A) { var n = A.length; return todos(n, function (i) { return !dentro(i, 1, n) || A[0] < A[i]; }); },
-          por: "Con < exige que el primero sea estrictamente menor que los demás, y un valor igual al primero la hace fallar.",
-          contra: [2, 2] },
-        { f: "∀i (0 ≤ i < n → A[i] ≤ A[0])",
-          ev: function (A) { var n = A.length; return todos(n, function (i) { return !dentro(i, 0, n) || A[i] <= A[0]; }); },
-          por: "Está al revés: dice que ningún elemento supera al primero.",
-          contra: [1, 5] },
         { f: "∃i (0 ≤ i < n ∧ A[0] ≤ A[i])",
           ev: function (A) { var n = A.length; return alguno(n, function (i) { return dentro(i, 0, n) && A[0] <= A[i]; }); },
           por: "Con i = 0 se cumple en cualquier arreglo con al menos un elemento.",
@@ -284,21 +276,29 @@ var EJERCICIO = (function () {
         { f: "∀i (0 ≤ i < n → A[0] ≤ A[i])", ok: true,
           ev: function (A) { var n = A.length; return todos(n, function (i) { return !dentro(i, 0, n) || A[0] <= A[i]; }); },
           por: "La frase es ¬∃i (0 ≤ i < n ∧ A[i] < A[0]); al negar queda ∀ con →, y ¬(A[i] < A[0]) es A[0] ≤ A[i]. Con i = 0 la comparación A[0] ≤ A[0] se cumple sola." }
-      ]
+      ,
+        { f: "∀i (1 ≤ i < n → A[0] < A[i])",
+          ev: function (A) { var n = A.length; return todos(n, function (i) { return !dentro(i, 1, n) || A[0] < A[i]; }); },
+          por: "Con < exige que el primero sea estrictamente menor que los demás, y un valor igual al primero la hace fallar.",
+          contra: [2, 2] },
+        { f: "∀i (0 ≤ i < n → A[i] ≤ A[0])",
+          ev: function (A) { var n = A.length; return todos(n, function (i) { return !dentro(i, 0, n) || A[i] <= A[0]; }); },
+          por: "Está al revés: dice que ningún elemento supera al primero.",
+          contra: [1, 5] }]
     },
     {
       frase: "f ∈ O(g): existen c > 0 y k ≥ 0 tales que f(n) ≤ c · g(n) para todo n ≥ k.",
       dominio: "n y k recorren los naturales; c recorre los reales.", tipo: "texto",
       opciones: [
-        { f: "∀n ∃c (c > 0 ∧ f(n) ≤ c · g(n))",
-          por: "El ∃c quedó dentro del ∀n, así que c puede cambiar con n. Con c = n² + 1 se tendría n³ ≤ (n² + 1) · n para todo n, y n³ quedaría en O(n)." },
         { f: "∃c ∃k (c > 0 ∧ k ≥ 0 ∧ ∃n (n ≥ k ∧ f(n) ≤ c · g(n)))",
           por: "Basta un solo n. Con c = 1, k = 1 y n = 1 queda 1² ≤ 1 · 1, y n² quedaría en O(n)." },
         { f: "∃c ∃k (c > 0 ∧ k ≥ 0 ∧ ∀n (n ≥ k ∧ f(n) ≤ c · g(n)))",
           por: "Con ∧, el ∀n exige n ≥ k para todo n, también para n = 0: solo deja k = 0, y la cota tendría que valer desde el comienzo. Con f(n) = n + 1 y g(n) = n, en n = 0 queda 1 ≤ c · 0, falso para todo c, y n + 1 quedaría fuera de O(n)." },
         { f: "∃c ∃k (c > 0 ∧ k ≥ 0 ∧ ∀n (n ≥ k → f(n) ≤ c · g(n)))", ok: true,
           por: "Los testigos c y k se escogen primero y quedan fijos; después, para todo n desde k en adelante, se pide la desigualdad. El rango de n va como antecedente de la implicación." }
-      ]
+      ,
+        { f: "∀n ∃c (c > 0 ∧ f(n) ≤ c · g(n))",
+          por: "El ∃c quedó dentro del ∀n, así que c puede cambiar con n. Con c = n² + 1 se tendría n³ ≤ (n² + 1) · n para todo n, y n³ quedaría en O(n)." }]
     }
   ];
 

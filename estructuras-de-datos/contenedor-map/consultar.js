@@ -74,10 +74,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Cambiar por el iterador", columna: true, correcta: "valor",
           html: "<pre class=\"fragmento\">map&lt;int, int&gt;::iterator it = m.find(27);</pre><p>¿Cuál de estas líneas es válida?</p>",
           opciones: [
-            { op: "valor", texto: "<code>it-&gt;second = it-&gt;second + 1;</code>", msg: "Correcto: el valor se puede cambiar, y la pareja de 27 pasa a (27, 10)." },
-            { op: "clave", texto: "<code>it-&gt;first = 28;</code>", msg: "No compila: la clave es constante. Cambiarla en su sitio rompería el orden; se saca la pareja y se inserta otra." },
             { op: "ambas", texto: "Las dos", msg: "Solo el valor se cambia por el iterador. La clave no." }
-          ] },
+          ,
+            { op: "valor", texto: "<code>it-&gt;second = it-&gt;second + 1;</code>", msg: "Correcto: el valor se puede cambiar, y la pareja de 27 pasa a (27, 10)." },
+            { op: "clave", texto: "<code>it-&gt;first = 28;</code>", msg: "No compila: la clave es constante. Cambiarla en su sitio rompería el orden; se saca la pareja y se inserta otra." }] },
         { tipo: "respuesta", titulo: "Nada de esto inserta",
           html: "<p>Sobre el map inicial " + inicial + " se ejecuta:</p><pre class=\"fragmento\">m.find(30);\nm.count(41);\nm.erase(99);\nm[14] = 0;</pre><p>¿Cuánto vale <code>m.size()</code>?</p>",
           campos: [{ rotulo: "size:", esperado: String(tamanoFinal()), ancho: "3rem" }],

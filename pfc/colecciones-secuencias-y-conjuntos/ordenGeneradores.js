@@ -91,10 +91,10 @@
       pregunta: "¿Y con cuál cierra?",
       cierre: "El último valor de x es 3 y el último de y es 2. El yield escribe (x, y) en ese orden, de modo que el resultado termina en (3,2).",
       opciones: [
-        { txt: "(3,2)", correcta: true },
-        { txt: "(2,3)", fallo: "Las componentes están al revés. La primera sale de x, que recorre 1 to 3, y la segunda de y, que recorre 1 to 2; con y nunca llega un 3 a la segunda posición." },
         { txt: "(3,3)", fallo: "y recorre 1 to 2 y no toma el valor 3. Las parejas con x = 3 son (3,1) y (3,2)." }
-      ]
+      ,
+        { txt: "(3,2)", correcta: true },
+        { txt: "(2,3)", fallo: "Las componentes están al revés. La primera sale de x, que recorre 1 to 3, y la segunda de y, que recorre 1 to 2; con y nunca llega un 3 a la segunda posición." }]
     }
   ];
 
@@ -106,10 +106,10 @@
       pregunta: "Los mismos dos generadores en el otro orden, y el yield sigue escribiendo (x, y).",
       cierre: "Ahora el que varía más rápido es x, porque quedó a la derecha: salen las tres parejas con y = 1 y después las tres con y = 2.",
       opciones: [
-        { txt: INVERTIDO, correcta: true, larga: true },
         { txt: "el mismo vector de la versión anterior, porque los dos generadores producen las mismas parejas", fallo: "Las parejas son las mismas seis, y de ahí sale la trampa. Lo que cambia es el orden en que salen: las dos versiones se compararon con == y la comparación dio false.", larga: true },
         { txt: "las mismas parejas con las componentes al revés, porque ahora y es el primer generador", fallo: "El orden de las componentes lo fija el yield, que sigue escribiendo (x, y). Mover un generador cambia en qué orden se recorren los valores, no cómo se arma la pareja.", larga: true }
-      ]
+      ,
+        { txt: INVERTIDO, correcta: true, larga: true }]
     },
     {
       expr: "pares == invertidas     y     pares.toSet == invertidas.toSet",
@@ -131,20 +131,20 @@
       pregunta: "El extremo de arriba del segundo generador es i, el valor del primero.",
       cierre: "Con i = 1 el generador de adentro produce un solo valor, con i = 2 produce dos y con i = 3 produce tres: seis parejas, todas con j menor o igual que i.",
       opciones: [
-        { txt: TRIANGULO, correcta: true, larga: true },
-        { txt: "las nueve parejas que salen con j <- 1 to 3", fallo: "Ese es el for con los dos generadores independientes, y su largo es 9. Aquí el extremo de arriba es i, de modo que con i = 1 el generador de adentro produce una sola pareja.", larga: true },
         { txt: TRIANGULO_ALTO, fallo: "Ese es el resultado de j <- i to 3, el otro triángulo: ahí lo que depende de i es el extremo de abajo, y con i = 1 salen (1,1), (1,2) y (1,3).", larga: true }
-      ]
+      ,
+        { txt: TRIANGULO, correcta: true, larga: true },
+        { txt: "las nueve parejas que salen con j <- 1 to 3", fallo: "Ese es el for con los dos generadores independientes, y su largo es 9. Aquí el extremo de arriba es i, de modo que con i = 1 el generador de adentro produce una sola pareja.", larga: true }]
     },
     {
       expr: "for { j <- 1 to i; i <- 1 to 3 } yield (i, j)",
       pregunta: "El dependiente con los dos generadores invertidos.",
       cierre: "No compila. El generador de arriba se evalúa primero y en 1 to i no hay todavía ningún i, así que el compilador se detiene en not found: value i. Un generador puede usar los nombres que traen los de arriba, nunca los de abajo.",
       opciones: [
-        { txt: "no compila", correcta: true },
         { txt: "compila y devuelve las mismas seis parejas en otro orden", fallo: "Eso vale para dos generadores independientes, donde cada uno se entiende solo. Aquí el extremo del segundo es el i del primero: al invertirlos, el nombre i se usa antes de que exista y el compilador lo rechaza.", larga: true },
         { txt: "compila y devuelve nueve parejas", fallo: "Nueve son las parejas de dos generadores independientes de 1 to 3. Esta expresión no llega a correr: 1 to i queda escrito arriba de la línea donde i se define.", larga: true }
-      ]
+      ,
+        { txt: "no compila", correcta: true }]
     }
   ];
 
@@ -166,10 +166,10 @@
       pregunta: "¿Cuántas trae ese resultado?",
       cierre: "Ocho. Dos valores de a, por dos de b, por dos de c.",
       opciones: [
-        { txt: "ocho", correcta: true },
-        { txt: "seis", fallo: "Seis es lo que daría sumar los tres recorridos. Cada valor de a recorre b completo y cada valor de b recorre c completo, de modo que las cantidades se multiplican." },
         { txt: "tres", fallo: "Tres es la cantidad de generadores. Cada uno aporta dos valores, y las combinaciones son el producto de esas tres cantidades." }
-      ]
+      ,
+        { txt: "ocho", correcta: true },
+        { txt: "seis", fallo: "Seis es lo que daría sumar los tres recorridos. Cada valor de a recorre b completo y cada valor de b recorre c completo, de modo que las cantidades se multiplican." }]
     }
   ];
 

@@ -55,28 +55,28 @@ var EJERCICIO = (function () {
           ] },
         { tipo: "opciones", titulo: "<code>s.apilar(d.final())</code>", columna: true, correcta: "back",
           opciones: [
-            { op: "end", texto: "<code>s.push(d.end());</code>", msg: "end() es un iterador que señala una casilla después del último, no el dato. No compila: push espera un int." },
-            { op: "back", texto: "<code>s.push(d.back());</code>", msg: "Correcto. final es back, y apilar es push en stack." },
             { op: "idx", texto: "<code>s.push(d[d.size()]);</code>", msg: "El último está en d[d.size() - 1]. d[d.size()] lee fuera del deque y el resultado no está definido." }
-          ] },
+          ,
+            { op: "end", texto: "<code>s.push(d.end());</code>", msg: "end() es un iterador que señala una casilla después del último, no el dato. No compila: push espera un int." },
+            { op: "back", texto: "<code>s.push(d.back());</code>", msg: "Correcto. final es back, y apilar es push en stack." }] },
         { tipo: "opciones", titulo: "<code>d.eliminarFrente()</code>", columna: true, correcta: "pf",
           opciones: [
-            { op: "erase", texto: "<code>d.erase(0);</code>", msg: "erase también recibe un iterador, no una posición. d.erase(d.begin()) funcionaría, pero el deque trae la operación del extremo." },
             { op: "pf", texto: "<code>d.pop_front();</code>", msg: "Correcto: pop_front, O(1). Saca el frente y no lo devuelve." },
             { op: "pop", texto: "<code>d.pop();</code>", msg: "El deque no tiene pop a secas: tiene dos extremos y hay que decir cuál." }
-          ] },
+          ,
+            { op: "erase", texto: "<code>d.erase(0);</code>", msg: "erase también recibe un iterador, no una posición. d.erase(d.begin()) funcionaría, pero el deque trae la operación del extremo." }] },
         { tipo: "opciones", titulo: "<code>s.desapilar()</code>", columna: true, correcta: "pop",
           opciones: [
-            { op: "popb", texto: "<code>s.pop_back();</code>", msg: "stack no expone las operaciones del contenedor de debajo: solo push, pop, top, size y empty. No compila." },
             { op: "top", texto: "<code>s.top();</code>", msg: "top lee el tope sin sacarlo. La pila quedaría igual." },
             { op: "pop", texto: "<code>s.pop();</code>", msg: "Correcto. pop saca el tope y no lo devuelve; por eso la línea anterior lo leyó con top." }
-          ] },
+          ,
+            { op: "popb", texto: "<code>s.pop_back();</code>", msg: "stack no expone las operaciones del contenedor de debajo: solo push, pop, top, size y empty. No compila." }] },
         { tipo: "opciones", titulo: "<code>q.encolar(d.frente())</code>", columna: true, correcta: "push",
           opciones: [
-            { op: "pushb", texto: "<code>q.push_back(d.front());</code>", msg: "queue solo deja entrar con push. push_back es del deque que tiene adentro, y el adaptador no lo deja pasar." },
-            { op: "push", texto: "<code>q.push(d.front());</code>", msg: "Correcto. En queue, push entra por el final y pop sale por el frente." },
             { op: "pushf", texto: "<code>q.push_front(d.front());</code>", msg: "Una cola no deja entrar por el frente: sería colarse. queue no tiene push_front." }
-          ] },
+          ,
+            { op: "pushb", texto: "<code>q.push_back(d.front());</code>", msg: "queue solo deja entrar con push. push_back es del deque que tiene adentro, y el adaptador no lo deja pasar." },
+            { op: "push", texto: "<code>q.push(d.front());</code>", msg: "Correcto. En queue, push entra por el final y pop sale por el frente." }] },
         { tipo: "respuesta", titulo: "La salida",
           html: "<p>Al final, el programa imprime <code>q.front()</code>, <code>q.back()</code>, <code>s.top()</code> y <code>d.size()</code>. ¿Qué cuatro números salen?</p>",
           campos: [{ rotulo: "salida:", esperado: R.salida.join(" "), pista: "a b c d", ancho: "9rem" }],

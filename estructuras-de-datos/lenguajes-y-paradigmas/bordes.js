@@ -14,11 +14,11 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Un peldaño más abajo", columna: true, correcta: "registros",
           html: "<p>Un programa que suma dos números se escribe en C y después en ensamblador. ¿Qué hay que saber para la segunda versión que en C no hacía falta?</p>",
           opciones: [
-            { op: "tipos", texto: "Qué tipos tienen los datos y cuánto miden.", msg: "Eso ya lo exige C: hay que escoger entre int y long sabiendo cuánto cabe en cada uno." },
             { op: "registros", texto: "En qué registros y direcciones viven los datos, y qué instrucciones tiene el procesador.", msg: "Correcto. En ensamblador no hay variables con nombre: hay registros y desplazamientos en la pila, y cada procesador tiene su propio juego de instrucciones." },
             { op: "objetos", texto: "Cómo se agrupan los datos en objetos.", msg: "Los objetos son de C++ o Java, más arriba en la escala. El ensamblador está por debajo de C." },
             { op: "nada", texto: "Nada nuevo: el ensamblador es C con otras palabras.", msg: "Cada peldaño hacia abajo exige más conocimiento de la máquina. El ensamblador depende del procesador; C no." }
-          ] },
+          ,
+            { op: "tipos", texto: "Qué tipos tienen los datos y cuánto miden.", msg: "Eso ya lo exige C: hay que escoger entre int y long sabiendo cuánto cabe en cada uno." }] },
         { tipo: "respuesta", titulo: "Tres vueltas del contador",
           html: T.codigo(P.bordes.codigo) + "<p>Escriba las cuatro líneas que imprime.</p>",
           campos: [
@@ -54,10 +54,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Lo que garantiza el estándar", columna: true, correcta: "unsigned",
           html: "<p>De las vueltas que dio el programa de la tarjeta 2, ¿cuál está garantizada por el estándar de C en cualquier máquina?</p>",
           opciones: [
-            { op: "unsigned", texto: "La de u, el unsigned int.", msg: "Correcto. Para los enteros sin signo el estándar define la aritmética módulo 2ⁿ: siempre dan la vuelta. Las de a y b, enteros con signo, son comportamiento indefinido: gcc en x86-64 da la vuelta, y otro compilador puede hacer otra cosa." },
-            { op: "todas", texto: "Las tres: todos los enteros de C dan la vuelta.", msg: "Es lo que se ve en esta máquina con gcc, y no es una garantía. Desbordar un entero con signo es comportamiento indefinido." },
             { op: "ninguna", texto: "Ninguna: el estándar prohíbe desbordar cualquier entero.", msg: "No lo prohíbe: con unsigned define el resultado, la vuelta. Lo que deja sin definir es el desborde con signo." }
-          ] }
+          ,
+            { op: "unsigned", texto: "La de u, el unsigned int.", msg: "Correcto. Para los enteros sin signo el estándar define la aritmética módulo 2ⁿ: siempre dan la vuelta. Las de a y b, enteros con signo, son comportamiento indefinido: gcc en x86-64 da la vuelta, y otro compilador puede hacer otra cosa." },
+            { op: "todas", texto: "Las tres: todos los enteros de C dan la vuelta.", msg: "Es lo que se ve en esta máquina con gcc, y no es una garantía. Desbordar un entero con signo es comportamiento indefinido." }] }
       ]
     };
   }

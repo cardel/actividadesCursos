@@ -140,20 +140,20 @@
       pregunta: "¿Qué gana el código que consulta con get en lugar de aplicar el mapa?",
       cierre: "Que la llave ausente sea un valor y no una interrupción: None se puede guardar, comparar y pasar a otra función, mientras la excepción corta la ejecución.",
       opciones: [
-        { txt: "que la llave ausente también sea un valor con el que se puede seguir", correcta: true, larga: true },
-        { txt: "que la búsqueda de la llave sea más rápida", fallo: "Las dos buscan la llave igual. La diferencia está en qué entregan cuando no la encuentran: get devuelve None y aplicar el mapa lanza " + EXCEPCION + ".", larga: true },
         { txt: "que el valor salga sin envolver", fallo: "Es al revés: capital(\"COLOMBIA\") da Bogota y capital.get(\"COLOMBIA\") da Some(Bogota). Lo que se gana con get es que la ausencia tenga su propio valor, None.", larga: true }
-      ]
+      ,
+        { txt: "que la llave ausente también sea un valor con el que se puede seguir", correcta: true, larga: true },
+        { txt: "que la búsqueda de la llave sea más rápida", fallo: "Las dos buscan la llave igual. La diferencia está en qué entregan cuando no la encuentran: get devuelve None y aplicar el mapa lanza " + EXCEPCION + ".", larga: true }]
     },
     {
       expr: "capital.withDefaultValue(\"Desconocida\")(\"US\") da Desconocida",
       pregunta: "¿Qué le hizo withDefaultValue al mapa?",
       cierre: "Entregó otro mapa, con las mismas entradas y un valor para cualquier llave que no esté. Las entradas de capital siguen siendo dos: capital.size da 2.",
       opciones: [
-        { txt: "le dio un valor para las llaves que no están, sin agregar ninguna entrada", correcta: true, larga: true },
         { txt: "agregó la entrada US -> Desconocida", fallo: "No se agregó ninguna entrada, y capital.size sigue dando 2. El valor por omisión responde por cualquier llave ausente, no por una en particular.", larga: true },
         { txt: "cambió capital para que dejara de lanzar la excepción", fallo: "capital no cambió. withDefaultValue devuelve otro mapa con ese valor por omisión, y capital(\"US\") sigue lanzando " + EXCEPCION + ".", larga: true }
-      ]
+      ,
+        { txt: "le dio un valor para las llaves que no están, sin agregar ninguna entrada", correcta: true, larga: true }]
     }
   ];
 
@@ -175,20 +175,20 @@
       pregunta: "Los dos son mapas escritos igual, uno con dos entradas y otro con cinco. ¿Con qué se puede contar?",
       cierre: "Con la asociación. Cada llave lleva a su valor y eso no cambia; el orden en que salen las entradas y el nombre de la implementación son lo que se vio al imprimir, no algo sobre lo cual escribir código.",
       opciones: [
-        { txt: "con que cada llave lleva a su valor, no con el orden ni con el nombre impreso", correcta: true, larga: true },
-        { txt: "con que las entradas salen en el orden en que se escribieron, salvo que sean muchas", fallo: "Un mapa no promete orden en ningún tamaño. Que con dos entradas salieran en el orden escrito es lo que ocurrió al correrlo, y con cinco ya no ocurre.", larga: true },
         { txt: "con que un mapa pequeño es un Map y uno grande es un tipo distinto", fallo: "El tipo es el mismo y acepta las mismas operaciones. HashMap es la implementación que sostiene al mapa cuando crece, y lo que se imprime es su nombre.", larga: true }
-      ]
+      ,
+        { txt: "con que cada llave lleva a su valor, no con el orden ni con el nombre impreso", correcta: true, larga: true },
+        { txt: "con que las entradas salen en el orden en que se escribieron, salvo que sean muchas", fallo: "Un mapa no promete orden en ningún tamaño. Que con dos entradas salieran en el orden escrito es lo que ocurrió al correrlo, y con cinco ya no ocurre.", larga: true }]
     },
     {
       expr: "\"USA\" -> \"Washington\"",
       pregunta: "¿Qué es esa flecha?",
       cierre: "La forma de escribir la pareja de llave y valor que el mapa guarda. Map recibe tantas parejas como entradas tenga, y agregar una a un mapa que ya existe devuelve otro mapa: capital + (\"PERU\" -> \"Lima\") imprime " + CON_PERU + " y capital.size sigue dando 2.",
       opciones: [
-        { txt: "la forma de escribir la pareja de llave y valor que el mapa guarda", correcta: true, larga: true },
         { txt: "una asignación, que mete Washington en la llave USA", fallo: "No hay asignación ni nada que se modifique. La flecha arma una pareja, el mapa se construye con las parejas que recibe, y agregar una entrada devuelve otro mapa.", larga: true },
         { txt: "el tipo del valor que acepta esa llave", fallo: "La flecha va entre dos valores concretos, la llave y el valor asociado. Lo que queda escrito es una pareja, no un tipo.", larga: true }
-      ]
+      ,
+        { txt: "la forma de escribir la pareja de llave y valor que el mapa guarda", correcta: true, larga: true }]
     }
   ];
 

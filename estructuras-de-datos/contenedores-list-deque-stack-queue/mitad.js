@@ -63,10 +63,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Si se duplica otra vez", columna: true, correcta: "x2",
           html: "<p>Con n = " + miles(u[0]) + " la list tardó " + cifra(u[3]) + " s. ¿Cuánto debería tardar con " + miles(2 * u[0]) + "?</p>",
           opciones: [
-            { op: "x1", texto: "Cerca de " + cifra(u[3]) + " s", msg: "Cada inserción es O(1), pero hay el doble de inserciones." },
             { op: "x2", texto: "Cerca de " + cifra(2 * u[3]) + " s", msg: "Correcto: n inserciones de O(1), lineal." },
             { op: "x4", texto: "Cerca de " + cifra(4 * u[3]) + " s", msg: "Eso sería cuadrático. La list nunca corre elementos." }
-          ] },
+          ,
+            { op: "x1", texto: "Cerca de " + cifra(u[3]) + " s", msg: "Cada inserción es O(1), pero hay el doble de inserciones." }] },
         { tipo: "tabla", titulo: "Los tiempos medidos",
           cabecera: ["n", "vector, insert", "deque, insert", "list, insert con cursor"],
           filas: MEDIDAS.map(function (m) { return [miles(m[0]), cifra(m[1]), cifra(m[2]), cifra(m[3])]; }),

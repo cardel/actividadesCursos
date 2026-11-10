@@ -49,9 +49,9 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "<code>" + DECLARACIONES[1].decl + "</code> sin <code>pop</code>", columna: true, correcta: "si",
           html: "<p>Un programa declara <code>" + DECLARACIONES[1].decl + " c;</code> y solo llama <code>c.push(5)</code>, <code>c.push(6)</code> y <code>c.front()</code>. Nunca llama <code>c.pop()</code>. ¿Compila?</p>",
           opciones: [
-            { op: "si", texto: "Sí: el error solo aparece si se llama <code>pop</code>", msg: "Correcto. Cada operación del adaptador se compila cuando se usa, y solo pop pide pop_front. Con push y front, el vector alcanza. En cuanto aparezca un c.pop(), el compilador se queja de que vector no tiene pop_front." },
             { op: "no", texto: "No: <code>queue</code> nunca acepta un <code>vector</code>", msg: "La declaración sola compila. Lo que falla es la operación que necesita pop_front, y solo cuando se usa." }
-          ] },
+          ,
+            { op: "si", texto: "Sí: el error solo aparece si se llama <code>pop</code>", msg: "Correcto. Cada operación del adaptador se compila cuando se usa, y solo pop pide pop_front. Con push y front, el vector alcanza. En cuanto aparezca un c.pop(), el compilador se queja de que vector no tiene pop_front." }] },
         { tipo: "opciones", titulo: "Una cola sobre <code>list</code>", columna: true, correcta: "memoria",
           html: "<p>Se cambia <code>queue&lt;int&gt;</code> por <code>" + DECLARACIONES[2].decl + "</code> en un programa que encola y desencola un millón de enteros. ¿Qué cambia?</p>",
           opciones: [

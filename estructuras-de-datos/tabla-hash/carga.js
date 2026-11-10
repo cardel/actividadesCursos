@@ -65,10 +65,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Con m fijo", columna: true, correcta: "lineal",
           html: "<p>Una tabla de m = 1000 casillas, que nunca crece, recibe un millón de claves bien repartidas. ¿Cuánto cuesta en promedio buscar una que no está?</p>",
           opciones: [
-            { op: "lineal", texto: "Unas 1000 comparaciones: α = 1000 y Θ(1 + α) crece con n", msg: "Correcto. Con m fijo, α = n/m crece con n y la tabla es mil veces más rápida que la lista, pero sigue siendo lineal en n." },
             { op: "uno", texto: "Θ(1): las tablas hash buscan en tiempo constante", msg: "Θ(1 + α) es constante solo si m crece con n. Aquí α = 1000." },
             { op: "millon", texto: "Un millón: se recorren todas las claves", msg: "Eso pasa si todas caen en la misma casilla. Bien repartidas, cada lista mide unas 1000." }
-          ] },
+          ,
+            { op: "lineal", texto: "Unas 1000 comparaciones: α = 1000 y Θ(1 + α) crece con n", msg: "Correcto. Con m fijo, α = n/m crece con n y la tabla es mil veces más rápida que la lista, pero sigue siendo lineal en n." }] },
         { tipo: "opciones", titulo: "Espacio", columna: true, correcta: "mn",
           html: "<p>¿Cuánta memoria ocupa una tabla con encadenamiento de m casillas y n claves?</p>",
           opciones: [

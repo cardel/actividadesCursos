@@ -120,10 +120,10 @@ var EJERCICIO = (function () {
             P.codigo(["anterior = self.nodo_en(p - 1)", "nuevo = Nodo(e, None)", "anterior.siguiente = nuevo", "nuevo.siguiente = anterior.siguiente"]) +
             "<p>¿Qué pasa con la lista?</p>",
           opciones: [
-            { op: "bien", texto: "Queda bien: hace lo mismo en cuatro líneas", msg: "La tercera línea ya cambió anterior.siguiente. La cuarta lee ese valor nuevo, no el viejo." },
             { op: "ciclo", texto: "El nuevo nodo apunta a sí mismo y los que seguían se pierden", msg: "Correcto. Cuando corre la cuarta línea, anterior.siguiente ya es el nuevo. Recorrer la lista no termina nunca, y sin ninguna referencia a ellos, los nodos de después los libera el intérprete. Primero se enlaza el nuevo con lo que sigue y después el anterior con el nuevo." },
             { op: "pierde", texto: "Se pierde el nodo nuevo", msg: "El nuevo sí queda enlazado desde el anterior. Lo que se pierde es lo que venía después." }
-          ] },
+          ,
+            { op: "bien", texto: "Queda bien: hace lo mismo en cuatro líneas", msg: "La tercera línea ya cambió anterior.siguiente. La cuarta lee ese valor nuevo, no el viejo." }] },
         { tipo: "respuesta", titulo: "Pasos de nodo_en",
           html: P.codigo(["# l es una Lista con 8 elementos", "suma = 0", "p = 0", "while p < l.tamano():", "    suma = suma + l.obtener(p)", "    p = p + 1"]) +
             "<p>Cada <code>obtener(p)</code> llama a <code>nodo_en(p)</code>, que ejecuta <code>actual = actual.siguiente</code> p veces. ¿Cuántas veces se ejecuta esa línea en todo el ciclo? ¿Y si la lista tuviera 100 elementos?</p>",

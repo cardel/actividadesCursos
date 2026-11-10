@@ -73,10 +73,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Valores grandes", columna: true, correcta: "no",
           html: "<p>Ahora los valores van de 0 a 10<sup>9</sup> y el arreglo tiene 50 elementos. ¿Conviene la versión de banderas?</p>",
           opciones: [
-            { op: "si", texto: "Sí: cada vuelta sigue siendo Θ(1)", msg: "Cada vuelta sí, pero iniciar visto pone 10<sup>9</sup> casillas en false, y el arreglo ocupa del orden de un gigabyte para revisar 50 valores." },
             { op: "no", texto: "No: iniciar la tabla cuesta Θ(m) con m = 10<sup>9</sup>", msg: "Correcto. Con 50 elementos, la directa hace a lo sumo 1225 comparaciones. La tabla gana cuando el universo es pequeño frente a n²." },
             { op: "igual", texto: "Da lo mismo: las dos son lineales", msg: "La directa es Θ(n²) en el peor caso y la de banderas Θ(n + m). Con m = 10<sup>9</sup>, el término m manda." }
-          ] }
+          ,
+            { op: "si", texto: "Sí: cada vuelta sigue siendo Θ(1)", msg: "Cada vuelta sí, pero iniciar visto pone 10<sup>9</sup> casillas en false, y el arreglo ocupa del orden de un gigabyte para revisar 50 valores." }] }
       ]
     };
   }

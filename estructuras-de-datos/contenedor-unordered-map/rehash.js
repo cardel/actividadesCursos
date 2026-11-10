@@ -115,10 +115,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Una clave repetida", columna: true, correcta: "igual",
           html: "<p>Una tabla tiene 13 claves y 13 cubetas. Se ejecuta <code>u[100] = 5;</code> y el 100 ya estaba. ¿Qué pasa con <code>bucket_count()</code>?</p>",
           opciones: [
-            { op: "crece", texto: "Pasa a 29, porque es la inserción número 14", msg: "Lo que cuenta es n, el número de claves distintas. Cambiar el valor del 100 no agrega ninguna." },
-            { op: "igual", texto: "Sigue en 13", msg: "Correcto: el 100 ya estaba, así que no entra un nodo nuevo; n sigue en 13 y α en 1. Es lo que imprime g++." },
             { op: "doble", texto: "Pasa a 26", msg: "Ni crece, ni crecería a 26: g++ usa primos." }
-          ] },
+          ,
+            { op: "crece", texto: "Pasa a 29, porque es la inserción número 14", msg: "Lo que cuenta es n, el número de claves distintas. Cambiar el valor del 100 no agrega ninguna." },
+            { op: "igual", texto: "Sigue en 13", msg: "Correcto: el 100 ya estaba, así que no entra un nodo nuevo; n sigue en 13 y α en 1. Es lo que imprime g++." }] },
         { tipo: "respuesta", titulo: "Mil claves",
           html: "<p>Se insertan mil claves distintas en un <code>unordered_map</code> vacío. Contando el paso de 1 a 13 cubetas, ¿cuántas veces cambia <code>bucket_count()</code> y con qué valor termina?</p>",
           campos: [
@@ -147,10 +147,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Borrar no achica", columna: true, correcta: "queda",
           html: "<p>Se insertan las claves 0 a 599 y después se borran con <code>erase</code> las claves 0 a 589. Quedan 10. ¿Cuánto vale <code>bucket_count()</code>?</p>",
           opciones: [
-            { op: "trece", texto: "13, porque con 10 claves basta", msg: "Con 10 claves bastarían 13 cubetas, pero el unordered_map no se encoge solo al borrar." },
-            { op: "medio", texto: "541, el primo anterior", msg: "La tabla solo crece. g++ deja las 1109 cubetas aunque casi todas queden vacías." },
             { op: "queda", texto: "1109, el mismo de antes de borrar", msg: "Correcto: erase desenlaza nodos pero no reduce las cubetas. α queda en 10/1109 ≈ 0,009." }
-          ] }
+          ,
+            { op: "trece", texto: "13, porque con 10 claves basta", msg: "Con 10 claves bastarían 13 cubetas, pero el unordered_map no se encoge solo al borrar." },
+            { op: "medio", texto: "541, el primo anterior", msg: "La tabla solo crece. g++ deja las 1109 cubetas aunque casi todas queden vacías." }] }
       ]
     };
   }

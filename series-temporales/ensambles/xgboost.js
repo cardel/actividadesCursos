@@ -38,7 +38,7 @@
         opciones: ["Casi nada", "Cerca de un tercio", "Más de la mitad"], correcta: queda100 < 0.1 ? 0 : queda100 <= 0.5 ? 1 : 2,
         razon: "(1 − 0,01)¹⁰⁰ = " + P.coma(queda100) + ": después de cien árboles falta todavía más de la tercera parte." },
       { valor: "Con <code>learning_rate</code> 0,3, ¿cuántos árboles bastan para que quede menos del 1 %?",
-        opciones: ["Unos " + bastan, "Unos 100", "Unos 300"], correcta: 0,
+        opciones: [ "Unos 100", "Unos 300","Unos " + bastan], correcta: 2,
         razon: "(1 − 0,3)ᴹ < 0,01 desde M = " + bastan + ". Los otros " + (100 - bastan) + " árboles del valor por defecto corrigen casi nada en el entrenamiento." }
     ],
     cierre: "Una tasa pequeña pide muchos más árboles para llegar al mismo sitio."

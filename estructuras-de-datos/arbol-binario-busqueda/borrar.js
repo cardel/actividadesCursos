@@ -145,17 +145,17 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Sin raiz =", columna: true, correcta: "unhijo",
           html: "<p>Alguien llama <code>borrar(raiz, k);</code> sin guardar lo que devuelve. ¿En cuál de estos casos <code>raiz</code> queda apuntando a memoria liberada?</p>",
           opciones: [
-            { op: "47", texto: "Borrar el 47 en el árbol de esta actividad.", msg: "Con dos hijos el nodo de la raíz no se libera: recibe la clave 61 y sigue siendo la raíz. Aquí el olvido no se nota, y por eso es peligroso." },
             { op: "12", texto: "Borrar el 12 en el árbol de esta actividad.", msg: "El 12 está abajo; la asignación que lo desengancha es r->izq = ... en el marco del 23, que sí está escrita." },
             { op: "unhijo", texto: "Borrar el 50 en un árbol cuya raíz es el 50 y solo tiene hijo derecho, el 90.", msg: "Correcto. borrar libera el nodo del 50 y devuelve el del 90; si nadie lo guarda, raiz sigue apuntando al nodo liberado." }
-          ] },
+          ,
+            { op: "47", texto: "Borrar el 47 en el árbol de esta actividad.", msg: "Con dos hijos el nodo de la raíz no se libera: recibe la clave 61 y sigue siendo la raíz. Aquí el olvido no se nota, y por eso es peligroso." }] },
         { tipo: "opciones", titulo: "Lo que cuesta el caso 3", columna: true, correcta: "h",
           html: "<p>Con dos hijos, borrar busca el nodo, después el sucesor y después borra el sucesor abajo. En un árbol de altura h, ¿cuánto cuesta?</p>",
           opciones: [
-            { op: "h", texto: "O(h): del nodo al sucesor se sigue bajando, así que todo cabe en un camino desde la raíz.", msg: "Correcto. minimo baja por un solo lado y el segundo borrado recorre ese mismo tramo." },
             { op: "n", texto: "Θ(n): para hallar el sucesor hay que revisar todo el subárbol derecho.", msg: "El mínimo de un ABB está al fondo de la izquierda: minimo baja por izq sin mirar nada más." },
             { op: "h2", texto: "O(h²): hace una búsqueda completa por cada nivel.", msg: "Son tres tramos de un mismo camino, no una búsqueda por nivel. Suman a lo sumo h + 1 nodos." }
-          ] }
+          ,
+            { op: "h", texto: "O(h): del nodo al sucesor se sigue bajando, así que todo cabe en un camino desde la raíz.", msg: "Correcto. minimo baja por un solo lado y el segundo borrado recorre ese mismo tramo." }] }
       ]
     };
   }

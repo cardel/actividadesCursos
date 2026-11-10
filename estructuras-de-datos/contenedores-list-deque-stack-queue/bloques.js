@@ -164,11 +164,11 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Cuándo crece el mapa", correcta: "pf3",
           html: "<p>¿Cuál operación encuentra el mapa sin la ranura que necesita?</p>",
           opciones: [
+            { op: "pb2", texto: "<code>push_back(2)</code>", msg: "Cuando llega el 2, el mapa ya creció y su casilla cae en un bloque que tiene espacio." }
+          ,
             { op: "pb6", texto: "<code>push_back(6)</code>", msg: "El 6 necesita la ranura 2, que existe: el mapa tiene ranuras 0, 1 y 2." },
             { op: "pf9", texto: "<code>push_front(9)</code>", msg: "El 9 necesita la ranura 0, que existe y está libre." },
-            { op: "pf3", texto: "<code>push_front(3)</code>", msg: "Correcto. Tras el 7, ini vuelve a 0 y el primer bloque está en la ranura 0: el 3 necesita la ranura −1. El mapa pasa de 3 a 6 ranuras, los tres bloques quedan en las ranuras 1, 2 y 3, y el bloque nuevo va en la 0." },
-            { op: "pb2", texto: "<code>push_back(2)</code>", msg: "Cuando llega el 2, el mapa ya creció y su casilla cae en un bloque que tiene espacio." }
-          ] },
+            { op: "pf3", texto: "<code>push_front(3)</code>", msg: "Correcto. Tras el 7, ini vuelve a 0 y el primer bloque está en la ranura 0: el 3 necesita la ranura −1. El mapa pasa de 3 a 6 ranuras, los tres bloques quedan en las ranuras 1, 2 y 3, y el bloque nuevo va en la 0." }] },
         { tipo: "respuesta", titulo: "Lo que se copia al crecer",
           html: "<p>Cuando el mapa crece, el deque tiene siete elementos. ¿Cuántos punteros se copian al mapa nuevo, y cuántos elementos cambian de casilla?</p>",
           campos: [{ rotulo: "punteros:", esperado: String(crece[0].creció) }, { rotulo: "elementos:", esperado: "0" }],

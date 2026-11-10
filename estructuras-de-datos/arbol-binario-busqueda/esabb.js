@@ -61,17 +61,17 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Segundo árbol", columna: true, correcta: "si",
           html: A.svg(t.t2) + "<p>¿Es un árbol binario de búsqueda?</p>",
           opciones: [
-            { op: "si", texto: "Sí.", msg: "Correcto: a la izquierda del 50 están 35, 40, 42, 45 y 48, todos menores; a la derecha, 65 y 70. Debajo del 45, el 42 y el 48 quedan entre 40 y 50." },
             { op: "no65", texto: "No: al 65 le falta el hijo izquierdo.", msg: "La definición no pide que cada nodo tenga dos hijos. Un subárbol vacío no tiene claves que rompan la regla." },
             { op: "no42", texto: "No: el 42 es menor que el 45 y está en el subárbol derecho del 40.", msg: "En el subárbol derecho del 40 hay que ser mayor que 40, y 42 lo es. Ser menor que 45 es lo que pide su lugar a la izquierda del 45." }
-          ] },
+          ,
+            { op: "si", texto: "Sí.", msg: "Correcto: a la izquierda del 50 están 35, 40, 42, 45 y 48, todos menores; a la derecha, 65 y 70. Debajo del 45, el 42 y el 48 quedan entre 40 y 50." }] },
         { tipo: "opciones", titulo: "Tercer árbol", columna: true, correcta: "si",
           html: A.svg(t.t3) + "<p>¿Es un árbol binario de búsqueda?</p>",
           opciones: [
-            { op: "zig", texto: "No: un ABB no puede tener un camino que va y vuelve en zigzag.", msg: "La forma no está en la definición. 40 > 10 va a la derecha del 10; 20 queda entre 10 y 40; 30 queda entre 20 y 40. Cada clave está en su rango." },
             { op: "si", texto: "Sí.", msg: "Correcto. Tiene la altura de una lista, pero cumple la regla en cada nodo. Es el árbol que deja insertar 10, 40, 20 y 30 en ese orden." },
             { op: "no30", texto: "No: el 30 es menor que el 40 y está debajo de él.", msg: "El 30 está en el subárbol izquierdo del 40, donde todo debe ser menor que 40. Y 30 < 40." }
-          ] },
+          ,
+            { op: "zig", texto: "No: un ABB no puede tener un camino que va y vuelve en zigzag.", msg: "La forma no está en la definición. 40 > 10 va a la derecha del 10; 20 queda entre 10 y 40; 30 queda entre 20 y 40. Cada clave está en su rango." }] },
         { tipo: "opciones", titulo: "Cuarto árbol", columna: true, correcta: "no40",
           html: A.svg(t.t4) + "<p>¿Es un árbol binario de búsqueda?</p>",
           opciones: [
@@ -109,10 +109,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Una revisión que no falla", columna: true, correcta: "inorden",
           html: "<p>¿Cuál de estas revisiones decide bien, para cualquier árbol binario con claves distintas, si es ABB?</p>",
           opciones: [
-            { op: "hijos", texto: "En cada nodo, el hijo izquierdo es menor y el derecho es mayor.", msg: "El primer árbol pasa esa revisión y no es ABB." },
-            { op: "inorden", texto: "El inorden sale estrictamente creciente.", msg: "Correcto. Si es ABB, el inorden sale ordenado; y si alguna clave está fuera de su rango, aparece fuera de lugar en el inorden, como el 18." },
             { op: "raiz", texto: "La raíz es mayor que todo su subárbol izquierdo y menor que todo el derecho.", msg: "Eso revisa solo la raíz. El cuarto árbol lo cumple y falla en el 35." }
-          ] }
+          ,
+            { op: "hijos", texto: "En cada nodo, el hijo izquierdo es menor y el derecho es mayor.", msg: "El primer árbol pasa esa revisión y no es ABB." },
+            { op: "inorden", texto: "El inorden sale estrictamente creciente.", msg: "Correcto. Si es ABB, el inorden sale ordenado; y si alguna clave está fuera de su rango, aparece fuera de lugar en el inorden, como el 18." }] }
       ]
     };
   }

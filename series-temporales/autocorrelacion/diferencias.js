@@ -47,7 +47,7 @@
     explicacion: "Prediga qué deja cada combinación. La serie original tiene " + V["0,0"].n + " meses.",
     items: [
       { valor: "Con d = 1 y D = 1, ¿cuántos datos quedan?",
-        opciones: ["109", "98", String(V["1,1"].n)], correcta: 2,
+        opciones: [ "98", String(V["1,1"].n),"109"], correcta: 1,
         razon: "Quedan " + V["1,1"].n + ": la diferencia estacional no tiene con qué restar los doce primeros meses, y la regular pierde uno más. 109 es lo que deja d = 1 sola y 98 lo que deja D = 1 sola." },
       { valor: "¿Cuál combinación espera que pase la prueba ADF, con valor p por debajo de 0,05?",
         opciones: nombres, correcta: claves.indexOf(conP[0]),
@@ -69,7 +69,7 @@
         opciones: ["Cerca de 0", "Alrededor de 0,5", "Cerca de 1"], correcta: nivel(r10),
         razon: "Queda en " + fmt(r10) + ". Restar el mismo mes del año anterior deja el crecimiento interanual, y ese crecimiento se mueve despacio: cae en 2020, se recupera en 2021 y 2022, y cada mes se parece al anterior." },
       { valor: "Con d = 1 y D = 0, ¿qué rezagos salen de la banda?",
-        opciones: [listaRezagos(V["0,0"].fuera), listaRezagos(V["1,0"].fuera), listaRezagos(V["1,1"].fuera)], correcta: 1,
+        opciones: [ listaRezagos(V["1,1"].fuera),listaRezagos(V["0,0"].fuera), listaRezagos(V["1,0"].fuera)], correcta: 2,
         razon: "Salen " + listaRezagos(V["1,0"].fuera) + ". Sin el nivel, lo que queda es el año: los múltiplos de 12. La primera opción es la serie original, que sale en todos los rezagos cortos; la tercera es la de d = 1 y D = 1." },
       { valor: "Con d = 1 y D = 1, la barra en k = 12 es…",
         opciones: ["Positiva y fuera de la banda", "Negativa y fuera de la banda", "Pequeña, dentro de la banda"],

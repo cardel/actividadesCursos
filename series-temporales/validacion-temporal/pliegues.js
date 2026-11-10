@@ -35,11 +35,11 @@
     explicacion: "Prediga sin mirar la figura.",
     items: [
       { valor: "La serie llega a " + C.nombre(SERIE.meses[totalSerie - 1]) + ", pero la tabla de búsqueda termina en " + C.nombre(M[N - 1]) + ". ¿Por qué?",
-        opciones: ["Los meses de prueba del backtest quedan fuera de la búsqueda", "Los últimos meses de la serie no tienen sus doce rezagos", "La fuente de Aerocivil todavía no publica esos meses"],
-        correcta: 0,
+        opciones: [ "La fuente de Aerocivil todavía no publica esos meses","Los meses de prueba del backtest quedan fuera de la búsqueda", "Los últimos meses de la serie no tienen sus doce rezagos"],
+        correcta: 1,
         razon: "Los últimos " + DATOS.n_prueba + " meses son los del backtest. Si la búsqueda los viera, el backtest dejaría de medir meses que el modelo no conoce." },
       { valor: "Con <code>n_splits=5</code>, <code>test_size=6</code> y <code>gap=0</code>, ¿con cuántas filas entrena el primer pliegue?",
-        opciones: [String(porDefecto), String(N - 6), String(Math.floor(N / 6))], correcta: 0,
+        opciones: [ String(N - 6), String(Math.floor(N / 6)),String(porDefecto)], correcta: 2,
         razon: N + " − 5 × 6 = " + porDefecto + ": los cinco pliegues validan los últimos 30 meses y el primero entrena con todo lo anterior." }
     ],
     cierre: "Los pliegues se reparten el final de la tabla, y el primero se queda con lo que sobra."

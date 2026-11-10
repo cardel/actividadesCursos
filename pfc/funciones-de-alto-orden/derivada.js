@@ -13,11 +13,11 @@
   var SEGUNDA = {
     texto: "derivada(derivada(cube, 0.01), 0.01)(2)",
     opciones: [
-      { txt: "cerca de 12", ok: true, msg: "Correcto: 12.059999999998183. Derivar dos veces x³ da 6x, que en 2 vale 12; el 0.06 de más es el error de aproximar dos veces con dx = 0.01. La segunda derivada se construye igual que la primera: derivada recibe una función y devuelve otra, y la de adentro ya era una función." },
-      { txt: "cerca de 6", ok: false, msg: "No. 6 es la segunda derivada de x³ en x = 1, o el coeficiente de x. En x = 2 es 6 · 2 = 12; el programa imprime 12.06." },
       { txt: "cerca de 24", ok: false, msg: "No. 24 sería 6 · 4, como si se evaluara en x = 4. La derivada de la derivada de x³ es 6x; en 2 vale 12, y el programa imprime 12.06." },
       { txt: "no compila: derivada recibe una función, no otra derivada", ok: false, msg: "Sí compila. derivada(cube, 0.01) es de tipo Double => Double, exactamente lo que el parámetro f espera. Se puede anidar cuantas veces se quiera, e imprime 12.06." }
-    ]
+    ,
+      { txt: "cerca de 12", ok: true, msg: "Correcto: 12.059999999998183. Derivar dos veces x³ da 6x, que en 2 vale 12; el 0.06 de más es el error de aproximar dos veces con dx = 0.01. La segunda derivada se construye igual que la primera: derivada recibe una función y devuelve otra, y la de adentro ya era una función." },
+      { txt: "cerca de 6", ok: false, msg: "No. 6 es la segunda derivada de x³ en x = 1, o el coeficiente de x. En x = 2 es 6 · 2 = 12; el programa imprime 12.06." }]
   };
 
   var API = { FILAS: FILAS, formula: formula, SEGUNDA: SEGUNDA };

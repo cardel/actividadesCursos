@@ -106,24 +106,24 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "La n de cada llamada", columna: true, correcta: "propia",
           html: "<p>Durante la evaluación de <code>(suma-cuadrados 3)</code>, ¿qué pasa con <code>n</code>?</p>",
           opciones: [
-            { op: "cambia", texto: "Empieza en 3 y va bajando: 2, 1 y 0.", msg: "Eso describe una variable imperativa que se sobrescribe. Aquí ninguna n cambia: cada llamada tiene la suya." },
-            { op: "propia", texto: "Cada llamada tiene su propia n, con 3, 2, 1 y 0, y ninguna cambia de valor.", msg: "Correcto. La n declarativa es un nombre que se sustituye por un valor, como en matemáticas. No hay casilla que se sobrescriba, y por eso tampoco hay ciclo: la repetición sale de la recursión." },
             { op: "global", texto: "Es una sola variable que comparten todas las llamadas.", msg: "Si fuera compartida, al volver de la llamada interna n valdría 0 y las sumas pendientes saldrían mal. Cada llamada tiene la suya." }
-          ] },
+          ,
+            { op: "cambia", texto: "Empieza en 3 y va bajando: 2, 1 y 0.", msg: "Eso describe una variable imperativa que se sobrescribe. Aquí ninguna n cambia: cada llamada tiene la suya." },
+            { op: "propia", texto: "Cada llamada tiene su propia n, con 3, 2, 1 y 0, y ninguna cambia de valor.", msg: "Correcto. La n declarativa es un nombre que se sustituye por un valor, como en matemáticas. No hay casilla que se sobrescriba, y por eso tampoco hay ciclo: la repetición sale de la recursión." }] },
         { tipo: "opciones", titulo: "El estado se muda", columna: true, correcta: "atributo",
           html: T.codigo(P.potenciaOO.codigo) + "<p>Comparada con <code>potencia.c</code>, ¿qué cambió en esta versión?</p>",
           opciones: [
-            { op: "paradigma", texto: "El paradigma: ahora es declarativa, porque usa una clase.", msg: "El ciclo sigue diciendo cómo calcular, paso a paso, con variables que cambian. Sigue siendo imperativa." },
             { op: "atributo", texto: "Dónde vive el estado: resultado es un atributo del objeto y no una variable local.", msg: "Correcto. El cálculo es el mismo y también imprime " + P.potenciaOO.salida + ". La orientación a objetos es una variación del paradigma imperativo: los pasos y el estado viven dentro de un objeto." },
             { op: "calculo", texto: "El cálculo: la clase multiplica de otra forma.", msg: "El while es idéntico línea por línea. Lo único que se movió es resultado." }
-          ] },
+          ,
+            { op: "paradigma", texto: "El paradigma: ahora es declarativa, porque usa una clase.", msg: "El ciclo sigue diciendo cómo calcular, paso a paso, con variables que cambian. Sigue siendo imperativa." }] },
         { tipo: "opciones", titulo: "Cuando nada cambia", columna: true, correcta: "carrera",
           html: "<p>Haskell y Erlang, lenguajes funcionales, se usan en sistemas donde muchos procesos trabajan al mismo tiempo. ¿Qué tipo de error evita que las variables no cambien de valor?</p>",
           opciones: [
-            { op: "carrera", texto: "Que dos procesos modifiquen la misma variable a la vez y el resultado dependa de cuál llegó primero.", msg: "Correcto. Es una condición de carrera: con los mismos datos, ejecuciones distintas dan respuestas distintas. Si ningún valor puede cambiar, ese error no existe." },
-            { op: "desborde", texto: "Que un entero se desborde.", msg: "El desborde depende del tamaño de los enteros, no de si las variables cambian." },
             { op: "sintaxis", texto: "Los errores de sintaxis.", msg: "La sintaxis la revisa el traductor antes de ejecutar, en cualquier paradigma." }
-          ] }
+          ,
+            { op: "carrera", texto: "Que dos procesos modifiquen la misma variable a la vez y el resultado dependa de cuál llegó primero.", msg: "Correcto. Es una condición de carrera: con los mismos datos, ejecuciones distintas dan respuestas distintas. Si ningún valor puede cambiar, ese error no existe." },
+            { op: "desborde", texto: "Que un entero se desborde.", msg: "El desborde depende del tamaño de los enteros, no de si las variables cambian." }] }
       ]
     };
   }

@@ -32,10 +32,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Turnos de un banco", columna: true, correcta: "n",
           html: "<p>Un banco guarda en un ABB los números de turno 1, 2, 3, … a medida que los entrega. Ya van n turnos. ¿Cuánto cuesta insertar el siguiente?</p>",
           opciones: [
-            { op: "log", texto: "Θ(log n): el ABB baja por un solo lado.", msg: "Baja por un solo lado, pero aquí ese lado mide n − 1: cada turno es mayor que todos los anteriores y el árbol es una lista hacia la derecha." },
-            { op: "n", texto: "Θ(n): el árbol es una lista y el turno nuevo compara con todos los anteriores.", msg: "Correcto. Con turnos crecientes, h = n − 1." },
             { op: "uno", texto: "Θ(1): el turno nuevo siempre va al final.", msg: "Va al final, pero para llegar ahí insertar baja desde la raíz por todos los nodos." }
-          ] },
+          ,
+            { op: "log", texto: "Θ(log n): el ABB baja por un solo lado.", msg: "Baja por un solo lado, pero aquí ese lado mide n − 1: cada turno es mayor que todos los anteriores y el árbol es una lista hacia la derecha." },
+            { op: "n", texto: "Θ(n): el árbol es una lista y el turno nuevo compara con todos los anteriores.", msg: "Correcto. Con turnos crecientes, h = n − 1." }] },
         { tipo: "opciones", titulo: "Códigos revueltos", columna: true, correcta: "log",
           html: "<p>Una bodega guarda en un ABB códigos de producto que llegan sin ningún orden. ¿Qué cuesta, en la práctica, buscar un código entre n?</p>",
           opciones: [
@@ -58,10 +58,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Listar en orden", columna: true, correcta: "n",
           html: "<p>¿Cuánto cuesta imprimir las n claves de menor a mayor, si el ABB es una lista y si tiene la altura mínima?</p>",
           opciones: [
-            { op: "n", texto: "Θ(n) en los dos casos.", msg: "Correcto: es el inorden, que visita cada nodo una vez. La forma solo cambia el espacio de la pila, O(h)." },
-            { op: "nlog", texto: "Θ(n log n) balanceado y Θ(n²) en la lista: una búsqueda por clave.", msg: "No hace falta buscar cada clave: el inorden las recorre todas en orden en una pasada." },
             { op: "dist", texto: "Θ(log n) balanceado y Θ(n) en la lista.", msg: "Imprimir n claves cuesta al menos n, sea cual sea la forma." }
-          ] },
+          ,
+            { op: "n", texto: "Θ(n) en los dos casos.", msg: "Correcto: es el inorden, que visita cada nodo una vez. La forma solo cambia el espacio de la pila, O(h)." },
+            { op: "nlog", texto: "Θ(n log n) balanceado y Θ(n²) en la lista: una búsqueda por clave.", msg: "No hace falta buscar cada clave: el inorden las recorre todas en orden en una pasada." }] },
         { tipo: "respuesta", titulo: "Marcos en una lista",
           html: "<p>Un ABB armado con las claves 1 a 300 000 en orden creciente. Se llama <code>raiz = insertar(raiz, 300001)</code> con la versión recursiva. ¿Cuántos marcos de <code>insertar</code> llegan a estar en la pila a la vez? ¿Cuánto espacio aparte pide <code>insertarIterativa</code>?</p>",
           campos: [
@@ -78,17 +78,17 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Armar el árbol completo", columna: true, correcta: "dos",
           html: "<p>Se insertan n claves en un ABB vacío. ¿Cuánto cuesta en total si llegan en orden creciente y si llegan revueltas?</p>",
           opciones: [
-            { op: "dos", texto: "Θ(n²) en orden creciente y Θ(n log n) revueltas.", msg: "Correcto. En la lista, la clave i compara con i − 1 nodos: la suma es Θ(n²). Revueltas, cada inserción paga O(log n)." },
             { op: "igual", texto: "Θ(n log n) en los dos casos: son las mismas claves.", msg: "Las claves son las mismas, pero el árbol no: en orden creciente cada inserción recorre la lista entera." },
             { op: "lineal", texto: "Θ(n) en los dos casos: cada inserción enlaza un solo nodo.", msg: "Enlazar cuesta Θ(1), pero antes hay que bajar hasta el NULL, y eso cuesta O(h)." }
-          ] },
+          ,
+            { op: "dos", texto: "Θ(n²) en orden creciente y Θ(n log n) revueltas.", msg: "Correcto. En la lista, la clave i compara con i − 1 nodos: la suma es Θ(n²). Revueltas, cada inserción paga O(log n)." }] },
         { tipo: "opciones", titulo: "Consecutivos que llegan en orden", columna: true, correcta: "arreglo",
           html: "<p>Un sistema recibe códigos consecutivos de una base de datos, siempre crecientes, y solo necesita agregarlos y preguntar si un código está. Nunca borra. ¿Qué conviene?</p>",
           opciones: [
-            { op: "abb", texto: "Un ABB: buscar e insertar en O(h).", msg: "Con códigos crecientes h = n − 1: cada operación cuesta Θ(n)." },
             { op: "arreglo", texto: "Un arreglo ordenado: agregar es escribir al final y buscar es búsqueda binaria.", msg: "Correcto. Como cada código es mayor que todos los anteriores, no hay nada que correr: agregar cuesta Θ(1) y buscar Θ(log n). Lo caro del arreglo era insertar en medio, y aquí no pasa." },
             { op: "lista", texto: "Una lista enlazada ordenada: agregar al final es Θ(1) con un puntero al último.", msg: "Agregar sí, pero buscar en una lista recorre nodo por nodo: Θ(n)." }
-          ] }
+          ,
+            { op: "abb", texto: "Un ABB: buscar e insertar en O(h).", msg: "Con códigos crecientes h = n − 1: cada operación cuesta Θ(n)." }] }
       ]
     };
   }

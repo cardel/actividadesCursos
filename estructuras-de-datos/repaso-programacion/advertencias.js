@@ -22,10 +22,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Con las advertencias encendidas", columna: true, correcta: "linea",
           html: "<p>Con <code>g++ -o saldo Saldo.cpp -Wall -Wextra</code> el compilador escribe:</p>" + P.pre(P.AVISO_SALDO) + "<p>¿Qué dice ese aviso?</p>",
           opciones: [
-            { op: "linea", texto: "Que en la línea 5 hay una asignación usada como condición, que casi siempre es un <code>==</code> mal escrito.", msg: "Correcto. 5:13 es la línea y la columna. El aviso no detiene la compilación: el ejecutable se genera igual, y por eso hay que leerlo." },
             { op: "error", texto: "Que el programa tiene un error y no se generó el ejecutable.", msg: "Es un warning, no un error: el ejecutable sí quedó. Justamente por eso es fácil ignorarlo." },
             { op: "parentesis", texto: "Que faltan paréntesis y basta agregarlos: <code>if ((saldo = 0))</code>.", msg: "Los paréntesis dobles callan el aviso, y el programa sigue asignando. Es la forma de decirle al compilador que la asignación era a propósito, y aquí no lo era." }
-          ] },
+          ,
+            { op: "linea", texto: "Que en la línea 5 hay una asignación usada como condición, que casi siempre es un <code>==</code> mal escrito.", msg: "Correcto. 5:13 es la línea y la columna. El aviso no detiene la compilación: el ejecutable se genera igual, y por eso hay que leerlo." }] },
         { tipo: "respuesta", titulo: "Corregido",
           html: "<p>Se cambia la línea 5 por <code>if (saldo == 0) {</code>. ¿Qué imprime ahora?</p>",
           campos: [{ rotulo: "imprime:", esperado: "Saldo: 40", ancho: "9rem" }],
@@ -38,10 +38,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Otra vez la asignación", columna: true, correcta: "siempre",
           html: "<p>Un ciclo debía repetir mientras <code>opcion</code> valiera 3:</p>" + P.pre(["while (opcion = 3) {", "  scanf(\"%d\", &opcion);", "}"]) + "<p>¿Qué hace?</p>",
           opciones: [
-            { op: "nunca", texto: "No entra nunca, salvo que opcion ya valga 3.", msg: "La condición no compara: guarda un 3 y vale 3, que es verdadero, sea cual sea lo que haya leído." },
             { op: "siempre", texto: "No termina: cada vuelta vuelve a poner opcion en 3, y 3 es verdadero.", msg: "Correcto. El scanf lee un valor nuevo y la condición lo pisa con un 3. -Wall -Wextra avisa en esta línea igual que en el if." },
             { op: "bien", texto: "Funciona: repite mientras se escriba 3.", msg: "Eso haría while (opcion == 3). Con un solo signo igual, lo que se lee nunca llega a compararse." }
-          ] }
+          ,
+            { op: "nunca", texto: "No entra nunca, salvo que opcion ya valga 3.", msg: "La condición no compara: guarda un 3 y vale 3, que es verdadero, sea cual sea lo que haya leído." }] }
       ]
     };
   }

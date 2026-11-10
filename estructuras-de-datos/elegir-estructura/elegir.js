@@ -11,11 +11,11 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Las últimas diez lecturas", columna: true, correcta: "deque",
           html: "<p>Un sensor manda una temperatura por segundo, y el programa guarda solo las diez más recientes: cuando llega una nueva, sale la más vieja.</p>",
           opciones: [
-            { op: "listcero", texto: "<code>list</code>, con <code>append</code> y <code>pop(0)</code>", msg: "Funciona, pero pop(0) corre las nueve que quedan. Con diez casillas no es grave; la estructura que hace las dos cosas sin correr nada es otra." },
             { op: "deque", texto: "<code>deque</code>, con <code>append</code> y <code>popleft</code>", msg: "Correcto. Entra por la derecha y sale la más vieja por la izquierda, las dos en Θ(1): es una cola." },
             { op: "heap", texto: "<code>heapq</code>", msg: "El montículo saca la menor temperatura, no la más vieja." },
             { op: "set", texto: "<code>set</code>", msg: "Un set pierde el orden de llegada y descarta dos lecturas iguales." }
-          ] },
+          ,
+            { op: "listcero", texto: "<code>list</code>, con <code>append</code> y <code>pop(0)</code>", msg: "Funciona, pero pop(0) corre las nueve que quedan. Con diez casillas no es grave; la estructura que hace las dos cosas sin correr nada es otra." }] },
         { tipo: "opciones", titulo: "Urgencias", columna: true, correcta: "heap",
           html: "<p>En urgencias llegan pacientes con una gravedad de 1 a 5, y siempre se atiende al más grave; entre dos igual de graves, al que llegó primero.</p>",
           opciones: [
@@ -27,10 +27,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "¿Ya está inscrito?", columna: true, correcta: "set",
           html: "<p>Una universidad tiene 50 000 códigos de estudiantes inscritos, y una aplicación pregunta millones de veces si un código está entre ellos.</p>",
           opciones: [
-            { op: "list", texto: "<code>list</code> con <code>codigo in inscritos</code>", msg: "Cada pregunta compara de uno en uno: O(n) por consulta, 50 000 comparaciones en el peor caso." },
-            { op: "set", texto: "<code>set</code> con <code>codigo in inscritos</code>", msg: "Correcto. Cada pregunta cuesta O(1) en promedio: calcula la casilla y prueba pocas." },
             { op: "heap", texto: "<code>heapq</code>", msg: "El montículo solo responde rápido por el menor. Para buscar cualquier código hay que recorrerlo." }
-          ] },
+          ,
+            { op: "list", texto: "<code>list</code> con <code>codigo in inscritos</code>", msg: "Cada pregunta compara de uno en uno: O(n) por consulta, 50 000 comparaciones en el peor caso." },
+            { op: "set", texto: "<code>set</code> con <code>codigo in inscritos</code>", msg: "Correcto. Cada pregunta cuesta O(1) en promedio: calcula la casilla y prueba pocas." }] },
         { tipo: "opciones", titulo: "Paréntesis que cierran", columna: true, correcta: "pila",
           html: "<p>Un programa revisa si en <code>{[()()]}</code> cada símbolo que cierra corresponde al último que quedó abierto.</p>",
           opciones: [
@@ -41,17 +41,17 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Un traductor", columna: true, correcta: "dict",
           html: "<p>Un traductor guarda unas 20 000 palabras con su traducción. Se consulta todo el tiempo, y una vez al final del día se imprime la lista completa en orden alfabético.</p>",
           opciones: [
-            { op: "dict", texto: "<code>dict</code>, y <code>sorted</code> una vez al imprimir", msg: "Correcto. Cada consulta cuesta O(1) en promedio, y el orden se paga una sola vez: Θ(n log n) al final del día." },
-            { op: "lista", texto: "<code>list</code> de parejas ordenada por palabra", msg: "Ordenada permite búsqueda binaria en O(log n), pero cada palabra nueva corre casillas: O(n) por inserción." },
             { op: "deque", texto: "<code>deque</code> de parejas", msg: "Buscar una palabra recorre el deque: O(n) por consulta." }
-          ] },
+          ,
+            { op: "dict", texto: "<code>dict</code>, y <code>sorted</code> una vez al imprimir", msg: "Correcto. Cada consulta cuesta O(1) en promedio, y el orden se paga una sola vez: Θ(n log n) al final del día." },
+            { op: "lista", texto: "<code>list</code> de parejas ordenada por palabra", msg: "Ordenada permite búsqueda binaria en O(log n), pero cada palabra nueva corre casillas: O(n) por inserción." }] },
         { tipo: "opciones", titulo: "La nota del puesto i", columna: true, correcta: "list",
           html: "<p>Las notas de un curso se guardan en el orden de la lista de clase, y el programa consulta y corrige muchas veces la nota del estudiante en la posición i.</p>",
           opciones: [
-            { op: "nodos", texto: "Una lista sobre nodos", msg: "obtener(i) camina i nodos desde la cabeza: O(i) por consulta." },
-            { op: "list", texto: "<code>list</code>", msg: "Correcto. notas[i] y notas[i] = x calculan la dirección de la casilla: Θ(1)." },
             { op: "deque", texto: "<code>deque</code>", msg: "El deque es Θ(1) solo en los extremos; en el medio, O(n)." }
-          ] },
+          ,
+            { op: "nodos", texto: "Una lista sobre nodos", msg: "obtener(i) camina i nodos desde la cabeza: O(i) por consulta." },
+            { op: "list", texto: "<code>list</code>", msg: "Correcto. notas[i] y notas[i] = x calculan la dirección de la casilla: Θ(1)." }] },
         { tipo: "tabla", titulo: "Lo que pide el problema",
           html: "<p>Piense la estructura de cada fila antes de mostrarla.</p>",
           cabecera: ["El problema repite", "C++", "Python", "Costo"],

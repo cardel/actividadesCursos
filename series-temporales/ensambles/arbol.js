@@ -35,11 +35,11 @@
     explicacion: "La tabla tiene " + DATOS.filas + " filas de entrenamiento. Prediga sin mirar la gráfica.",
     items: [
       { valor: "Un árbol sin límite y con <code>min_samples_leaf=1</code>, ¿cuántas filas deja en cada hoja?",
-        opciones: ["Una", "Unas diez", "La mitad de la tabla"], correcta: 0,
+        opciones: [ "La mitad de la tabla","Una", "Unas diez"], correcta: 1,
         razon: "Una: pregunta hasta que cada hoja guarda un solo mes, así que pronostica copiando el mes de la tabla que más se parece, la pandemia incluida. En el backtest de la sesión ese árbol da " +
           P.miles(B.arbol_libre) + " de MAE, contra " + P.miles(B.estacional) + " del estacional ingenuo." },
       { valor: "Si se suman árboles al bosque, ¿el MAE de 2025 sube por sobreajuste?",
-        opciones: ["Sí, sube como al subir la profundidad", "No, el MAE baja y se estabiliza"], correcta: 1,
+        opciones: [ "No, el MAE baja y se estabiliza","Sí, sube como al subir la profundidad"], correcta: 0,
         razon: "Se estabiliza: cada árbol nuevo entra al promedio con el mismo peso que los demás, y un promedio de más árboles cambia menos, no copia más." }
     ],
     cierre: "Los frenos deciden cuánto copia cada árbol, y el número de árboles, cuánto se promedia."

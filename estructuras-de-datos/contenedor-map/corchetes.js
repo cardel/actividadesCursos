@@ -77,10 +77,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Preguntar sin insertar", columna: true, correcta: "count",
           html: "<p>¿Cómo se escribe la condición para que 35 no entre al map si no estaba?</p>",
           opciones: [
-            { op: "count", texto: "<code>if (m.count(35) == 1 &amp;&amp; m[35] &gt; 0)</code>", msg: "Correcto. count no inserta, y si da 0 la segunda parte ni se evalúa, así que m[35] solo se usa cuando 35 ya está." },
             { op: "cero", texto: "<code>if (m[35] != 0)</code>", msg: "Sigue usando []: si 35 no está, lo inserta con 0 igual que antes." },
             { op: "size", texto: "<code>if (m.size() &gt; 0)</code>", msg: "size dice cuántas parejas hay, no si 35 está entre ellas." }
-          ] }
+          ,
+            { op: "count", texto: "<code>if (m.count(35) == 1 &amp;&amp; m[35] &gt; 0)</code>", msg: "Correcto. count no inserta, y si da 0 la segunda parte ni se evalúa, así que m[35] solo se usa cuando 35 ya está." }] }
       ]
     };
   }

@@ -88,20 +88,20 @@
       pregunta: "El mismo molde con otra condición. ¿Qué devuelve?",
       cierre: "Dos libros tienen un solo autor: " + SALE_UNO + ".",
       opciones: [
-        { txt: SALE_UNO, correcta: true, larga: true },
-        { txt: SALE_ODERSKY, fallo: "La condición mira cuántos autores tiene el libro, no quién los escribió. " + PIS + " tiene tres autores y queda fuera, mientras " + LCPS + " tiene uno y entra.", larga: true },
         { txt: "List(1, 1)", fallo: "El largo de la lista de autores se usa en la condición; lo que entra al resultado lo dice el yield, que es l.titulo.", larga: true }
-      ]
+      ,
+        { txt: SALE_UNO, correcta: true, larga: true },
+        { txt: SALE_ODERSKY, fallo: "La condición mira cuántos autores tiene el libro, no quién los escribió. " + PIS + " tiene tres autores y queda fuera, mientras " + LCPS + " tiene uno y entra.", larga: true }]
     },
     {
       expr: "de la primera consulta a la segunda",
       pregunta: "¿Qué hubo que cambiar para pasar de una a la otra?",
       cierre: "Solo la condición. El generador, el yield y la forma de la expresión son los mismos, y eso es lo que permite escribir una consulta nueva cambiando una línea.",
       opciones: [
-        { txt: "solo la condición del if", correcta: true, larga: true },
         { txt: "la condición y el yield, porque una pregunta por el título y la otra por los autores", fallo: "Las dos devuelven títulos, de modo que el yield es el mismo l.titulo. La segunda consulta usa los autores para decidir, dentro de la condición.", larga: true },
         { txt: "el generador, porque la segunda consulta necesita recorrer los autores", fallo: "l.autores.length se calcula sobre el libro que ya trae el generador, sin recorrer la lista de autores uno por uno. Recorrerla hace falta cuando la condición se pregunta por un autor en particular.", larga: true }
-      ]
+      ,
+        { txt: "solo la condición del if", correcta: true, larga: true }]
     }
   ];
 
@@ -123,10 +123,10 @@
       pregunta: "¿Por qué esta consulta necesita dos generadores y las dos anteriores no?",
       cierre: "El primer generador da un libro y el segundo recorre los autores de ese libro, así que la condición se evalúa autor por autor. Las dos consultas anteriores deciden con algo que el libro entrega de una, el título y el largo de su lista de autores.",
       opciones: [
-        { txt: "porque la condición se pregunta por un autor, y los autores de un libro son una lista", correcta: true, larga: true },
-        { txt: "porque hay dos libros de Odersky y cada generador trae uno", fallo: "Cuántos resultados salgan no decide cuántos generadores se escriben. El segundo generador está porque los autores vienen en una lista y hay que entrar en ella para preguntar por uno.", larga: true },
         { txt: "porque el resultado tiene que traer el libro y el autor", fallo: "El yield devuelve l.titulo, una sola cosa por resultado. El segundo generador sirve para llegar a cada autor, no para armar lo que se devuelve.", larga: true }
-      ]
+      ,
+        { txt: "porque la condición se pregunta por un autor, y los autores de un libro son una lista", correcta: true, larga: true },
+        { txt: "porque hay dos libros de Odersky y cada generador trae uno", fallo: "Cuántos resultados salgan no decide cuántos generadores se escriben. El segundo generador está porque los autores vienen en una lista y hay que entrar en ella para preguntar por uno.", larga: true }]
     }
   ];
 
@@ -138,10 +138,10 @@
       pregunta: "Esto es lo que imprimió la consulta de los autores que aparecen en al menos dos libros. ¿Cuántos elementos tiene esa lista?",
       cierre: "Dos, y los dos son la cadena Odersky, Martin. Las comas de la salida son de dos clases: las que separan los elementos de la lista y la que cada autor lleva adentro, porque se escribe apellido, nombre. Cuatro trozos separados por coma, dos elementos.",
       opciones: [
-        { txt: "2", correcta: true },
         { txt: "4", fallo: "Cada autor está escrito como apellido, nombre, y esa coma es parte de la cadena. La lista separa sus elementos con el mismo signo, de modo que dos elementos dejan cuatro trozos a la vista." },
         { txt: "1", fallo: "La cadena Odersky, Martin está dos veces. Imprimir no junta los repetidos: el elemento aparece tantas veces como la consulta lo produjo." }
-      ]
+      ,
+        { txt: "2", correcta: true }]
     },
     {
       expr: "l1 <- libros; l2 <- libros; if l1 != l2",
@@ -158,10 +158,10 @@
       pregunta: "¿Qué devuelve?",
       cierre: SALE_DISTINCT + ", con un solo elemento. distinct quita las copias de lo ya construido: la consulta sigue formando el par en los dos órdenes y produciendo las dos apariciones, y el descarte ocurre al final.",
       opciones: [
-        { txt: SALE_DISTINCT, correcta: true },
-        { txt: SALE_REPETIDOS, fallo: "distinct deja una sola copia de cada elemento, y los dos elementos de esa lista son la misma cadena." },
         { txt: SALE_SET, fallo: "distinct devuelve una lista sin elementos repetidos, no un conjunto: lo que imprime empieza con List. El conjunto llega al convertir la colección." }
-      ]
+      ,
+        { txt: SALE_DISTINCT, correcta: true },
+        { txt: SALE_REPETIDOS, fallo: "distinct deja una sola copia de cada elemento, y los dos elementos de esa lista son la misma cadena." }]
     }
   ];
 
@@ -173,10 +173,10 @@
       pregunta: "¿Qué devuelve?",
       cierre: SALE_SET + ". El primer generador fija el tipo del resultado, y un conjunto no admite repetidos: la copia de más no llega a entrar.",
       opciones: [
-        { txt: SALE_SET, correcta: true },
         { txt: SALE_DISTINCT, fallo: "El resultado se imprime como Set. El tipo de lo que devuelve una expresión for lo fija el primer generador, y ese recorre libros.toSet." },
         { txt: "Set(Odersky, Martin, Odersky, Martin)", fallo: "Un conjunto no guarda elementos repetidos. El recorrido produce las dos apariciones igual, y al entrar al resultado quedan en una." }
-      ]
+      ,
+        { txt: SALE_SET, correcta: true }]
     },
     {
       expr: SALE_REPETIDOS + "   ·   " + SALE_DISTINCT + "   ·   " + SALE_SET,

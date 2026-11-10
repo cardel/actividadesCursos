@@ -129,20 +129,20 @@
       pregunta: "v es Vector(2, 3, 4) y el 1 entra por un extremo.",
       cierre: "Los dos puntos de +: quedan del lado de v, que está a la derecha, y el 1 ocupa el primer puesto.",
       opciones: [
-        { txt: "Vector(1, 2, 3, 4)", correcta: true },
-        { txt: "Vector(2, 3, 4, 1)", fallo: "Así quedaría agregando al final, con v :+ 1. En +: la colección está a la derecha y el elemento entra por el frente." },
         { txt: "no compila: a un Vector se le agrega con ::", fallo: ":: es de List. Un Vector agrega con +: al inicio y con :+ al final, y las dos líneas del demo compilan.", larga: true }
-      ]
+      ,
+        { txt: "Vector(1, 2, 3, 4)", correcta: true },
+        { txt: "Vector(2, 3, 4, 1)", fallo: "Así quedaría agregando al final, con v :+ 1. En +: la colección está a la derecha y el elemento entra por el frente." }]
     },
     {
       expr: "v, después de las dos líneas que agregan",
       pregunta: "Se imprimió 1 +: v y después v :+ 5. ¿Qué tiene v ahora?",
       cierre: "Ni +: ni :+ modifican v: cada uno construye un vector nuevo. Las líneas siguientes lo confirman, porque v.head da 2 y v.tail da Vector(3, 4).",
       opciones: [
-        { txt: "Vector(2, 3, 4)", correcta: true },
         { txt: "Vector(2, 3, 4, 5)", fallo: "Vector(2, 3, 4, 5) es el valor que imprime v :+ 5, un vector distinto del que quedó en v." },
         { txt: "Vector(1, 2, 3, 4, 5)", fallo: "v tendría esos cinco elementos si las dos líneas lo hubieran ido modificando. Agregar devuelve otro vector y deja el original igual." }
-      ]
+      ,
+        { txt: "Vector(2, 3, 4)", correcta: true }]
     },
     {
       expr: "agregar al final",
@@ -164,20 +164,20 @@
       pregunta: "¿Cuál de estas tres no se usa con un Vector?",
       cierre: "Las demás son las mismas: head da 2, tail da Vector(3, 4), isEmpty da false, map da Vector(20, 30, 40) y filter da Vector(3, 4).",
       opciones: [
-        { txt: "::", correcta: true },
-        { txt: "map", fallo: "map funciona igual: v.map(_ * 10) da Vector(20, 30, 40), con un elemento por cada uno de los tres." },
         { txt: "head", fallo: "head funciona igual: v.head da 2, y v.tail da Vector(3, 4)." }
-      ]
+      ,
+        { txt: "::", correcta: true },
+        { txt: "map", fallo: "map funciona igual: v.map(_ * 10) da Vector(20, 30, 40), con un elemento por cada uno de los tres." }]
     },
     {
       expr: "v.head y v.tail",
       pregunta: "Las dos miran la cabeza del vector. ¿En qué se diferencian?",
       cierre: "Una entrega el elemento y la otra el vector que queda, igual que sobre una lista.",
       opciones: [
-        { txt: "head da 2 y tail da Vector(3, 4)", correcta: true, larga: true },
         { txt: "head da Vector(2) y tail da Vector(3, 4): las dos devuelven vectores", fallo: "head entrega el elemento suelto. La línea del demo imprime 2, no Vector(2).", larga: true },
         { txt: "head da 2 y tail da 3, el elemento que sigue", fallo: "tail devuelve todo lo que queda al quitar el primero, que aquí son dos elementos: Vector(3, 4).", larga: true }
-      ]
+      ,
+        { txt: "head da 2 y tail da Vector(3, 4)", correcta: true, larga: true }]
     },
     {
       expr: "dos líneas con el mismo valor",

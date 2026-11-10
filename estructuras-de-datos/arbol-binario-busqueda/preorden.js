@@ -73,10 +73,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "El formato de la salida", columna: true, correcta: "antes",
           html: "<p>El juez pide cada clave precedida de un espacio y ninguno al final de la línea, como <code>&nbsp;9 14 18</code>. ¿Qué instrucción va dentro del recorrido?</p>",
           opciones: [
-            { op: "antes", texto: "<code>printf(\" %d\", r->dato);</code>", msg: "Correcto: el espacio va delante de cada clave, así que la línea empieza con espacio y termina en la última clave." },
-            { op: "despues", texto: "<code>printf(\"%d \", r->dato);</code>", msg: "Así la línea termina en espacio y le falta el del comienzo." },
             { op: "nada", texto: "<code>printf(\"%d\", r->dato);</code>", msg: "Las claves quedan pegadas: 91418." }
-          ] }
+          ,
+            { op: "antes", texto: "<code>printf(\" %d\", r->dato);</code>", msg: "Correcto: el espacio va delante de cada clave, así que la línea empieza con espacio y termina en la última clave." },
+            { op: "despues", texto: "<code>printf(\"%d \", r->dato);</code>", msg: "Así la línea termina en espacio y le falta el del comienzo." }] }
       ]
     };
   }

@@ -49,11 +49,11 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Los enlaces que cambian", columna: true, correcta: "tres",
           html: "<p>En esa rotación, ¿qué enlaces cambian?</p>",
           opciones: [
-            { op: "tres", texto: "El hijo izquierdo del 64 pasa a ser el 48, el hijo derecho del 32 pasa a ser el 64 y la raíz apunta al 32.", msg: "Correcto. Son tres enlaces; el 16, el 8 y el 80 siguen colgando de quien colgaban." },
-            { op: "dos", texto: "El hijo derecho del 32 pasa a ser el 64 y la raíz apunta al 32.", msg: "Falta uno: si el 64 sigue apuntando al 32 como hijo izquierdo, queda un ciclo y el 48 se pierde. El hijo izquierdo del 64 pasa a ser el 48." },
             { op: "todos", texto: "Todos los enlaces del lado izquierdo, porque el 16 y el 8 suben un nivel.", msg: "El 16 y el 8 suben de nivel, pero siguen colgando del mismo padre: sus enlaces no se tocan." },
             { op: "cuatro", texto: "Los tres anteriores y el hijo derecho del 64, que deja de ser el 80.", msg: "El 80 se queda donde estaba: sigue siendo el hijo derecho del 64." }
-          ] },
+          ,
+            { op: "tres", texto: "El hijo izquierdo del 64 pasa a ser el 48, el hijo derecho del 32 pasa a ser el 64 y la raíz apunta al 32.", msg: "Correcto. Son tres enlaces; el 16, el 8 y el 80 siguen colgando de quien colgaban." },
+            { op: "dos", texto: "El hijo derecho del 32 pasa a ser el 64 y la raíz apunta al 32.", msg: "Falta uno: si el 64 sigue apuntando al 32 como hijo izquierdo, queda un ciclo y el 48 se pierde. El hijo izquierdo del 64 pasa a ser el 48." }] },
         { tipo: "respuesta", titulo: "Lo que se conserva",
           html: "<p>¿Cuál es el inorden del árbol después de rotar? ¿Qué altura tenía antes y qué altura tiene después?</p>",
           campos: [
@@ -88,10 +88,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Lo que cuesta", columna: true, correcta: "uno",
           html: "<p>Si debajo del 75 colgaran cien mil nodos, ¿cuánto costaría la misma rotación a la izquierda en el 70?</p>",
           opciones: [
-            { op: "uno", texto: "O(1): siguen siendo tres enlaces.", msg: "Correcto. El subárbol del 75 se mueve entero cambiando un solo puntero, el que lo cuelga." },
             { op: "n", texto: "Θ(n): hay que mover los cien mil nodos al otro lado.", msg: "Los nodos no se copian ni se recorren: el subárbol entero cambia de padre con un puntero." },
             { op: "log", texto: "O(log n): los nodos del subárbol cambian de nivel.", msg: "Cambian de nivel, pero el nivel no se guarda en ningún lado. Nada dentro del subárbol se toca." }
-          ] }
+          ,
+            { op: "uno", texto: "O(1): siguen siendo tres enlaces.", msg: "Correcto. El subárbol del 75 se mueve entero cambiando un solo puntero, el que lo cuelga." }] }
       ]
     };
   }

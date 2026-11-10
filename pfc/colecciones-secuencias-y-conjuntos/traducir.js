@@ -38,20 +38,20 @@
       pregunta: "La reescritura de for (x <- Vector(1, 2, 3)) yield x * 2 tiene esta forma. ¿Qué función va en el hueco?",
       cierre: "map. El generador aporta la colección que recibe la llamada y el cuerpo del yield aporta la función: un generador con yield y sin if se reescribe con map.",
       opciones: [
-        { txt: "map", correcta: true },
-        { txt: "flatMap", fallo: "flatMap concatena lo que devuelve la función, de modo que pide que cada resultado sea una colección; x * 2 es un número y no hay nada que concatenar. El flatMap entra cuando aparece un segundo generador." },
         { txt: "filter", fallo: "filter es la reescritura del if y pide una condición, mientras x * 2 es un número. Esta expresión no tiene if." }
-      ]
+      ,
+        { txt: "map", correcta: true },
+        { txt: "flatMap", fallo: "flatMap concatena lo que devuelve la función, de modo que pide que cada resultado sea una colección; x * 2 es un número y no hay nada que concatenar. El flatMap entra cuando aparece un segundo generador." }]
     },
     {
       expr: "for (x <- Vector(1, 2, 3)) yield x * 2   ==   Vector(1, 2, 3).map(x => x * 2)",
       pregunta: "La comparación se corrió y dio true. ¿Por qué coinciden?",
       cierre: "Las dos devolvieron " + DOBLES + " porque no son dos caminos parecidos: la expresión for se reescribe como esa cadena, y la cadena es lo que corre.",
       opciones: [
-        { txt: "porque la cadena es en lo que el compilador convierte el for antes de ejecutarlo", correcta: true, larga: true },
         { txt: "porque las dos recorren el Vector en el mismo orden, aunque sean dos mecanismos distintos", fallo: "No hay dos mecanismos. La expresión for no se ejecuta como está escrita: el compilador la reescribe con funciones de alto orden, y esa reescritura es la cadena de la derecha.", larga: true },
         { txt: "porque yield y map son dos nombres de la misma función", fallo: "yield no es una función: es parte de la expresión for y señala qué valor entra al resultado. La función de la cadena es la que se escribe con =>, y su cuerpo es justo lo que está después del yield.", larga: true }
-      ]
+      ,
+        { txt: "porque la cadena es en lo que el compilador convierte el for antes de ejecutarlo", correcta: true, larga: true }]
     }
   ];
 
@@ -73,10 +73,10 @@
       pregunta: "Si el resultado es el mismo, ¿qué cambia?",
       cierre: "filter deja una colección con los elementos que pasaron, y el map recorre esa colección. withFilter no la construye: el filtro queda anotado y el map lo aplica al pasar. Con cuatro elementos la diferencia no se mide; con una colección grande es una colección entera que no se arma.",
       opciones: [
-        { txt: "que no se construye la colección intermedia entre el filtro y el map", correcta: true, larga: true },
-        { txt: "que withFilter admite condiciones que filter no admite", fallo: "La condición es la misma, x % 2 == 0, y las dos la evalúan igual sobre los mismos cuatro elementos. Lo que cambia es que filter deja una colección con lo que pasó el filtro y withFilter no la construye.", larga: true },
         { txt: "que withFilter descarta después del map y filter antes", fallo: "Las dos descartan antes. El if está escrito antes del yield y la reescritura conserva ese orden, de modo que al map solo llegan los elementos que pasaron.", larga: true }
-      ]
+      ,
+        { txt: "que no se construye la colección intermedia entre el filtro y el map", correcta: true, larga: true },
+        { txt: "que withFilter admite condiciones que filter no admite", fallo: "La condición es la misma, x % 2 == 0, y las dos la evalúan igual sobre los mismos cuatro elementos. Lo que cambia es que filter deja una colección con lo que pasó el filtro y withFilter no la construye.", larga: true }]
     }
   ];
 
@@ -88,10 +88,10 @@
       pregunta: "El flatMap de afuera recorre i. ¿Dónde queda el if en la reescritura?",
       cierre: "La reescritura es " + CADENA_PRIMAS + ", y se corrió: devuelve las mismas siete parejas que la expresión for. El filtro queda donde el if está escrito, después del segundo generador, y ahí la condición todavía se lee sobre i y sobre j.",
       opciones: [
-        { txt: "dentro, sobre j, antes del map que arma la pareja", correcta: true, larga: true },
         { txt: "afuera, sobre lo que devuelve el flatMap, cuando las parejas ya están armadas", fallo: "El if está escrito dentro de las llaves, después del segundo generador, y la reescritura lo pone en ese lugar. Movido al final, la condición tendría que leer las dos componentes de cada pareja en vez de i y j.", larga: true },
         { txt: "en el generador de afuera, sobre i", fallo: "La condición es esPrimo(i + j) y necesita las dos variables. Mientras j no tenga valor no se puede evaluar, de modo que el filtro no puede subir al generador de afuera.", larga: true }
-      ]
+      ,
+        { txt: "dentro, sobre j, antes del map que arma la pareja", correcta: true, larga: true }]
     },
     {
       expr: "los trozos del map interno: Vector((2,1)) con i = 2, Vector((4,1), (4,3)) con i = 4, Vector((5,2)) con i = 5",
@@ -108,10 +108,10 @@
       pregunta: "La misma cadena con map por fuera, corrida aparte.",
       cierre: "Cinco elementos, uno por cada valor de i, y cada uno es el trozo entero. Las parejas son las mismas siete, repartidas: lo que falta es la concatenación que hace flatMap.",
       opciones: [
-        { txt: ANIDADO, correcta: true, larga: true },
-        { txt: "las mismas siete parejas, porque el filtro deja una sola por cada i", fallo: "Hay valores de i que aportan dos parejas: con i = 4 el trozo es Vector((4,1), (4,3)). Y aun con una sola pareja por trozo, map entrega los trozos tal como llegaron, sin abrirlos.", larga: true },
         { txt: "un error de compilación, porque la función que recibe map devuelve una colección", fallo: "map devuelve lo que devuelva su función, sea un número o una colección. Lo corrido dejó cinco vectores, uno por cada i.", larga: true }
-      ]
+      ,
+        { txt: ANIDADO, correcta: true, larga: true },
+        { txt: "las mismas siete parejas, porque el filtro deja una sola por cada i", fallo: "Hay valores de i que aportan dos parejas: con i = 4 el trozo es Vector((4,1), (4,3)). Y aun con una sola pareja por trozo, map entrega los trozos tal como llegaron, sin abrirlos.", larga: true }]
     }
   ];
 
@@ -123,10 +123,10 @@
       pregunta: "Sin yield. Lo corrido imprime 1, luego 2, luego 3. ¿Qué vale la expresión?",
       cierre: "Vale (), de tipo Unit. Sin yield no hay nada que entre en un resultado, y de la expresión solo queda lo que imprimió.",
       opciones: [
-        { txt: "()", correcta: true },
         { txt: "Vector(1, 2, 3)", fallo: "Ese es el vector del generador, y la expresión no lo devuelve. Lo corrido vale ()." },
         { txt: "Vector((), (), ())", fallo: "Eso supone que cada paso aporta un elemento al resultado, que es lo que hace el yield. Sin yield no se construye ninguna colección: la expresión vale ()." }
-      ]
+      ,
+        { txt: "()", correcta: true }]
     },
     {
       expr: "val recorrido = for (x <- Vector(1, 2, 3)) println(x)",

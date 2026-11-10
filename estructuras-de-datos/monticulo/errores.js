@@ -105,10 +105,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Cuándo acierta", columna: true, correcta: "mayor",
           html: "<p>Hay montículos donde <code>bajarPrimero</code> deja el mismo arreglo que <code>bajar</code>. ¿En qué caso da lo mismo en un nivel?</p>",
           opciones: [
-            { op: "mayor", texto: "Cuando el izquierdo es mayor o igual que el derecho, o cuando el izquierdo no es mayor que la clave.", msg: "Correcto. En el primer caso el primero mayor es también el mayor; en el segundo, el código pasa al derecho, que es lo que haría bajar." },
-            { op: "nunca", texto: "Nunca: siempre deja un arreglo distinto.", msg: "Si el izquierdo es el mayor de los dos, las dos versiones hacen lo mismo. El error aparece solo cuando el derecho es más grande." },
             { op: "hoja", texto: "Solo cuando la clave ya está en una hoja.", msg: "En una hoja las dos se detienen, pero también coinciden en cualquier nivel donde el izquierdo sea el mayor." }
-          ] },
+          ,
+            { op: "mayor", texto: "Cuando el izquierdo es mayor o igual que el derecho, o cuando el izquierdo no es mayor que la clave.", msg: "Correcto. En el primer caso el primero mayor es también el mayor; en el segundo, el código pasa al derecho, que es lo que haría bajar." },
+            { op: "nunca", texto: "Nunca: siempre deja un arreglo distinto.", msg: "Si el izquierdo es el mayor de los dos, las dos versiones hacen lo mismo. El error aparece solo cuando el derecho es más grande." }] },
         { tipo: "respuesta", titulo: "El padre en i / 2",
           html: "<p>Esta versión de <code>subir</code> usa la fórmula del padre con la raíz en la casilla 1:</p>" + M.codigo(MITAD) +
                 "<p>Al montículo</p>" + M.cajas(W, {}) + "<p>llega el " + K + ": se pone en a[" + W.length + "] y se llama <code>subirMitad(a, " + W.length + ")</code>. ¿Cómo queda el arreglo? ¿Cuál es la primera casilla con una clave mayor que la de su padre?</p>",
@@ -125,10 +125,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Por qué a veces pasa", columna: true, correcta: "impar",
           html: "<p>Si la clave nueva hubiera entrado en a[7], <code>subirMitad</code> habría empezado bien. ¿Por qué?</p>",
           opciones: [
-            { op: "impar", texto: "Para i impar, i / 2 y (i − 1) / 2 dan lo mismo con división entera.", msg: "Correcto. 7 / 2 = 3 y 6 / 2 = 3. Para i par difieren en uno: 8 / 2 = 4 pero (8 − 1) / 2 = 3. Una prueba con pocas claves puede no notarlo." },
             { op: "arriba", texto: "Porque la casilla 7 está más arriba en el árbol.", msg: "La casilla 7 está en el mismo nivel que la 8. Lo que cambia es la paridad del índice." },
             { op: "suerte", texto: "Por las claves: con otras claves fallaría.", msg: "No depende de las claves sino del índice: para i = 7 las dos fórmulas dan la casilla 3." }
-          ] },
+          ,
+            { op: "impar", texto: "Para i impar, i / 2 y (i − 1) / 2 dan lo mismo con división entera.", msg: "Correcto. 7 / 2 = 3 y 6 / 2 = 3. Para i par difieren en uno: 8 / 2 = 4 pero (8 − 1) / 2 = 3. Una prueba con pocas claves puede no notarlo." }] },
         { tipo: "opciones", titulo: "Extraer subiendo hijos", columna: true, correcta: "forma",
           html: "<p>Otra idea para extraer: se quita la raíz, el mayor de sus hijos sube a ocupar el lugar vacío, después el mayor de los hijos de ese lugar, y así hasta una hoja, que queda vacía. Con</p>" + M.cajas(HUECO, {}) +
                 "<p>queda esto:</p>" + M.vista(r3, m3) + "<p>¿Qué se rompe?</p>",

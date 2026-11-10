@@ -114,10 +114,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Lo que cuesta", columna: true, correcta: "nh",
           html: "<p>Con un árbol de n nodos y altura h que sí es ABB, ¿qué cuesta <code>esABB</code>?</p>",
           opciones: [
-            { op: "nh", texto: "Tiempo Θ(n) y espacio aparte O(h).", msg: "Correcto. Si el árbol es ABB, ningún && corta y se revisa cada nodo una vez; la pila llega a un marco por nivel." },
             { op: "hh", texto: "Tiempo O(h), como buscar.", msg: "buscar baja por un solo lado. esABB tiene que mirar los dos subárboles de cada nodo." },
             { op: "nn", texto: "Tiempo Θ(n²): cada nodo se compara con todo su subárbol.", msg: "Eso haría una versión que recorra el subárbol entero en cada nodo. Con el rango, cada nodo se compara con dos números y basta." }
-          ] }
+          ,
+            { op: "nh", texto: "Tiempo Θ(n) y espacio aparte O(h).", msg: "Correcto. Si el árbol es ABB, ningún && corta y se revisa cada nodo una vez; la pila llega a un marco por nivel." }] }
       ]
     };
   }

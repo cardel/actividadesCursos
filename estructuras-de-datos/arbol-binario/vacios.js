@@ -103,10 +103,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Los argumentos cruzados", columna: true, correcta: "otro",
           html: "<p>En la tercera línea alguien escribe <code>crearNodo(12, quince, NULL)</code> en lugar de <code>crearNodo(12, NULL, quince)</code>. ¿Qué pasa?</p>",
           opciones: [
-            { op: "igual", texto: "Nada: 12 sigue siendo el padre de 15", msg: "Como árbol con raíz sería el mismo, pero un árbol binario distingue el hijo izquierdo del derecho. Este es otro árbol." },
             { op: "otro", texto: "Queda otro árbol binario: 15 pasa a ser hijo izquierdo de 12", msg: "Correcto. El segundo argumento es el subárbol izquierdo y el tercero el derecho; cambiarlos de lugar cambia el árbol." },
             { op: "compila", texto: "No compila", msg: "Los dos argumentos son Nodo *, uno con quince y otro con NULL: compila y arma un árbol distinto." }
-          ] },
+          ,
+            { op: "igual", texto: "Nada: 12 sigue siendo el padre de 15", msg: "Como árbol con raíz sería el mismo, pero un árbol binario distingue el hijo izquierdo del derecho. Este es otro árbol." }] },
         { tipo: "opciones", titulo: "El orden de las líneas", columna: true, correcta: "cuarenta",
           html: "<p>¿Cuál de estas líneas tiene que ir antes de <code>Nodo *treintaUno = crearNodo(31, veinticinco, cuarenta);</code>?</p>",
           opciones: [

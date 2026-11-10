@@ -179,35 +179,35 @@ var EJERCICIO = (function () {
 
   var PREGUNTAS = [
     { enun: "¿Qué se busca con la bisección?", opciones: [
-      { t: "La mejor lista de cortes, probando todos los repartos.", ok: false,
-        por: "Repartir es escoger <i>k</i> - 1 cortes entre <i>M</i> - 1 huecos. Con 9 textos y 3 empleados son 28 repartos, pero con 60 textos y 20 empleados son 1 397 281 501 935 165. Los cortes salen al final, con una pasada, cuando ya se conoce el tope." },
-      { t: "Cuántos empleados hacen falta.", ok: false,
-        por: "<code>k</code> viene en la entrada. La cuenta de empleados aparece después, dentro de la comprobación de cada candidato." },
       { t: "El tope t: el menor máximo de páginas por empleado con el que alcanzan k empleados.", ok: true,
         por: "La salida es un número, lo que lleva el empleado más cargado, y ese número se vuelve el candidato. En el ejemplo vale 1700." },
       { t: "El texto más largo.", ok: false,
         por: "El texto más largo es lo mínimo que alguien va a llevar, y en el ejemplo es 900. Con ese tope hacen falta 6 empleados, y hay 3." }
-    ] },
+    ,
+      { t: "La mejor lista de cortes, probando todos los repartos.", ok: false,
+        por: "Repartir es escoger <i>k</i> - 1 cortes entre <i>M</i> - 1 huecos. Con 9 textos y 3 empleados son 28 repartos, pero con 60 textos y 20 empleados son 1 397 281 501 935 165. Los cortes salen al final, con una pasada, cuando ya se conoce el tope." },
+      { t: "Cuántos empleados hacen falta.", ok: false,
+        por: "<code>k</code> viene en la entrada. La cuenta de empleados aparece después, dentro de la comprobación de cada candidato." }] },
     { enun: "Ya hay un candidato t. ¿Qué pregunta se comprueba?", opciones: [
-      { t: "¿t es igual a la respuesta?", ok: false,
-        por: "Solo se contesta conociendo la respuesta, y la respuesta es lo que se busca. Hace falta algo que se pueda calcular con <code>t</code> y los datos." },
-      { t: "¿empleados_necesarios(paginas, t) == k?", ok: false,
-        por: "Sobrar empleados no estorba. Con los nueve textos y <code>k = 9</code>, ningún tope desde 900 da 9: la cuenta llega a 6 como mucho, y con <code>==</code> la búsqueda no encuentra nada." },
       { t: "¿La suma de las páginas dividida por k da t?", ok: false,
         por: "4500 / 3 = 1500, y con <code>t = 1500</code> hacen falta 4 empleados. Los textos no se parten, así que el promedio pocas veces se logra." },
       { t: "Si nadie pasa de t páginas, ¿alcanzan k empleados? Es decir, empleados_necesarios(paginas, t) <= k.", ok: true,
         por: "Se responde con una pasada: cada empleado toma textos mientras quepan. La bisección consulta esa función de sí o no en cada vuelta." }
-    ] },
+    ,
+      { t: "¿t es igual a la respuesta?", ok: false,
+        por: "Solo se contesta conociendo la respuesta, y la respuesta es lo que se busca. Hace falta algo que se pueda calcular con <code>t</code> y los datos." },
+      { t: "¿empleados_necesarios(paginas, t) == k?", ok: false,
+        por: "Sobrar empleados no estorba. Con los nueve textos y <code>k = 9</code>, ningún tope desde 900 da 9: la cuenta llega a 6 como mucho, y con <code>==</code> la búsqueda no encuentra nada." }] },
     { enun: "¿Por qué la respuesta a esa pregunta es monótona en t?", opciones: [
-      { t: "Porque los textos vienen ordenados de menor a mayor.", ok: false,
-        por: "El orden del ejemplo no interviene. Con <code>[900, 100, 100]</code> pasa lo mismo: subir el tope nunca pide más empleados." },
       { t: "Porque cada página más en el tope quita un empleado.", ok: false,
         por: "Mueva la barra: de 1700 a 2100 la cuenta se queda en 3, y de 2400 a 3000 se queda en 2. Baja a saltos, o no baja." },
       { t: "No es monótona: a veces un tope mayor pide más empleados.", ok: false,
         por: "El reparto que servía con un tope sigue sirviendo con uno mayor, así que no puede hacer falta nadie más." },
       { t: "Porque el reparto que sirve con t también sirve con t + 1: si t alcanza, t + 1 alcanza.", ok: true,
         por: "Entonces la pregunta es falsa hasta un borde y cierta de ahí en adelante, y cambia una sola vez. En el ejemplo: 1699 no alcanza y 1700 sí. La bisección encuentra ese borde." }
-    ] },
+    ,
+      { t: "Porque los textos vienen ordenados de menor a mayor.", ok: false,
+        por: "El orden del ejemplo no interviene. Con <code>[900, 100, 100]</code> pasa lo mismo: subir el tope nunca pide más empleados." }] },
     { enun: "¿Con qué valor arranca lo, el límite de abajo?", opciones: [
       { t: "0", ok: false,
         por: "Con <code>lo = 0</code> y <code>k = 9</code> el programa responde 100, y el texto de 900 no cabe en ese tope. Al abrir un empleado, el código no mira si el texto cabe: cuenta 9 &lt;= 9 y dice que alcanza." },

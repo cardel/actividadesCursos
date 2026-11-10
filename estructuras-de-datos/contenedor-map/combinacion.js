@@ -60,10 +60,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Por qué cabe en un int", columna: true, correcta: "cifras",
           html: "<p>Aquí la clave cabe en un <code>int</code>. ¿Por qué con cinco cursos de tres cifras, como en UVa 11286, ya no?</p>",
           opciones: [
-            { op: "cifras", texto: "Son 15 cifras, y un int llega hasta 2 147 483 647, que tiene 10", msg: "Correcto: hace falta long long, que llega a unas 19 cifras." },
             { op: "orden", texto: "Porque al ordenar los cursos la clave crece", msg: "Ordenar no cambia cuántas cifras tiene la clave, solo en qué orden van." },
             { op: "map", texto: "Porque un map no acepta claves int tan grandes", msg: "El map acepta cualquier tipo que se compare con &lt;. El límite es del int." }
-          ] }
+          ,
+            { op: "cifras", texto: "Son 15 cifras, y un int llega hasta 2 147 483 647, que tiene 10", msg: "Correcto: hace falta long long, que llega a unas 19 cifras." }] }
       ]
     };
   }

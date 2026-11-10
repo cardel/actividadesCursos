@@ -43,10 +43,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Cuál conviene", columna: true, correcta: "deque",
           html: "<p>Un programa mantiene una secuencia de unos 100 000 números y, en cada paso, inserta uno en una posición que casi siempre está entre las diez primeras o entre las diez últimas. Además lee posiciones al azar con <code>[i]</code>. ¿Qué contenedor usa?</p>",
           opciones: [
-            { op: "vector", texto: "<code>vector</code>", msg: "Las inserciones cerca del frente correrían casi los 100 000 elementos cada vez." },
-            { op: "deque", texto: "<code>deque</code>", msg: "Correcto. Cerca de cualquiera de los dos extremos el lado corto tiene a lo sumo diez elementos, y d[i] sigue en O(1)." },
             { op: "list", texto: "<code>list</code>", msg: "La inserción sería Θ(1) con el iterador, pero leer la posición i camina i nodos. Con lecturas al azar eso domina." }
-          ] }
+          ,
+            { op: "vector", texto: "<code>vector</code>", msg: "Las inserciones cerca del frente correrían casi los 100 000 elementos cada vez." },
+            { op: "deque", texto: "<code>deque</code>", msg: "Correcto. Cerca de cualquiera de los dos extremos el lado corto tiene a lo sumo diez elementos, y d[i] sigue en O(1)." }] }
       ]
     };
   }

@@ -57,20 +57,20 @@ var EJERCICIO = (function () {
                 tabla(["m", "Tiempo"], [[POR_TAMANO[0].m, POR_TAMANO[0].s + " s"], [POR_TAMANO[1].m, POR_TAMANO[1].s + " s"], [POR_TAMANO[2].m, "?"]]) +
                 "<p>¿Cuánto debería tardar con m = 10⁹?</p>",
           opciones: [
-            { op: "medio", texto: "Unos 0,5 s, el doble que con 10⁸.", msg: "De 10⁷ a 10⁸ el tiempo se multiplicó por cerca de ocho, no por dos. El ciclo hace diez veces más vueltas cada vez." },
-            { op: "diez", texto: "Unos 2,5 s, diez veces lo de 10⁸.", msg: "Correcto. Se midieron " + POR_TAMANO[2].s + " s. Multiplicar m por diez multiplica las vueltas por diez, y el tiempo lo sigue de cerca." },
             { op: "cien", texto: "Unos 25 s, cien veces más.", msg: "Cien veces más sería un costo que crece con el cuadrado de m. Aquí hay un solo ciclo de m vueltas." },
             { op: "igual", texto: "Lo mismo, 0,255 s: el programa es el mismo.", msg: "El código es el mismo, la entrada no: con 10⁹ el ciclo da mil millones de vueltas." }
-          ] },
+          ,
+            { op: "medio", texto: "Unos 0,5 s, el doble que con 10⁸.", msg: "De 10⁷ a 10⁸ el tiempo se multiplicó por cerca de ocho, no por dos. El ciclo hace diez veces más vueltas cada vez." },
+            { op: "diez", texto: "Unos 2,5 s, diez veces lo de 10⁸.", msg: "Correcto. Se midieron " + POR_TAMANO[2].s + " s. Multiplicar m por diez multiplica las vueltas por diez, y el tiempo lo sigue de cerca." }] },
         { tipo: "opciones", titulo: "Tres corridas iguales", columna: true, correcta: "sistema",
           html: "<p>El mismo programa, en la misma máquina, con m = 10⁹, tres veces seguidas:</p>" +
                 tabla(["Corrida", "Tiempo"], CORRIDAS.map(function (c, i) { return [String(i + 1), c + " s"]; })) +
                 "<p>¿De dónde sale la diferencia?</p>",
           opciones: [
-            { op: "trabajo", texto: "El programa hizo un trabajo distinto en cada corrida.", msg: "Las tres corridas ejecutan exactamente las mismas instrucciones: el código y la entrada no cambiaron, y la respuesta fue la misma, 142857143." },
             { op: "sistema", texto: "De la máquina: otros procesos compitiendo por el procesador y el estado de la caché.", msg: "Correcto. El sistema operativo reparte el procesador entre muchos programas, y la caché no está igual en cada corrida. Nada de eso depende del algoritmo." },
             { op: "time", texto: "De un error de time, que mide mal.", msg: "time mide bien lo que pasó: cuánto tardó esa corrida. Lo que pasa es que cada corrida tarda distinto por razones que no son del programa." }
-          ] },
+          ,
+            { op: "trabajo", texto: "El programa hizo un trabajo distinto en cada corrida.", msg: "Las tres corridas ejecutan exactamente las mismas instrucciones: el código y la entrada no cambiaron, y la respuesta fue la misma, 142857143." }] },
         { tipo: "opciones", titulo: "Compilar con -O2", columna: true, correcta: "traduccion",
           html: "<p>Se compila el mismo archivo con <code>gcc -O2</code> y se corre con m = 10⁹: tarda " + CON_O2 + " s, cerca de la cuarta parte. ¿Qué cambió?</p>",
           opciones: [

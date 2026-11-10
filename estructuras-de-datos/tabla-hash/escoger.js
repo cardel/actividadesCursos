@@ -50,17 +50,17 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Precios", columna: true, correcta: "primo",
           html: "<p>Una tienda guarda unos 2000 productos por precio en pesos, y casi todos los precios son múltiplos de 50. ¿Qué m conviene?</p>",
           opciones: [
-            { op: "primo", texto: "m = 2003, un primo", msg: "Correcto. 2003 no comparte factores con 50, así que los múltiplos de 50 se reparten por toda la tabla, y α queda cerca de 1." },
-            { op: "dos", texto: "m = 2048, potencia de 2 cercana a 2000", msg: "Todo múltiplo de 50 es par, y k mod 2048 conserva los últimos 11 bits: solo se usarían las 1024 casillas pares y las listas medirían el doble." },
             { op: "diez", texto: "m = 2000, uno por producto", msg: "2000 y 50 comparten el factor 50: k mod 2000 de un múltiplo de 50 es múltiplo de 50, y solo se usan 40 casillas." }
-          ] },
+          ,
+            { op: "primo", texto: "m = 2003, un primo", msg: "Correcto. 2003 no comparte factores con 50, así que los múltiplos de 50 se reparten por toda la tabla, y α queda cerca de 1." },
+            { op: "dos", texto: "m = 2048, potencia de 2 cercana a 2000", msg: "Todo múltiplo de 50 es par, y k mod 2048 conserva los últimos 11 bits: solo se usarían las 1024 casillas pares y las listas medirían el doble." }] },
         { tipo: "opciones", titulo: "¿Un primo basta?", columna: true, correcta: "patron",
           html: "<p>Con m = 97, ¿qué pasa si las claves son 97, 194, 291, …?</p>",
           opciones: [
-            { op: "patron", texto: "Todas caen en la casilla 0", msg: "Correcto. Todas son múltiplos de 97. El primo protege contra los patrones comunes, no contra uno hecho a la medida de m." },
             { op: "bien", texto: "Se reparten bien porque 97 es primo", msg: "Calcule 194 mod 97: es 0, igual que 97 y 291." },
             { op: "vacia", texto: "La tabla las rechaza", msg: "La tabla las guarda todas, en la lista de la casilla 0, que mide n." }
-          ] }
+          ,
+            { op: "patron", texto: "Todas caen en la casilla 0", msg: "Correcto. Todas son múltiplos de 97. El primo protege contra los patrones comunes, no contra uno hecho a la medida de m." }] }
       ]
     };
   }

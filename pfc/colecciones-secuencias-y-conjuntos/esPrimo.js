@@ -165,20 +165,20 @@
       pregunta: "El mismo rango con la operación contraria.",
       cierre: "Ningún elemento falla la condición, porque no hay ningún elemento.",
       opciones: [
-        { txt: "true", correcta: true },
-        { txt: "false", fallo: "false pediría un elemento que no cumpla la condición, y el rango no tiene elementos." },
         { txt: "no compila: el rango está vacío", fallo: "El rango compila y queda con cero elementos. Lo que cambia es que forall no tiene nada contra lo que fallar.", larga: true }
-      ]
+      ,
+        { txt: "true", correcta: true },
+        { txt: "false", fallo: "false pediría un elemento que no cumpla la condición, y el rango no tiene elementos." }]
     },
     {
       expr: "Vector[Int]().forall(_ > 3)",
       pregunta: "Lo mismo, con un Vector sin elementos.",
       cierre: "Vector[Int]().exists(_ > 3) da false y forall da true: el rango vacío no es un caso del Range, es el de cualquier colección sin elementos.",
       opciones: [
-        { txt: "true", correcta: true },
         { txt: "false", fallo: "Con el Vector sin elementos pasa lo mismo que con 2 until 2: forall da true y exists da false." },
         { txt: "no compila: falta el tipo", fallo: "El tipo está escrito entre corchetes, Vector[Int](), que es como se construye un Vector sin elementos.", larga: true }
-      ]
+      ,
+        { txt: "true", correcta: true }]
     },
     {
       expr: "sin la guarda, (2 until n).forall(d => n % d != 0) con n = 1",
@@ -195,10 +195,10 @@
       pregunta: "En qué se diferencian las dos versiones sobre los trece números del main.",
       cierre: "Negar que exista un divisor es lo mismo que pedir que ninguno divida.",
       opciones: [
-        { txt: "en nada: las dos columnas dan el mismo valor en los trece", correcta: true, larga: true },
-        { txt: "difieren en n = 2, donde el rango queda sin elementos", fallo: "El rango sin elementos es justo donde se ve que son equivalentes: exists da false y la negación lo vuelve true, y forall da true directamente. Las dos dicen que 2 es primo.", larga: true },
         { txt: "difieren en los compuestos, donde exists se detiene antes", fallo: "Las dos se detienen en el mismo divisor: exists en el primero que divide y forall en el primero que falla su condición, que es ese mismo. Y las dos responden false.", larga: true }
-      ]
+      ,
+        { txt: "en nada: las dos columnas dan el mismo valor en los trece", correcta: true, larga: true },
+        { txt: "difieren en n = 2, donde el rango queda sin elementos", fallo: "El rango sin elementos es justo donde se ve que son equivalentes: exists da false y la negación lo vuelve true, y forall da true directamente. Las dos dicen que 2 es primo.", larga: true }]
     }
   ];
 

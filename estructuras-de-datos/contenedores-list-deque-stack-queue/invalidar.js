@@ -24,10 +24,10 @@ var EJERCICIO = (function () {
       codigo: "vector&lt;int&gt; v(4);              // cuatro ceros, capacidad 4\nint *ptr = &amp;v[1];\nv.push_back(55);",
       pregunta: "¿Qué pasa con <code>ptr</code>?",
       opciones: [
-        { op: "vale", texto: "Sigue valiendo: push_back escribe al final", msg: "Escribe al final si hay espacio. Con la capacidad llena, el vector reserva un arreglo más grande, copia los cuatro y libera el viejo: v[1] cambia de dirección." },
-        { op: "invalido", texto: "Deja de valer: el vector se mudó", msg: "Correcto. Sin capacidad libre, push_back reserva otro arreglo, copia los elementos y libera el anterior. ptr queda señalando memoria liberada." },
         { op: "indice", texto: "Sigue valiendo, porque <code>v[1]</code> sigue siendo 0", msg: "v[1] sigue valiendo 0, pero en otra dirección. ptr guarda la dirección vieja." }
-      ] },
+      ,
+        { op: "vale", texto: "Sigue valiendo: push_back escribe al final", msg: "Escribe al final si hay espacio. Con la capacidad llena, el vector reserva un arreglo más grande, copia los cuatro y libera el viejo: v[1] cambia de dirección." },
+        { op: "invalido", texto: "Deja de valer: el vector se mudó", msg: "Correcto. Sin capacidad libre, push_back reserva otro arreglo, copia los elementos y libera el anterior. ptr queda señalando memoria liberada." }] },
     { id: "listit", titulo: "Un iterador en la lista", correcta: "vale",
       codigo: "list&lt;int&gt; l = {11, 22, 33, 44};\nlist&lt;int&gt;::iterator it = l.begin();\n++it;\n++it;                     // el 33\nl.push_front(0);\nl.erase(l.begin());       // borra el 0\nl.erase(--l.end());       // borra el 44",
       pregunta: "¿Qué pasa con <code>it</code>?",

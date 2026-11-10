@@ -57,10 +57,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Un organigrama en una lista", columna: true, correcta: "nodice",
           html: "<p>Una empresa guarda los nombres de sus dependencias en una lista enlazada, en el orden en que aparecen al leer el organigrama de arriba abajo, cada una seguida de lo que depende de ella:</p>" + texto + "<p>¿De quién depende Finanzas?</p>",
           opciones: [
-            { op: "lab", texto: "De Laboratorio, que está justo antes", msg: "Estar antes en la lista no es depender. Laboratorio es lo último de la rama de Producción, y Finanzas puede colgar de cualquiera de las dependencias que siguen abiertas." },
             { op: "ger", texto: "De Gerencia", msg: "Puede ser, pero la lista no lo dice. La tarjeta siguiente muestra otro organigrama que da exactamente la misma lista, y ahí Finanzas depende de Calidad." },
             { op: "nodice", texto: "La lista no lo dice", msg: "Correcto. La lista guarda el orden de lectura y pierde quién contiene a quién: dos organigramas distintos producen la misma secuencia." }
-          ] },
+          ,
+            { op: "lab", texto: "De Laboratorio, que está justo antes", msg: "Estar antes en la lista no es depender. Laboratorio es lo último de la rama de Producción, y Finanzas puede colgar de cualquiera de las dependencias que siguen abiertas." }] },
         { tipo: "pasos", titulo: "Dos organigramas, una misma lista",
           html: "<p>Los dos se leen de arriba abajo igual: " + l.join(", ") + ".</p>",
           pasos: [
@@ -84,11 +84,11 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "¿Cuál no es un árbol?", columna: true, correcta: "fila",
           html: "<p>¿En cuál de estos datos ningún elemento contiene a otros?</p>",
           opciones: [
-            { op: "indice", texto: "El índice de un libro: capítulos, secciones y subsecciones", msg: "Un capítulo contiene secciones y una sección contiene subsecciones: es un árbol con el libro en la raíz." },
             { op: "torneo", texto: "Un torneo por eliminación directa: cada partido enfrenta a los ganadores de dos partidos anteriores", msg: "Cada partido contiene los dos que lo alimentan, y la final es la raíz. Es un árbol binario." },
             { op: "fila", texto: "La fila de turnos de un banco", msg: "Correcto. Cada turno tiene uno antes y uno después, y ninguno contiene a otro: una cola le basta." },
             { op: "dom", texto: "Una página web: el cuerpo contiene secciones, que contienen párrafos y enlaces", msg: "Cada etiqueta contiene a las que abre dentro de ella. El navegador la guarda como un árbol." }
-          ] }
+          ,
+            { op: "indice", texto: "El índice de un libro: capítulos, secciones y subsecciones", msg: "Un capítulo contiene secciones y una sección contiene subsecciones: es un árbol con el libro en la raíz." }] }
       ]
     };
   }

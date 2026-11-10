@@ -32,20 +32,20 @@
       pregunta: "criba se llama a sí misma y no tiene caso base, y el val se escribió sin error. ¿Por qué las llamadas no se encadenan sin parar?",
       cierre: "Porque la llamada recursiva está a la derecha de #:: y queda sin evaluar. Cada paso entrega una cabeza y la promesa de una cola; la llamada siguiente solo ocurre si alguien pide esa cola.",
       opciones: [
-        { txt: "porque la llamada recursiva está a la derecha de #:: y queda sin evaluar hasta que algo pida la cola", correcta: true, larga: true },
-        { txt: "porque el filtro termina dejando el flujo vacío y ahí se detiene la recursión", fallo: "El flujo de partida no se agota: enterosDesde(2) produce el siguiente número cada vez que se le pide, y por delante siempre quedan números que pasan los filtros. Lo que corta la cadena de llamadas es el #::.", larga: true },
         { txt: "porque s.head se calcula una sola vez y las llamadas siguientes reusan ese valor", fallo: "Cada llamada tiene su propia cabeza, y de ahí que el filtro cambie en cada paso. Lo que evita que las llamadas se encadenen sin parar es que #:: no evalúa su lado derecho.", larga: true }
-      ]
+      ,
+        { txt: "porque la llamada recursiva está a la derecha de #:: y queda sin evaluar hasta que algo pida la cola", correcta: true, larga: true },
+        { txt: "porque el filtro termina dejando el flujo vacío y ahí se detiene la recursión", fallo: "El flujo de partida no se agota: enterosDesde(2) produce el siguiente número cada vez que se le pide, y por delante siempre quedan números que pasan los filtros. Lo que corta la cadena de llamadas es el #::.", larga: true }]
     },
     {
       expr: "criba(s): ¿qué sale de una llamada?",
       pregunta: "¿Qué dos piezas devuelve cada llamada a criba?",
       cierre: "Una cabeza ya calculada, s.head, y una cola sin evaluar: la llamada a criba sobre s.tail con un filtro más encima. El filtro no recorre nada al escribirse.",
       opciones: [
-        { txt: "una cabeza calculada y una cola sin evaluar, que es la llamada siguiente sobre el flujo filtrado", correcta: true, larga: true },
         { txt: "el flujo filtrado completo, con la cabeza al frente", fallo: "Filtrar un flujo no lo recorre: el filtro queda encima de la cola y se aplica cuando alguien pide un elemento. De la llamada sale un valor concreto, s.head, y una cola que nadie ha calculado.", larga: true },
         { txt: "dos colas, la filtrada y la original", fallo: "La original no se devuelve aparte: la cola que sale es s.tail con el filtro encima. Lo que la acompaña es la cabeza, que sí es un valor concreto.", larga: true }
-      ]
+      ,
+        { txt: "una cabeza calculada y una cola sin evaluar, que es la llamada siguiente sobre el flujo filtrado", correcta: true, larga: true }]
     }
   ];
 
@@ -75,10 +75,10 @@
       pregunta: "¿Con qué cabeza sigue el segundo paso y qué filtro entra con ella?",
       cierre: "Cabeza 3 y filtro x % 3 != 0, que se suma al de 2 en vez de reemplazarlo. Con los dos encima salen el 9 y el 15, y la cola queda 5, 7, 11, 13, 17, …",
       opciones: [
-        { txt: "cabeza 3, y entra x % 3 != 0 sobre lo que ya venía filtrado", correcta: true, larga: true },
-        { txt: "cabeza 4, y entra x % 4 != 0", fallo: "El 4 no llega a este paso: el filtro x % 2 != 0 lo descartó. La cabeza es el primer elemento de la cola que llega, 3.", larga: true },
         { txt: "cabeza 3, y el filtro sigue siendo x % 2 != 0", fallo: "El filtro de cada paso se arma con la cabeza de ese paso, de modo que entra x % 3 != 0. El de 2 tampoco se retira: los dos quedan encima de la cola.", larga: true }
-      ]
+      ,
+        { txt: "cabeza 3, y entra x % 3 != 0 sobre lo que ya venía filtrado", correcta: true, larga: true },
+        { txt: "cabeza 4, y entra x % 4 != 0", fallo: "El 4 no llega a este paso: el filtro x % 2 != 0 lo descartó. La cabeza es el primer elemento de la cola que llega, 3.", larga: true }]
     },
     {
       paso: "3",
@@ -89,10 +89,10 @@
       pregunta: "El tercer paso toma la cabeza 5. ¿Qué queda de la cola y por qué?",
       cierre: "7, 11, 13, 17, 19, … El filtro x % 5 != 0 se apila sobre los otros dos y no cambia nada entre los primeros elementos: de lo que quedaba, el primer múltiplo de 5 es el 25.",
       opciones: [
-        { txt: "7, 11, 13, 17, 19, …, y el filtro de 5 no descarta ninguno de esos: el primer múltiplo de 5 que queda es el 25", correcta: true, larga: true },
         { txt: "7, 11, 13, 17, 19, …, porque el filtro de 5 descarta el 10, el 15 y el 20", fallo: "Esos tres ya no estaban en la cola: el 10 y el 20 salieron con el filtro de 2 y el 15 con el de 3. El primero que el filtro de 5 llega a descartar es el 25.", larga: true },
         { txt: "11, 13, 17, 19, 23, …, porque el 7 también sale", fallo: "7 % 5 da 2, distinto de cero, así que el 7 pasa el filtro y es la cabeza del paso siguiente. El filtro solo descarta múltiplos de 5.", larga: true }
-      ]
+      ,
+        { txt: "7, 11, 13, 17, 19, …, y el filtro de 5 no descarta ninguno de esos: el primer múltiplo de 5 que queda es el 25", correcta: true, larga: true }]
     },
     {
       paso: "4",
@@ -118,20 +118,20 @@
       pregunta: "¿Qué devuelve?",
       cierre: DIEZ + ". take pide diez elementos, y cada uno es la cabeza de un paso de la criba; del undécimo en adelante nada se calcula.",
       opciones: [
-        { txt: DIEZ, correcta: true, larga: true },
-        { txt: "List(1, 2, 3, 5, 7, 11, 13, 17, 19, 23)", fallo: "El flujo de partida es enterosDesde(2), así que el 1 nunca entra. El primer elemento es 2 y el décimo es 29.", larga: true },
         { txt: "List(2, 3, 5, 7, 9, 11, 13, 17, 19, 23)", fallo: "El 9 no llega: el filtro que entró con la cabeza 3 lo descarta. Sin él, el décimo elemento es 29.", larga: true }
-      ]
+      ,
+        { txt: DIEZ, correcta: true, larga: true },
+        { txt: "List(1, 2, 3, 5, 7, 11, 13, 17, 19, 23)", fallo: "El flujo de partida es enterosDesde(2), así que el 1 nunca entra. El primer elemento es 2 y el décimo es 29.", larga: true }]
     },
     {
       expr: "primos(20)",
       pregunta: "Devuelve 73. ¿Cuánto se filtró para llegar ahí?",
       cierre: "Solo los números que hubo que mirar hasta encontrar el elemento del índice 20. Cada paso deja su filtro encima de una cola sin evaluar, y esos filtros corren únicamente sobre los números que el índice pedido obliga a producir.",
       opciones: [
-        { txt: "solo los números que hubo que mirar hasta dar con el elemento del índice 20", correcta: true, larga: true },
         { txt: "el flujo infinito completo, una vez por cada filtro", fallo: "Un flujo sin final no se recorre completo. El índice 20 obliga a producir elementos hasta ese punto y el cálculo se detiene cuando lo encuentra: 73.", larga: true },
         { txt: "nada, porque el índice 20 se pasa del final del flujo", fallo: "El flujo no tiene final: enterosDesde(2) produce el siguiente número cada vez que se le pide. primos(20) devolvió 73.", larga: true }
-      ]
+      ,
+        { txt: "solo los números que hubo que mirar hasta dar con el elemento del índice 20", correcta: true, larga: true }]
     }
   ];
 

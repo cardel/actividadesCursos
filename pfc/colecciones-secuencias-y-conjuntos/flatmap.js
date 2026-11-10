@@ -107,10 +107,10 @@
       pregunta: "La función que se aplica a cada x produce otra secuencia.",
       cierre: "Cada x deja su propio Vector de dos parejas, y los tres quedan dentro de otro Vector: una secuencia de secuencias.",
       opciones: [
-        { txt: ANIDADO, correcta: true, larga: true },
         { txt: PLANO, fallo: "Ese es el resultado de flatMap, que ya viene plano. map no aplana nada: deja cada resultado tal como lo devolvió la función, y aquí cada uno es un Vector.", larga: true },
         { txt: "una pareja por posición, emparejando las dos secuencias", fallo: "Eso es lo que hace zip, que avanza las dos a la vez y se detiene en la más corta. Aquí el map interno recorre (1 to 2) completo para cada x, así que de cada x salen dos parejas.", larga: true }
-      ]
+      ,
+        { txt: ANIDADO, correcta: true, larga: true }]
     },
     {
       expr: "(1 to 3).map(x => (1 to 2).map(y => (x, y))).length",
@@ -132,20 +132,20 @@
       pregunta: "El cuerpo es (xs zip ys).map { case (x, y) => x * y }.sum",
       cierre: "zip arma las parejas por posición, map multiplica las dos componentes de cada una y sum reduce el vector de productos a un número.",
       opciones: [
-        { txt: "32.0", correcta: true },
-        { txt: "32", fallo: "Los elementos de los dos vectores son Double, así que el producto y la suma también lo son: lo que se imprime es 32.0." },
         { txt: "un vector con los tres productos, uno por posición", fallo: "Ese es el resultado intermedio que deja el map. prodEscalar le aplica sum encima, y sum devuelve un solo número.", larga: true }
-      ]
+      ,
+        { txt: "32.0", correcta: true },
+        { txt: "32", fallo: "Los elementos de los dos vectores son Double, así que el producto y la suma también lo son: lo que se imprime es 32.0." }]
     },
     {
       expr: "(2 until 7).flatMap(i =>\n  (1 until i).map(j => (i, j))\n).filter(par => esPrimo(par._1 + par._2))",
       pregunta: "El flatMap arma las parejas y el filter se queda con las que suman un primo.",
       cierre: "El filter corre sobre el vector plano de parejas, cuando cada pareja ya tiene sus dos componentes, y conserva las siete en que esPrimo(i + j) da true.",
       opciones: [
-        { txt: "Vector((2,1), (3,2), (4,1), (4,3), (5,2), (6,1), (6,5))", correcta: true, larga: true },
         { txt: "todas las parejas (i, j) con 1 <= j < i < 7", fallo: "Esas son las que produce el flatMap, antes de filtrar. El filter se aplica encima y descarta las parejas cuya suma no es prima.", larga: true },
         { txt: "Vector(2, 3, 5, 7, 11)", fallo: "Esos son los primos que deja (0 to 12).filter(esPrimo). Aquí lo primo es la suma de cada pareja, y lo que se devuelve son las parejas.", larga: true }
-      ]
+      ,
+        { txt: "Vector((2,1), (3,2), (4,1), (4,3), (5,2), (6,1), (6,5))", correcta: true, larga: true }]
     },
     {
       expr: "las parejas del resultado que empiezan por 4",

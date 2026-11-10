@@ -90,18 +90,18 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Los iteradores guardados", columna: true, correcta: "r",
           html: "<p>Al terminar, ¿cuáles de <code>p</code>, <code>q</code> y <code>r</code> todavía se pueden usar?</p>",
           opciones: [
-            { op: "todos", texto: "Los tres: en <code>list</code> ningún iterador se invalida", msg: "Insertar no invalida, pero borrar sí: el iterador al nodo borrado ya no señala nada." },
             { op: "pr", texto: "<code>p</code> y <code>r</code>", msg: "p señalaba el 5, que el último erase sacó de la lista." },
             { op: "r", texto: "Solo <code>r</code>", msg: "Correcto. q señalaba el 8 y p el 5, los dos nodos borrados. r señala el 3, que nunca se movió: las dos inserciones y el push_front reescribieron punteros de otros nodos." },
             { op: "ninguno", texto: "Ninguno", msg: "r señala el 3, que sigue en la lista y no cambió de nodo." }
-          ] },
+          ,
+            { op: "todos", texto: "Los tres: en <code>list</code> ningún iterador se invalida", msg: "Insertar no invalida, pero borrar sí: el iterador al nodo borrado ya no señala nada." }] },
         { tipo: "opciones", titulo: "Con un <code>vector</code>", columna: true, correcta: "inval",
           html: "<p>Si <code>l</code> fuera un <code>vector&lt;int&gt;</code> con los mismos cuatro valores, ¿qué pasa con <code>it</code> después de <code>l.insert(it, 4)</code>?</p>",
           opciones: [
-            { op: "igual", texto: "Sigue señalando el 8", msg: "En el vector, insert corre una casilla a la derecha todo lo que está desde it; el 8 cambia de casilla y el iterador viejo deja de valer." },
             { op: "cuatro", texto: "Señala el 4, que quedó en su casilla", msg: "Es lo que suele pasar en la memoria, pero la biblioteca no lo garantiza: si el vector tuvo que crecer, todo se mudó. Se toma como inválido." },
             { op: "inval", texto: "Deja de valer, y hay que usar el que devuelve <code>insert</code>", msg: "Correcto. vector::insert invalida los iteradores desde el punto de inserción, y todos si el vector crece. Por eso insert devuelve un iterador al elemento nuevo." }
-          ] },
+          ,
+            { op: "igual", texto: "Sigue señalando el 8", msg: "En el vector, insert corre una casilla a la derecha todo lo que está desde it; el 8 cambia de casilla y el iterador viejo deja de valer." }] },
         { tipo: "pasos", titulo: "Paso a paso",
           pasos: P.map(function (st) {
             return { texto: st.texto,

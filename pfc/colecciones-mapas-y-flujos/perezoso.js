@@ -33,20 +33,20 @@
       pregunta: "Del rango completo se quiere un solo valor, el del índice 1. ¿Cuánto trabaja el filtro para entregarlo?",
       cierre: "Prueba esPrimo en todos los números del rango. filter devuelve una secuencia ya construida, y para saber quiénes la forman hay que probarlos todos; el índice se aplica después, sobre lo que quedó.",
       opciones: [
-        { txt: "prueba esPrimo en todos los números del rango y arma la secuencia completa de primos", correcta: true, larga: true },
-        { txt: "avanza hasta el segundo primo y deja el resto del rango sin probar", fallo: "Eso es lo que hace un flujo por demanda. filter sobre un rango entrega una secuencia terminada: cuando se escribe el índice, todo el rango ya pasó por esPrimo.", larga: true },
         { txt: "no prueba nada hasta que se escribe el índice, porque filter solo anota la condición", fallo: "Anotar la condición sin construir nada es lo que hace withFilter. filter sí construye: devuelve la secuencia de los que pasaron, y para saber cuáles pasaron los prueba uno por uno.", larga: true }
-      ]
+      ,
+        { txt: "prueba esPrimo en todos los números del rango y arma la secuencia completa de primos", correcta: true, larga: true },
+        { txt: "avanza hasta el segundo primo y deja el resto del rango sin probar", fallo: "Eso es lo que hace un flujo por demanda. filter sobre un rango entrega una secuencia terminada: cuando se escribe el índice, todo el rango ya pasó por esPrimo.", larga: true }]
     },
     {
       expr: "((1000 to 10000).filter(esPrimo))(1)",
       pregunta: "¿Qué valor devuelve?",
       cierre: "1013. El primer primo del rango es 1009 y queda en el índice 0, de modo que el índice 1 es el siguiente.",
       opciones: [
-        { txt: "1013", correcta: true },
         { txt: "1009", fallo: "1009 es el primer primo del rango y ocupa el índice 0. El índice 1 pide el segundo, 1013." },
         { txt: "1031", fallo: "1031 está en la misma secuencia, más adelante: es el del índice 4. Con el índice 1 se pide el segundo primo del rango, 1013." }
-      ]
+      ,
+        { txt: "1013", correcta: true }]
     }
   ];
 
@@ -68,10 +68,10 @@
       pregunta: "¿Qué devuelve?",
       cierre: "List(1, 2). toList recorre el flujo de punta a punta, y recorrerlo es pedir cada elemento: los dos se calculan y quedan en una List.",
       opciones: [
-        { txt: "List(1, 2)", correcta: true },
-        { txt: "List(<not computed>)", fallo: "El aviso es lo que imprime un flujo sin elementos calculados; no es un valor que se pueda guardar. toList pide los elementos y devuelve List(1, 2)." },
         { txt: "LazyList(1, 2)", fallo: "toList cambia de colección: lo que devuelve es una List con sus dos elementos ya calculados. El flujo de partida sigue siendo un LazyList." }
-      ]
+      ,
+        { txt: "List(1, 2)", correcta: true },
+        { txt: "List(<not computed>)", fallo: "El aviso es lo que imprime un flujo sin elementos calculados; no es un valor que se pueda guardar. toList pide los elementos y devuelve List(1, 2)." }]
     }
   ];
 
@@ -83,10 +83,10 @@
       pregunta: "Devuelve 1009. ¿Hasta dónde avanzó el filtro para dar ese valor?",
       cierre: "Pidió elementos a streamRange desde 1000, uno por uno, y se detuvo en el primero que pasó esPrimo. Del 1010 en adelante nada se calculó.",
       opciones: [
-        { txt: "pidió elementos desde 1000 hasta dar con el primero que pasa esPrimo, y ahí paró", correcta: true, larga: true },
         { txt: "pidió los diez mil elementos que streamRange puede producir y tomó el primero de los primos", fallo: "streamRange produce un elemento cada vez que alguien pide el siguiente: la llamada recursiva queda a la derecha de #:: y espera. El filtro paró en 1009.", larga: true },
         { txt: "ninguno, porque el flujo entrega 1000 como primer elemento", fallo: "1000 es el primer elemento que produce streamRange, pero no pasa esPrimo y el filtro lo descarta. El primer elemento de primos es 1009.", larga: true }
-      ]
+      ,
+        { txt: "pidió elementos desde 1000 hasta dar con el primero que pasa esPrimo, y ahí paró", correcta: true, larga: true }]
     },
     {
       expr: "primos(4)",
@@ -103,10 +103,10 @@
       pregunta: "Las dos devuelven 1013. ¿En qué se diferencian?",
       cierre: "En cuántos elementos se calculan. El rango prueba esPrimo en todos sus números antes de aplicar el índice; el flujo para en 1013, que es el segundo primo que encuentra.",
       opciones: [
-        { txt: "en cuántos elementos se calculan: el rango los prueba todos, el flujo para en el segundo primo", correcta: true, larga: true },
-        { txt: "en el resultado, porque el flujo no llega al 10000", fallo: "streamRange para cuando min >= max, así que produce hasta 9999, mientras 1000 to 10000 incluye el 10000. Esa diferencia no toca al índice 1: las dos devuelven 1013.", larga: true },
         { txt: "en el orden, porque el flujo entrega los primos a medida que los encuentra", fallo: "El orden es el mismo en los dos, el de los números del rango. Lo que cambia es cuándo se calcula cada elemento y cuántos se calculan.", larga: true }
-      ]
+      ,
+        { txt: "en cuántos elementos se calculan: el rango los prueba todos, el flujo para en el segundo primo", correcta: true, larga: true },
+        { txt: "en el resultado, porque el flujo no llega al 10000", fallo: "streamRange para cuando min >= max, así que produce hasta 9999, mientras 1000 to 10000 incluye el 10000. Esa diferencia no toca al índice 1: las dos devuelven 1013.", larga: true }]
     }
   ];
 

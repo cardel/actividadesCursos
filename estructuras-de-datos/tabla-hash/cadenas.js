@@ -70,10 +70,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Lo que cuesta", columna: true, correcta: "largo",
           html: "<p>Una tabla de palabras con n palabras guardadas calcula el valor hash de una palabra de L letras. ¿Cuánto cuesta ese cálculo?</p>",
           opciones: [
-            { op: "largo", texto: "Θ(L): una vuelta por carácter", msg: "Correcto. El cálculo no depende de cuántas palabras tenga la tabla, solo del largo de la que llega." },
-            { op: "uno", texto: "Θ(1), como con una clave entera", msg: "Con un entero es una división. Con una cadena hay que leer cada carácter: L vueltas." },
             { op: "n", texto: "Θ(n): hay que mirar las palabras guardadas", msg: "El valor hash sale de la palabra sola. Las guardadas se miran después, al recorrer la lista de la casilla." }
-          ] }
+          ,
+            { op: "largo", texto: "Θ(L): una vuelta por carácter", msg: "Correcto. El cálculo no depende de cuántas palabras tenga la tabla, solo del largo de la que llega." },
+            { op: "uno", texto: "Θ(1), como con una clave entera", msg: "Con un entero es una división. Con una cadena hay que leer cada carácter: L vueltas." }] }
       ]
     };
   }

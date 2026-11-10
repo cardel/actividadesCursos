@@ -83,21 +83,21 @@ var EJERCICIO = (function () {
           ], orden: function () { return 1; } },
         { linea: 23, txt: "for k in range(n):", lineas: [24],
           opciones: [
-            { t: "Una vez: solo lee", ok: false, r: "Leer también son vueltas: cada uno de los n puntajes se convierte y se agrega a la lista." },
-            { t: "n veces", ok: true, r: "Una vuelta por puntaje leído." },
             { t: "n² veces", ok: false, r: "No hay otro ciclo adentro: cada vuelta lee un solo número." }
-          ], orden: function (t) { return t.n; } },
+          ,
+            { t: "Una vez: solo lee", ok: false, r: "Leer también son vueltas: cada uno de los n puntajes se convierte y se agrega a la lista." },
+            { t: "n veces", ok: true, r: "Una vuelta por puntaje leído." }], orden: function (t) { return t.n; } },
         { linea: 26, txt: "mayor_diferencia(a)", lineas: [6],
           opciones: [
-            { t: "n veces, una por estudiante", ok: false, r: "La llamada está en el ciclo de los casos, no en el de lectura: se hace una vez con la lista completa." },
             { t: "Una vez por caso", ok: true, r: "Una llamada que recibe la lista entera." }
-          ], orden: function () { return 1; } },
+          ,
+            { t: "n veces, una por estudiante", ok: false, r: "La llamada está en el ciclo de los casos, no en el de lectura: se hace una vez con la lista completa." }], orden: function () { return 1; } },
         { linea: 8, txt: "for j in range(1, len(a)):", lineas: [9],
           opciones: [
-            { t: "n² veces: compara cada pareja", ok: false, r: "Comparar cada pareja i < j sería la forma directa. Aquí el mayor puntaje anterior se guarda en mayor, así que cada j se compara una sola vez." },
             { t: "n − 1 veces", ok: true, r: "Una vuelta por cada estudiante desde el segundo; con el mayor anterior a mano no hace falta mirar atrás." },
             { t: "n/2 veces", ok: false, r: "El rango va de 1 a len(a) − 1 sin saltos: son n − 1 vueltas." }
-          ], orden: function (t) { return t.n; } }
+          ,
+            { t: "n² veces: compara cada pareja", ok: false, r: "Comparar cada pareja i < j sería la forma directa. Aquí el mayor puntaje anterior se guarda en mayor, así que cada j se compara una sola vez." }], orden: function (t) { return t.n; } }
       ],
       total: [
         { t: "O(n²)", ok: false, r: "Ese es el costo de probar todas las parejas. En el código no hay un ciclo dentro de otro sobre los puntajes." },
@@ -196,26 +196,26 @@ var EJERCICIO = (function () {
       puntos: [
         { linea: 28, txt: "for r in range(1, b + 1):", lineas: [29],
           opciones: [
-            { t: "b veces, una por ruta", ok: true, r: "Una vuelta por ruta; el análisis sigue dentro de cada una." },
             { t: "s veces", ok: false, r: "Este ciclo recorre rutas, no paradas." }
-          ], orden: function () { return 1; } },
+          ,
+            { t: "b veces, una por ruta", ok: true, r: "Una vuelta por ruta; el análisis sigue dentro de cada una." }], orden: function () { return 1; } },
         { linea: 31, txt: "for k in range(s - 1):", lineas: [32],
           opciones: [
-            { t: "s − 1 veces", ok: true, r: "Una vuelta por calle leída." },
-            { t: "Una vez", ok: false, r: "Cada calle se lee en su propia vuelta: son s − 1 lecturas." },
             { t: "s² veces", ok: false, r: "Adentro no hay otro ciclo: cada vuelta lee un número." }
-          ], orden: function (t) { return t.s; } },
+          ,
+            { t: "s − 1 veces", ok: true, r: "Una vuelta por calle leída." },
+            { t: "Una vez", ok: false, r: "Cada calle se lee en su propia vuelta: son s − 1 lecturas." }], orden: function (t) { return t.s; } },
         { linea: 34, txt: "mejor_tramo(v)", lineas: [7],
           opciones: [
-            { t: "s veces", ok: false, r: "La llamada está fuera del ciclo de lectura: se hace una vez, con la lista completa." },
             { t: "Una vez por ruta", ok: true, r: "Una llamada con las s − 1 calles." }
-          ], orden: function () { return 1; } },
+          ,
+            { t: "s veces", ok: false, r: "La llamada está fuera del ciclo de lectura: se hace una vez, con la lista completa." }], orden: function () { return 1; } },
         { linea: 12, txt: "for k in range(len(v)):", lineas: [13],
           opciones: [
-            { t: "s²/2 veces: un tramo por cada par de paradas", ok: false, r: "Probar todos los tramos (i, j) sería la forma directa. Aquí la suma del tramo que va se arrastra y se reinicia cuando baja de cero; nunca se vuelve atrás." },
-            { t: "s − 1 veces", ok: true, r: "Una vuelta por calle, con la suma del tramo actual en una variable." },
             { t: "log s veces", ok: false, r: "El índice k sube de uno en uno hasta len(v); no hay mitades." }
-          ], orden: function (t) { return t.s; } }
+          ,
+            { t: "s²/2 veces: un tramo por cada par de paradas", ok: false, r: "Probar todos los tramos (i, j) sería la forma directa. Aquí la suma del tramo que va se arrastra y se reinicia cuando baja de cero; nunca se vuelve atrás." },
+            { t: "s − 1 veces", ok: true, r: "Una vuelta por calle, con la suma del tramo actual en una variable." }], orden: function (t) { return t.s; } }
       ],
       total: [
         { t: "O(s)", ok: true, r: "Leer y recorrer, cada uno lineal en las paradas." },
@@ -315,15 +315,15 @@ var EJERCICIO = (function () {
       puntos: [
         { linea: 35, txt: "for i in range(n):", lineas: [36],
           opciones: [
-            { t: "N veces", ok: true, r: "Una vuelta por fila." },
             { t: "N² veces", ok: false, r: "Las N² casillas las cuenta el ciclo de adentro; este da una vuelta por fila." }
-          ], orden: function (t) { return t.N; } },
+          ,
+            { t: "N veces", ok: true, r: "Una vuelta por fila." }], orden: function (t) { return t.N; } },
         { linea: 37, txt: "for j in range(n):", lineas: [38],
           opciones: [
-            { t: "N veces", ok: false, r: "Son N por fila, y hay N filas: en total el cuerpo corre una vez por casilla." },
             { t: "N² veces en total", ok: true, r: "Una vuelta por casilla leída." },
             { t: "N³ veces", ok: false, r: "Solo hay dos ciclos anidados en la lectura." }
-          ], orden: function (t) { return t.N * t.N; } },
+          ,
+            { t: "N veces", ok: false, r: "Son N por fila, y hay N filas: en total el cuerpo corre una vez por casilla." }], orden: function (t) { return t.N * t.N; } },
         { linea: 20, txt: "for arriba in range(n):", lineas: [21],
           opciones: [
             { t: "N veces", ok: true, r: "Una vuelta por cada fila donde puede empezar el rectángulo." },
@@ -337,10 +337,10 @@ var EJERCICIO = (function () {
           ], orden: function (t) { return t.N * (t.N + 1) / 2; } },
         { linea: 23, txt: "for c in range(n):", lineas: [24],
           opciones: [
-            { t: "≈ N³/2 veces en total", ok: true, r: "N columnas por cada una de las N(N + 1)/2 parejas de filas." },
             { t: "N² veces en total", ok: false, r: "Corre N veces por pareja de filas, y hay N(N + 1)/2 parejas." },
             { t: "N⁴ veces en total", ok: false, r: "Son tres ciclos anidados (arriba, abajo, c), no cuatro." }
-          ], orden: function (t) { return t.N * t.N * (t.N + 1) / 2; } },
+          ,
+            { t: "≈ N³/2 veces en total", ok: true, r: "N columnas por cada una de las N(N + 1)/2 parejas de filas." }], orden: function (t) { return t.N * t.N * (t.N + 1) / 2; } },
         { linea: 25, txt: "mejor_tramo(col)", lineas: [6],
           opciones: [
             { t: "Una vez", ok: false, r: "Está dentro del ciclo de abajo: se llama una vez por pareja de filas." },
@@ -600,9 +600,9 @@ var EJERCICIO = (function () {
       puntos: [
         { linea: 27, txt: "while n != 0 or m != 0:", lineas: [28],
           opciones: [
-            { t: "Una vez por campo", ok: true, r: "Cada vuelta procesa un campo completo; el análisis sigue por campo." },
             { t: "n · m veces", ok: false, r: "Las casillas las recorren los dos ciclos de adentro; este recorre campos." }
-          ], orden: function () { return 1; } },
+          ,
+            { t: "Una vez por campo", ok: true, r: "Cada vuelta procesa un campo completo; el análisis sigue por campo." }], orden: function () { return 1; } },
         { linea: 35, txt: "while f < n:", lineas: [36],
           opciones: [
             { t: "n veces", ok: true, r: "Una vuelta por fila." },
@@ -610,15 +610,15 @@ var EJERCICIO = (function () {
           ], orden: function (t) { return t.n; } },
         { linea: 38, txt: "while c < m:", lineas: [39],
           opciones: [
-            { t: "m veces en total", ok: false, r: "Son m por fila, y hay n filas." },
-            { t: "n · m veces en total", ok: true, r: "Una vuelta por casilla." },
             { t: "(n · m)² veces", ok: false, r: "Cada casilla se visita una vez; nadie recorre el campo entero por cada casilla." }
-          ], orden: function (t) { return t.n * t.m; } },
+          ,
+            { t: "m veces en total", ok: false, r: "Son m por fila, y hay n filas." },
+            { t: "n · m veces en total", ok: true, r: "Una vuelta por casilla." }], orden: function (t) { return t.n * t.m; } },
         { linea: 42, txt: "contar(campo, n, m, f, c)", lineas: [5],
           opciones: [
-            { t: "Una vez por casilla sin mina: a lo sumo n · m", ok: true, r: "Las casillas con mina se copian sin llamar." },
             { t: "Una vez por mina", ok: false, r: "Al contrario: se llama en las casillas que no tienen mina." }
-          ], orden: function (t) { return t.n * t.m; } },
+          ,
+            { t: "Una vez por casilla sin mina: a lo sumo n · m", ok: true, r: "Las casillas con mina se copian sin llamar." }], orden: function (t) { return t.n * t.m; } },
         { linea: 7, txt: "while df <= 1:", lineas: [8],
           opciones: [
             { t: "3 veces por llamada", ok: true, r: "df toma tres valores, −1, 0 y 1, sea cual sea el tamaño del campo." },
@@ -755,21 +755,21 @@ var EJERCICIO = (function () {
       puntos: [
         { linea: 39, txt: "while sz != 0 or p != 0:", lineas: [40],
           opciones: [
-            { t: "SZ veces", ok: false, r: "Este ciclo recorre las líneas de la entrada; SZ no lo mueve." },
             { t: "Una vez por línea de la entrada", ok: true, r: "Cada vuelta resuelve una consulta SZ, P." }
-          ], orden: function () { return 1; } },
+          ,
+            { t: "SZ veces", ok: false, r: "Este ciclo recorre las líneas de la entrada; SZ no lo mueve." }], orden: function () { return 1; } },
         { linea: 13, txt: "anillo(p)", lineas: [5],
           opciones: [
-            { t: "Una vez por consulta", ok: true, r: "coordenadas la llama una vez y el resto es aritmética." },
             { t: "P veces", ok: false, r: "La llamada no está dentro de ningún ciclo de coordenadas." }
-          ], orden: function () { return 1; } },
+          ,
+            { t: "Una vez por consulta", ok: true, r: "coordenadas la llama una vez y el resto es aritmética." }], orden: function () { return 1; } },
         { linea: 6, txt: "while (2 * r + 1) * (2 * r + 1) < p:", lineas: [7],
           opciones: [
-            { t: "P veces", ok: false, r: "r sube de uno en uno, pero la condición mira (2r + 1)², que crece al cuadrado. Con P = 10⁶ el ciclo da 500 vueltas, no un millón." },
-            { t: "≈ √P / 2 veces", ok: true, r: "Termina en el primer r con (2r + 1)² ≥ P, es decir r ≈ (√P − 1)/2. Con P ≤ SZ², r ≤ (SZ − 1)/2." },
             { t: "SZ² veces, una por casilla", ok: false, r: "La grilla no se recorre; el ciclo solo busca en qué anillo cae P." },
             { t: "log₂ P veces", ok: false, r: "r no se duplica: sube de a uno." }
-          ], orden: function (t) { return Math.sqrt(t.p); } }
+          ,
+            { t: "P veces", ok: false, r: "r sube de uno en uno, pero la condición mira (2r + 1)², que crece al cuadrado. Con P = 10⁶ el ciclo da 500 vueltas, no un millón." },
+            { t: "≈ √P / 2 veces", ok: true, r: "Termina en el primer r con (2r + 1)² ≥ P, es decir r ≈ (√P − 1)/2. Con P ≤ SZ², r ≤ (SZ − 1)/2." }], orden: function (t) { return Math.sqrt(t.p); } }
       ],
       total: [
         { t: "O(SZ²) por consulta", ok: false, r: "Eso costaría llenar la espiral casilla por casilla hasta llegar a P. Este código salta directo al anillo." },
@@ -869,20 +869,20 @@ var EJERCICIO = (function () {
       puntos: [
         { linea: 30, txt: "for c in range(casos):", lineas: [31],
           opciones: [
-            { t: "k veces", ok: false, r: "Este ciclo recorre casos; las barras las recorre la recursión." },
             { t: "Una vez por caso", ok: true, r: "Cada vuelta lee un móvil completo con una llamada." }
-          ], orden: function () { return 1; } },
+          ,
+            { t: "k veces", ok: false, r: "Este ciclo recorre casos; las barras las recorre la recursión." }], orden: function () { return 1; } },
         { linea: 15, txt: "movil(datos, pos)  (líneas 15 y 18)", lineas: [15, 18],
           opciones: [
-            { t: "2^p, con p la profundidad: cada llamada abre dos", ok: false, r: "Una llamada abre dos solo si las dos puntas son submóviles, y cada submóvil es una barra distinta que se lee una vez. Las llamadas no pasan del número de barras." },
             { t: "k − 1 en total: una por cada barra que cuelga de otra", ok: true, r: "Toda barra salvo la de arriba se visita desde su padre, y cada llamada consume su línea y avanza pos." },
             { t: "k² en total", ok: false, r: "Ninguna barra se vuelve a leer: pos solo avanza." }
-          ], orden: function (t) { return t.k; } },
+          ,
+            { t: "2^p, con p la profundidad: cada llamada abre dos", ok: false, r: "Una llamada abre dos solo si las dos puntas son submóviles, y cada submóvil es una barra distinta que se lee una vez. Las llamadas no pasan del número de barras." }], orden: function (t) { return t.k; } },
         { linea: 5, txt: "def movil(datos, pos):  (cuerpo de cada llamada)", lineas: [8],
           opciones: [
-            { t: "Una vez por barra: k por caso", ok: true, r: "La de main más las k − 1 recursivas. Sin ciclos adentro, cada llamada hace un trabajo fijo." },
             { t: "Una vez por caso", ok: false, r: "La primera llamada viene de main, pero desde ahí se llama una vez por submóvil." }
-          ], orden: function (t) { return t.k; } }
+          ,
+            { t: "Una vez por barra: k por caso", ok: true, r: "La de main más las k − 1 recursivas. Sin ciclos adentro, cada llamada hace un trabajo fijo." }], orden: function (t) { return t.k; } }
       ],
       total: [
         { t: "O(2^p)", ok: false, r: "El árbol tiene k nodos y cada uno se visita una vez; nunca hay más llamadas que barras." },

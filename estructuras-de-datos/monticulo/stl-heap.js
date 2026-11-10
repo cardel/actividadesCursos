@@ -91,11 +91,11 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Sacar el máximo", columna: true, correcta: "bien",
           html: "<p>¿Cuál de estos fragmentos saca el máximo de un vector <code>v</code> que es montículo y lo guarda en <code>x</code>?</p>",
           opciones: [
+            { op: "sinpop", texto: "<code>pop_heap(v.begin(), v.end()); int x = v.back();</code>", msg: "x es el máximo, pero el vector conserva su tamaño: la próxima llamada sobre v.begin() y v.end() vuelve a meter el máximo en el montículo." }
+          ,
             { op: "bien", texto: "<code>" + CODIGO_SACAR.join(" ") + "</code>", msg: "Correcto. pop_heap deja el máximo en la última casilla y reordena las demás como montículo; back() lo lee y pop_back() quita la casilla." },
             { op: "alreves", texto: "<code>int x = v.back(); v.pop_back(); pop_heap(v.begin(), v.end());</code>", msg: "back() lee la última casilla, que es una hoja y no el máximo. Además, pop_heap al final saca de su sitio el máximo que se quedó." },
-            { op: "front", texto: "<code>int x = v.front(); v.pop_back();</code>", msg: "x sí es el máximo, pero pop_back quita la última casilla, no la raíz: el máximo sigue en v[0] y una hoja desaparece." },
-            { op: "sinpop", texto: "<code>pop_heap(v.begin(), v.end()); int x = v.back();</code>", msg: "x es el máximo, pero el vector conserva su tamaño: la próxima llamada sobre v.begin() y v.end() vuelve a meter el máximo en el montículo." }
-          ] },
+            { op: "front", texto: "<code>int x = v.front(); v.pop_back();</code>", msg: "x sí es el máximo, pero pop_back quita la última casilla, no la raíz: el máximo sigue en v[0] y una hoja desaparece." }] },
         { tipo: "respuesta", titulo: "Lo que deja pop_heap",
           html: "<p>Sobre el vector</p>" + M.cajas(tras, {}) +
                 "<p>se llama <code>pop_heap(v.begin(), v.end());</code>, todavía sin <code>pop_back</code>. ¿Cómo queda el vector y qué devuelve <code>v.back()</code>?</p>",
@@ -112,11 +112,11 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Ordenar con las funciones", columna: true, correcta: "makesort",
           html: "<p>Se quiere ordenar de menor a mayor un vector cualquiera con estas funciones, sin arreglo auxiliar. ¿Qué llamadas?</p>",
           opciones: [
+            { op: "ishaep", texto: "<code>make_heap</code> y después <code>is_heap</code>.", msg: "is_heap solo pregunta si el rango es montículo; no mueve ninguna casilla." }
+          ,
             { op: "solosort", texto: "Solo <code>sort_heap(v.begin(), v.end())</code>.", msg: "sort_heap exige que el rango ya sea un montículo. Sobre un vector cualquiera no garantiza nada." },
             { op: "makesort", texto: "<code>make_heap</code> y después <code>sort_heap</code>.", msg: "Correcto. Es heapsort: make_heap es construir, Θ(n), y sort_heap son las n − 1 rondas, O(n log n), dentro del mismo vector." },
-            { op: "sortmake", texto: "<code>sort_heap</code> y después <code>make_heap</code>.", msg: "Al revés: make_heap al final deja un montículo de máximos, que no está ordenado." },
-            { op: "ishaep", texto: "<code>make_heap</code> y después <code>is_heap</code>.", msg: "is_heap solo pregunta si el rango es montículo; no mueve ninguna casilla." }
-          ] },
+            { op: "sortmake", texto: "<code>sort_heap</code> y después <code>make_heap</code>.", msg: "Al revés: make_heap al final deja un montículo de máximos, que no está ordenado." }] },
         { tipo: "respuesta", titulo: "El de mínimos",
           html: "<p>Se llama <code>make_heap(w.begin(), w.end(), greater&lt;int&gt;())</code> sobre:</p>" + M.cajas(B, {}) +
                 "<p>¿Cómo queda el vector?</p>",

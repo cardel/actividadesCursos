@@ -44,11 +44,11 @@
     explicacion: "Primero, dónde mide cada una.",
     items: [
       { valor: "¿Qué meses valida <code>TimeSeriesSplit(n_splits=5, test_size=6)</code> sobre la tabla de búsqueda?",
-        opciones: ["De " + C.nombre(M[0]) + " a " + C.nombre(M[29]), "De " + C.nombre(v0) + " a " + C.nombre(v1), "De " + C.nombre(b0) + " a " + C.nombre(b1)],
-        correcta: 1,
+        opciones: [ "De " + C.nombre(b0) + " a " + C.nombre(b1),"De " + C.nombre(M[0]) + " a " + C.nombre(M[29]), "De " + C.nombre(v0) + " a " + C.nombre(v1)],
+        correcta: 2,
         razon: "Los cinco pliegues validan los últimos 30 meses de la tabla, de " + C.nombre(v0) + " a " + C.nombre(v1) + ", un mes adelante cada vez." },
       { valor: "¿Y qué meses pronostica el backtest?",
-        opciones: ["Los mismos meses que valida la búsqueda", "De " + C.nombre(b0) + " a " + C.nombre(b1)], correcta: 1,
+        opciones: [ "De " + C.nombre(b0) + " a " + C.nombre(b1),"Los mismos meses que valida la búsqueda"], correcta: 0,
         razon: "Los últimos " + DATOS.n_prueba + " meses de la serie, de " + C.nombre(b0) + " a " + C.nombre(b1) + ": doce meses desde cada uno de " +
           origenes + " orígenes. Ninguno de esos meses está en la tabla de búsqueda." }
     ],

@@ -179,16 +179,16 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Sin la asignación", columna: true, correcta: "fuga",
           html: "<p>Alguien escribe la línea 6 como <code>insertar(r->der, k);</code>, sin <code>r->der =</code> delante, e inserta el 90. ¿Qué pasa?</p>",
           opciones: [
-            { op: "fuga", texto: "El nodo del 90 se crea, pero el 80 sigue con der en NULL: el 90 no aparece en el árbol y su memoria se pierde.", msg: "Correcto. La llamada recibe una copia del puntero; asignarle el nodo nuevo a esa copia no toca el r->der del 80." },
-            { op: "igual", texto: "Funciona igual: r es un puntero, así que la llamada modifica el árbol.", msg: "r es un puntero pasado por valor: la llamada cambia su copia local, que desaparece al volver. Lo que se modifica a través de r es el nodo apuntado, y aquí no hay nodo: r es NULL." },
             { op: "compila", texto: "No compila: insertar devuelve un Nodo * que nadie recibe.", msg: "C++ deja ignorar lo que devuelve una función. Compila, y el error aparece al ejecutar." }
-          ] },
+          ,
+            { op: "fuga", texto: "El nodo del 90 se crea, pero el 80 sigue con der en NULL: el 90 no aparece en el árbol y su memoria se pierde.", msg: "Correcto. La llamada recibe una copia del puntero; asignarle el nodo nuevo a esa copia no toca el r->der del 80." },
+            { op: "igual", texto: "Funciona igual: r es un puntero, así que la llamada modifica el árbol.", msg: "r es un puntero pasado por valor: la llamada cambia su copia local, que desaparece al volver. Lo que se modifica a través de r es el nodo apuntado, y aquí no hay nodo: r es NULL." }] },
         { tipo: "opciones", titulo: "El árbol vacío", columna: true, correcta: "nulo",
           html: "<p>Con <code>Nodo *raiz = NULL;</code>, main llama <code>insertar(raiz, 62);</code> sin asignar. ¿Qué queda en <code>raiz</code>?</p>",
           opciones: [
-            { op: "nulo", texto: "NULL: el nodo del 62 se creó, pero su dirección no se guardó en ninguna parte.", msg: "Correcto. Con el árbol vacío, la asignación que cambia es justamente la de main." },
             { op: "62", texto: "El nodo del 62: insertar lo creó.", msg: "Lo creó y devolvió su dirección; si main no la guarda en raiz, raiz sigue en NULL." }
-          ] }
+          ,
+            { op: "nulo", texto: "NULL: el nodo del 62 se creó, pero su dirección no se guardó en ninguna parte.", msg: "Correcto. Con el árbol vacío, la asignación que cambia es justamente la de main." }] }
       ]
     };
   }

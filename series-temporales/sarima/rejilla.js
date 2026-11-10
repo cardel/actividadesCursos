@@ -111,10 +111,10 @@
     explicacion: "La ACF de w sale de la banda ±" + fmt(BANDA, 3) + " en " + fuera(acfW, NLAGS).join(", ") + ", y la PACF en " + fuera(pacfW, NLAGS).join(", ") + ".",
     items: [
       { valor: "Mirando los rezagos 12, 24 y 36, ¿qué término estacional propone?",
-        opciones: ["Un AR estacional, P = 1", "Un MA estacional, Q = 1", "Ninguno"], correcta: 1,
+        opciones: [ "Un MA estacional, Q = 1", "Ninguno","Un AR estacional, P = 1"], correcta: 0,
         razon: "En la ACF hay una barra estacional, la de k = 12 (" + fmt(acfW[12]) + "), y la de 24 ya está adentro (" + fmt(acfW[24]) + "). En la PACF salen 12 y 24 (" + fmt(pacfW[12]) + " y " + fmt(pacfW[24]) + "). Es la firma de un MA(1) con los rezagos contados de doce en doce: la ACF se corta y la PACF decae." },
       { valor: "Dos modelos quedan a menos de 2 puntos de AIC. ¿Cuál se escoge?",
-        opciones: ["El de menor AIC, siempre", "El de más parámetros", "El de menos parámetros"], correcta: 2,
+        opciones: [ "El de más parámetros", "El de menos parámetros","El de menor AIC, siempre"], correcta: 1,
         razon: "Cada parámetro suma 2 al AIC, así que una diferencia menor que 2 no alcanza a pagar un parámetro. Entre modelos así de cerca se escoge el más simple, que se estima con menos incertidumbre." }
     ],
     cierre: "La firma propone Q = 1 y el AIC decide entre los vecinos."
@@ -127,7 +127,7 @@
     explicacion: "Responda con la tabla y con los botones de los cinco modelos.",
     items: [
       { valor: "¿Cuál tiene el menor AIC de la rejilla?",
-        opciones: [ORDEN[2], ORDEN[0], ORDEN[1]].map(nombre), correcta: 1,
+        opciones: [ ORDEN[1],ORDEN[2], ORDEN[0]].map(nombre), correcta: 2,
         razon: "El " + nombre(MEJOR) + ", con " + fmt(REJILLA[MEJOR][0]) + ". Le siguen " + nombre(ORDEN[1]) + " con " + fmt(REJILLA[ORDEN[1]][0]) + " y " + nombre(ORDEN[2]) + " con " + fmt(REJILLA[ORDEN[2]][0]) + ": a menos de un punto, y el primero tiene un solo coeficiente." },
       { valor: "Ljung-Box con 24 rezagos: ¿cuál de los dos pasa, el modelo sin término estacional o el de menor AIC?",
         opciones: ["Los dos", "Solo el de menor AIC", "Ninguno"], correcta: (sinEst.lb24 < 0.05 && conQ.lb24 >= 0.05) ? 1 : (sinEst.lb24 >= 0.05 ? 0 : 2),
@@ -136,7 +136,7 @@
         opciones: ["Da lo mismo que con Q = 1", "El AIC baja", "El AIC sube y Ljung-Box rechaza con 24 rezagos"], correcta: (conP.aic > conQ.aic && conP.lb24 < 0.05) ? 2 : 0,
         razon: nombre("0,0,1,0") + ": AIC " + fmt(conP.aic) + ", " + fmt(conP.aic - conQ.aic, 1) + " puntos por encima, y Ljung-Box con 24 rezagos da p = " + fmt(conP.lb24, 4) + ". Con Φ = " + fmt(conP.coef["ar.S.L12"], 3) + " la barra de k = 24 de los residuos queda en " + fmt(conP.acf[24]) + ": un AR estacional deja memoria en 24, 36 y más, y w no la tiene: su ACF en k = 24 vale " + fmt(acfW[24]) + "." },
       { valor: "En el de menor AIC, Θ = " + fmt(conQ.coef["ma.S.L12"], 3) + ". ¿Qué dice un Θ tan cerca de −1?",
-        opciones: ["Que falta otra diferencia", "Que el patrón de cada mes cambia muy poco de un año a otro", "Que el modelo no sirve"], correcta: 1,
+        opciones: [ "Que el patrón de cada mes cambia muy poco de un año a otro", "Que el modelo no sirve","Que falta otra diferencia"], correcta: 0,
         razon: "El modelo es (1 − B)(1 − B¹²) y = (1 " + (conQ.coef["ma.S.L12"] < 0 ? "−" : "+") + " " + fmt(Math.abs(conQ.coef["ma.S.L12"]), 3) + "B¹²) e: con Θ = −1 los factores en B¹² se cancelarían. La diferencia estacional quita un patrón que es casi fijo, y el MA estacional devuelve casi todo lo que ella quitó." },
       { valor: "¿Dónde está el residuo más grande del de menor AIC?",
         opciones: ["septiembre de 2018", nombreMes(mesesR[conQ.iMax]), "diciembre de 2024"], correcta: 1,

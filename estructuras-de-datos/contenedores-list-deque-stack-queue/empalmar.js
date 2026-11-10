@@ -67,10 +67,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Un tramo, no la lista entera", columna: true, correcta: "k",
           html: "<p>La versión <code>a.splice(pos, b, primero, ultimo)</code> mueve el tramo <code>[primero, ultimo)</code> de <code>b</code>, de <code>k</code> nodos. ¿Cuánto cuesta?</p>",
           opciones: [
-            { op: "uno", texto: "Θ(1): son los mismos cuatro enlaces", msg: "Los enlaces sí son cuatro, pero a.size() y b.size() tienen que seguir respondiendo en O(1), y la lista no sabe cuántos nodos hay en el tramo sin contarlos." },
-            { op: "k", texto: "Θ(k): hay que contar los nodos del tramo", msg: "Correcto. Reenganchar cuesta cuatro punteros, pero las dos listas guardan su tamaño y hay que restar y sumar k, que se obtiene recorriendo el tramo. Cuando el tramo es de la misma lista, el tamaño no cambia y vuelve a ser Θ(1)." },
             { op: "n", texto: "Θ(n): se recorre b entera", msg: "Solo hace falta recorrer el tramo, no toda b." }
-          ] },
+          ,
+            { op: "uno", texto: "Θ(1): son los mismos cuatro enlaces", msg: "Los enlaces sí son cuatro, pero a.size() y b.size() tienen que seguir respondiendo en O(1), y la lista no sabe cuántos nodos hay en el tramo sin contarlos." },
+            { op: "k", texto: "Θ(k): hay que contar los nodos del tramo", msg: "Correcto. Reenganchar cuesta cuatro punteros, pero las dos listas guardan su tamaño y hay que restar y sumar k, que se obtiene recorriendo el tramo. Cuando el tramo es de la misma lista, el tamaño no cambia y vuelve a ser Θ(1)." }] },
         { tipo: "pasos", titulo: "Paso a paso",
           pasos: P.map(function (st) {
             return { texto: st.texto,

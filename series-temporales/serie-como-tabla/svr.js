@@ -24,7 +24,7 @@
     explicacion: "Sin escalador, la columna mes va de 1 a 12 y los rezagos de la diferencia casi siempre andan entre −1 y 1 millones. Prediga qué pasa con la distancia del kernel.",
     items: [
       { valor: "Sin escalador, ¿qué columna decide cuánto se parecen dos filas?",
-        opciones: ["Los rezagos", "El mes", "Todas por igual"], correcta: 1,
+        opciones: [ "Todas por igual","Los rezagos", "El mes"], correcta: 2,
         razon: "El mes. Dos filas de meses distintos quedan a una distancia de varias unidades por esa sola columna, mientras los rezagos aportan décimas. El kernel ve casi solo el calendario." },
       { valor: "Con C = 0,01, salirse del tubo casi no cuesta y la diferencia pronosticada queda casi igual todo el año. ¿A qué se parece entonces el pronóstico de 2025?",
         opciones: ["A 2024 corrido hacia arriba", "A una recta", "A 2020"], correcta: 0,

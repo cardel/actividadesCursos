@@ -230,10 +230,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Espacio aparte", columna: true, correcta: "pos",
           html: "<p>Sobre un árbol lleno de un millón de nodos, ¿cuál de las tres versiones necesita una pila con espacio para todos los nodos?</p>",
           opciones: [
-            { op: "pre", texto: "preordenPila", msg: "Guarda a lo sumo un hijo derecho pendiente por nivel más el nodo actual: O(h), unos 20 nodos en un árbol lleno de un millón." },
-            { op: "in", texto: "inordenPila", msg: "Guarda el camino de nodos que esperan su turno, O(h)." },
             { op: "pos", texto: "posordenPila", msg: "Correcto. p2 recibe los n nodos antes de imprimir el primero: Θ(n) de espacio aparte, contra O(h) de la recursiva." }
-          ] }
+          ,
+            { op: "pre", texto: "preordenPila", msg: "Guarda a lo sumo un hijo derecho pendiente por nivel más el nodo actual: O(h), unos 20 nodos en un árbol lleno de un millón." },
+            { op: "in", texto: "inordenPila", msg: "Guarda el camino de nodos que esperan su turno, O(h)." }] }
       ]
     };
   }

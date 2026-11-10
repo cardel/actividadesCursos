@@ -182,10 +182,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Al revés", columna: true, correcta: "lento",
           html: "<p>La igualdad compara los tres campos y el hash es <code>HashNombre</code>, que solo mira el nombre. ¿Qué pasa?</p>",
           opciones: [
-            { op: "malo", texto: "count puede responder 0 para una persona que está", msg: "Eso pasa cuando dos claves iguales dan hash distinto. Aquí dos claves iguales tienen el mismo nombre y el mismo hash." },
-            { op: "lento", texto: "Las respuestas son correctas, pero las personas del mismo nombre comparten lista", msg: "Correcto: dos claves iguales tienen el mismo nombre y dan el mismo hash, así que nunca se separan. El costo es buscar en listas largas." },
             { op: "nada", texto: "Nada cambia: el hash solo elige la cubeta", msg: "Elige la cubeta, y por eso mismo importa: todas las lina van a la misma lista y buscar a una la recorre." }
-          ] }
+          ,
+            { op: "malo", texto: "count puede responder 0 para una persona que está", msg: "Eso pasa cuando dos claves iguales dan hash distinto. Aquí dos claves iguales tienen el mismo nombre y el mismo hash." },
+            { op: "lento", texto: "Las respuestas son correctas, pero las personas del mismo nombre comparten lista", msg: "Correcto: dos claves iguales tienen el mismo nombre y dan el mismo hash, así que nunca se separan. El costo es buscar en listas largas." }] }
       ]
     };
   }

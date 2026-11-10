@@ -39,17 +39,17 @@ var EJERCICIO = (function () {
                 "<p>Llegan hasta " + MAX + " palabras en minúscula, una por línea y en orden alfabético. Hay que imprimir, en orden, las que son la unión de exactamente dos palabras del diccionario.</p>" +
                 "<p>En el ejemplo del enunciado el diccionario es <code>" + EJEMPLO.join(" ") + "</code> y la salida es <code>" + salEj.join(" ") + "</code>. ¿Por qué no sale <code>nevertheless</code>, si todas sus partes están?</p>",
           opciones: [
-            { op: "tres", texto: "Porque se arma con tres palabras, never, the y less, y ningún corte la deja en dos que estén.", msg: "Correcto. neverthe y less no sirve porque neverthe no está; never y theless tampoco. Pide exactamente dos." },
-            { op: "largo", texto: "Porque es la palabra más larga y el problema no la cuenta.", msg: "El largo no importa. Pruebe sus cortes: ninguno deja dos palabras del diccionario." },
             { op: "orden", texto: "Porque never aparece antes que nevertheless en la entrada.", msg: "newborn sale aunque new y born no aparecen después. El orden de la entrada no decide." }
-          ] },
+          ,
+            { op: "tres", texto: "Porque se arma con tres palabras, never, the y less, y ningún corte la deja en dos que estén.", msg: "Correcto. neverthe y less no sirve porque neverthe no está; never y theless tampoco. Pide exactamente dos." },
+            { op: "largo", texto: "Porque es la palabra más larga y el problema no la cuenta.", msg: "El largo no importa. Pruebe sus cortes: ninguno deja dos palabras del diccionario." }] },
         { tipo: "opciones", titulo: "Cómo atacarlo", columna: true, correcta: "pares",
           html: "<p>Tres ideas para hallar las compuestas. ¿Cuál se descarta por tiempo?</p>",
           opciones: [
-            { op: "pares", texto: "Probar todos los pares de palabras, concatenarlos y buscar el resultado en el diccionario.", msg: "Correcto, se descarta. Con " + MAX + " palabras son " + MAX + "² ≈ 1,4 × 10¹⁰ pares, demasiados aunque cada búsqueda cueste poco." },
             { op: "set", texto: "Guardar el diccionario en un set<string> y, para cada palabra, probar cada corte y preguntar con count si las dos partes están.", msg: "Esta sirve: una palabra de L letras tiene L − 1 cortes, y cada count cuesta O(L log W). Es la estrategia de esta actividad." },
             { op: "vector", texto: "Dejar las palabras en el vector, que ya viene ordenado, y buscar cada parte con búsqueda binaria.", msg: "También sirve y cuesta lo mismo: la entrada llega ordenada, así que el vector ya admite búsqueda binaria. El set no aprovecha ese orden, pero no hace falta pensar en él." }
-          ] },
+          ,
+            { op: "pares", texto: "Probar todos los pares de palabras, concatenarlos y buscar el resultado en el diccionario.", msg: "Correcto, se descarta. Con " + MAX + " palabras son " + MAX + "² ≈ 1,4 × 10¹⁰ pares, demasiados aunque cada búsqueda cueste poco." }] },
         { tipo: "respuesta", titulo: "Un diccionario propio",
           html: "<p>Con este diccionario, en el orden en que llega:</p><p><code>" + PROPIO.join(" ") + "</code></p><p>¿Qué palabras imprime el programa, en orden? ¿Cuántas son?</p>",
           campos: [

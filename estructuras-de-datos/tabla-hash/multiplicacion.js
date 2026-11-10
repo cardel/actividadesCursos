@@ -96,10 +96,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Por qué falla A = 0,5", columna: true, correcta: "pocos",
           html: "<p>¿Por qué la constante 0,5 reparte tan mal?</p>",
           opciones: [
-            { op: "m", texto: "Porque m = 32 es potencia de 2", msg: "Con A = 0,7071 y el mismo m = 32 las claves se repartieron bien. La potencia de 2 le hace daño a la división, no a la multiplicación." },
-            { op: "grande", texto: "Porque 0,5 es demasiado grande", msg: "No es cuestión de tamaño: 0,7071 es mayor y reparte bien. Lo que importa es cuántas partes fraccionarias distintas salen." },
             { op: "pocos", texto: "kA mod 1 solo toma dos valores, así que h solo toma dos", msg: "Correcto: la cubeta depende de la parte fraccionaria, y 0,5 deja solo 0 y 0,5. Una constante con muchas cifras, como 0,7071, hace que cada clave dé otra parte fraccionaria." }
-          ] },
+          ,
+            { op: "m", texto: "Porque m = 32 es potencia de 2", msg: "Con A = 0,7071 y el mismo m = 32 las claves se repartieron bien. La potencia de 2 le hace daño a la división, no a la multiplicación." },
+            { op: "grande", texto: "Porque 0,5 es demasiado grande", msg: "No es cuestión de tamaño: 0,7071 es mayor y reparte bien. Lo que importa es cuántas partes fraccionarias distintas salen." }] },
         { tipo: "respuesta", titulo: "Una tabla de mil cubetas",
           html: "<p>Con <code>A = 0.7071</code>, ¿qué devuelve <code>hashMult(" + K2 + ", " + M2 + ")</code>?</p>",
           campos: [{ rotulo: "h:", esperado: String(h2), ancho: "5rem" }],

@@ -43,10 +43,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Muchos números", columna: true, correcta: "ciclo",
           html: "<p>Ahora son cien números en un arreglo <code>v</code>. ¿Cómo se escribe el menor?</p>",
           opciones: [
-            { op: "ifs", texto: "Con cien <code>if</code> seguidos, uno por casilla.", msg: "Funciona y no escala: cada tamaño pediría otro programa. La comparación es siempre la misma, y eso es lo que hace un ciclo." },
-            { op: "ciclo", texto: "<code>menor = v[0];</code> y un ciclo de 1 a 99 con un solo <code>if (v[i] &lt; menor)</code>.", msg: "Correcto. Es la misma idea de los cuatro if, con el if dentro de un ciclo: cada vuelta compara una casilla y corrige si hace falta." },
             { op: "cero", texto: "<code>menor = 0;</code> y un ciclo de 0 a 99 que corrige cuando <code>v[i] &lt; menor</code>.", msg: "Si todos los números son positivos, ninguno es menor que 0 y el programa imprime 0, que no está en el arreglo. Hay que partir de un valor del arreglo." }
-          ] }
+          ,
+            { op: "ifs", texto: "Con cien <code>if</code> seguidos, uno por casilla.", msg: "Funciona y no escala: cada tamaño pediría otro programa. La comparación es siempre la misma, y eso es lo que hace un ciclo." },
+            { op: "ciclo", texto: "<code>menor = v[0];</code> y un ciclo de 1 a 99 con un solo <code>if (v[i] &lt; menor)</code>.", msg: "Correcto. Es la misma idea de los cuatro if, con el if dentro de un ciclo: cada vuelta compara una casilla y corrige si hace falta." }] }
       ]
     };
   }

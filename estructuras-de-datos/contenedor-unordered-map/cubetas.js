@@ -143,10 +143,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Lo que cuesta bucket(k)", columna: true, correcta: "uno",
           html: "<p>¿Qué cuesta <code>u.bucket(k)</code> para una clave entera?</p>",
           opciones: [
-            { op: "lista", texto: "Θ(n): recorre la lista hasta encontrar k", msg: "bucket(k) no busca la clave: solo calcula a qué cubeta iría. Funciona incluso si k no está." },
-            { op: "uno", texto: "Θ(1): un hash y un residuo", msg: "Correcto: std::hash&lt;int&gt; devuelve k y la cubeta es k mod m, sin recorrer nada." },
             { op: "log", texto: "O(log n), como en el map", msg: "El unordered_map no tiene un árbol que recorrer. La cubeta sale de una cuenta." }
-          ] }
+          ,
+            { op: "lista", texto: "Θ(n): recorre la lista hasta encontrar k", msg: "bucket(k) no busca la clave: solo calcula a qué cubeta iría. Funciona incluso si k no está." },
+            { op: "uno", texto: "Θ(1): un hash y un residuo", msg: "Correcto: std::hash&lt;int&gt; devuelve k y la cubeta es k mod m, sin recorrer nada." }] }
       ]
     };
   }

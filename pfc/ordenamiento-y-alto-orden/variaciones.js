@@ -61,10 +61,10 @@
       llamada: "nums.filter(par)",
       cierre: "Conserva los que cumplen y pregunta por todos.",
       opciones: [
-        { txt: "List(2, 4, 8)", correcta: true },
-        { txt: "List(7, 3, 1)", fallo: "Esos son los que no cumplen, que es lo que devuelve filterNot." },
         { txt: "List(2, 4)", fallo: "Eso saldria si el recorrido se detuviera en el 7. filter sigue preguntando hasta el final, y por eso el 8 entra." }
-      ],
+      ,
+        { txt: "List(2, 4, 8)", correcta: true },
+        { txt: "List(7, 3, 1)", fallo: "Esos son los que no cumplen, que es lo que devuelve filterNot." }],
       pistaAlta: "Son menos: el predicado no se evalua dos veces sobre el mismo elemento.",
       pistaBaja: "Son mas: filter recorre la lista entera, incluso despues de un elemento que no cumple."
     },
@@ -73,10 +73,10 @@
       llamada: "nums.filterNot(par)",
       cierre: "El mismo recorrido completo, con la decision al reves.",
       opciones: [
-        { txt: "List(7, 3, 1)", correcta: true },
         { txt: "List(2, 4, 8)", fallo: "Esos son los que cumplen. filterNot conserva los otros." },
         { txt: "List(7, 3, 8, 1)", fallo: "Ahi esta el 8, que es par y por tanto cumple. Ese resultado es el de dropWhile, que lo deja pasar sin mirarlo." }
-      ],
+      ,
+        { txt: "List(7, 3, 1)", correcta: true }],
       pistaAlta: "Son menos: hay seis elementos y cada uno se pregunta una vez.",
       pistaBaja: "Son mas: negar el predicado no acorta el recorrido."
     },
@@ -97,10 +97,10 @@
       llamada: "nums.dropWhile(par)",
       cierre: "Descarta el mismo prefijo y devuelve el resto completo.",
       opciones: [
-        { txt: "List(7, 3, 8, 1)", correcta: true },
-        { txt: "List(3, 8, 1)", fallo: "El 7 se queda: descarta mientras cumplan, y el 7 no cumple. Ahi termina el descarte." },
         { txt: "List(7, 3, 1)", fallo: "Eso es filterNot. dropWhile no filtra el resto, lo devuelve tal como esta, con el 8 adentro." }
-      ],
+      ,
+        { txt: "List(7, 3, 8, 1)", correcta: true },
+        { txt: "List(3, 8, 1)", fallo: "El 7 se queda: descarta mientras cumplan, y el 7 no cumple. Ahi termina el descarte." }],
       pistaAlta: "Son menos: solo se pregunta por el prefijo y por el elemento que lo corta.",
       pistaBaja: "Son mas: devolver cuatro elementos no quiere decir haberlos mirado."
     },
@@ -109,10 +109,10 @@
       llamada: "nums.span(par)",
       cierre: "Las dos partes de una sola pasada, en una tupla.",
       opciones: [
-        { txt: "(List(2, 4),List(7, 3, 8, 1))", correcta: true },
         { txt: "(List(2, 4, 8),List(7, 3, 1))", fallo: "Esa es la tupla de partition, que reparte por el predicado. span reparte por el punto donde se detuvo." },
         { txt: "(List(2, 4),List(3, 8, 1))", fallo: "El 7 no se pierde: queda a la cabeza de la segunda parte, que es lo que hace util a span dentro de empaquetar." }
-      ],
+      ,
+        { txt: "(List(2, 4),List(7, 3, 8, 1))", correcta: true }],
       pistaAlta: "Son menos: una sola pasada, no una por cada parte de la tupla.",
       pistaBaja: "Son mas: hace falta preguntar por el 7 para saber donde cortar."
     },
@@ -135,19 +135,19 @@
       llamada: "nums.span(par)",
       cierre: "Una pasada en lugar de dos, y el mismo punto de corte para las dos partes.",
       opciones: [
-        { txt: "(nums.takeWhile(par), nums.dropWhile(par))", correcta: true },
-        { txt: "(nums.filter(par), nums.filterNot(par))", fallo: "Ese par da (List(2, 4, 8),List(7, 3, 1)), que es partition. span corta en el 7 y no vuelve a mirar." },
         { txt: "(nums.takeWhile(par), nums.filterNot(par))", fallo: "La segunda parte de span es todo lo que viene del 7 en adelante, con el 8 incluido; filterNot lo quitaria." }
-      ]
+      ,
+        { txt: "(nums.takeWhile(par), nums.dropWhile(par))", correcta: true },
+        { txt: "(nums.filter(par), nums.filterNot(par))", fallo: "Ese par da (List(2, 4, 8),List(7, 3, 1)), que es partition. span corta en el 7 y no vuelve a mirar." }]
     },
     {
       llamada: "nums.partition(par)",
       cierre: "Las dos listas que dan filter y filterNot, sin recorrer la entrada dos veces.",
       opciones: [
-        { txt: "(nums.filter(par), nums.filterNot(par))", correcta: true },
         { txt: "(nums.takeWhile(par), nums.dropWhile(par))", fallo: "Ese par da (List(2, 4),List(7, 3, 8, 1)), que es span. partition no se detiene en el primer impar." },
         { txt: "(nums.filter(par), nums.dropWhile(par))", fallo: "La segunda parte de partition son los que no cumplen; dropWhile devuelve el resto sin filtrarlo." }
-      ]
+      ,
+        { txt: "(nums.filter(par), nums.filterNot(par))", correcta: true }]
     }
   ];
 

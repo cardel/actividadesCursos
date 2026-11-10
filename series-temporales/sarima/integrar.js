@@ -54,7 +54,7 @@
         opciones: ["y(feb 2025)", "y(mar 2024)", "y(feb 2025) + y(mar 2024) − y(feb 2024)"], correcta: 2,
         razon: "w = 0 quiere decir que el cambio de febrero a marzo de 2025 repite el de febrero a marzo de 2024: " + fmt(yFeb, 3) + " + " + fmt(yMar24, 3) + " − " + fmt(yFeb24, 3) + " = " + fmt(Y.cero[0], 3) + " millones." },
       { valor: "Con ŵ = 0 en todos los meses, ¿a qué se parece el pronóstico?",
-        opciones: ["Al ingenuo: repite febrero de 2025", "Al estacional ingenuo, más el crecimiento del último año", "A la media de la serie"], correcta: 1,
+        opciones: [ "Al estacional ingenuo, más el crecimiento del último año", "A la media de la serie","Al ingenuo: repite febrero de 2025"], correcta: 0,
         razon: "Para h hasta 12, ŷ = y(mismo mes del año anterior) + [y(feb 2025) − y(feb 2024)]. El crecimiento interanual de febrero, " + fmt(yFeb - yFeb24, 3) + " millones, se suma a los doce meses del estacional ingenuo." }
     ],
     cierre: "ŵ = 0 no es un pronóstico de cero pasajeros: es el estacional ingenuo con el último crecimiento anual encima."
@@ -67,13 +67,13 @@
     explicacion: "Responda moviendo h y cambiando de ŵ.",
     items: [
       { valor: "Con h = 2, la fórmula de abril de 2025 pide y(marzo de 2025), que en el corte no se conoce. ¿Qué entra en su lugar?",
-        opciones: ["El dato real de marzo", "Cero", "El pronóstico de marzo"], correcta: 2,
+        opciones: [ "Cero", "El pronóstico de marzo","El dato real de marzo"], correcta: 1,
         razon: "Entra ŷ(mar 2025) = " + fmt(Y.sarima[0], 3) + " con el SARIMA. El dato real, " + fmt(real[0], 3) + ", todavía no existe en febrero de 2025: usarlo sería mirar el futuro." },
       { valor: "En los doce meses, ¿cuál tiene el menor MAE?",
         opciones: metricas.map(function (m) { return m.nombre; }), correcta: ganador,
         razon: "MAE en millones: " + metricas.map(function (m) { return m.nombre + ": " + fmt(m.mae, 3); }).join("; ") + ". En este corte el SARIMA pierde contra las dos líneas base." },
       { valor: "¿En qué meses el ŵ del SARIMA es más negativo?",
-        opciones: ["Diciembre de 2025", "Marzo y abril de 2025", "Febrero de 2026"], correcta: 1,
+        opciones: [ "Febrero de 2026","Diciembre de 2025", "Marzo y abril de 2025"], correcta: 2,
         razon: "ŵ vale " + fmt(W.sarima[0], 3) + " en marzo y " + fmt(W.sarima[1], 3) + " en abril: el modelo espera que el cambio de un mes al siguiente sea menor que el del mismo mes un año antes, y sus pronósticos quedan " + fmt(real[0] - Y.sarima[0], 3) + " y " + fmt(real[1] - Y.sarima[1], 3) + " millones por debajo de lo que pasó. Lo que sale mal al principio se arrastra al resto del año." }
     ],
     cierre: "Integrar es mecánico; lo que decide la calidad del pronóstico es el ŵ que se integra."

@@ -41,10 +41,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Los dos que son O(1)", columna: true, correcta: "deque",
           html: "<p>Con " + miles(u[0]) + " elementos, deque y list son los dos O(1) por salida. ¿Cuál tardó menos, y por qué?</p>",
           opciones: [
-            { op: "iguales", texto: "Los dos igual: tienen el mismo orden", msg: "El mismo orden dice cómo crece el tiempo, no cuánto vale. Con " + miles(u[0]) + " elementos, el deque tardó " + cifra(u[2]) + " s y la list " + cifra(u[3]) + " s." },
             { op: "deque", texto: "El deque: libera un bloque cada 128 enteros, la list un nodo por elemento", msg: "Correcto: " + cifra(u[2]) + " s contra " + cifra(u[3]) + " s, unas " + Math.round(u[3] / u[2]) + " veces menos. Cada delete de la list es una llamada al administrador de memoria; el deque hace una cada 128 salidas." },
             { op: "list", texto: "La list: solo mueve un puntero", msg: "Mueve un puntero, pero también libera un nodo en cada salida. El deque libera mucho menos seguido." }
-          ] },
+          ,
+            { op: "iguales", texto: "Los dos igual: tienen el mismo orden", msg: "El mismo orden dice cómo crece el tiempo, no cuánto vale. Con " + miles(u[0]) + " elementos, el deque tardó " + cifra(u[2]) + " s y la list " + cifra(u[3]) + " s." }] },
         { tipo: "tabla", titulo: "Los tiempos medidos",
           cabecera: ["n", "vector, erase(begin())", "deque, pop_front", "list, pop_front"],
           filas: MEDIDAS.map(function (m) { return [miles(m[0]), cifra(m[1]), cifra(m[2]), cifra(m[3])]; }),

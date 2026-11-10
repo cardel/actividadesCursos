@@ -205,10 +205,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Lo que cuesta comparar", columna: true, correcta: "nombres",
           html: "<p>Una empresa guarda n empleados en un <code>map&lt;Persona, int, PorEdad&gt;</code>, y todos tienen 30 años y ganan 2000. Los nombres miden hasta L caracteres. ¿Qué cuesta buscar a uno?</p>",
           opciones: [
-            { op: "log", texto: "O(log n), como con claves enteras", msg: "Eso valdría si la edad o el salario decidieran. Aquí cada comparación termina comparando cadenas." },
             { op: "nombres", texto: "O(L log n)", msg: "Correcto: la edad y el salario siempre empatan, así que cada una de las O(log n) comparaciones llega al nombre y cuesta O(L)." },
             { op: "n", texto: "Θ(n), porque todos empatan", msg: "No empatan: el nombre los distingue y el map sigue balanceado. Solo cada comparación se vuelve más cara." }
-          ] }
+          ,
+            { op: "log", texto: "O(log n), como con claves enteras", msg: "Eso valdría si la edad o el salario decidieran. Aquí cada comparación termina comparando cadenas." }] }
       ]
     };
   }

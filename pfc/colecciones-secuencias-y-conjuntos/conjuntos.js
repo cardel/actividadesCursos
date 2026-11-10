@@ -31,10 +31,10 @@
       pregunta: "La misma consulta que se hace sobre un Vector.",
       cierre: "nums sale de (1 to 6), así que trae el 5 y el 6.",
       opciones: [
-        { txt: "true", correcta: true },
         { txt: "false", fallo: "false diría que ningún elemento pasa de 4, y nums llega hasta el 6." },
         { txt: "no compila: exists es de secuencias", fallo: "map, filter, exists y forall están también en Set. Lo que no trae un conjunto es el orden de los elementos.", larga: true }
-      ]
+      ,
+        { txt: "true", correcta: true }]
     },
     {
       expr: "frutas.filter(_.startsWith(\"c\"))",
@@ -51,20 +51,20 @@
       pregunta: "Set(1, 2, 3, 4) contra Set(3, 4, 5, 6).",
       cierre: "intersect deja los que están en los dos a la vez.",
       opciones: [
-        { txt: "Set(3, 4)", correcta: true },
-        { txt: "Set(1, 2, 5, 6)", fallo: "Esos son los que están en uno solo de los dos conjuntos, que es lo contrario de lo que pide intersect." },
         { txt: "Set(1, 2, 3, 4, 5, 6)", fallo: "Esos son los seis de a union b. intersect no junta los dos conjuntos, los recorta al pedazo común." }
-      ]
+      ,
+        { txt: "Set(3, 4)", correcta: true },
+        { txt: "Set(1, 2, 5, 6)", fallo: "Esos son los que están en uno solo de los dos conjuntos, que es lo contrario de lo que pide intersect." }]
     },
     {
       expr: "a diff b",
       pregunta: "Los mismos dos conjuntos, en ese orden.",
       cierre: "diff quita del de la izquierda lo que aparece en el de la derecha.",
       opciones: [
-        { txt: "Set(1, 2)", correcta: true },
         { txt: "Set(5, 6)", fallo: "Eso es b diff a. La operación no es simétrica: mira los elementos del conjunto de la izquierda." },
         { txt: "Set(1, 2, 5, 6)", fallo: "Eso reúne las dos diferencias. a diff b se queda solo con elementos de a." }
-      ]
+      ,
+        { txt: "Set(1, 2)", correcta: true }]
     },
     {
       expr: "a(3)",
@@ -81,20 +81,20 @@
       pregunta: "Si todos los elementos del primero están en el segundo.",
       cierre: "a es Set(1, 2, 3, 4) y tiene los dos elementos.",
       opciones: [
-        { txt: "true", correcta: true },
-        { txt: "false", fallo: "false saldría si a le faltara el 1 o el 2, y a los tiene." },
         { txt: "Set(1, 2)", fallo: "subsetOf responde una pregunta y devuelve un booleano, no el conjunto de los elementos que coinciden." }
-      ]
+      ,
+        { txt: "true", correcta: true },
+        { txt: "false", fallo: "false saldría si a le faltara el 1 o el 2, y a los tiene." }]
     },
     {
       expr: "Vector(1, 2, 2, 3).toSet.size",
       pregunta: "Un Vector con un elemento repetido, pasado a conjunto.",
       cierre: "Vector(1, 2, 2, 3).toSet es Set(1, 2, 3): el 2 entra una sola vez.",
       opciones: [
-        { txt: "3", correcta: true },
         { txt: "4", fallo: "4 es la longitud del Vector. Al pasar a conjunto el 2 repetido se colapsa en uno." },
         { txt: "2", fallo: "size cuenta los elementos distintos, y son tres: el 1, el 2 y el 3." }
-      ]
+      ,
+        { txt: "3", correcta: true }]
     }
   ];
 
@@ -116,10 +116,10 @@
       pregunta: "La misma operación con una función que no repite resultados.",
       cierre: "Sumar 2 manda cada elemento a un valor distinto, así que no se colapsa ninguno.",
       opciones: [
-        { txt: "6", correcta: true },
-        { txt: "4", fallo: "4 es lo que deja map(_ / 2). Con _ + 2 no hay dos elementos de nums que caigan en el mismo resultado." },
         { txt: "8", fallo: "map devuelve un resultado por elemento de entrada, y nums tiene seis: no agrega elementos nuevos." }
-      ]
+      ,
+        { txt: "6", correcta: true },
+        { txt: "4", fallo: "4 es lo que deja map(_ / 2). Con _ + 2 no hay dos elementos de nums que caigan en el mismo resultado." }]
     }
   ];
 
@@ -131,10 +131,10 @@
       pregunta: "El conjunto de (1 to 6), tal como sale por pantalla.",
       cierre: "Seis elementos, con el nombre HashSet y en un orden que no es el del rango.",
       opciones: [
-        { txt: "HashSet(5, 1, 6, 2, 3, 4)", correcta: true, larga: true },
         { txt: "Set(1, 2, 3, 4, 5, 6)", fallo: "Los seis elementos son esos, pero ni el nombre ni el orden coinciden: un conjunto no guarda el orden en que entraron los elementos.", larga: true },
         { txt: "HashSet(1, 2, 3, 4, 5, 6)", fallo: "El nombre es el que sale. El orden no: los elementos aparecen en otro, y ese orden no forma parte de lo que un conjunto promete.", larga: true }
-      ]
+      ,
+        { txt: "HashSet(5, 1, 6, 2, 3, 4)", correcta: true, larga: true }]
     },
     {
       expr: "println((1 to 4).toSet)",
@@ -151,20 +151,20 @@
       pregunta: "El conjunto de cuatro elementos que deja la división entera.",
       cierre: "Cuatro elementos y, aun así, el nombre que sale es HashSet.",
       opciones: [
-        { txt: "HashSet(0, 1, 2, 3)", correcta: true },
-        { txt: "Set(0, 1, 2, 3)", fallo: "Los cuatro elementos son esos. El nombre impreso es HashSet, mientras (1 to 4).toSet, que también tiene cuatro, sale como Set: el nombre no se deduce del tamaño.", larga: true },
         { txt: "HashSet(0, 1, 1, 2, 2, 3)", fallo: "Esas son las seis divisiones. El conjunto se queda con los valores distintos, así que el 1 y el 2 aparecen una sola vez.", larga: true }
-      ]
+      ,
+        { txt: "HashSet(0, 1, 2, 3)", correcta: true },
+        { txt: "Set(0, 1, 2, 3)", fallo: "Los cuatro elementos son esos. El nombre impreso es HashSet, mientras (1 to 4).toSet, que también tiene cuatro, sale como Set: el nombre no se deduce del tamaño.", larga: true }]
     },
     {
       expr: "println(a union b)",
       pregunta: "La unión de dos conjuntos de cuatro elementos.",
       cierre: "La unión deja seis elementos, y con seis el nombre que sale es HashSet.",
       opciones: [
-        { txt: "HashSet(5, 1, 6, 2, 3, 4)", correcta: true, larga: true },
         { txt: "Set(1, 2, 3, 4, 5, 6)", fallo: "Los seis elementos son esos, en el orden en que uno los leería de los dos conjuntos. Salen con el nombre HashSet y en otro orden.", larga: true },
         { txt: "Set(1, 2, 3, 4, 3, 4, 5, 6)", fallo: "union no pega los dos conjuntos uno tras otro: el 3 y el 4, que están en ambos, entran una sola vez.", larga: true }
-      ]
+      ,
+        { txt: "HashSet(5, 1, 6, 2, 3, 4)", correcta: true, larga: true }]
     },
     {
       expr: "println(a intersect b)",
@@ -181,10 +181,10 @@
       pregunta: "Los elementos de nums mayores que 4.",
       cierre: "filter entrega los elementos que cumplen, y aquí quedan dos.",
       opciones: [
-        { txt: "Set(5, 6)", correcta: true },
-        { txt: "true", fallo: "true es lo que devuelve nums.exists(_ > 4). exists responde si hay alguno; filter entrega los que hay." },
         { txt: "HashSet(5, 6)", fallo: "Los dos elementos son esos, y con dos el nombre impreso es Set, aunque nums salga como HashSet." }
-      ]
+      ,
+        { txt: "Set(5, 6)", correcta: true },
+        { txt: "true", fallo: "true es lo que devuelve nums.exists(_ > 4). exists responde si hay alguno; filter entrega los que hay." }]
     }
   ];
 

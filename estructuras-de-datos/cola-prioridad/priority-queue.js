@@ -38,11 +38,11 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Un comparador al revés", columna: true, correcta: "menor",
           html: M.codigo(C.codigo("menor")) + "<p>¿Qué imprime?</p>",
           opciones: [
+            { op: "llegada", texto: "<code>" + C.DATOS_MENOR.join(" ") + "</code>", msg: "Ese es el orden de llegada. Una priority_queue no lo guarda; entrega según el comparador." }
+          ,
             { op: "menor", texto: "<code>" + menor.join(" ") + "</code>", msg: "Correcto. El comparador dice cuándo a va detrás de b. Con a > b, el mayor va detrás y arriba queda el menor: es un montículo de mínimos. El 19 sale dos veces, porque la cola guarda repetidos." },
             { op: "mayor", texto: "<code>" + mayor.join(" ") + "</code>", msg: "Ese es el orden de una priority_queue<int> sin comparador. Por omisión se usa a < b, y aquí se invirtió: sale primero el menor." },
-            { op: "sin", texto: "<code>" + menor.filter(function (x, i) { return menor.indexOf(x) === i; }).join(" ") + "</code>", msg: "Así quedaría en un set. La priority_queue no descarta repetidos: el 19 entró dos veces y sale dos veces." },
-            { op: "llegada", texto: "<code>" + C.DATOS_MENOR.join(" ") + "</code>", msg: "Ese es el orden de llegada. Una priority_queue no lo guarda; entrega según el comparador." }
-          ] },
+            { op: "sin", texto: "<code>" + menor.filter(function (x, i) { return menor.indexOf(x) === i; }).join(" ") + "</code>", msg: "Así quedaría en un set. La priority_queue no descarta repetidos: el 19 entró dos veces y sale dos veces." }] },
         { tipo: "respuesta", titulo: "Llamadas con la misma prioridad",
           html: M.codigo(C.codigo("llamadas")) + "<p>¿En qué orden se atienden los turnos?</p>",
           campos: [{ rotulo: "turnos:", esperado: ll.join(" "), ancho: "10rem" }],

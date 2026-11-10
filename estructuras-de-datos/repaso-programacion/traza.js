@@ -36,10 +36,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Que salgan los decimales", columna: true, correcta: "real",
           html: "<p>¿Qué cambio hace que imprima el promedio con sus decimales?</p>",
           opciones: [
-            { op: "double", texto: "Nada más: <code>promedio</code> ya es <code>double</code>, y eso basta.", msg: "promedio ya es double, y aun así imprime 40.00. La división se hace antes de guardar, con los tipos de suma y de 6." },
-            { op: "real", texto: "Escribir <code>suma / 6.0</code>.", msg: "Correcto. Con un operando real la división es real: imprime " + bien.salida + "." },
             { op: "formato", texto: "Cambiar <code>%0.2f</code> por <code>%0.4f</code>.", msg: "El formato solo decide cuántos decimales mostrar. Si el valor ya es 40, muestra 40.0000." }
-          ] },
+          ,
+            { op: "double", texto: "Nada más: <code>promedio</code> ya es <code>double</code>, y eso basta.", msg: "promedio ya es double, y aun así imprime 40.00. La división se hace antes de guardar, con los tipos de suma y de 6." },
+            { op: "real", texto: "Escribir <code>suma / 6.0</code>.", msg: "Correcto. Con un operando real la división es real: imprime " + bien.salida + "." }] },
         { tipo: "respuesta", titulo: "Otra entrada",
           html: "<p>El mismo programa con <code>" + OTRAS.join(" ") + "</code>. ¿Qué imprime el último <code>printf</code>, y qué imprimiría con <code>suma / 6.0</code>?</p>",
           campos: [

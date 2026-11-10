@@ -22,20 +22,20 @@
       pregunta: "map aplica la función a cada elemento.",
       cierre: "Tres elementos entran y tres salen, cada uno por el doble de sí mismo.",
       opciones: [
-        { txt: "List(2, 4, 6)", correcta: true },
-        { txt: "List(2, 3)", fallo: "List(2, 3) es lo que devuelve filter(x => x > 1) sobre la misma lista: quedarse con los que cumplen una condición. map no descarta a nadie." },
         { txt: "List(1, 2, 3, 2, 4, 6)", fallo: "La salida tiene un elemento por cada elemento de la entrada, tres en total. Los resultados no se agregan al final de la lista original." }
-      ]
+      ,
+        { txt: "List(2, 4, 6)", correcta: true },
+        { txt: "List(2, 3)", fallo: "List(2, 3) es lo que devuelve filter(x => x > 1) sobre la misma lista: quedarse con los que cumplen una condición. map no descarta a nadie." }]
     },
     {
       expr: "List(1, 2, 3).filter(x => x > 1)",
       pregunta: "filter usa la condición para decidir quién pasa.",
       cierre: "El 1 no cumple x > 1, y los otros dos salen tal como entraron.",
       opciones: [
-        { txt: "List(2, 3)", correcta: true },
         { txt: "List(1, 2, 3)", fallo: "La comparación es estricta: x > 1 deja fuera al 1, que no es mayor que sí mismo." },
         { txt: "List(false, true, true)", fallo: "List(false, true, true) es la condición evaluada en cada elemento. filter no cambia los elementos por el resultado de la comparación: la usa para elegir y devuelve los números." }
-      ]
+      ,
+        { txt: "List(2, 3)", correcta: true }]
     },
     {
       expr: "List(\"hola\", \"mundo\").map(s => s.length)",
@@ -57,20 +57,20 @@
       pregunta: "Se reciben valores con repeticiones y hay que quedarse con los distintos.",
       cierre: "Vector(1, 2, 2, 3).toSet da Set(1, 2, 3), y size da 3.",
       opciones: [
-        { txt: "Set", correcta: true },
-        { txt: "List", fallo: "Una lista conserva las repeticiones tal como se escriban. Quitarlas es pasar a un conjunto: Vector(1, 2, 2, 3).toSet da Set(1, 2, 3), con size 3." },
         { txt: "Range", fallo: "Un rango no repite valores, pero tampoco guarda los que uno quiera: describe enteros desde un inicio hasta un fin con un paso fijo." }
-      ]
+      ,
+        { txt: "Set", correcta: true },
+        { txt: "List", fallo: "Una lista conserva las repeticiones tal como se escriban. Quitarlas es pasar a un conjunto: Vector(1, 2, 2, 3).toSet da Set(1, 2, 3), con size 3." }]
     },
     {
       expr: "llegar por posición",
       pregunta: "Hay que alcanzar un elemento del medio sin recorrer los anteriores.",
       cierre: "Un Vector es la secuencia con acceso balanceado, y las operaciones de List siguen estando: head, tail, isEmpty, map y filter.",
       opciones: [
-        { txt: "Vector", correcta: true },
         { txt: "List", fallo: "Una lista se recorre desde el frente con head y tail, así que para llegar al último hay que pasar por todos los anteriores." },
         { txt: "Set", fallo: "A un conjunto no se le pide una posición. Set(1, 2, 3, 4)(3) no devuelve el elemento del puesto 3: devuelve true, la respuesta a si el 3 está dentro." }
-      ]
+      ,
+        { txt: "Vector", correcta: true }]
     },
     {
       expr: "enteros con paso uniforme",
@@ -87,10 +87,10 @@
       pregunta: "Hay que quedarse con las mayúsculas de \"Hola mundo\".",
       cierre: "\"Hola mundo\".filter(_.isUpper) da H, y length da 10: el texto responde directo a las operaciones de secuencia.",
       opciones: [
-        { txt: "String", correcta: true },
-        { txt: "List[Char]", fallo: "No hace falta convertir el texto. \"Hola mundo\".length da 10 y \"Hola mundo\".map(_.toUpper) da HOLA MUNDO, sin pasar por ninguna otra colección." },
         { txt: "Array[Char]", fallo: "Un arreglo de caracteres habría que construirlo aparte. El texto ya es una secuencia de caracteres y acepta map y filter." }
-      ]
+      ,
+        { txt: "String", correcta: true },
+        { txt: "List[Char]", fallo: "No hace falta convertir el texto. \"Hola mundo\".length da 10 y \"Hola mundo\".map(_.toUpper) da HOLA MUNDO, sin pasar por ninguna otra colección." }]
     }
   ];
 
@@ -102,10 +102,10 @@
       pregunta: "El mismo map, ahora sobre un vector.",
       cierre: "map devuelve una colección del mismo tipo que recibió.",
       opciones: [
-        { txt: "Vector(20, 30, 40)", correcta: true },
         { txt: "List(20, 30, 40)", fallo: "Los números son esos, el tipo no. map sobre un Vector devuelve un Vector; sobre una List devuelve una List." },
         { txt: "Vector(2, 3, 4, 20, 30, 40)", fallo: "La salida tiene tres elementos, uno por cada entrada. Los resultados no se agregan al vector original." }
-      ]
+      ,
+        { txt: "Vector(20, 30, 40)", correcta: true }]
     },
     {
       expr: "Array(1, 2, 3).map(x => 2 * x).toList",
@@ -122,20 +122,20 @@
       pregunta: "Un texto también acepta map, con una función de carácter.",
       cierre: "Los diez caracteres pasan por toUpper y el resultado vuelve a ser un texto.",
       opciones: [
-        { txt: "HOLA MUNDO", correcta: true },
-        { txt: "H", fallo: "H es lo que devuelve \"Hola mundo\".filter(_.isUpper): filtrar deja las mayúsculas que ya estaban. map transforma los diez caracteres." },
         { txt: "10", fallo: "10 es \"Hola mundo\".length, cuántos caracteres tiene. map no cuenta: devuelve el texto con cada carácter cambiado." }
-      ]
+      ,
+        { txt: "HOLA MUNDO", correcta: true },
+        { txt: "H", fallo: "H es lo que devuelve \"Hola mundo\".filter(_.isUpper): filtrar deja las mayúsculas que ya estaban. map transforma los diez caracteres." }]
     },
     {
       expr: "Vector(1, 2, 2, 3).toSet.size",
       pregunta: "El vector trae un valor repetido y el conjunto se queda con los distintos.",
       cierre: "Vector(1, 2, 2, 3).toSet da Set(1, 2, 3), de tamaño 3.",
       opciones: [
-        { txt: "3", correcta: true },
         { txt: "4", fallo: "4 es cuántos elementos tiene el vector. Al pasar a conjunto el 2 queda una sola vez, así que size baja a 3." },
         { txt: "2", fallo: "2 es el valor que se repite, no cuántos valores distintos quedan." }
-      ]
+      ,
+        { txt: "3", correcta: true }]
     }
   ];
 

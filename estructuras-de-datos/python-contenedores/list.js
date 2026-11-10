@@ -127,19 +127,19 @@ var EJERCICIO = (function () {
           html: "<p>Tres maneras de guardar los números del 0 al n − 1 en orden. ¿Cuál cuesta Θ(n) en total?</p>" +
             P.codigo(["# A", "l = []", "for x in range(n):", "    l.append(x)", "", "# B", "l = []", "for x in range(n - 1, -1, -1):", "    l.insert(0, x)", "", "# C", "l = []", "for x in range(n):", "    l = l + [x]"]),
           opciones: [
-            { op: "append", texto: "A", msg: "Correcto. Cada append es O(1) amortizado: n llamadas cuestan Θ(n)." },
-            { op: "insert", texto: "B", msg: "insert(0, x) corre todo lo que ya está: 0 + 1 + ⋯ + (n − 1) = n(n − 1)/2 movimientos, Θ(n²)." },
             { op: "suma", texto: "C", msg: "l + [x] arma una lista nueva y copia las que ya había en cada vuelta: Θ(n²) en total." },
             { op: "todas", texto: "Las tres", msg: "Las tres dan la misma lista, pero solo A evita mover o copiar lo que ya estaba." }
-          ] },
+          ,
+            { op: "append", texto: "A", msg: "Correcto. Cada append es O(1) amortizado: n llamadas cuestan Θ(n)." },
+            { op: "insert", texto: "B", msg: "insert(0, x) corre todo lo que ya está: 0 + 1 + ⋯ + (n − 1) = n(n − 1)/2 movimientos, Θ(n²)." }] },
         { tipo: "opciones", titulo: "Buscar muchas veces", columna: true, correcta: "nm",
           html: "<p><code>datos</code> es una <code>list</code> de n números y <code>consultas</code>, una de m.</p>" +
             P.codigo(["encontrados = 0", "for x in consultas:", "    if x in datos:", "        encontrados = encontrados + 1"]) + "<p>¿Cuánto cuesta en el peor caso?</p>",
           opciones: [
-            { op: "m", texto: "O(m)", msg: "Eso valdría si x in datos costara O(1). En una list compara de una en una: O(n) cada vez." },
-            { op: "nm", texto: "O(n · m)", msg: "Correcto. Cada consulta recorre la lista en el peor caso. Con un set de los datos, armado una vez en O(n), cada consulta costaría O(1) en promedio: O(n + m)." },
             { op: "nlogm", texto: "O(m log n)", msg: "Eso sería con búsqueda binaria sobre una lista ordenada. x in l no ordena ni parte por la mitad." }
-          ] }
+          ,
+            { op: "m", texto: "O(m)", msg: "Eso valdría si x in datos costara O(1). En una list compara de una en una: O(n) cada vez." },
+            { op: "nm", texto: "O(n · m)", msg: "Correcto. Cada consulta recorre la lista en el peor caso. Con un set de los datos, armado una vez en O(n), cada consulta costaría O(1) en promedio: O(n + m)." }] }
       ]
     };
   }

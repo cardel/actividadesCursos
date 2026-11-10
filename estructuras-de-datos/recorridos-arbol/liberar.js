@@ -108,10 +108,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Borrar antes de bajar", columna: true, correcta: "lee",
           html: pre(ANTES) + "<p>¿Qué pasa con esta versión?</p>",
           opciones: [
-            { op: "igual", texto: "Nada: borra los mismos seis nodos, en preorden", msg: "Después de delete r el nodo ya no es del programa, y la línea siguiente lee r->izq de él. Puede salir bien en una prueba y fallar en la siguiente." },
             { op: "lee", texto: "Lee r->izq y r->der de un nodo ya devuelto: el resultado no está definido", msg: "Correcto. La memoria devuelta puede reutilizarse o sobrescribirse en cualquier momento. Compilado y corrido sobre este árbol, el programa aborta con free(): invalid pointer, y valgrind marca Invalid read en r->izq." },
             { op: "compila", texto: "No compila", msg: "Compila sin advertencias: el compilador no sigue qué punteros ya se borraron." }
-          ] },
+          ,
+            { op: "igual", texto: "Nada: borra los mismos seis nodos, en preorden", msg: "Después de delete r el nodo ya no es del programa, y la línea siguiente lee r->izq de él. Puede salir bien en una prueba y fallar en la siguiente." }] },
         { tipo: "opciones", titulo: "Borrar entre las dos bajadas", columna: true, correcta: "der",
           html: pre(ENMEDIO) + "<p>¿Dónde está el problema de esta versión?</p>",
           opciones: [
@@ -122,10 +122,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Guardar los hijos primero", columna: true, correcta: "sirve",
           html: pre(GUARDANDO) + "<p>¿Sirve esta versión?</p>",
           opciones: [
-            { op: "sirve", texto: "Sí: borra en preorden, " + guardando.join(" ") + ", sin leer memoria devuelta", msg: "Correcto. Los dos punteros se copian antes del delete, y las llamadas usan las copias. Es la idea de liberarPila: apilar los hijos antes de borrar." },
             { op: "pos", texto: "No: un árbol solo se puede liberar en posorden", msg: "El posorden es lo más directo, pero lo que importa es no leer un nodo borrado. Aquí nadie lo lee." },
             { op: "pierde", texto: "No: se pierden los hijos al borrar el padre", msg: "Los hijos no se borran con el padre; lo que se pierde es el camino hacia ellos, y i y d lo guardan." }
-          ] }
+          ,
+            { op: "sirve", texto: "Sí: borra en preorden, " + guardando.join(" ") + ", sin leer memoria devuelta", msg: "Correcto. Los dos punteros se copian antes del delete, y las llamadas usan las copias. Es la idea de liberarPila: apilar los hijos antes de borrar." }] }
       ]
     };
   }

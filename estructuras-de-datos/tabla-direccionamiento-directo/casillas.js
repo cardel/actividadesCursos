@@ -90,10 +90,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Una clave fuera del universo", columna: true, correcta: "fuera",
           html: "<p>¿Qué pasa con <code>t.insertar(9, \"Ana\")</code> en esta tabla de " + M + " casillas?</p>",
           opciones: [
-            { op: "fuera", texto: "El <code>assert</code> detiene el programa; sin él, se escribiría fuera del arreglo", msg: "Correcto. La tabla directa supone 0 ≤ clave < m. La casilla 9 no existe en un arreglo de 8." },
-            { op: "mod", texto: "Va a la casilla 1, porque 9 mod 8 = 1", msg: "La tabla directa no transforma la clave: la usa tal cual. Convertir la clave en una casilla con una cuenta es otra estructura, y ahí aparece el problema de dos claves en la misma casilla." },
             { op: "crece", texto: "La tabla crece a 10 casillas, como un vector", msg: "TablaDirecta pide sus m casillas una vez, en el constructor, y no crece." }
-          ] },
+          ,
+            { op: "fuera", texto: "El <code>assert</code> detiene el programa; sin él, se escribiría fuera del arreglo", msg: "Correcto. La tabla directa supone 0 ≤ clave < m. La casilla 9 no existe en un arreglo de 8." },
+            { op: "mod", texto: "Va a la casilla 1, porque 9 mod 8 = 1", msg: "La tabla directa no transforma la clave: la usa tal cual. Convertir la clave en una casilla con una cuenta es otra estructura, y ahí aparece el problema de dos claves en la misma casilla." }] },
         { tipo: "pasos", titulo: "Paso a paso", pasos: pasos }
       ]
     };

@@ -149,10 +149,10 @@
       pregunta: "El rango se imprime sin pedirle los elementos con toList.",
       cierre: "Un rango se guarda con tres valores, el inicio, el fin y el paso, y es eso lo que muestra. Los elementos se piden aparte: (1 to 5).toList da List(1, 2, 3, 4, 5).",
       opciones: [
-        { txt: "Range 1 to 5", correcta: true },
         { txt: "List(1, 2, 3, 4, 5)", fallo: "Esos son los elementos, y salen con (1 to 5).toList. El rango no los almacena, así que al imprimirse no los muestra." },
         { txt: "Range(1, 2, 3, 4, 5)", fallo: "Lo que sale no lleva elementos entre paréntesis: es el texto Range 1 to 5, con los dos números tal como se escribieron." }
-      ]
+      ,
+        { txt: "Range 1 to 5", correcta: true }]
     },
     {
       expr: "println(1 until 5)",
@@ -169,20 +169,20 @@
       pregunta: "Un rango descendente, impreso tal cual.",
       cierre: "Bajando de 6 en pasos de 2 no se cae exactamente en el 1: el recorrido termina en el 2, y de ahí la palabra inexact. (6 to 1 by -2).toList da List(6, 4, 2).",
       opciones: [
-        { txt: "inexact Range 6 to 1 by -2", correcta: true, ancha: true },
-        { txt: "Range 6 to 1 by -2", fallo: "Falta la palabra inexact delante. Aparece cuando el fin del rango no se alcanza exacto con el paso dado. Aquí, bajando de dos en dos desde el 6, se llega al 2 y el 1 queda sin tocar.", ancha: true },
         { txt: "List(6, 4, 2)", fallo: "Esos son los elementos, y salen con .toList. El rango por sí mismo muestra los tres números que recibió.", ancha: true }
-      ]
+      ,
+        { txt: "inexact Range 6 to 1 by -2", correcta: true, ancha: true },
+        { txt: "Range 6 to 1 by -2", fallo: "Falta la palabra inexact delante. Aparece cuando el fin del rango no se alcanza exacto con el paso dado. Aquí, bajando de dos en dos desde el 6, se llega al 2 y el 1 queda sin tocar.", ancha: true }]
     },
     {
       expr: "(5 to 1).toList",
       pregunta: "Un inicio mayor que el fin, y sin by.",
       cierre: "Sin by el paso es 1 y el recorrido sube. Empezando en 5, el primer valor ya pasó el fin, así que el rango no entrega ningún elemento.",
       opciones: [
-        { txt: "List()", correcta: true },
         { txt: "List(5, 4, 3, 2, 1)", fallo: "Para bajar hay que escribir el paso: (6 to 1 by -2).toList da List(6, 4, 2). Sin by el paso es 1 y va hacia arriba.", ancha: true },
         { txt: "List(1, 2, 3, 4, 5)", fallo: "El rango no se da vuelta para que el menor quede de inicio. El primer número es el inicio y el segundo es el fin.", ancha: true }
-      ]
+      ,
+        { txt: "List()", correcta: true }]
     },
     {
       expr: "(1 to 10 by 3).length",
@@ -204,20 +204,20 @@
       pregunta: "Se imprime H. ¿De qué clase es ese resultado?",
       cierre: "Filtrar un texto devuelve un texto, aunque quede un solo carácter: lo que se imprime es un String de largo 1.",
       opciones: [
-        { txt: "java.lang.String", correcta: true },
-        { txt: "List[Char]", fallo: "Un texto no se convierte en colección de caracteres al filtrarse. Lo que vuelve es otro texto." },
         { txt: "Char", fallo: "Un carácter suelto sería un Char. filter devuelve el texto con los caracteres que pasaron la condición, y aquí pasó uno." }
-      ]
+      ,
+        { txt: "java.lang.String", correcta: true },
+        { txt: "List[Char]", fallo: "Un texto no se convierte en colección de caracteres al filtrarse. Lo que vuelve es otro texto." }]
     },
     {
       expr: "s.map(_.toUpper) y s.filter(_.isUpper)",
       pregunta: "Las dos recorren los diez caracteres de \"Hola mundo\".",
       cierre: "map cambia cada carácter y devuelve el texto completo; filter decide cuáles pasan y devuelve el texto que queda.",
       opciones: [
-        { txt: "map da HOLA MUNDO y filter da H", correcta: true, larga: true },
         { txt: "map da HOLA MUNDO y filter da HM", fallo: "La m de mundo está en minúscula en \"Hola mundo\", así que no pasa isUpper. La única mayúscula del texto es la H del principio.", larga: true },
         { txt: "map da 10 y filter da H", fallo: "10 es s.length. map devuelve el texto con cada carácter en mayúscula, no una cuenta.", larga: true }
-      ]
+      ,
+        { txt: "map da HOLA MUNDO y filter da H", correcta: true, larga: true }]
     },
     {
       expr: "Array y String",

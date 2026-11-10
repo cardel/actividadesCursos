@@ -30,10 +30,10 @@
       pregunta: "¿Hay algún elemento mayor que 5?",
       cierre: "Con un elemento que cumpla, exists ya devuelve true: aquí cumplen 6 y 8.",
       opciones: [
-        { txt: "true", correcta: true },
         { txt: "false", fallo: "false diría que ningún elemento pasa de 5, y en Vector(2, 4, 6, 8) están el 6 y el 8." },
         { txt: "Vector(6, 8)", fallo: "Esos son los elementos que cumplen, que es lo que entrega filter. exists responde si hay alguno, y su resultado es un Boolean." }
-      ]
+      ,
+        { txt: "true", correcta: true }]
     },
     {
       expr: "nums.exists(_ > 10)",
@@ -50,20 +50,20 @@
       pregunta: "¿Son todos pares?",
       cierre: "Los cuatro elementos son pares, así que ninguno falla la condición y forall devuelve true.",
       opciones: [
-        { txt: "true", correcta: true },
-        { txt: "false", fallo: "false exigiría que algún elemento fallara la condición. El 2, el 4, el 6 y el 8 son todos pares." },
         { txt: "Vector(2, 4, 6, 8)", fallo: "Ese es el vector completo, que es lo que devolvería filter con una condición que todos cumplen. forall devuelve un Boolean." }
-      ]
+      ,
+        { txt: "true", correcta: true },
+        { txt: "false", fallo: "false exigiría que algún elemento fallara la condición. El 2, el 4, el 6 y el 8 son todos pares." }]
     },
     {
       expr: "nums.forall(_ > 3)",
       pregunta: "¿Son todos mayores que 3?",
       cierre: "Al 2 le basta con fallar la condición para que forall devuelva false, sin importar los otros tres.",
       opciones: [
-        { txt: "false", correcta: true },
         { txt: "true", fallo: "true pediría que los cuatro pasaran de 3, y el 2 no lo hace." },
         { txt: "Vector(4, 6, 8)", fallo: "Esos son los tres que sí cumplen, que es lo que deja filter. forall no selecciona elementos: responde si todos cumplen." }
-      ]
+      ,
+        { txt: "false", correcta: true }]
     }
   ];
 
@@ -85,10 +85,10 @@
       pregunta: "exists sobre la misma colección sin elementos.",
       cierre: "exists necesita encontrar un elemento que cumpla, y en la colección vacía no hay ninguno: devuelve false.",
       opciones: [
-        { txt: "false", correcta: true },
-        { txt: "true", fallo: "true exigiría un elemento mayor que 3, y el vector no tiene elementos." },
         { txt: "true, lo mismo que forall sobre la vacía", fallo: "Las dos preguntas se separan justo en el caso vacío: forall da true porque ninguno falla, y exists da false porque ninguno cumple.", larga: true }
-      ]
+      ,
+        { txt: "false", correcta: true },
+        { txt: "true", fallo: "true exigiría un elemento mayor que 3, y el vector no tiene elementos." }]
     }
   ];
 
@@ -100,10 +100,10 @@
       pregunta: "Dos vectores del mismo largo entran a zip.",
       cierre: "zip empareja por posición: el primero con el primero, el segundo con el segundo, y cada elemento del resultado es una tupla.",
       opciones: [
-        { txt: "Vector((Ana,20), (Luis,22), (Maria,21))", correcta: true, larga: true },
         { txt: "Vector(Ana, 20, Luis, 22, Maria, 21)", fallo: "Así quedaría si zip intercalara los elementos en una sola secuencia plana. Lo que arma es una pareja por posición, de modo que el resultado tiene tres elementos y cada uno es una tupla.", larga: true },
         { txt: "(Vector(Ana, Luis, Maria),Vector(20, 22, 21))", fallo: "Esa es la pareja de dos vectores que devuelve unzip, el camino de vuelta. zip va de dos secuencias a una secuencia de parejas.", larga: true }
-      ]
+      ,
+        { txt: "Vector((Ana,20), (Luis,22), (Maria,21))", correcta: true, larga: true }]
     },
     {
       expr: "Vector(\"Ana\", \"Luis\") zip Vector(20, 22, 99)",
@@ -120,10 +120,10 @@
       pregunta: "El camino de vuelta sobre el vector de tres parejas.",
       cierre: "unzip devuelve una tupla de dos vectores, uno por componente, y con val (ns, es) = parejas.unzip cada uno queda con su nombre.",
       opciones: [
-        { txt: "(Vector(Ana, Luis, Maria),Vector(20, 22, 21))", correcta: true, larga: true },
-        { txt: "Vector(Vector(Ana, Luis, Maria), Vector(20, 22, 21))", fallo: "El resultado no es una secuencia de dos secuencias sino una tupla de dos, y por eso se reparte con un patrón de dos nombres y no con head y tail.", larga: true },
         { txt: "Vector(Ana, 20, Luis, 22, Maria, 21)", fallo: "Eso sería todo junto en una sola secuencia. unzip separa las dos columnas: los nombres por un lado y las edades por el otro.", larga: true }
-      ]
+      ,
+        { txt: "(Vector(Ana, Luis, Maria),Vector(20, 22, 21))", correcta: true, larga: true },
+        { txt: "Vector(Vector(Ana, Luis, Maria), Vector(20, 22, 21))", fallo: "El resultado no es una secuencia de dos secuencias sino una tupla de dos, y por eso se reparte con un patrón de dos nombres y no con head y tail.", larga: true }]
     }
   ];
 
@@ -135,10 +135,10 @@
       pregunta: "El total de los cinco elementos.",
       cierre: "sum recorre el vector completo y acumula: 3, 1, 4, 1 y 5 dan 14.",
       opciones: [
-        { txt: "14", correcta: true },
         { txt: "13", fallo: "13 sale de contar una sola vez el 1. El vector lo trae dos veces y los dos entran al total: una secuencia admite elementos repetidos." },
         { txt: "5", fallo: "5 es el mayor del vector, que es lo que devuelve max. sum no elige un elemento: suma todos." }
-      ]
+      ,
+        { txt: "14", correcta: true }]
     },
     {
       expr: "nums.product",
@@ -155,20 +155,20 @@
       pregunta: "El mayor de los cinco.",
       cierre: "max compara los cinco elementos y devuelve el 5, que está en la última posición.",
       opciones: [
-        { txt: "5", correcta: true },
-        { txt: "4", fallo: "4 es el mayor de los cuatro primeros. max recorre hasta el final, y el 5 aparece justo ahí." },
         { txt: "1", fallo: "1 es el menor, que es lo que devuelve min." }
-      ]
+      ,
+        { txt: "5", correcta: true },
+        { txt: "4", fallo: "4 es el mayor de los cuatro primeros. max recorre hasta el final, y el 5 aparece justo ahí." }]
     },
     {
       expr: "nums.min",
       pregunta: "El menor de los cinco.",
       cierre: "min devuelve 1, el valor más pequeño, sin importar que aparezca dos veces.",
       opciones: [
-        { txt: "1", correcta: true },
         { txt: "3", fallo: "3 es el primer elemento del vector, no el más pequeño. min los compara todos." },
         { txt: "5", fallo: "5 es el mayor, que es lo que devuelve max." }
-      ]
+      ,
+        { txt: "1", correcta: true }]
     }
   ];
 

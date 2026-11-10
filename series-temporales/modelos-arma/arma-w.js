@@ -91,13 +91,13 @@
         opciones: ["(1, 1)", "(0, 0): ningún término", "(1, 0)"], correcta: ["(1, 1)", "(0, 0)", "(1, 0)"].indexOf(mejor.nombre),
         razon: "El " + mejor.nombre + ", con " + fmt(mejor.aic) + ", frente a " + fmt(a10.aic) + " del (1, 0) y " + fmt(a11.aic) + " del (1, 1). El modelo sin ningún coeficiente empata con los demás: cada parámetro suma 2 al AIC, y los de estos ARMA no mejoran la verosimilitud lo suficiente para pagarlos." },
       { valor: "En el (1, 1), φ = " + fmt(a11.phis[0]) + " y θ = " + fmt(a11.thetas[0]) + ". ¿Qué pasa con dos coeficientes así?",
-        opciones: ["Se suman, y la memoria se alarga", "Casi se cancelan, y el modelo se parece al ruido blanco", "El modelo deja de ser estacionario"], correcta: 1,
+        opciones: [ "El modelo deja de ser estacionario","Se suman, y la memoria se alarga", "Casi se cancelan, y el modelo se parece al ruido blanco"], correcta: 2,
         razon: "El modelo es (1 − " + fmt(a11.phis[0]) + "B) w = " + factorMA(a11.thetas[0]) + " e, con dos factores casi iguales a cada lado. Lo que uno agrega el otro lo quita: por eso su AIC, " + fmt(a11.aic) + ", no mejora al del (0, 0)." },
       { valor: "Con cualquiera de los seis, ¿dónde queda la barra de k = 12 de los residuos?",
         opciones: ["Dentro de la banda", "Cambia de signo", "Fuera de la banda, casi igual que en w"], correcta: Math.abs(r12max) > BANDA ? 2 : 0,
         razon: "Va de " + fmt(r12min) + " a " + fmt(r12max) + " según el orden, con la banda en ±" + fmt(BANDA, 3) + "; en w era " + fmt(acfW[12]) + ". Ningún ARMA de orden bajo toca esa barra." },
       { valor: "Ljung-Box con 24 rezagos da p ≤ " + fmt(lbMax, 4) + " en los seis. ¿Qué dice?",
-        opciones: ["Los residuos son ruido blanco", "Los residuos todavía tienen correlación", "El modelo no converge"], correcta: 1,
+        opciones: [ "Los residuos todavía tienen correlación", "El modelo no converge","Los residuos son ruido blanco"], correcta: 0,
         razon: "Ljung-Box suma las autocorrelaciones de los residuos al cuadrado hasta el rezago 24 y prueba si todas son cero. Con p ≤ " + fmt(lbMax, 4) + " se rechaza: la barra de k = 12 sola basta para rechazar." }
     ],
     cierre: "El AIC no separa estos órdenes y Ljung-Box los rechaza a todos: el problema está a doce meses."

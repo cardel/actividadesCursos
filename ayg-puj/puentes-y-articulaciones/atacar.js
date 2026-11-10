@@ -27,11 +27,11 @@ var EJERCICIO = (function () {
           ] },
         { texto: "¿El corte es por vértice o por arista?",
           opciones: [
-            { clave: "b", ok: false, texto: "Por vértice: una parcela sin agua es como una parcela que se quita.",
-              msg: "No. Una parcela sin agua sigue estando y sigue conectada con sus vecinas por los otros canales; lo que desaparece es el canal taponado. Resolver con el criterio de articulación da una respuesta razonable que el juez rechaza." },
             { clave: "a", ok: true, texto: "Por arista: el enunciado tapona un canal.",
               msg: "Correcto. Lo que se rompe es la conexión, no el punto, así que el criterio es el de puente." }
-          ] },
+          ,
+            { clave: "b", ok: false, texto: "Por vértice: una parcela sin agua es como una parcela que se quita.",
+              msg: "No. Una parcela sin agua sigue estando y sigue conectada con sus vecinas por los otros canales; lo que desaparece es el canal taponado. Resolver con el criterio de articulación da una respuesta razonable que el juez rechaza." }] },
         { texto: "¿Cuál comparación decide?",
           opciones: [
             { clave: "puente", ok: true, texto: COMPARACIONES.puente,
@@ -60,13 +60,13 @@ var EJERCICIO = (function () {
       preguntas: [
         { texto: "¿Quiénes son los vértices y quiénes las aristas?",
           opciones: [
+            { clave: "b", ok: false, texto: "Vértices: los enlaces. Aristas: las torres.",
+              msg: "Al revés. Lo que cae es la torre, y los grupos que quedan son grupos de torres: lo que se quita y lo que se cuenta son vértices." }
+          ,
             { clave: "a", ok: true, texto: "Vértices: las torres. Aristas: los enlaces.",
               msg: "Correcto. La torre es lo que se tumba y lo que queda en un grupo o en otro; el enlace solo une dos torres." },
             { clave: "c", ok: false, texto: "Vértices: las torres, y el grafo es dirigido porque el mensaje viaja en un sentido.",
-              msg: "El enunciado dice que el enlace sirve en los dos sentidos: si A alcanza a B, B alcanza a A. El grafo es no dirigido, y por eso vale el teorema que dice que ahí solo hay aristas de árbol y de retroceso." },
-            { clave: "b", ok: false, texto: "Vértices: los enlaces. Aristas: las torres.",
-              msg: "Al revés. Lo que cae es la torre, y los grupos que quedan son grupos de torres: lo que se quita y lo que se cuenta son vértices." }
-          ] },
+              msg: "El enunciado dice que el enlace sirve en los dos sentidos: si A alcanza a B, B alcanza a A. El grafo es no dirigido, y por eso vale el teorema que dice que ahí solo hay aristas de árbol y de retroceso." }] },
         { texto: "¿El corte es por vértice o por arista?",
           opciones: [
             { clave: "b", ok: false, texto: "Por arista: tumbar una torre es cortar todos sus enlaces.",
@@ -76,26 +76,26 @@ var EJERCICIO = (function () {
           ] },
         { texto: "¿Cuál comparación decide?",
           opciones: [
+            { clave: "articulacion", ok: true, texto: COMPARACIONES.articulacion,
+              msg: "Correcto. La igualdad cuenta: si el subárbol de w vuelve a u pero no sube más, al quitar u ese subárbol queda suelto. Y la raíz se decide aparte porque para ella d[u] = 1 y la desigualdad se cumpliría siempre, con un hijo o con diez." }
+          ,
             { clave: "puente", ok: false, texto: COMPARACIONES.puente,
               msg: "Con la desigualdad estricta se pierden las torres cuyo hijo tiene un retroceso que llega hasta ellas mismas. El > es la prueba del puente, no la de la articulación." },
             { clave: "articulacionSinRaiz", ok: false, texto: COMPARACIONES.articulacionSinRaiz,
               msg: "La comparación es la correcta, la salvedad falta. Para la raíz d[u] = 1 es el valor más bajo que existe y low[w] ≥ 1 se cumple siempre: así la raíz saldría marcada aunque tenga un solo hijo y quitarla no separe nada. La raíz se cuenta por hijos en el árbol, no por vecinos." },
             { clave: "imposible", ok: false, texto: COMPARACIONES.imposible,
-              msg: "Esa comparación nunca se cumple: low[u] ≤ d[u] siempre, porque d[u] entra en su propio mínimo. El que se compara es el low del hijo." },
-            { clave: "articulacion", ok: true, texto: COMPARACIONES.articulacion,
-              msg: "Correcto. La igualdad cuenta: si el subárbol de w vuelve a u pero no sube más, al quitar u ese subárbol queda suelto. Y la raíz se decide aparte porque para ella d[u] = 1 y la desigualdad se cumpliría siempre, con un hijo o con diez." }
-          ] },
+              msg: "Esa comparación nunca se cumple: low[u] ≤ d[u] siempre, porque d[u] entra en su propio mínimo. El que se compara es el low del hijo." }] },
         { texto: "¿Hasta dónde hay que llegar?",
           opciones: [
-            { clave: "b", ok: false, texto: "Se para en la profundidad: la respuesta es la cantidad de aristas marcadas.",
-              msg: "Eso contestaría cuántos enlaces críticos hay. Aquí se pregunta por torres, y además por un número de grupos, no por un sí o un no." },
             { clave: "c", ok: false, texto: "Hay que contraer y recorrer el árbol de puentes.",
               msg: "El árbol de puentes corta por aristas y agrupa vértices: un punto de articulación no se ve ahí. Contraer no estorba, pero no responde: la cuenta sale de los hijos, en la misma pasada." },
             { clave: "a", ok: true, texto: "Se para en la profundidad: la respuesta es una cuenta por vértice, en la misma pasada.",
               msg: "Correcto. El número de grupos al quitar u es el número de hijos con low[w] ≥ d[u] más uno, el pedazo que se queda con el padre; para la raíz, su número de hijos. Todo eso se acumula al volver de cada hijo, en la misma profundidad, y no hay nada que contraer." },
             { clave: "d", ok: false, texto: "Hay que calcular los componentes biconexos.",
               msg: "Los componentes biconexos reparten las aristas y una torre que es punto de articulación queda en varios a la vez, así que de ahí no sale de una sola lectura en cuántos grupos se parte la red. La cuenta por hijos la da directa." }
-          ] }
+          ,
+            { clave: "b", ok: false, texto: "Se para en la profundidad: la respuesta es la cantidad de aristas marcadas.",
+              msg: "Eso contestaría cuántos enlaces críticos hay. Aquí se pregunta por torres, y además por un número de grupos, no por un sí o un no." }] }
       ]
     },
     {
@@ -104,13 +104,13 @@ var EJERCICIO = (function () {
       preguntas: [
         { texto: "¿Quiénes son los vértices y quiénes las aristas?",
           opciones: [
+            { clave: "c", ok: false, texto: "Vértices: las compuertas, con una arista por cada par de compuertas del dique.",
+              msg: "Las aristas son los tramos que existen, no todos los pares posibles. Con el grafo completo nada es puente, porque entre cualquier par hay muchos caminos, y la respuesta saldría siempre cero." }
+          ,
             { clave: "b", ok: false, texto: "Vértices: los tramos. Aristas: las compuertas.",
               msg: "Al revés. Lo que se rompe es el tramo, que es lo que une dos cosas, y eso es una arista." },
             { clave: "a", ok: true, texto: "Vértices: las compuertas. Aristas: los tramos.",
-              msg: "Correcto. El tramo une dos compuertas, y lo que se rompe es el tramo." },
-            { clave: "c", ok: false, texto: "Vértices: las compuertas, con una arista por cada par de compuertas del dique.",
-              msg: "Las aristas son los tramos que existen, no todos los pares posibles. Con el grafo completo nada es puente, porque entre cualquier par hay muchos caminos, y la respuesta saldría siempre cero." }
-          ] },
+              msg: "Correcto. El tramo une dos compuertas, y lo que se rompe es el tramo." }] },
         { texto: "¿El corte es por vértice o por arista?",
           opciones: [
             { clave: "a", ok: true, texto: "Por arista: el enunciado rompe un tramo.",
@@ -120,24 +120,24 @@ var EJERCICIO = (function () {
           ] },
         { texto: "¿Cuál comparación decide?",
           opciones: [
+            { clave: "puente", ok: true, texto: COMPARACIONES.puente,
+              msg: "Correcto. Y con una advertencia: si el dique tuviera dos tramos entre las mismas dos compuertas, ninguno de los dos sería puente, porque forman un ciclo de longitud dos. Para que el código no se equivoque ahí, la arista de entrada se descarta comparando su identificador y no preguntando si el vecino es el padre." }
+          ,
             { clave: "articulacion", ok: false, texto: COMPARACIONES.articulacion,
               msg: "Esa es la de los puntos de articulación. Con ≥ se marcarían tramos que están en un ciclo: basta un retroceso desde el subárbol de w hasta u mismo para que el tramo tenga alternativa." },
             { clave: "imposible", ok: false, texto: COMPARACIONES.imposible,
-              msg: "Esa comparación nunca se cumple: low[u] ≤ d[u] siempre. El que se compara es el low del hijo." },
-            { clave: "puente", ok: true, texto: COMPARACIONES.puente,
-              msg: "Correcto. Y con una advertencia: si el dique tuviera dos tramos entre las mismas dos compuertas, ninguno de los dos sería puente, porque forman un ciclo de longitud dos. Para que el código no se equivoque ahí, la arista de entrada se descarta comparando su identificador y no preguntando si el vecino es el padre." }
-          ] },
+              msg: "Esa comparación nunca se cumple: low[u] ≤ d[u] siempre. El que se compara es el low del hijo." }] },
         { texto: "¿Hasta dónde hay que llegar?",
           opciones: [
+            { clave: "d", ok: false, texto: "Hay que ordenar los tramos y responder con el menor.",
+              msg: "El enunciado pide cuántos, no cuál. Ordenar la lista sirve cuando el juez pide imprimirla, que no es el caso aquí." }
+          ,
             { clave: "a", ok: false, texto: "Se para en la profundidad: la respuesta es una cuenta por vértice, en la misma pasada.",
               msg: "La pregunta es por tramos, no por compuertas. Una cuenta por vértice contestaría en cuántos pedazos se parte el dique al quitar una compuerta, que es otro problema." },
             { clave: "b", ok: true, texto: "Se para en la profundidad: la respuesta es la cantidad de aristas marcadas.",
               msg: "Correcto. La pregunta es cuántas, así que la única profundidad que marca los puentes ya la contesta. Contraer y armar el árbol daría el mismo número, las aristas del árbol, con dos pasadas de más." },
             { clave: "c", ok: false, texto: "Hay que contraer y recorrer el árbol de puentes.",
-              msg: "Daría la respuesta correcta, porque las aristas del árbol son exactamente los puentes, pero cuesta dos pasadas más y ninguna aporta nada: nada se pregunta sobre caminos ni sobre tamaños." },
-            { clave: "d", ok: false, texto: "Hay que ordenar los tramos y responder con el menor.",
-              msg: "El enunciado pide cuántos, no cuál. Ordenar la lista sirve cuando el juez pide imprimirla, que no es el caso aquí." }
-          ] }
+              msg: "Daría la respuesta correcta, porque las aristas del árbol son exactamente los puentes, pero cuesta dos pasadas más y ninguna aporta nada: nada se pregunta sobre caminos ni sobre tamaños." }] }
       ]
     }
   ];

@@ -79,10 +79,10 @@ var EJERCICIO = (function () {
           html: "<p><code>total.c</code>:</p>" + T.codigo(P.enlace.total) + "<p><code>principal.c</code>:</p>" + T.codigo(P.enlace.principal) +
                 "<p>Los dos se compilan por separado con <code>gcc -Wall -Wextra -c</code> sin un solo aviso. Después se pide el ejecutable con <code>gcc total.o principal.o -o suma</code>. ¿Qué pasa y quién se queja?</p>",
           opciones: [
-            { op: "semantico", texto: "El análisis semántico, porque total está definida dos veces.", msg: "El análisis semántico mira un archivo a la vez, y en cada uno total aparece una sola vez. Por eso los dos objetos se produjeron sin quejas." },
-            { op: "enlace", texto: "El enlazador, ld, porque encuentra dos definiciones de total al juntar los objetos.", msg: "Correcto. La salida es: " + enl.join(" ") + ". Quien se queja es ld, en la cuarta etapa: es el primero que ve los dos archivos juntos." },
             { op: "nada", texto: "Nada: el enlazador usa la última definición y el programa imprime 6.", msg: "El enlazador no escoge entre dos definiciones: se niega. ld termina con error y no hay ejecutable." }
-          ] }
+          ,
+            { op: "semantico", texto: "El análisis semántico, porque total está definida dos veces.", msg: "El análisis semántico mira un archivo a la vez, y en cada uno total aparece una sola vez. Por eso los dos objetos se produjeron sin quejas." },
+            { op: "enlace", texto: "El enlazador, ld, porque encuentra dos definiciones de total al juntar los objetos.", msg: "Correcto. La salida es: " + enl.join(" ") + ". Quien se queja es ld, en la cuarta etapa: es el primero que ve los dos archivos juntos." }] }
       ]
     };
   }

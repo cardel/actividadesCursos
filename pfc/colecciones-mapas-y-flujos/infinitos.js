@@ -48,20 +48,20 @@
       pregunta: "¿Qué devuelve?",
       cierre: "5. El flujo empieza en 0, así que el índice 5 es el sexto elemento. Pedir un índice pide los elementos hasta ese índice, no el flujo entero.",
       opciones: [
-        { txt: "5", correcta: true },
-        { txt: "6", fallo: "El primer elemento es 0 y ocupa el índice 0, de modo que el índice 5 vale 5. El 6 queda en el índice 6." },
         { txt: "nada, porque el flujo es infinito y la consulta no termina", fallo: "La consulta pide los elementos hasta el índice 5 y para ahí. Lo corrido devolvió 5." }
-      ]
+      ,
+        { txt: "5", correcta: true },
+        { txt: "6", fallo: "El primer elemento es 0 y ocupa el índice 0, de modo que el índice 5 vale 5. El 6 queda en el índice 6." }]
     },
     {
       expr: "enteros",
       pregunta: "Tras enteros(5), la impresión del mismo val ya no es la de antes. ¿Qué imprime ahora?",
       cierre: SEIS + ". Para llegar al índice 5 hubo que producir los anteriores, y un flujo conserva lo que calculó: los seis aparecen, y el aviso queda para lo que sigue.",
       opciones: [
-        { txt: SEIS, correcta: true, larga: true },
         { txt: "LazyList(5, <not computed>)", fallo: "El índice 5 no se alcanza sin producir del 0 al 4, y esos elementos no se descartan. La impresión trae los seis: " + SEIS + ".", larga: true },
         { txt: NO_CALCULADO, fallo: "Esa era la impresión antes de la consulta. Un flujo guarda los elementos que ya calculó, de modo que ahora aparecen: " + SEIS + ".", larga: true }
-      ]
+      ,
+        { txt: SEIS, correcta: true, larga: true }]
     }
   ];
 
@@ -83,20 +83,20 @@
       pregunta: "La cola se arma con fibs y fibs.tail, los dos del valor que todavía se está definiendo. ¿Por qué eso llega a producir elementos?",
       cierre: "Porque los dos primeros están dados con #:: y cada elemento nuevo solo necesita dos que ya se calcularon: el par que entrega zip son dos elementos anteriores, y su suma es el siguiente.",
       opciones: [
-        { txt: "porque los dos primeros están escritos con #:: y cada elemento nuevo solo necesita dos ya calculados", correcta: true, larga: true },
-        { txt: "porque zip se detiene en el más corto de los dos flujos", fallo: "zip sí se detiene en el más corto, y eso explica que la cola no se pase del final de lo disponible. Lo que hace calculable cada elemento es que 0 y 1 están dados y cada suma usa dos anteriores.", larga: true },
         { txt: "porque map no evalúa nada hasta tener el flujo completo", fallo: "No hay flujo completo que esperar: fibs no termina. Cada suma se calcula cuando se pide ese elemento, con los dos anteriores ya calculados.", larga: true }
-      ]
+      ,
+        { txt: "porque los dos primeros están escritos con #:: y cada elemento nuevo solo necesita dos ya calculados", correcta: true, larga: true },
+        { txt: "porque zip se detiene en el más corto de los dos flujos", fallo: "zip sí se detiene en el más corto, y eso explica que la cola no se pase del final de lo disponible. Lo que hace calculable cada elemento es que 0 y 1 están dados y cada suma usa dos anteriores.", larga: true }]
     },
     {
       expr: MENSAJE,
       pregunta: "Esa misma definición de fibs, copiada tal cual dentro de un método, no compila: el compilador responde eso. ¿Qué señala el mensaje?",
       cierre: "Que dentro de un bloque el nombre fibs aparece en su propia definición, y ahí esa referencia no se admite. El mensaje nombra dos veces el valor fibs y la línea en que está definido.",
       opciones: [
-        { txt: "que dentro de un bloque el nombre fibs se usa en su propia definición, y ahí no se admite", correcta: true, larga: true },
         { txt: "que un LazyList no puede definirse en términos de sí mismo", fallo: "La definición es válida tal como está escrita: como miembro de un objeto o de una clase compila, y fibs.take(10).toList devuelve " + DIEZ_FIBS + ". El mensaje habla de dónde está escrita.", larga: true },
         { txt: "que falta anotar el tipo del valor", fallo: "El tipo está anotado, LazyList[BigInt], y el mensaje no lo menciona: habla de una referencia hacia adelante y de la línea en que fibs queda definido.", larga: true }
-      ]
+      ,
+        { txt: "que dentro de un bloque el nombre fibs se usa en su propia definición, y ahí no se admite", correcta: true, larga: true }]
     },
     {
       expr: "¿dónde compila la definición de fibs?",

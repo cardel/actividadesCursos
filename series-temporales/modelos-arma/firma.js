@@ -67,7 +67,7 @@
     explicacion: "La página arranca en un MA(1) con θ = 0,8: cada valor es el ruido de hoy más el 80 % del ruido de ayer. Prediga sus dos correlogramas.",
     items: [
       { valor: "¿Cómo se ve la ACF?",
-        opciones: ["Baja despacio, rezago a rezago", "Una sola barra fuera, en k = 1", "Ninguna barra fuera"], correcta: 1,
+        opciones: [ "Una sola barra fuera, en k = 1", "Ninguna barra fuera","Baja despacio, rezago a rezago"], correcta: 0,
         razon: "Sale de la banda en " + lista(ma.fueraAcf) + "; de k = 1 a 4 vale " + primeros(ma.acf, 4) + ". Dos valores separados por dos o más meses no comparten ningún ruido, y su correlación teórica es cero." },
       { valor: "¿Y la PACF?",
         opciones: ["Una sola barra fuera, en k = 1", "Baja alternando de signo", "Es igual a la ACF"], correcta: alternaPacf ? 1 : 0,
@@ -86,16 +86,16 @@
         opciones: ["0,95", "Menos de 0,5", "1"], correcta: 1,
         razon: "Con θ = 0,95 vale " + fmt(ma95, 3) + ". En un MA(1) la ACF en k = 1 es θ/(1 + θ²), que nunca pasa de 0,5. Una primera barra de 0,8 no puede venir de un MA(1)." },
       { valor: "Con el AR(2) de φ₁ = 0,5 y φ₂ = 0,3, ¿dónde se corta la PACF?",
-        opciones: ["Después de k = 1", "Después de k = 2", "No se corta"], correcta: 1,
+        opciones: [ "No se corta","Después de k = 1", "Después de k = 2"], correcta: 2,
         razon: "De k = 1 a 3 vale " + primeros(ar2.pacf, 3) + " y sale de la banda en " + lista(ar2.fueraPacf) + ". Un AR(2) mira dos meses atrás: el rezago 3 no agrega nada que los dos primeros no digan. La ACF, en cambio, sale de la banda en " + lista(ar2.fueraAcf) + "." },
       { valor: "Con φ₁ = 1 y φ₂ = −0,5, ¿qué forma tiene la ACF?",
         opciones: ["Baja sin cambiar de signo", "Se corta después de k = 2", "Una onda que se apaga"], correcta: ondaSigno ? 2 : 0,
         razon: "La teórica vale " + fmt(onda.teorica[1]) + " en k = 1, " + fmt(onda.teorica[4]) + " en k = 4 y " + fmt(onda.teorica[8]) + " en k = 8: sube y baja cada vez menos. Un φ₂ negativo frena la subida que empuja φ₁, y la serie oscila." },
       { valor: "Con φ₁ = 0,6 y φ₂ = 0,5, ¿qué hace la serie?",
-        opciones: ["Oscila alrededor de cero", "Se dispara y no vuelve", "Lo mismo que con 0,5 y 0,3"], correcta: 1,
+        opciones: [ "Se dispara y no vuelve", "Lo mismo que con 0,5 y 0,3","Oscila alrededor de cero"], correcta: 0,
         razon: "φ₁ + φ₂ = 1,1, más que 1: un choque no se apaga, crece de un dato al siguiente, y el último de los 110 datos vale " + Math.round(fuera2.y[N - 1]).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " con un ruido de desviación estándar 1. Un AR(2) solo es estacionario dentro del triángulo φ₁ + φ₂ < 1, φ₂ − φ₁ < 1, |φ₂| < 1." },
       { valor: "Con el ARMA(1,1) de φ₁ = 0,7 y θ = 0,7, ¿cuál de los dos correlogramas se corta?",
-        opciones: ["La ACF", "La PACF", "Ninguno: los dos bajan de a poco"], correcta: 2,
+        opciones: [ "La PACF", "Ninguno: los dos bajan de a poco","La ACF"], correcta: 1,
         razon: "La ACF sale de la banda en " + lista(arma.fueraAcf) + " y la PACF en " + lista(arma.fueraPacf) + ", alternando de signo: " + primeros(arma.pacf, 4) + ". La parte AR hace que la ACF decaiga, y la parte MA, que la PACF también decaiga." }
     ],
     cierre: "Se corta la ACF: MA. Se corta la PACF: AR. No se corta ninguna: ARMA."

@@ -31,10 +31,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Dónde entra", columna: true, correcta: "libre",
           html: "<p>Un montículo de máximos con " + H.length + " claves:</p>" + M.vista(H, {}) + "<p>Llega el " + LLEGAN[0] + ". ¿En qué casilla se pone antes de compararlo con nada?</p>",
           opciones: [
-            { op: "libre", texto: "En a[" + H.length + "], la primera casilla libre.", msg: "Correcto. Es el siguiente lugar del último nivel, de izquierda a derecha: el árbol sigue completo. Desde ahí sube." },
             { op: "raiz", texto: "En a[0], porque es mayor que casi todas.", msg: "Para ponerlo en a[0] habría que correr todo el arreglo, Θ(n), y los parentescos cambiarían. La clave entra abajo y sube." },
             { op: "cinco", texto: "En a[5], encima del 49, que es menor.", msg: "a[5] ya está ocupada. La clave nueva se pone en una casilla libre; si queda encima de una menor, es porque subió." }
-          ] },
+          ,
+            { op: "libre", texto: "En a[" + H.length + "], la primera casilla libre.", msg: "Correcto. Es el siguiente lugar del último nivel, de izquierda a derecha: el árbol sigue completo. Desde ahí sube." }] },
         { tipo: "pasos", titulo: "Llega el " + LLEGAN[0],
           html: "<p>En naranja, la clave que sube; en naranja claro, el padre con el que se compara.</p>",
           pasos: M.pasosInsertar(H, LLEGAN[0]) },

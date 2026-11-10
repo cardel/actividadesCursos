@@ -40,10 +40,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Sin el segundo <code>%</code>", columna: true, correcta: "fuera",
           html: "<p>Un estudiante escribe la casilla como <code>(k % m) + m</code>, sin el segundo <code>%</code>. ¿Qué pasa con k = 13 y m = 6?</p>",
           opciones: [
-            { op: "fuera", texto: "Da 7: una casilla que no existe en un arreglo de 6", msg: "Correcto. Sumar m solo sirve para los negativos; para los demás hay que volver a reducir." },
             { op: "bien", texto: "Da 1, la casilla correcta", msg: "13 % 6 = 1, y 1 + 6 = 7. Sin el segundo % el resultado se sale." },
             { op: "neg", texto: "Da −5", msg: "13 es positivo: 13 % 6 = 1, y 1 + 6 = 7." }
-          ] },
+          ,
+            { op: "fuera", texto: "Da 7: una casilla que no existe en un arreglo de 6", msg: "Correcto. Sumar m solo sirve para los negativos; para los demás hay que volver a reducir." }] },
         { tipo: "opciones", titulo: "Claves que no chocan", columna: true, correcta: "comparar",
           html: "<p>Con m = 6, las claves −18, 0 y 18 caen en la casilla 0. ¿Cómo distingue la tabla cuál es cuál?</p>",
           opciones: [

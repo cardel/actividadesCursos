@@ -30,10 +30,10 @@ var EJERCICIO = (function () {
                 M.codigo(O.CODIGO_CONSTRUIR) +
                 "<p>¿Con qué valor de i hace <code>construir</code> su primer llamado a <code>bajar</code>?</p>",
           opciones: [
-            { op: "ultima", texto: "Con i = " + (A.length - 1) + ", la última casilla.", msg: "a[" + (A.length - 1) + "] es una hoja: no tiene hijos con quién compararse, y bajarla no hace nada. Lo mismo pasa con todas las casillas desde a[" + (inicio + 1) + "]." },
             { op: "mitad", texto: "Con i = " + inicio + ", la última casilla que tiene hijos.", msg: "Correcto. n / 2 − 1 = " + inicio + ". El hijo izquierdo de a[" + inicio + "] es a[" + (2 * inicio + 1) + "], que existe; el de a[" + (inicio + 1) + "] sería a[" + (2 * inicio + 3) + "], que ya no. De ahí hacia atrás todas tienen hijos." },
             { op: "raiz", texto: "Con i = 0, la raíz, para poner arriba el máximo de una vez.", msg: "Si se baja la raíz primero, sus subárboles todavía no son montículos y el máximo puede quedar escondido abajo: aquí el " + Math.max.apply(null, A) + " está en una hoja y bajar el 14 nunca lo alcanza." }
-          ] },
+          ,
+            { op: "ultima", texto: "Con i = " + (A.length - 1) + ", la última casilla.", msg: "a[" + (A.length - 1) + "] es una hoja: no tiene hijos con quién compararse, y bajarla no hace nada. Lo mismo pasa con todas las casillas desde a[" + (inicio + 1) + "]." }] },
         { tipo: "pasos", titulo: "construir, llamado por llamado",
           html: "<p>En naranja, la clave que baja; en naranja claro, los hijos con los que se compara.</p>",
           pasos: O.pasosConstruir(A) },

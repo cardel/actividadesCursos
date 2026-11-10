@@ -134,25 +134,25 @@ var EJERCICIO = (function () {
           html: "<p>La tercera versión se detiene en la hoja, que no tiene hijos:</p>" + codigo("C") +
                 "<p>¿Qué pasa con <code>productoC(raiz)</code>?</p>",
           opciones: [
-            { op: "bien", texto: "Devuelve 720", msg: "Lo haría si todos los nodos tuvieran cero o dos hijos. Mire el 2: tiene hijo izquierdo y no derecho." },
             { op: "cae", texto: "El programa termina con Segmentation fault", msg: "Correcto. En el 2 el if entra porque tiene hijo izquierdo, y la llamada productoC(r->der) recibe NULL y lee NULL->dato. Compilado y corrido, el programa sale con código 139." },
             { op: "cero", texto: "Devuelve 0, porque el 2 tiene un hijo NULL", msg: "Nadie devuelve 0 aquí: la llamada sobre NULL no devuelve nada, porque se cae al leer r->dato." }
-          ] },
+          ,
+            { op: "bien", texto: "Devuelve 720", msg: "Lo haría si todos los nodos tuvieran cero o dos hijos. Mire el 2: tiene hijo izquierdo y no derecho." }] },
         { tipo: "opciones", titulo: "¿Por qué acierta en el subárbol de 4?", columna: true, correcta: "lleno",
           html: "<p>Sobre el subárbol de 4, <code>productoC</code> devuelve " + correr(productoC, cuatro) + ", que es correcto. ¿Por qué ahí no se cae?</p>",
           opciones: [
-            { op: "lleno", texto: "Porque cada nodo de ese subárbol tiene cero o dos hijos", msg: "Correcto. Con dos hijos, las dos llamadas reciben nodos; con cero, el if no entra. El fallo aparece solo en un nodo con un hijo." },
-            { op: "par", texto: "Porque 4 es par", msg: "El dato no interviene en la condición del if: solo los punteros izq y der." },
             { op: "chico", texto: "Porque tiene pocos nodos", msg: "Un árbol de dos nodos, una raíz con un hijo, ya basta para que se caiga." }
-          ] },
+          ,
+            { op: "lleno", texto: "Porque cada nodo de ese subárbol tiene cero o dos hijos", msg: "Correcto. Con dos hijos, las dos llamadas reciben nodos; con cero, el if no entra. El fallo aparece solo en un nodo con un hijo." },
+            { op: "par", texto: "Porque 4 es par", msg: "El dato no interviene en la condición del if: solo los punteros izq y der." }] },
         { tipo: "opciones", titulo: "Sin caso base", columna: true, correcta: "hoja",
           html: "<p>La cuarta versión no tiene <code>if</code>:</p>" + codigo("D") +
                 "<p>¿Qué pasa con <code>productoD(raiz)</code>?</p>",
           opciones: [
-            { op: "hoja", texto: "Se cae en la primera llamada que recibe un vacío", msg: "Correcto. productoD(NULL) lee NULL->dato. Ni siquiera hace falta correrlo: al compilar, g++ -Wall -Wextra avisa infinite recursion detected, porque ningún camino del código termina sin volver a llamar." },
             { op: "720", texto: "Devuelve 720", msg: "Para multiplicar, cada llamada necesita dos llamadas más, también sobre los vacíos. Nada detiene la bajada." },
             { op: "lento", texto: "Se queda corriendo para siempre", msg: "Antes de eso, la bajada llega a un hijo NULL, la llamada lee un campo de NULL y el programa se cae." }
-          ] },
+          ,
+            { op: "hoja", texto: "Se cae en la primera llamada que recibe un vacío", msg: "Correcto. productoD(NULL) lee NULL->dato. Ni siquiera hace falta correrlo: al compilar, g++ -Wall -Wextra avisa infinite recursion detected, porque ningún camino del código termina sin volver a llamar." }] },
         { tipo: "respuesta", titulo: "La altura con el vacío en 0",
           html: codigo("H") + "<p>Esta altura usa 0 para el vacío en lugar de −1. ¿Qué devuelve sobre una hoja? ¿Y sobre el árbol de seis nodos?</p>",
           campos: [

@@ -58,18 +58,18 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Cuál no es un identificador", columna: true, correcta: "3d",
           html: "<p>Con la gramática de identificador de la sesión, que empieza por letra o guion bajo y sigue con letras, dígitos o guiones bajos, ¿cuál de estos nombres no se puede derivar?</p>",
           opciones: [
-            { op: "_total", texto: "<code>_total</code>", msg: "Se deriva: empieza por guion bajo, que es la segunda alternativa, y sigue con letras. gcc lo acepta." },
             { op: "x2y", texto: "<code>x2y</code>", msg: "Se deriva: letra, después identificador seguido de dígito, después identificador seguido de letra. gcc lo acepta." },
             { op: "3d", texto: "<code>3d</code>", msg: "Correcto. Ninguna alternativa empieza por un dígito. El analizador léxico lo lee como un número con una letra pegada, y gcc responde: " + P.id3d.error[1].replace(/^id_3d\.c:\d+:\d+: /, "") + "." },
             { op: "mi_var9", texto: "<code>mi_var9</code>", msg: "Se deriva: letras, guion bajo, letras y un dígito al final. gcc lo acepta." }
-          ] },
+          ,
+            { op: "_total", texto: "<code>_total</code>", msg: "Se deriva: empieza por guion bajo, que es la segunda alternativa, y sigue con letras. gcc lo acepta." }] },
         { tipo: "opciones", titulo: "Un nombre que cumple la regla", columna: true, correcta: "reservada",
           html: "<p>Alguien declara <code>int int;</code>. El nombre <code>int</code> se deriva de la gramática de identificador, y aun así gcc responde <code>" + T.escapar(P.idInt.error[1].replace(/^id_int\.c:\d+:\d+: /, "")) + "</code>. ¿Por qué?</p>",
           opciones: [
-            { op: "reservada", texto: "Porque int es una palabra reservada: está apartada para el lenguaje y no sirve como nombre.", msg: "Correcto. Las palabras reservadas son una restricción por encima de la gramática de identificador. gcc ve dos veces un tipo de dato y se queja de eso." },
             { op: "corto", texto: "Porque los identificadores deben tener más de tres letras.", msg: "La regla no pone largo mínimo: x y n son identificadores válidos." },
             { op: "mayuscula", texto: "Porque los identificadores deben empezar en mayúscula.", msg: "La gramática acepta minúsculas, mayúsculas y guion bajo al comienzo." }
-          ] },
+          ,
+            { op: "reservada", texto: "Porque int es una palabra reservada: está apartada para el lenguaje y no sirve como nombre.", msg: "Correcto. Las palabras reservadas son una restricción por encima de la gramática de identificador. gcc ve dos veces un tipo de dato y se queja de eso." }] },
         { tipo: "respuesta", titulo: "La regla del entero",
           html: "<p>Con estas producciones:</p>" + T.codigo(BNF_ENTERO) + "<p>¿Cuáles de <code>" + CANDIDATOS.join("  ") + "</code> son <code>&lt;entero&gt;</code>? Escríbalos en el orden de la lista, separados por espacios.</p>",
           campos: [{ rotulo: "enteros:", esperado: validos.join(" "), ancho: "10rem" }],

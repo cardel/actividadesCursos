@@ -46,7 +46,7 @@
     explicacion: "La serie del curso tiene " + n0 + " meses.",
     items: [
       { valor: "Con los " + n0 + " meses, ¿cuánto mide la media banda, 1,96/√n?",
-        opciones: [fmt(1.96 / n0), fmt(b0), "0,5"], correcta: 1,
+        opciones: [ fmt(b0), "0,5",fmt(1.96 / n0)], correcta: 0,
         razon: "1,96/√" + n0 + " = " + fmt(b0) + ". La primera opción divide entre n y no entre su raíz; con ruido blanco, el error estándar de una correlación estimada con n datos es 1/√n." },
       { valor: "Con d = 1 y D = 1 quedan " + n11 + " datos. ¿Qué le pasa a la banda?",
         opciones: ["Se angosta", "Se ensancha un poco", "No cambia"], correcta: b11 > b0 ? 1 : b11 < b0 ? 0 : 2,
@@ -69,7 +69,7 @@
         correcta: grande.mayor < chico.mayor ? 0 : 1,
         razon: "Con la semilla 1, la barra más alta mide " + fmt(chico.mayor) + " con n = 30 y " + fmt(grande.mayor) + " con n = 400. La autocorrelación verdadera es cero; lo que se ve es error de estimación, y ese error baja con √n al mismo ritmo que la banda." },
       { valor: "Con n = 110 y una banda del 95 %, ¿cuántas de las 36 barras de un ruido blanco espera ver fuera?",
-        opciones: ["Ninguna", "Una o dos", "Cerca de diez"], correcta: 1,
+        opciones: [ "Cerca de diez","Ninguna", "Una o dos"], correcta: 2,
         razon: "El 5 % de 36 es 1,8, y en la práctica salen menos. En las veinte semillas del control, con n = 110, salen en promedio " + fmt(promedioFuera, 1) + " por sorteo: la ACF de un rezago alto se calcula con menos pares y el estimador la acerca a cero. Una barra fuera no prueba que haya estructura." },
       { valor: "Con la banda plana salen " + fueraPlana.join(", ") + "; con la de Bartlett, " + fueraBart.join(", ") + ". ¿Por qué " + soloPlana.join(" y ") + " quedan dentro de la segunda?",
         opciones: ["La banda de Bartlett crece con k", "statsmodels usa otros datos", "statsmodels usa el 99 %"], correcta: 0,

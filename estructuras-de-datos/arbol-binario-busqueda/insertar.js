@@ -144,11 +144,11 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Otro orden, el mismo árbol", columna: true, correcta: "misma",
           html: "<p>¿Cuál de estas secuencias, insertada en un ABB vacío, arma el mismo árbol de las diez claves?</p>",
           opciones: [
-            { op: "inorden", texto: CANDIDATAS.inorden.join(" "), msg: "En orden creciente cada clave baja siempre por la derecha: sale una lista de altura 9." },
             { op: "misma", texto: CANDIDATAS.misma.join(" "), msg: "Correcto. Cada clave llega después de todos sus antepasados: el 71 después del 58, el 28 después del 30, el 21 después del 25. Cuando entra, su búsqueda pasa por ellos y la deja en el mismo lugar." },
             { op: "adelanta", texto: CANDIDATAS.adelanta.join(" "), msg: "El 28 llega antes que el 25 y el 30, sus antepasados. Entra como hijo derecho del 17 y el árbol cambia." },
             { op: "otraRaiz", texto: CANDIDATAS.otraRaiz.join(" "), msg: "La primera clave es la raíz: este árbol tiene al 17 arriba." }
-          ] }
+          ,
+            { op: "inorden", texto: CANDIDATAS.inorden.join(" "), msg: "En orden creciente cada clave baja siempre por la derecha: sale una lista de altura 9." }] }
       ]
     };
   }

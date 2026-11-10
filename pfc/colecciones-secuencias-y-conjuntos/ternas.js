@@ -118,20 +118,20 @@
       pregunta: "La misma expresión sin el .toSet del final: qué clase de colección entrega.",
       cierre: "Una expresión for sobre rangos entrega un Vector, con los elementos en el orden en que se generaron.",
       opciones: [
-        { txt: "Vector", correcta: true },
-        { txt: "Set", fallo: "El conjunto lo pone el .toSet del final. El yield entrega una secuencia, que sí tiene orden y sí admite elementos repetidos." },
         { txt: "List", fallo: "Sobre rangos el yield entrega un Vector: el for del tema, for { i <- 2 until 7; j <- 1 until i; if esPrimo(i + j) } yield (i, j), imprime un Vector de parejas.", larga: true }
-      ]
+      ,
+        { txt: "Vector", correcta: true },
+        { txt: "Set", fallo: "El conjunto lo pone el .toSet del final. El yield entrega una secuencia, que sí tiene orden y sí admite elementos repetidos." }]
     },
     {
       expr: "println(ternasPFor(5))",
       pregunta: "Con n = 5 sobrevive una sola candidata.",
       cierre: "Un conjunto de un elemento se imprime con el nombre Set.",
       opciones: [
-        { txt: "Set((3,4,5))", correcta: true },
         { txt: "Vector((3,4,5))", fallo: "El .toSet del final convierte la secuencia del yield en conjunto, así que lo que se imprime es un Set." },
         { txt: "Set((3,4,5), (4,3,5))", fallo: "Los rangos encadenados impiden generar (4,3,5): con a <- 1 to b, el valor de a nunca pasa de b. La terna se prueba una sola vez.", larga: true }
-      ]
+      ,
+        { txt: "Set((3,4,5))", correcta: true }]
     },
     {
       expr: "c <- 1 to n;  b <- 1 to n;  a <- 1 to n",
@@ -148,20 +148,20 @@
       pregunta: "La versión con flatMap y filter contra la versión con for.",
       cierre: "Las dos generan las mismas combinaciones y aplican el mismo filtro, así que entregan el mismo conjunto.",
       opciones: [
-        { txt: "true", correcta: true },
-        { txt: "false", fallo: "false diría que los dos conjuntos tienen elementos distintos. La expresión for con varios generadores es otra forma de escribir los flatMap anidados con un map al final." },
         { txt: "no compila: una devuelve Set y la otra Vector", fallo: "Las dos terminan en .toSet, así que las dos devuelven Set[(Int, Int, Int)] y la comparación es entre dos conjuntos.", larga: true }
-      ]
+      ,
+        { txt: "true", correcta: true },
+        { txt: "false", fallo: "false diría que los dos conjuntos tienen elementos distintos. La expresión for con varios generadores es otra forma de escribir los flatMap anidados con un map al final." }]
     },
     {
       expr: "println(ternasPFor(20))",
       pregunta: "Con n = 20 sobreviven seis ternas.",
       cierre: "Con seis elementos el conjunto se imprime con el nombre HashSet, y las ternas no salen ni en el orden en que se encontraron ni ordenadas.",
       opciones: [
-        { txt: "HashSet((5,12,13), (12,16,20), (8,15,17), (6,8,10), (9,12,15), (3,4,5))", correcta: true, larga: true },
         { txt: "Set((3,4,5), (5,12,13), (6,8,10), (8,15,17), (9,12,15), (12,16,20))", fallo: "Las seis ternas son esas, y en ese orden quedan si se ordenan aparte. El conjunto las imprime con el nombre HashSet y en otro orden.", larga: true },
         { txt: "HashSet((3,4,5), (6,8,10), (5,12,13), (9,12,15), (8,15,17), (12,16,20))", fallo: "Ese es el orden en que la búsqueda las va encontrando, de c pequeño a c grande. El conjunto no guarda el orden en que entraron los elementos.", larga: true }
-      ]
+      ,
+        { txt: "HashSet((5,12,13), (12,16,20), (8,15,17), (6,8,10), (9,12,15), (3,4,5))", correcta: true, larga: true }]
     },
     {
       expr: "ternasPFor(20).size",

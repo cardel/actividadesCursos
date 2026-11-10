@@ -23,20 +23,20 @@
       pregunta: "El primer componente de una pareja.",
       cierre: "La numeracion de los componentes empieza en _1.",
       opciones: [
-        { txt: "hola", correcta: true },
-        { txt: "42", fallo: "42 es pareja._2. La numeracion arranca en _1, que es el primer componente, no en _0 como un indice de arreglo." },
         { txt: "(hola,42)", fallo: "Esa es la pareja completa, que es lo que devuelve pareja a secas. Con _1 se saca un componente." }
-      ]
+      ,
+        { txt: "hola", correcta: true },
+        { txt: "42", fallo: "42 es pareja._2. La numeracion arranca en _1, que es el primer componente, no en _0 como un indice de arreglo." }]
     },
     {
       expr: "pareja._2 + 1",
       pregunta: "Sumar uno al segundo componente.",
       cierre: "El segundo componente es un Int, asi que el + suma.",
       opciones: [
-        { txt: "43", correcta: true },
         { txt: "421", fallo: "421 saldria si _2 fuera un String: el + concatenaria en vez de sumar. El tipo declarado dice que el segundo componente es Int." },
         { txt: "no compila", fallo: "Compila: la tupla recuerda que en la segunda posicion hay un Int, y sobre un Int el + es la suma." }
-      ]
+      ,
+        { txt: "43", correcta: true }]
     },
     {
       expr: "triple._3",
@@ -53,20 +53,20 @@
       pregunta: "Se reparte la pareja con un patron y se pregunta por el primer nombre.",
       cierre: "El patron reparte por posicion: texto recibe el primero.",
       opciones: [
-        { txt: "hola", correcta: true },
-        { txt: "42", fallo: "42 queda en valor. El patron reparte en el orden en que estan los componentes." },
         { txt: "(hola,42)", fallo: "El patron no le asigna la tupla entera a cada nombre: la descompone, y a texto le toca el primer componente." }
-      ]
+      ,
+        { txt: "hola", correcta: true },
+        { txt: "42", fallo: "42 queda en valor. El patron reparte en el orden en que estan los componentes." }]
     },
     {
       expr: "scala.Tuple2(1, \"hola\")",
       pregunta: "La forma larga de construir una pareja.",
       cierre: "(1, \"hola\") es azucar sintactica de esta llamada.",
       opciones: [
-        { txt: "(1,hola)", correcta: true },
         { txt: "Tuple2(1,hola)", fallo: "Asi se construye, pero al mostrarse una tupla sale entre parentesis y sin el nombre de la clase." },
         { txt: "no compila: Tuple2 es interno", fallo: "Se puede llamar directo. Escribir (1, \"hola\") es exactamente esta llamada, y por eso las dos formas dan el mismo valor.", larga: true }
-      ]
+      ,
+        { txt: "(1,hola)", correcta: true }]
     },
     {
       expr: "pareja == scala.Tuple2(\"hola\", 42)",
@@ -88,20 +88,20 @@
       pregunta: "El tipo de la tupla entera.",
       cierre: "Un tipo por posicion, en el orden en que se escribieron.",
       opciones: [
-        { txt: "(String, Int)", correcta: true },
-        { txt: "(Int, String)", fallo: "El orden del tipo sigue el orden de los componentes, y el texto va primero." },
         { txt: "Tuple2", fallo: "Tuple2 sin los tipos de sus componentes esta incompleto: el tipo es Tuple2[String, Int], que se abrevia (String, Int)." }
-      ]
+      ,
+        { txt: "(String, Int)", correcta: true },
+        { txt: "(Int, String)", fallo: "El orden del tipo sigue el orden de los componentes, y el texto va primero." }]
     },
     {
       expr: "pareja._2",
       pregunta: "El tipo de un componente, no el de la tupla.",
       cierre: "Pedir un componente devuelve el tipo de esa posicion.",
       opciones: [
-        { txt: "Int", correcta: true },
         { txt: "(String, Int)", fallo: "Ese es el tipo de pareja. _2 entrega el segundo componente, que es un numero." },
         { txt: "Any", fallo: "Any seria el tipo si la tupla hubiera olvidado que hay en cada puesto. Lo recuerda por posicion, y por eso pareja._2 + 1 compila." }
-      ]
+      ,
+        { txt: "Int", correcta: true }]
     },
     {
       expr: "triple",

@@ -32,20 +32,20 @@
       pregunta: "Un generador, un yield y ningún filtro.",
       cierre: "El yield evalúa x * 2 con cada valor del generador y los tres resultados quedan en un Vector nuevo.",
       opciones: [
-        { txt: "Vector(2, 4, 6)", correcta: true },
-        { txt: "Vector(1, 2, 3)", fallo: "Ese es el vector del generador, intacto. Lo que entra al resultado es el valor del yield, que aquí es x * 2." },
         { txt: "6", fallo: "6 es el último valor que produce el yield. Un for con yield no se queda con el último: junta los tres en una colección." }
-      ]
+      ,
+        { txt: "Vector(2, 4, 6)", correcta: true },
+        { txt: "Vector(1, 2, 3)", fallo: "Ese es el vector del generador, intacto. Lo que entra al resultado es el valor del yield, que aquí es x * 2." }]
     },
     {
       expr: "for (x <- Vector(1, 2, 3, 4) if x % 2 == 0) yield x * x",
       pregunta: "Ahora hay un filtro entre el generador y el yield.",
       cierre: "El if deja pasar el 2 y el 4, y el yield eleva al cuadrado los que pasaron: quedan dos elementos.",
       opciones: [
-        { txt: "Vector(4, 16)", correcta: true },
         { txt: "los cuadrados de los cuatro elementos", fallo: "Eso quedaría sin el if. El filtro corre antes del yield y descarta el 1 y el 3, así que al cuadrado solo llegan dos elementos.", larga: true },
         { txt: "el 2 y el 4, los que pasan el filtro", fallo: "Esos son los elementos que deja el if, todavía sin transformar. El yield los eleva al cuadrado, y lo que entra al resultado es x * x.", larga: true }
-      ]
+      ,
+        { txt: "Vector(4, 16)", correcta: true }]
     },
     {
       expr: FOR_PRIMAS,
@@ -62,10 +62,10 @@
       pregunta: "El generador recorre un Vector de Persona y el yield pide un campo.",
       cierre: "El if deja fuera a Ana, que tiene 19 años, y el yield cambia cada persona que pasó por su nombre.",
       opciones: [
-        { txt: "Vector(Luis, Maria)", correcta: true },
-        { txt: "Vector(Ana, Luis, Maria)", fallo: "Esos son los tres nombres, que es lo que quedaría sin el if. El filtro pide una edad mayor que 20 y la de Ana es 19." },
         { txt: "las dos personas que pasan el filtro, completas", fallo: "Esas son las que deja el if, todavía como Persona. El yield entrega p.nombre, así que en el resultado quedan los nombres y no las personas.", larga: true }
-      ]
+      ,
+        { txt: "Vector(Luis, Maria)", correcta: true },
+        { txt: "Vector(Ana, Luis, Maria)", fallo: "Esos son los tres nombres, que es lo que quedaría sin el if. El filtro pide una edad mayor que 20 y la de Ana es 19." }]
     }
   ];
 
@@ -138,10 +138,10 @@
       pregunta: "¿Qué queda en dobles?",
       cierre: "La expresión vale Vector(2, 4, 6), y por eso se le puede asignar a un val: el for con yield es una expresión que devuelve una colección.",
       opciones: [
-        { txt: "Vector(2, 4, 6)", correcta: true },
         { txt: "nada: el for recorre los tres elementos y no deja valor", fallo: "Eso describe un for sin yield, que recorre y no construye nada. Con yield cada resultado entra en una colección nueva, y la expresión completa vale Vector(2, 4, 6).", larga: true },
         { txt: "el mismo Vector(1, 2, 3), con sus elementos cambiados", fallo: "Las colecciones de Scala no se modifican. La expresión construye otra y la de partida queda como estaba, que es lo que permite seguir usándola después.", larga: true }
-      ]
+      ,
+        { txt: "Vector(2, 4, 6)", correcta: true }]
     },
     {
       expr: "las parejas primas escritas con for y escritas con flatMap y filter",

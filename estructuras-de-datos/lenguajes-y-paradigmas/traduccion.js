@@ -23,10 +23,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "El mismo error en C", columna: true, correcta: "compilar",
           html: T.codigo(P.ramaC.codigo) + "<p>El mismo programa en C, con el mismo <code>sald0</code>. ¿Cuándo aparece el error?</p>",
           opciones: [
-            { op: "negativo", texto: "Solo si al correrlo se escribe un saldo negativo.", msg: "En C no se llega a correr: el compilador revisa todas las ramas, se tomen o no." },
-            { op: "compilar", texto: "Al compilar, antes de correr, aunque nunca se escriba un saldo negativo.", msg: "Correcto. gcc responde " + P.ramaC.error[1].replace(/^rama\.c:\d+:\d+: /, "") + ", y no produce ejecutable. El compilador traduce el programa entero de una vez, y el error de la rama rara se ve el primer día." },
             { op: "nunca", texto: "Nunca: C no revisa los nombres de las variables.", msg: "Los revisa: cada nombre tiene que estar declarado antes de usarse, y sald0 no lo está." }
-          ] },
+          ,
+            { op: "negativo", texto: "Solo si al correrlo se escribe un saldo negativo.", msg: "En C no se llega a correr: el compilador revisa todas las ramas, se tomen o no." },
+            { op: "compilar", texto: "Al compilar, antes de correr, aunque nunca se escriba un saldo negativo.", msg: "Correcto. gcc responde " + P.ramaC.error[1].replace(/^rama\.c:\d+:\d+: /, "") + ", y no produce ejecutable. El compilador traduce el programa entero de una vez, y el error de la rama rara se ve el primer día." }] },
         { tipo: "respuesta", titulo: "Cuánto cuesta interpretar",
           html: "<p>Los dos programas cuentan los múltiplos de 7 entre 0 y 39 999 999, y los dos imprimen " + P.multiplosC.salida + ".</p>" + T.codigo(P.multiplosC.codigo) + T.codigo(P.multiplosPy.codigo) +
                 T.tabla(["Versión", "Corridas", "La más rápida"], [
@@ -43,19 +43,19 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Lo que hay que tener instalado", columna: true, correcta: "python",
           html: "<p>Se le pasan a un compañero, que tiene Linux en un equipo x86-64 como el de la tabla, dos archivos: el ejecutable <code>multiplos</code> y <code>multiplos.py</code>. ¿Qué necesita instalado para correr los dos?</p>",
           opciones: [
+            { op: "fuente", texto: "El archivo multiplos.c, además de los otros dos.", msg: "El ejecutable no necesita el fuente para correr. Lo necesitaría para volver a compilarlo, por ejemplo en un procesador distinto." }
+          ,
             { op: "gcc", texto: "gcc para el ejecutable y Python 3 para el .py.", msg: "El ejecutable ya está traducido: gcc solo hace falta para producirlo, no para correrlo." },
             { op: "python", texto: "Python 3 para el .py; el ejecutable corre sin nada más.", msg: "Correcto. El compilador dejó la traducción hecha y el fuente ya no hace falta. El .py, en cambio, se traduce cada vez que se corre, así que el intérprete tiene que estar en la máquina." },
-            { op: "nada", texto: "Nada: los dos son programas y corren solos.", msg: "El .py es texto. Sin el intérprete, nadie lo traduce." },
-            { op: "fuente", texto: "El archivo multiplos.c, además de los otros dos.", msg: "El ejecutable no necesita el fuente para correr. Lo necesitaría para volver a compilarlo, por ejemplo en un procesador distinto." }
-          ] },
+            { op: "nada", texto: "Nada: los dos son programas y corren solos.", msg: "El .py es texto. Sin el intérprete, nadie lo traduce." }] },
         { tipo: "opciones", titulo: "Ni tan puro lo uno ni lo otro", columna: true, correcta: "intermedio",
           html: "<p>Después de correr un programa de Python que importa un módulo propio aparece una carpeta <code>__pycache__</code> con un archivo <code>.pyc</code>. ¿Qué guarda?</p>",
           opciones: [
-            { op: "ejecutable", texto: "El ejecutable del módulo, en código de máquina.", msg: "No es código de máquina: el procesador no puede correrlo directamente. Lo lee el intérprete." },
-            { op: "intermedio", texto: "El módulo compilado a un código intermedio, que el intérprete lee en la siguiente ejecución sin volver a traducir el fuente.", msg: "Correcto. Python compila cada módulo a ese código intermedio y después lo interpreta. Java hace lo mismo con los .class de javac y la máquina virtual. Por eso los dos son híbridos." },
             { op: "copia", texto: "Una copia de seguridad del fuente.", msg: "El .pyc no es texto ni copia del fuente: es el resultado de traducirlo, guardado para no repetir el trabajo." },
             { op: "resultados", texto: "Los resultados de la última ejecución, para devolverlos más rápido.", msg: "No guarda resultados: el programa vuelve a calcular todo en cada ejecución. Lo que se ahorra es la traducción." }
-          ] }
+          ,
+            { op: "ejecutable", texto: "El ejecutable del módulo, en código de máquina.", msg: "No es código de máquina: el procesador no puede correrlo directamente. Lo lee el intérprete." },
+            { op: "intermedio", texto: "El módulo compilado a un código intermedio, que el intérprete lee en la siguiente ejecución sin volver a traducir el fuente.", msg: "Correcto. Python compila cada módulo a ese código intermedio y después lo interpreta. Java hace lo mismo con los .class de javac y la máquina virtual. Por eso los dos son híbridos." }] }
       ]
     };
   }

@@ -109,10 +109,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Tres clases", columna: true, correcta: "tres",
           html: "<p>Se agregan las caídas del servicio, que pasan delante de los bloqueos. ¿Qué cambia?</p>",
           opciones: [
-            { op: "tres", texto: "Una tercera cola, revisada primero; atender sigue en O(1)", msg: "Correcto. Con un número fijo de clases, atender mira a lo sumo tres frentes." },
-            { op: "ordenar", texto: "Hay que ordenar la fila por clase cada vez que llega un pedido", msg: "Ordenar cuesta mucho más que repartir: cada pedido ya sabe su clase al llegar." },
             { op: "una", texto: "Se vuelve a la fila única, porque tres colas son demasiadas", msg: "La fila única paga O(n) por atención con dos clases o con tres. Las colas cuestan lo mismo en memoria." }
-          ] }
+          ,
+            { op: "tres", texto: "Una tercera cola, revisada primero; atender sigue en O(1)", msg: "Correcto. Con un número fijo de clases, atender mira a lo sumo tres frentes." },
+            { op: "ordenar", texto: "Hay que ordenar la fila por clase cada vez que llega un pedido", msg: "Ordenar cuesta mucho más que repartir: cada pedido ya sabe su clase al llegar." }] }
       ]
     };
   }

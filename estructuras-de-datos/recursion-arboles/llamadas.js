@@ -146,10 +146,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Los cuatro marcos", columna: true, correcta: "camino",
           html: "<p>¿Qué marcos están en la pila en el momento en que hay cuatro de <code>contarPares</code>?</p>",
           opciones: [
-            { op: "camino", texto: "Los de 12, 7, 4 y un vacío hijo de 4", msg: "Correcto. Es el camino de la raíz al nodo más profundo, más el vacío donde la bajada se detiene." },
-            { op: "hermanos", texto: "Los de 12, 7, 18 y 4", msg: "7 y 18 son hermanos: el marco de 7 termina y sale antes de que se llame contarPares(18). Nunca conviven." },
             { op: "pares", texto: "Los de los tres nodos pares, 12, 4 y 18, y el de main", msg: "Todo nodo abre un marco, sea par o no, y main no se cuenta entre los de contarPares." }
-          ] },
+          ,
+            { op: "camino", texto: "Los de 12, 7, 4 y un vacío hijo de 4", msg: "Correcto. Es el camino de la raíz al nodo más profundo, más el vacío donde la bajada se detiene." },
+            { op: "hermanos", texto: "Los de 12, 7, 18 y 4", msg: "7 y 18 son hermanos: el marco de 7 termina y sale antes de que se llame contarPares(18). Nunca conviven." }] },
         { tipo: "respuesta", titulo: "Un árbol que es una lista",
           html: "<p>Ahora el árbol tiene " + DEGENERADO + " nodos, cada uno hijo derecho del anterior. ¿Cuántas llamadas hace <code>contarPares</code>? ¿Cuántos marcos llega a tener la pila a la vez?</p>",
           campos: [

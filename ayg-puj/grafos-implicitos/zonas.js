@@ -290,15 +290,15 @@ var EJERCICIO = (function () {
 
   var PREGUNTAS = [
     { enun: "Para plantearlo como un grafo, ¿qué son los nodos?", opciones: [
-      { t: "Las criaturas.", ok: false,
-        por: "Por una criatura nunca se pasa: es un dato para calcular qué casillas quedan prohibidas. Lo que se visita son casillas." },
       { t: "Todas las casillas del tablero, también las bloqueadas y las peligrosas.", ok: false,
         por: "Si una casilla prohibida fuera nodo, el recorrido podría pasar por ella. En el ejemplo quedan fuera 14 de las 35 casillas." },
       { t: "Cada casilla que se puede pisar.", ok: true,
         por: "En el ejemplo son 21 nodos. El grafo no se guarda en una lista: los vecinos de una casilla se calculan cuando hacen falta." },
       { t: "Las filas y las columnas.", ok: false,
         por: "Un paso va de una casilla a otra, así que ahí está el nodo. Una fila entera no dice dónde está el caminante." }
-    ] },
+    ,
+      { t: "Las criaturas.", ok: false,
+        por: "Por una criatura nunca se pasa: es un dato para calcular qué casillas quedan prohibidas. Lo que se visita son casillas." }] },
     { enun: "¿Y qué son las aristas?", opciones: [
       { t: "Une dos casillas libres vecinas arriba, abajo o a los lados, y cada una vale un paso.", ok: true,
         por: "Cada casilla tiene hasta cuatro vecinas. Se asume que se camina en esas cuatro direcciones y que todos los pasos valen lo mismo." },
@@ -326,23 +326,23 @@ var EJERCICIO = (function () {
     { enun: "La frase <i>en cualquier dirección</i> admite varias lecturas, y aquí se mide en línea recta. ¿Cuál es la condición?",
       apoyo: "<div class='tres-zonas'>" + miniZona("rombo", "rombo") + miniZona("circulo", "línea recta") + miniZona("cuadrado", "cuadrado") + "</div><p class='pie-mini'>Las tres zonas de una criatura con radio 3, con su número de casillas.</p>",
       opciones: [
-      { t: "|r - ri| + |c - ci| <= radio", ok: false,
-        por: "Es el rombo: cuenta pasos en cuatro direcciones, y da 25 casillas con radio 3 contra 29. Con radio 1 y radio 2 pinta lo mismo que la línea recta, así que el ejemplo no delata el error." },
       { t: "|r - ri| <= radio y |c - ci| <= radio", ok: false,
         por: "Es el cuadrado: da 49 casillas con radio 3. En el ejemplo cierra el paso, y el programa respondería −1 en lugar de 14." },
       { t: "(r - ri)² + (c - ci)² <= radio", ok: false,
         por: "Le falta elevar <code>radio</code>. Con radio 2 dejaría libre la casilla a (2, 0), que está justo a distancia 2: 4 > 2." },
       { t: "(r - ri)² + (c - ci)² <= radio²", ok: true,
         por: "Es la distancia euclidiana, sin raíz y sin decimales porque se comparan los cuadrados. Con radio 3 da 29 casillas." }
-    ] },
+    ,
+      { t: "|r - ri| + |c - ci| <= radio", ok: false,
+        por: "Es el rombo: cuenta pasos en cuatro direcciones, y da 25 casillas con radio 3 contra 29. Con radio 1 y radio 2 pinta lo mismo que la línea recta, así que el ejemplo no delata el error." }] },
     { enun: "Una tripleta deja prohibida la casilla de entrada. ¿Qué tiene que responder el programa?", opciones: [
+      { t: "−1: entrar la rechaza, la cola arranca vacía y la salida se queda en −1.", ok: true,
+        por: "No hace falta un caso aparte: como <code>dist</code> arranca en −1, el ciclo no corre y se devuelve ese valor." }
+    ,
       { t: "Lo mismo que si estuviera libre: la entrada es por donde se arranca.", ok: false,
         por: "Con <code>(0, 0, 0)</code> en el ejemplo, ese programa responde 14 y lo correcto es −1. Por eso el arranque pasa por <code>entrar</code>, igual que cualquier otra casilla." },
       { t: "0, porque la distancia de la entrada es 0.", ok: false,
-        por: "El 0 solo se escribe si la casilla se puede pisar. Y lo que se devuelve es la distancia de la salida." },
-      { t: "−1: entrar la rechaza, la cola arranca vacía y la salida se queda en −1.", ok: true,
-        por: "No hace falta un caso aparte: como <code>dist</code> arranca en −1, el ciclo no corre y se devuelve ese valor." }
-    ] },
+        por: "El 0 solo se escribe si la casilla se puede pisar. Y lo que se devuelve es la distancia de la salida." }] },
     { enun: "¿En qué momento se escribe la distancia de una casilla?", opciones: [
       { t: "Al sacarla de la cola, cuando le toca su turno.", ok: false,
         por: "Mientras espera sigue en −1, y otra vecina la mete otra vez. En el ejemplo salen " + TARDE.salen + " casillas de la cola en lugar de " + LLEGAN + ", y en un tablero vacío de 10 × 10 salen " + TARDE_VACIO.salen + " en lugar de 100." },

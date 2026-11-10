@@ -255,39 +255,39 @@ var EJERCICIO = (function () {
 
   var PREGUNTAS = [
     { enun: "¿Qué significa cada color?", opciones: [
-      { t: "El orden de visita: primero azul, después naranja.", ok: false,
-        por: "El orden lo da la pila de llamadas. En el grafo de arriba, el nodo 2 se visita tercero y queda azul, igual que el 0." },
       { t: "El pedazo del grafo al que pertenece el nodo.", ok: false,
         por: "Un mismo pedazo lleva los dos colores, porque cada arista une uno con otro. Dos colores no alcanzarían para contar pedazos." },
       { t: "Uno de dos grupos: cada arista tiene que ir de un grupo al otro.", ok: true,
         por: "Pintar es repartir los nodos en dos grupos sin aristas por dentro, que es lo que significa bipartito. El arreglo <code>color</code> reemplaza al de visitados: −1 sin pintar, 0 azul, 1 naranja." }
-    ] },
+    ,
+      { t: "El orden de visita: primero azul, después naranja.", ok: false,
+        por: "El orden lo da la pila de llamadas. En el grafo de arriba, el nodo 2 se visita tercero y queda azul, igual que el 0." }] },
     { enun: "El nodo 0 ya es azul y el nodo 1 es su vecino. ¿Hay que probar los dos colores para el 1?", opciones: [
+      { t: "Depende de cuántos vecinos tenga el 1.", ok: false,
+        por: "La arista 0-1 ya lo decide sola, con cualquier número de vecinos. Las demás aristas solo pueden confirmarlo o chocar." }
+    ,
       { t: "Sí, y retroceder si algo falla más adelante.", ok: false,
         por: "Sería probar coloreos: hay 2ⁿ, y con 60 nodos son 1 152 921 504 606 846 976. Además no hay nada que probar, porque el vecino solo tiene una opción." },
       { t: "No: solo puede ser naranja, y de ahí sus vecinos quedan obligados.", ok: true,
-        por: "Pintado el primer nodo, el resto de su pedazo no tiene opción, así que basta recorrerlo una vez: Θ(<i>V</i> + <i>E</i>)." },
-      { t: "Depende de cuántos vecinos tenga el 1.", ok: false,
-        por: "La arista 0-1 ya lo decide sola, con cualquier número de vecinos. Las demás aristas solo pueden confirmarlo o chocar." }
-    ] },
+        por: "Pintado el primer nodo, el resto de su pedazo no tiene opción, así que basta recorrerlo una vez: Θ(<i>V</i> + <i>E</i>)." }] },
     { enun: "¿Qué decide que un grafo no se pueda pintar?", opciones: [
+      { t: "Que el recorrido llegue a un nodo ya pintado.", ok: false,
+        por: "Pasa en cualquier ciclo, y también al mirar de vuelta al nodo de donde se vino. Si el color es distinto, la arista se cumple." }
+    ,
       { t: "Que tenga un ciclo.", ok: false,
         por: "El ciclo 0-1-2-3 del grafo de arriba se pinta alternando. Solo un ciclo de longitud impar obliga a un choque, como el triángulo." },
       { t: "Que un nodo tenga muchos vecinos.", ok: false,
         por: "Una estrella se pinta con el centro de un color y todas las hojas del otro, con cualquier número de hojas." },
       { t: "Que al recorrerlo aparezca una arista con los dos extremos del mismo color.", ok: true,
-        por: "Los colores estaban forzados, así que ese choque no se arregla con otro coloreo. Por eso basta una arista así para responder falso." },
-      { t: "Que el recorrido llegue a un nodo ya pintado.", ok: false,
-        por: "Pasa en cualquier ciclo, y también al mirar de vuelta al nodo de donde se vino. Si el color es distinto, la arista se cumple." }
-    ] },
+        por: "Los colores estaban forzados, así que ese choque no se arregla con otro coloreo. Por eso basta una arista así para responder falso." }] },
     { enun: "Desde u, azul, se mira a v, que ya es azul. ¿Qué hace el código?", opciones: [
+      { t: "Anota sin_choque = False y sigue con los demás vecinos.", ok: true,
+        por: "La llamada termina de recorrer su lista y devuelve falso, y ese falso sube por las llamadas abiertas hasta <code>bipartito</code>." }
+    ,
       { t: "Nada, porque v ya está visitado.", ok: false,
         por: "Es lo que hace un recorrido corriente, y aquí es el error: aceptar un color igual. Con esa regla el triángulo sale bipartito." },
       { t: "Le cambia el color a v.", ok: false,
-        por: "Dañaría las aristas de v que ya se revisaron, y el color de v estaba forzado desde el suyo." },
-      { t: "Anota sin_choque = False y sigue con los demás vecinos.", ok: true,
-        por: "La llamada termina de recorrer su lista y devuelve falso, y ese falso sube por las llamadas abiertas hasta <code>bipartito</code>." }
-    ] },
+        por: "Dañaría las aristas de v que ya se revisaron, y el color de v estaba forzado desde el suyo." }] },
     { enun: "El grafo puede venir en varios pedazos. ¿Desde dónde se arranca?", opciones: [
       { t: "Desde el nodo 0, porque de ahí se llega a todo.", ok: false,
         por: "Solo se llega a su pedazo. Con una arista 0-1 y un triángulo 2-3-4, ese programa responde cierto y lo correcto es falso." },

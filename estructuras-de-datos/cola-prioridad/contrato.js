@@ -54,26 +54,26 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Extraer de una cola vacía", columna: true, correcta: "cliente",
           html: "<p>El contrato de <code>extraerMax</code> dice: <em>precondición: la cola no está vacía</em>. En <code>monticulo.h</code> eso se revisa con <code>assert(!a.empty())</code>. Un programa llama <code>extraerMax()</code> sobre una cola vacía. ¿Qué dice el contrato de esa situación?</p>",
           opciones: [
-            { op: "cero", texto: "Que extraerMax debe devolver 0 para avisar que no había nada.", msg: "El 0 puede ser una clave legítima de la cola: quien recibe un 0 no sabría si salió un 0 o si no había nada. Por eso el contrato no promete ningún valor en ese caso." },
             { op: "cliente", texto: "Que el error es de quien llamó: debía preguntar vacio() antes, y el TAD no promete nada.", msg: "Correcto. Una precondición la cumple el cliente. El assert la hace visible mientras se depura: el programa se detiene en la línea del error en vez de seguir con un dato inventado." },
             { op: "ignora", texto: "Que la operación no hace nada y el programa sigue.", msg: "Seguir como si nada esconde el error: el programa usaría un valor que nunca salió de la cola. El contrato no promete eso, y el assert de monticulo.h lo impide." }
-          ] },
+          ,
+            { op: "cero", texto: "Que extraerMax debe devolver 0 para avisar que no había nada.", msg: "El 0 puede ser una clave legítima de la cola: quien recibe un 0 no sabría si salió un 0 o si no había nada. Por eso el contrato no promete ningún valor en ese caso." }] },
         { tipo: "opciones", titulo: "Eventos que llegan desordenados", columna: true, correcta: "minimos",
           html: "<p>Un simulador de una red procesa eventos: cada uno tiene la hora en que ocurre, y al procesar uno se generan otros para más adelante, en cualquier orden. Siempre hay que procesar el evento de hora más temprana. ¿Qué TAD guarda los pendientes?</p>",
           opciones: [
+            { op: "maximos", texto: "Una cola de prioridad de máximos sobre la hora.", msg: "Saldría primero el evento más lejano en el futuro. Aquí la clave menor es la más urgente: hace falta un montículo de mínimos." }
+          ,
             { op: "cola", texto: "Una cola, porque los eventos se atienden en el orden en que se generan.", msg: "Un evento generado después puede ocurrir antes: uno que se programa para dentro de 1 ms le gana a otro que se programó antes para dentro de 10 ms. La cola los atendería al revés." },
             { op: "pila", texto: "Una pila, porque el último evento generado suele ser el más próximo.", msg: "Nada garantiza eso: los eventos se generan con horas en cualquier orden." },
-            { op: "minimos", texto: "Una cola de prioridad en la que sale primero la menor hora.", msg: "Correcto. Es una cola de prioridad de mínimos: la prioridad es la hora, y la más temprana es la más urgente. Con un montículo, programar y sacar el siguiente evento cuestan O(log n)." },
-            { op: "maximos", texto: "Una cola de prioridad de máximos sobre la hora.", msg: "Saldría primero el evento más lejano en el futuro. Aquí la clave menor es la más urgente: hace falta un montículo de mínimos." }
-          ] },
+            { op: "minimos", texto: "Una cola de prioridad en la que sale primero la menor hora.", msg: "Correcto. Es una cola de prioridad de mínimos: la prioridad es la hora, y la más temprana es la más urgente. Con un montículo, programar y sacar el siguiente evento cuestan O(log n)." }] },
         { tipo: "opciones", titulo: "Los cinco mayores de un millón", columna: true, correcta: "cinco",
           html: "<p>Un sensor envía un millón de lecturas, una por una, y al final hay que imprimir las cinco más altas. La memoria alcanza para unas pocas lecturas, no para el millón. ¿Qué se guarda mientras llegan?</p>",
           opciones: [
-            { op: "todas", texto: "Un montículo de máximos con todas las lecturas, y al final se extrae cinco veces.", msg: "Funciona si cabe, y aquí no cabe: el montículo tendría el millón de lecturas. Lo que se pide son cinco." },
             { op: "cinco", texto: "Un montículo de mínimos con a lo sumo cinco lecturas: si llega una mayor que la raíz, la raíz sale y la nueva entra.", msg: "Correcto. La raíz es la menor de las cinco mejores hasta ahora, la única candidata a salir. Cada lectura cuesta O(log 5), y el millón cuesta O(n log k) con k = 5, guardando solo cinco claves." },
             { op: "maximos5", texto: "Un montículo de máximos con a lo sumo cinco lecturas.", msg: "La raíz sería la mayor de las cinco, y la que habría que sacar cuando llega una mejor es la menor, que está en alguna hoja. Encontrarla obliga a revisar todas." },
             { op: "set", texto: "Un set con a lo sumo cinco lecturas, quitando la menor cuando sobra una.", msg: "Casi: el set guarda las claves en orden y la menor está en begin(). Pero descarta repetidas, y si el sensor envía dos veces la misma lectura alta, una de las dos se pierde." }
-          ] }
+          ,
+            { op: "todas", texto: "Un montículo de máximos con todas las lecturas, y al final se extrae cinco veces.", msg: "Funciona si cabe, y aquí no cabe: el montículo tendría el millón de lecturas. Lo que se pide son cinco." }] }
       ]
     };
   }

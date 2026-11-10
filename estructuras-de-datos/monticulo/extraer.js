@@ -21,10 +21,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Quién ocupa la raíz", columna: true, correcta: "ultima",
           html: "<p>Un montículo de máximos:</p>" + M.vista(H, {}) + "<p>Sale el " + H[0] + ". ¿Qué clave se pone en a[0] antes de bajar?</p>",
           opciones: [
-            { op: "ultima", texto: "El " + H[H.length - 1] + ", la última clave, y el arreglo queda con " + (H.length - 1) + " casillas.", msg: "Correcto. Quitar la última casilla es lo único que deja el árbol completo. El " + H[H.length - 1] + " queda arriba y baja hasta su lugar." },
-            { op: "hijo", texto: "El " + H[2] + ", el mayor de los hijos, y su lugar lo ocupa el mayor de sus hijos, y así.", msg: "Cada clave que sube deja un hueco más abajo, y el último hueco puede quedar en medio del último nivel: el árbol deja de ser completo." },
             { op: "correr", texto: "Se corre todo el arreglo una casilla a la izquierda.", msg: "Cuesta Θ(n) y cambia todos los parentescos: el " + H[1] + " quedaría en la raíz con el " + H[2] + " como hijo, y eso ya no es un montículo." }
-          ] },
+          ,
+            { op: "ultima", texto: "El " + H[H.length - 1] + ", la última clave, y el arreglo queda con " + (H.length - 1) + " casillas.", msg: "Correcto. Quitar la última casilla es lo único que deja el árbol completo. El " + H[H.length - 1] + " queda arriba y baja hasta su lugar." },
+            { op: "hijo", texto: "El " + H[2] + ", el mayor de los hijos, y su lugar lo ocupa el mayor de sus hijos, y así.", msg: "Cada clave que sube deja un hueco más abajo, y el último hueco puede quedar en medio del último nivel: el árbol deja de ser completo." }] },
         { tipo: "pasos", titulo: "Sale el " + H[0],
           html: "<p>En naranja, la clave que baja; en naranja claro, los hijos con los que se compara.</p>",
           pasos: M.pasosExtraer(H) },

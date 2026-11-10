@@ -153,11 +153,11 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Tuplas con la misma prioridad", columna: true, correcta: "bien",
           html: P.codigo(CODIGO_TAREAS) + "<p>¿En qué orden imprime los nombres?</p>",
           opciones: [
+            { op: "insercion", texto: "lucia, zoe, ana, mario", msg: "Ese es el orden en que entraron. heappop entrega por comparación de tuplas." }
+          ,
             { op: "bien", texto: ta.join(", "), msg: "Correcto. Las tuplas se comparan campo por campo: primero la prioridad, y entre las de prioridad 1, el nombre en orden alfabético. Lo mismo entre las de 2." },
             { op: "llegada", texto: "zoe, mario, lucia, ana", msg: "Las prioridades están bien, pero el empate no lo decide el orden de llegada: lo decide el segundo campo de la tupla, el nombre." },
-            { op: "mayor", texto: "ana, lucia, mario, zoe", msg: "heapq saca primero la tupla menor, y (1, ...) es menor que (2, ...)." },
-            { op: "insercion", texto: "lucia, zoe, ana, mario", msg: "Ese es el orden en que entraron. heappop entrega por comparación de tuplas." }
-          ] },
+            { op: "mayor", texto: "ana, lucia, mario, zoe", msg: "heapq saca primero la tupla menor, y (1, ...) es menor que (2, ...)." }] },
         { tipo: "respuesta", titulo: "El mayor primero",
           html: P.codigo(CODIGO_MAYORES) + "<p>¿Qué imprime?</p>",
           campos: [{ rotulo: "imprime:", esperado: my, ancho: "6rem" }],

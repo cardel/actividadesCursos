@@ -85,18 +85,18 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "En términos de n", columna: true, correcta: "lineal",
           html: "<p>Para un arreglo de n casillas, ¿cuánto vale T en el mejor y en el peor caso?</p>",
           opciones: [
-            { op: "lineal", texto: "8 en el mejor caso y 3n + 4 en el peor.", msg: "Correcto. El mejor caso no depende de n: con un millón de casillas, si el cero está al final, son las mismas 8 instrucciones. El peor es lineal." },
-            { op: "ambos", texto: "3n + 4 en los dos casos, porque el ciclo depende de n.", msg: "El ciclo puede salir antes de recorrer todo: con el cero al final da una sola vuelta, tenga el arreglo 5 casillas o un millón." },
             { op: "cuatro", texto: "8 en el mejor caso y 4n + 4 en el peor.", msg: "En el peor caso no hay ceros, así que pos = i nunca se ejecuta. Quedan la condición, el if y el decremento: 3n + 4." },
             { op: "mitad", texto: "8 en el mejor caso y 3n/2 + 4 en el peor, porque en promedio el cero está a la mitad.", msg: "Eso mezcla el caso promedio con el peor. El peor caso es la entrada que obliga a más trabajo, y es la que no tiene ceros." }
-          ] },
+          ,
+            { op: "lineal", texto: "8 en el mejor caso y 3n + 4 en el peor.", msg: "Correcto. El mejor caso no depende de n: con un millón de casillas, si el cero está al final, son las mismas 8 instrucciones. El peor es lineal." },
+            { op: "ambos", texto: "3n + 4 en los dos casos, porque el ciclo depende de n.", msg: "El ciclo puede salir antes de recorrer todo: con el cero al final da una sola vuelta, tenga el arreglo 5 casillas o un millón." }] },
         { tipo: "opciones", titulo: "Cuál se reporta", columna: true, correcta: "peor",
           html: "<p>Hay que decir cuánto cuesta <code>ultimo_cero</code> sin saber qué arreglos va a recibir. ¿Cuál de los dos casos se reporta?</p>",
           opciones: [
-            { op: "mejor", texto: "El mejor caso, porque es lo que pasa cuando el programa funciona bien.", msg: "El mejor caso no promete nada sobre las demás entradas: basta un arreglo sin ceros para que el costo sea lineal." },
-            { op: "peor", texto: "El peor caso, porque es una cota que se cumple con cualquier entrada.", msg: "Correcto. Sea cual sea el arreglo, ultimo_cero no ejecuta más de 3n + 4 instrucciones. El caso promedio exige suponer cómo vienen los datos, y el peor no necesita suponer nada." },
             { op: "ninguno", texto: "Ninguno: el costo no se puede decir sin conocer los datos.", msg: "Sí se puede dar una garantía: el peor caso acota el costo para cualquier entrada de tamaño n." }
-          ] }
+          ,
+            { op: "mejor", texto: "El mejor caso, porque es lo que pasa cuando el programa funciona bien.", msg: "El mejor caso no promete nada sobre las demás entradas: basta un arreglo sin ceros para que el costo sea lineal." },
+            { op: "peor", texto: "El peor caso, porque es una cota que se cumple con cualquier entrada.", msg: "Correcto. Sea cual sea el arreglo, ultimo_cero no ejecuta más de 3n + 4 instrucciones. El caso promedio exige suponer cómo vienen los datos, y el peor no necesita suponer nada." }] }
       ]
     };
   }

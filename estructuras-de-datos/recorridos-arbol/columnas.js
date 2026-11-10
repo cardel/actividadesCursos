@@ -118,10 +118,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Columnas negativas", columna: true, correcta: "centro",
           html: "<p>Las sumas se guardan en un arreglo <code>suma</code>. ¿Por qué el nodo de la columna c se suma en <code>suma[CENTRO + c]</code> y no en <code>suma[c]</code>?</p>",
           opciones: [
-            { op: "centro", texto: "Porque las columnas a la izquierda de la raíz son negativas", msg: "Correcto. Con suma[c], el 9 y el 6 escribirían en suma[−1], fuera del arreglo. Desplazar todo en CENTRO deja espacio a los dos lados." },
             { op: "orden", texto: "Para que las sumas salgan ordenadas de mayor a menor", msg: "El arreglo se recorre de izquierda a derecha por índice, y el desplazamiento no cambia el orden entre columnas." },
             { op: "raiz", texto: "Porque la raíz no puede ir en la casilla 0", msg: "La casilla 0 sirve igual que cualquiera; el problema son los índices negativos." }
-          ] }
+          ,
+            { op: "centro", texto: "Porque las columnas a la izquierda de la raíz son negativas", msg: "Correcto. Con suma[c], el 9 y el 6 escribirían en suma[−1], fuera del arreglo. Desplazar todo en CENTRO deja espacio a los dos lados." }] }
       ]
     };
   }

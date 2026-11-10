@@ -59,17 +59,17 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Mil casillas", columna: true, correcta: "ultimos",
           html: "<p>Una tabla de m = 1000 casillas guarda códigos de 8 dígitos. Los códigos 20261547 y 20251547 van a la misma casilla. ¿Por qué?</p>",
           opciones: [
-            { op: "ultimos", texto: "k mod 1000 son los tres últimos dígitos, y los dos terminan en 547", msg: "Correcto. Con una potencia de 10, el residuo ignora todo lo que está antes de los últimos dígitos, y los dos códigos solo difieren en el año." },
-            { op: "primo", texto: "Porque 1000 es par", msg: "Que sea par no basta para explicarlo: lo que pasa es que 1000 es potencia de 10 y el residuo son los tres últimos dígitos." },
             { op: "azar", texto: "Es mala suerte: dos claves cualesquiera chocan con probabilidad 1/1000", msg: "Aquí no hay azar. Todo código que termine en 547 cae en la casilla 547." }
-          ] },
+          ,
+            { op: "ultimos", texto: "k mod 1000 son los tres últimos dígitos, y los dos terminan en 547", msg: "Correcto. Con una potencia de 10, el residuo ignora todo lo que está antes de los últimos dígitos, y los dos códigos solo difieren en el año." },
+            { op: "primo", texto: "Porque 1000 es par", msg: "Que sea par no basta para explicarlo: lo que pasa es que 1000 es potencia de 10 y el residuo son los tres últimos dígitos." }] },
         { tipo: "opciones", titulo: "Sin choques", columna: true, correcta: "no",
           html: "<p>¿Existe una función h que lleve todos los códigos de 8 dígitos a una tabla de 1000 casillas sin que dos códigos distintos choquen?</p>",
           opciones: [
-            { op: "no", texto: "No: hay 10<sup>8</sup> códigos y 1000 casillas", msg: "Correcto. Al menos una casilla recibe 10^8 / 1000 = 10^5 códigos posibles. Lo que se puede lograr es que los códigos que de verdad llegan se repartan bien." },
             { op: "primo", texto: "Sí, si m es primo", msg: "Un primo reparte mejor los patrones comunes, pero no hace caber 10^8 códigos en 1000 casillas sin compartir." },
             { op: "buena", texto: "Sí, con una función suficientemente buena", msg: "Ninguna función lo logra: con más claves posibles que casillas, alguna casilla recibe dos." }
-          ] }
+          ,
+            { op: "no", texto: "No: hay 10<sup>8</sup> códigos y 1000 casillas", msg: "Correcto. Al menos una casilla recibe 10^8 / 1000 = 10^5 códigos posibles. Lo que se puede lograr es que los códigos que de verdad llegan se repartan bien." }] }
       ]
     };
   }

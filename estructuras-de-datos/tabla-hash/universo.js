@@ -48,10 +48,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Qué parte se usa", columna: true, correcta: "poco",
           html: "<p>En esa tabla se guardan " + CLAVES + " teléfonos. ¿Qué porcentaje de las casillas tiene un número guardado?</p>",
           opciones: [
-            { op: "poco", texto: porcentajeUsado().toFixed(3).replace(".", ",") + " %", msg: "Correcto: 300 de 10 millones. El resto de los " + mb + " MB está reservado y vacío." },
-            { op: "tres", texto: "3 %", msg: "300 de 10^7 es 3 · 10^-5, que en porcentaje es 0,003 %, mil veces menos." },
             { op: "todo", texto: "100 %: cada casilla guarda algo", msg: "Cada casilla guarda algo, pero solo 300 guardan un teléfono; las demás marcan que el número no está." }
-          ] },
+          ,
+            { op: "poco", texto: porcentajeUsado().toFixed(3).replace(".", ",") + " %", msg: "Correcto: 300 de 10 millones. El resto de los " + mb + " MB está reservado y vacío." },
+            { op: "tres", texto: "3 %", msg: "300 de 10^7 es 3 · 10^-5, que en porcentaje es 0,003 %, mil veces menos." }] },
         { tipo: "respuesta", titulo: "La lista enlazada",
           html: "<p>Los " + CLAVES + " teléfonos se guardan en una lista enlazada. Llegan " + CONSULTAS + " consultas y ninguno de los números consultados está. ¿Cuántas comparaciones hace el programa en total?</p>",
           campos: [{ rotulo: "comparaciones:", esperado: String(comp), pista: "?", ancho: "9rem" }],
@@ -64,10 +64,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Cuándo sí sirve la tabla directa", columna: true, correcta: "pisos",
           html: "<p>¿En cuál de estos programas la tabla de direccionamiento directo es una buena elección?</p>",
           opciones: [
-            { op: "pisos", texto: "Un edificio de 40 pisos guarda cuántas personas hay en cada piso, numerados de 0 a 39", msg: "Correcto. El universo tiene 40 claves y casi todas se usan: 40 casillas, buscar en Θ(1)." },
             { op: "cedulas", texto: "Una tienda guarda los 500 clientes frecuentes por número de cédula", msg: "Las cédulas tienen hasta 10 dígitos: la tabla tendría 10^10 casillas para 500 clientes." },
             { op: "palabras", texto: "Un corrector guarda 20 000 palabras del español", msg: "Una palabra no es un índice de arreglo. Habría que convertirla en número, y el universo de cadenas es enorme." }
-          ] }
+          ,
+            { op: "pisos", texto: "Un edificio de 40 pisos guarda cuántas personas hay en cada piso, numerados de 0 a 39", msg: "Correcto. El universo tiene 40 claves y casi todas se usan: 40 casillas, buscar en Θ(1)." }] }
       ]
     };
   }

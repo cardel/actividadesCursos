@@ -40,7 +40,7 @@
     explicacion: "Piense en φ = 0,8: cada valor guarda el 80 % del anterior más un ruido nuevo.",
     items: [
       { valor: "¿Cómo baja la ACF?",
-        opciones: ["Se corta después de k = 1", "Baja despacio, rezago a rezago", "Alterna de signo"], correcta: 1,
+        opciones: [ "Baja despacio, rezago a rezago", "Alterna de signo","Se corta después de k = 1"], correcta: 0,
         razon: "De k = 1 a 4 vale " + primeros(a08.acf, 4) + ", y sale de la banda en los rezagos " + lista(a08.fueraAcf) + ". El valor de hoy carga con el de ayer, que cargaba con el de antier: la memoria se va gastando de a poco." },
       { valor: "¿Y la PACF?",
         opciones: ["Una sola barra fuera, en k = 1", "Muchas barras fuera", "Ninguna barra fuera"], correcta: formaPacf,
@@ -61,10 +61,10 @@
         opciones: ["Alterna de signo", "Todas las barras son negativas", "Lo mismo que con 0,7"], correcta: alterna ? 0 : 1,
         razon: "De k = 1 a 4 vale " + primeros(an07.acf, 4) + ". Un valor por encima de cero anuncia uno por debajo, y ese, otro por encima: el signo de φ^k cambia con cada k." },
       { valor: "En teoría, ¿cuánto vale la ACF de un AR(1) en k = 1?",
-        opciones: ["φ", "φ²", "1 − φ"], correcta: 0,
+        opciones: [ "1 − φ","φ", "φ²"], correcta: 1,
         razon: "Vale φ, y en el rezago k vale φ^k. Con 110 datos la estimada se aparta un poco: con φ = 0,5 esta serie da " + fmt(a05.acf[1]) + " y con φ = 0,8 da " + fmt(a08.acf[1]) + "." },
       { valor: "Con φ = 0,99, ¿cómo se ve la serie?",
-        opciones: ["Vuelve a cero enseguida", "Se aleja de cero y tarda en volver", "Salta de un lado al otro del cero"], correcta: 1,
+        opciones: [ "Salta de un lado al otro del cero","Vuelve a cero enseguida", "Se aleja de cero y tarda en volver"], correcta: 2,
         razon: "Con φ casi 1 el modelo está al borde de la raíz unitaria: la ACF en k = 1 da " + fmt(a099.acf[1]) + " y sale de la banda en los rezagos " + lista(a099.fueraAcf) + ", como la serie del curso sin diferenciar." }
     ],
     cierre: "φ fija cuánto dura la memoria y su signo dice si los valores se siguen o se alternan."

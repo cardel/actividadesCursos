@@ -56,10 +56,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Si la clave fuera char *", columna: true, correcta: "una",
           html: "<p>Alguien declara <code>map&lt;char *, int&gt; veces;</code> y usa <code>veces[pal]</code> con el arreglo <code>char pal[101]</code> donde lee cada palabra. ¿Qué imprime el recorrido?</p>",
           opciones: [
-            { op: "una", texto: "Una sola línea: <code>" + salidaPunteros() + "</code>", msg: "Correcto. Las seis palabras se leen en el mismo arreglo: la clave es siempre la misma dirección, que cuenta 6, y al imprimirla se ve la última palabra leída." },
-            { op: "igual", texto: "Lo mismo que con string", msg: "Dos char * se comparan por la dirección que guardan, no por las letras. Todas las palabras tienen la misma dirección: la de pal." },
             { op: "seis", texto: "Seis líneas, una por palabra leída, cada una con 1", msg: "Para eso cada palabra tendría que tener su propia dirección. Aquí todas se leen en el mismo arreglo." }
-          ] }
+          ,
+            { op: "una", texto: "Una sola línea: <code>" + salidaPunteros() + "</code>", msg: "Correcto. Las seis palabras se leen en el mismo arreglo: la clave es siempre la misma dirección, que cuenta 6, y al imprimirla se ve la última palabra leída." },
+            { op: "igual", texto: "Lo mismo que con string", msg: "Dos char * se comparan por la dirección que guardan, no por las letras. Todas las palabras tienen la misma dirección: la de pal." }] }
       ]
     };
   }

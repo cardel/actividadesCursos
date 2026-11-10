@@ -102,10 +102,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Con & en lugar de &&", columna: true, correcta: "lee",
           html: "<p>Alguien escribe <code>while (i &lt; n &amp; datos[i] != 0)</code> y llama la función con " + arreglo(SIN_CERO) + ". ¿Qué pasa en la última evaluación, con i = 5?</p>",
           opciones: [
-            { op: "igual", texto: "Nada distinto: el ciclo sale igual porque i &lt; n es falso.", msg: "El ciclo sí sale, porque falso & cualquier cosa da falso. Pero antes de saberlo, & evalúa los dos lados: el derecho se evalúa " + y.der + " veces, una más que con &&, y esa última lee datos[5]." },
             { op: "lee", texto: "Se evalúan los dos lados, y el derecho lee datos[5], una casilla que no es del arreglo.", msg: "Correcto. & no corta: evalúa " + y.der + " veces el lado derecho, y la última lectura cae fuera del arreglo. Lo que haya en esa dirección no se sabe, y el programa puede leer basura o detenerse." },
             { op: "error", texto: "El compilador lo rechaza, porque & es para bits.", msg: "Compila: & entre dos comparaciones es válido en C. gcc -Wall avisa con -Wparentheses y pide paréntesis justo en esa línea, que es la pista de la trampa, pero genera el ejecutable igual." }
-          ] },
+          ,
+            { op: "igual", texto: "Nada distinto: el ciclo sale igual porque i &lt; n es falso.", msg: "El ciclo sí sale, porque falso & cualquier cosa da falso. Pero antes de saberlo, & evalúa los dos lados: el derecho se evalúa " + y.der + " veces, una más que con &&, y esa última lee datos[5]." }] },
         { tipo: "opciones", titulo: "Tres condiciones con ||", columna: true, correcta: "dos",
           html: codigo(CASILLA) + "<p>Se llama <code>casilla_vacia(datos, 5, 7)</code>. ¿Cuántas de las tres condiciones del <code>if</code> se evalúan?</p>",
           opciones: [
@@ -116,10 +116,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "El orden de los lados", columna: true, correcta: "orden",
           html: "<p>Otra versión de <code>hasta_cero</code> pone las condiciones al revés:</p>" + codigo(AL_REVES) + "<p>¿Qué cambia con el arreglo " + arreglo(SIN_CERO) + "?</p>",
           opciones: [
-            { op: "nada", texto: "Nada: && es conmutativo, el resultado es el mismo.", msg: "El valor lógico de la conjunción es el mismo, pero el cortocircuito corre de izquierda a derecha. Con i = 5, lo primero que se evalúa es datos[5]." },
-            { op: "orden", texto: "Con i = 5 se lee datos[5] antes de comprobar el rango.", msg: "Correcto. && solo protege lo que está a su derecha. La comprobación de rango tiene que ir primero para que la lectura no ocurra cuando i llega a n." },
             { op: "mas", texto: "Hace más vueltas, porque el ciclo depende primero de los datos.", msg: "Las vueltas son las mismas cinco. Lo que cambia es la última evaluación, que lee datos[5] antes de preguntar si i < n." }
-          ] }
+          ,
+            { op: "nada", texto: "Nada: && es conmutativo, el resultado es el mismo.", msg: "El valor lógico de la conjunción es el mismo, pero el cortocircuito corre de izquierda a derecha. Con i = 5, lo primero que se evalúa es datos[5]." },
+            { op: "orden", texto: "Con i = 5 se lee datos[5] antes de comprobar el rango.", msg: "Correcto. && solo protege lo que está a su derecha. La comprobación de rango tiene que ir primero para que la lectura no ocurra cuando i llega a n." }] }
       ]
     };
   }

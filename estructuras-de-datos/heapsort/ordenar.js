@@ -34,10 +34,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Por qué a[fin]", columna: true, correcta: "lugar",
           html: "<p>En cada ronda, el máximo de a[0] se cambia con a[fin]. ¿Por qué esa casilla y no otra?</p>",
           opciones: [
-            { op: "lugar", texto: "Porque el máximo de las fin + 1 claves que quedan es la mayor de ellas, y en el arreglo ordenado le toca la posición fin.", msg: "Correcto. Las casillas de fin + 1 en adelante ya tienen las claves más grandes, en orden. La mayor de las que faltan va justo antes. Y quitar la última casilla es lo único que deja el montículo completo." },
             { op: "hoja", texto: "Porque a[fin] es una hoja, y una hoja nunca hay que bajarla.", msg: "Es cierto que a[fin] es una hoja, y no es la razón. Lo que importa es que su casilla es la que le toca al máximo en el arreglo ordenado." },
             { op: "menor", texto: "Porque en a[fin] está siempre la clave más pequeña del montículo.", msg: "No siempre. La menor está en alguna hoja, pero no necesariamente en la última: en el montículo " + M.texto(CONTRA) + " la última casilla tiene el " + CONTRA[CONTRA.length - 1] + " y la menor, el 1, está en a[3]. Y aunque lo estuviera, lo que decide es dónde le toca quedar al máximo." }
-          ] },
+          ,
+            { op: "lugar", texto: "Porque el máximo de las fin + 1 claves que quedan es la mayor de ellas, y en el arreglo ordenado le toca la posición fin.", msg: "Correcto. Las casillas de fin + 1 en adelante ya tienen las claves más grandes, en orden. La mayor de las que faltan va justo antes. Y quitar la última casilla es lo único que deja el montículo completo." }] },
         { tipo: "respuesta", titulo: "Dos rondas a mano",
           html: "<p>Se llama <code>heapsort</code> sobre:</p>" + M.cajas(D, {}) +
                 "<p>Primero <code>construir</code>, y después dos rondas del ciclo. ¿Cómo queda el montículo inicial y cómo queda el arreglo después de las dos rondas?</p>",
@@ -57,10 +57,10 @@ var EJERCICIO = (function () {
                 "<pre class=\"fragmento\">" + textoEtiquetado(iguales) + "</pre>" +
                 "<p>El 6a llega antes que el 6b. ¿En qué orden quedan después de <code>heapsort</code>?</p>",
           opciones: [
-            { op: "conserva", texto: "6a antes que 6b: heapsort respeta el orden de llegada.", msg: "Resultado de heapsort: " + textoEtiquetado(orden.a) + ". El cambio de a[0] con a[fin] lleva una clave de un extremo al otro del arreglo y la deja detrás de otra igual que estaba más atrás." },
             { op: "invierte", texto: "6b antes que 6a: el orden de los iguales se invierte.", msg: "Correcto. Queda " + textoEtiquetado(orden.a) + ". Un ordenamiento que no garantiza conservar el orden de los iguales se llama inestable, y heapsort lo es: el cambio de a[0] con a[fin] salta por encima de todo lo que hay en medio." },
             { op: "igual", texto: "Da lo mismo: dos claves iguales no se distinguen.", msg: "Con enteros solos no se distinguen. Cuando se ordenan registros por un campo, por ejemplo estudiantes por nota, sí se nota cuál quedó primero." }
-          ] },
+          ,
+            { op: "conserva", texto: "6a antes que 6b: heapsort respeta el orden de llegada.", msg: "Resultado de heapsort: " + textoEtiquetado(orden.a) + ". El cambio de a[0] con a[fin] lleva una clave de un extremo al otro del arreglo y la deja detrás de otra igual que estaba más atrás." }] },
         { tipo: "opciones", titulo: "Heapsort frente a los otros", columna: true, correcta: "ambos",
           html: "<p>Merge sort ordena en Θ(n log n) y quicksort en Θ(n log n) en promedio. ¿Qué tiene heapsort que no tienen los dos juntos?</p>",
           opciones: [

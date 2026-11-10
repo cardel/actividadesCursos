@@ -33,10 +33,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Lo que compara el juez", columna: true, correcta: "salto",
           html: "<p>La salida esperada del juez es <code>" + sale + "</code> seguida de un salto de línea. Un programa imprime con <code>printf(\"El menor es %d\", menor);</code>, sin <code>\\n</code>. ¿Qué pasa?</p>",
           opciones: [
-            { op: "salto", texto: "Puede quedar rechazado: el archivo de salida no termina igual que el esperado.", msg: "Correcto. La comparación es carácter por carácter, y el salto de línea es un carácter. Algunos jueces perdonan los espacios del final y otros no: el \\n se pone siempre." },
             { op: "igual", texto: "Da igual: el número es el mismo.", msg: "El juez no lee números, compara archivos. Un carácter de menos ya es una diferencia." },
             { op: "pantalla", texto: "Solo se nota en pantalla, porque el prompt queda pegado a la salida.", msg: "En pantalla se ve feo, y además el archivo que el juez compara queda distinto del esperado." }
-          ] }
+          ,
+            { op: "salto", texto: "Puede quedar rechazado: el archivo de salida no termina igual que el esperado.", msg: "Correcto. La comparación es carácter por carácter, y el salto de línea es un carácter. Algunos jueces perdonan los espacios del final y otros no: el \\n se pone siempre." }] }
       ]
     };
   }

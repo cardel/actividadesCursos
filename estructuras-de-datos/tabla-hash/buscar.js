@@ -70,10 +70,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Qué puntero cambia", columna: true, correcta: "casilla",
           html: "<p>Al eliminar 41, el ciclo de búsqueda termina con <code>anterior == NULL</code> y <code>actual</code> en el 41. ¿Qué asignación lo desenlaza?</p>",
           opciones: [
-            { op: "casilla", texto: "<code>casillas[5] = actual-&gt;siguiente;</code>", msg: "Correcto. 41 era la cabeza: no hay nodo anterior que reescribir, así que la casilla apunta al 23." },
             { op: "anterior", texto: "<code>anterior-&gt;siguiente = actual-&gt;siguiente;</code>", msg: "anterior vale NULL: esa línea desreferencia un puntero nulo y el programa termina con violación de segmento." },
             { op: "delete", texto: "Basta con <code>delete actual;</code>", msg: "La casilla seguiría apuntando a la memoria liberada, y la siguiente búsqueda en la casilla 5 leería un nodo que ya no existe." }
-          ] },
+          ,
+            { op: "casilla", texto: "<code>casillas[5] = actual-&gt;siguiente;</code>", msg: "Correcto. 41 era la cabeza: no hay nodo anterior que reescribir, así que la casilla apunta al 23." }] },
         { tipo: "opciones", titulo: "Lo que cuesta eliminar", columna: true, correcta: "busqueda",
           html: "<p>En una tabla con n claves y m casillas, con las claves bien repartidas, ¿cuánto cuesta eliminar?</p>",
           opciones: [

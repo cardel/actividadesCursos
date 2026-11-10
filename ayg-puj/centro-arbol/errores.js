@@ -26,48 +26,48 @@ var EJERCICIO = (function () {
       cambio: "capa.append(u)   en vez de   siguiente.append(u),  recorriendo capa con un índice",
       arbol: "el camino de cinco vértices, 0−1−2−3−4",
       opciones: [
+        { txt: "Solo falla en árboles con más de dos centros.",
+          fb: "Nunca hay más de dos centros. El problema no es cuántos hay, es que se pelan vértices antes de tiempo." }
+      ,
         { txt: "Da lo mismo, porque igual se recorre toda la lista.",
           fb: "No da lo mismo: los vértices nuevos entran a la lista que se está recorriendo, así que se pelan en la misma vuelta en vez de esperar la siguiente." },
         { txt: "El árbol se consume de un lado y el centro sale corrido.",
           ok: true,
           fb: "Eso es. En el camino de cinco, al pelar 0 entra 1 a la misma lista, al pelar 1 entra 2, y la primera vuelta se lleva media rama." },
         { txt: "Deja de contar bien las vueltas, pero el centro sigue bien.",
-          fb: "Al revés: las vueltas quedan en una, y es el centro el que se mueve, porque los vértices no se pelan por capas sino en cadena." },
-        { txt: "Solo falla en árboles con más de dos centros.",
-          fb: "Nunca hay más de dos centros. El problema no es cuántos hay, es que se pelan vértices antes de tiempo." }
-      ]
+          fb: "Al revés: las vueltas quedan en una, y es el centro el que se mueve, porque los vértices no se pelan por capas sino en cadena." }]
     },
     {
       titulo: "Un grafo que no es árbol",
       cambio: "el mismo algoritmo, sobre un grafo con un ciclo",
       arbol: "un triángulo 0−1−2−0 con una cola 2−3",
       opciones: [
-        { txt: "Devuelve el centro del grafo, que para eso sirve el grado.",
-          fb: "No. El grado uno identifica hojas, y en un grafo con ciclos el centro no tiene nada que ver con las hojas." },
-        { txt: "Pela la cola y después se queda quieto con el triángulo, devolviendo algo que no es el centro.",
-          ok: true,
-          fb: "Eso es. El triángulo no tiene ningún vértice de grado uno, así que la capa siguiente queda vacía, vivos nunca baja de tres y lo que se devuelva no es el centro." },
         { txt: "Se cae con un error de índice.",
           fb: "No se cae: el código no hace nada ilegal, simplemente deja de encontrar hojas." },
         { txt: "Funciona igual, porque el teorema del centro vale para cualquier grafo conexo.",
           fb: "El teorema es de árboles. Lo que usa es que quitar las hojas baja todas las excentricidades en uno, y eso se cae apenas hay un ciclo." }
-      ]
+      ,
+        { txt: "Devuelve el centro del grafo, que para eso sirve el grado.",
+          fb: "No. El grado uno identifica hojas, y en un grafo con ciclos el centro no tiene nada que ver con las hojas." },
+        { txt: "Pela la cola y después se queda quieto con el triángulo, devolviendo algo que no es el centro.",
+          ok: true,
+          fb: "Eso es. El triángulo no tiene ningún vértice de grado uno, así que la capa siguiente queda vacía, vivos nunca baja de tres y lo que se devuelva no es el centro." }]
     },
     {
       titulo: "Las vueltas como radio",
       cambio: "return capa, vueltas   leído como   return centro, radio",
       arbol: "el camino de seis vértices, 0−1−2−3−4−5",
       opciones: [
-        { txt: "Está bien: el radio es siempre el número de vueltas.",
-          fb: "Solo cuando queda un centro. En el camino de seis quedan dos, las vueltas son 2 y el radio es 3." },
-        { txt: "Está mal siempre: el radio es las vueltas más uno.",
-          fb: "Tampoco siempre. Con un solo centro, como en el camino de cinco, las vueltas y el radio coinciden en 2." },
         { txt: "Está bien cuando queda un centro y se queda corto por uno cuando quedan dos.",
           ok: true,
           fb: "Eso es. Las vueltas son el piso del diámetro sobre dos, y el radio es el techo: coinciden si el diámetro es par." },
         { txt: "Está mal, y la corrección es multiplicar las vueltas por dos.",
           fb: "Eso da el diámetro cuando hay un solo centro, no el radio." }
-      ]
+      ,
+        { txt: "Está bien: el radio es siempre el número de vueltas.",
+          fb: "Solo cuando queda un centro. En el camino de seis quedan dos, las vueltas son 2 y el radio es 3." },
+        { txt: "Está mal siempre: el radio es las vueltas más uno.",
+          fb: "Tampoco siempre. Con un solo centro, como en el camino de cinco, las vueltas y el radio coinciden en 2." }]
     }
   ];
 

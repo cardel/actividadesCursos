@@ -121,18 +121,18 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Una cola en Θ(1)", columna: true, correcta: "deque",
           html: "<p>¿Qué par de operaciones hace una cola, con el primero que entra como el primero que sale, en Θ(1) cada una?</p>",
           opciones: [
-            { op: "listcero", texto: "<code>list</code>: <code>append</code> para entrar, <code>pop(0)</code> para salir", msg: "Es una cola, pero pop(0) corre todo lo que queda: Θ(n) por salida." },
-            { op: "listpila", texto: "<code>list</code>: <code>append</code> para entrar, <code>pop()</code> para salir", msg: "Θ(1), pero sale el último que entró: eso es una pila." },
             { op: "deque", texto: "<code>deque</code>: <code>append</code> para entrar, <code>popleft</code> para salir", msg: "Correcto. Entra por la derecha y sale por la izquierda, y ninguna de las dos corre casillas." },
             { op: "dequepila", texto: "<code>deque</code>: <code>appendleft</code> para entrar, <code>popleft</code> para salir", msg: "Θ(1), pero entra y sale por el mismo extremo: otra pila." }
-          ] },
+          ,
+            { op: "listcero", texto: "<code>list</code>: <code>append</code> para entrar, <code>pop(0)</code> para salir", msg: "Es una cola, pero pop(0) corre todo lo que queda: Θ(n) por salida." },
+            { op: "listpila", texto: "<code>list</code>: <code>append</code> para entrar, <code>pop()</code> para salir", msg: "Θ(1), pero sale el último que entró: eso es una pila." }] },
         { tipo: "opciones", titulo: "La del medio", columna: true, correcta: "lista",
           html: "<p>Un programa guarda 100 000 lecturas y consulta muchas veces la de una posición cualquiera, <code>datos[i]</code>, sin agregar ni quitar. ¿Qué contenedor conviene?</p>",
           opciones: [
-            { op: "deque", texto: "<code>deque</code>", msg: "En el deque, d[i] es Θ(1) cerca de los extremos y O(n) en el medio: recorre los bloques hasta llegar." },
             { op: "lista", texto: "<code>list</code>", msg: "Correcto. La dirección de l[i] se calcula: Θ(1) para cualquier i." },
             { op: "igual", texto: "Da lo mismo", msg: "No da lo mismo: la documentación de collections avisa que el acceso por índice del deque se vuelve O(n) en el medio." }
-          ] }
+          ,
+            { op: "deque", texto: "<code>deque</code>", msg: "En el deque, d[i] es Θ(1) cerca de los extremos y O(n) en el medio: recorre los bloques hasta llegar." }] }
       ]
     };
   }

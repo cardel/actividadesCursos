@@ -40,9 +40,9 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Un ranking de productos", columna: true, correcta: "map",
           html: "<p>Tras cada venta, una pantalla muestra todos los códigos de producto vendidos, de menor a mayor, con su total.</p>",
           opciones: [
-            { op: "map", texto: "map", msg: "Correcto: cada venta cuesta O(log n) y cada pantalla es un recorrido de Θ(n), ya en orden." },
             { op: "hash", texto: "Tabla hash", msg: "Cada pantalla tendría que copiar las claves y ordenarlas: Θ(m + n) más Θ(n log n) por venta." }
-          ] },
+          ,
+            { op: "map", texto: "map", msg: "Correcto: cada venta cuesta O(log n) y cada pantalla es un recorrido de Θ(n), ya en orden." }] },
         { tipo: "opciones", titulo: "Claves que escoge otro", columna: true, correcta: "map",
           html: "<p>Un servidor guarda claves enteras que mandan los usuarios, y alguien podría mandar a propósito claves que caigan todas en la misma casilla. El tiempo por operación tiene que quedar acotado.</p>",
           opciones: [
@@ -52,9 +52,9 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Códigos repetidos", columna: true, correcta: "hash",
           html: "<p>Una lista trae un millón de códigos de estudiante y hay que decir cuántos aparecen más de una vez. No se imprime ningún código.</p>",
           opciones: [
-            { op: "hash", texto: "Tabla hash", msg: "Correcto: por cada código se busca y, si no estaba, se inserta; Θ(n) en promedio, y el orden no aparece en la salida." },
             { op: "map", texto: "map, porque los repetidos quedan juntos", msg: "En el map los iguales no quedan juntos: una clave aparece una sola vez. Contar con él cuesta O(n log n) por un orden que no se usa." }
-          ] }
+          ,
+            { op: "hash", texto: "Tabla hash", msg: "Correcto: por cada código se busca y, si no estaba, se inserta; Θ(n) en promedio, y el orden no aparece en la salida." }] }
       ]
     };
   }

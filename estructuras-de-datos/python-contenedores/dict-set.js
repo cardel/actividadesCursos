@@ -107,17 +107,17 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Una clave que cambia", columna: true, correcta: "tupla",
           html: "<p>Se quiere guardar cuántas veces aparece cada par de coordenadas (x, y). ¿Cuál de estas claves acepta un <code>dict</code>?</p>",
           opciones: [
-            { op: "lista", texto: "<code>conteo[[x, y]]</code>", msg: "Una list puede cambiar después de entrar, y entonces su hash ya no apuntaría a su casilla. Python la rechaza con un TypeError: cannot use 'list' as a dict key (unhashable type: 'list')." },
-            { op: "tupla", texto: "<code>conteo[(x, y)]</code>", msg: "Correcto. Una tupla no cambia, así que su hash es fijo y puede ser clave." },
             { op: "ninguna", texto: "Ninguna de las dos", msg: "La tupla sí: es inmutable y tiene hash." }
-          ] },
+          ,
+            { op: "lista", texto: "<code>conteo[[x, y]]</code>", msg: "Una list puede cambiar después de entrar, y entonces su hash ya no apuntaría a su casilla. Python la rechaza con un TypeError: cannot use 'list' as a dict key (unhashable type: 'list')." },
+            { op: "tupla", texto: "<code>conteo[(x, y)]</code>", msg: "Correcto. Una tupla no cambia, así que su hash es fijo y puede ser clave." }] },
         { tipo: "opciones", titulo: "Quitar repetidos", columna: true, correcta: "lineal",
           html: P.codigo(["vistos = set()", "unicos = []", "for x in datos:", "    if x not in vistos:", "        vistos.add(x)", "        unicos.append(x)"]) + "<p>Con n datos, ¿cuánto cuesta en promedio?</p>",
           opciones: [
-            { op: "cuadratico", texto: "Θ(n²)", msg: "Eso costaría con vistos como list, donde x not in recorre todo. En un set la pregunta cuesta O(1) en promedio." },
             { op: "lineal", texto: "Θ(n)", msg: "Correcto. n vueltas con una consulta y a lo sumo un add y un append, cada uno O(1) en promedio. Además unicos conserva el orden de llegada." },
             { op: "nlogn", texto: "Θ(n log n)", msg: "Ese es el costo de ordenar. Aquí no se ordena nada." }
-          ] }
+          ,
+            { op: "cuadratico", texto: "Θ(n²)", msg: "Eso costaría con vistos como list, donde x not in recorre todo. En un set la pregunta cuesta O(1) en promedio." }] }
       ]
     };
   }

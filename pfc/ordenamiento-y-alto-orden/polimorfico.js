@@ -170,13 +170,6 @@
         titulo: "¿Qué hace falta para que msort ordene listas de cualquier tipo?",
         opciones: [
           {
-            txt: "Parametrizar el tipo con msort[T] y recibir la comparación como " +
-              "una segunda lista de parámetros: (menorQue: (T, T) => Boolean).",
-            ok: true,
-            msg: "Eso es. El tipo deja de estar fijo en Int y la operación que no " +
-              "existe para un T cualquiera entra por parámetro, escrita por quien llama."
-          },
-          {
             txt: "Escribir msort[T](xs: List[T]) y dejar el if (m < n) como estaba.",
             ok: false,
             msg: "El parámetro de tipo solo cambia la firma. Adentro sigue estando " +
@@ -198,7 +191,14 @@
               "alfabético, y la lista que se devuelve dejaría de ser List[T]. Lo que se " +
               "recibe es la comparación, no los datos convertidos."
           }
-        ]
+        ,
+          {
+            txt: "Parametrizar el tipo con msort[T] y recibir la comparación como " +
+              "una segunda lista de parámetros: (menorQue: (T, T) => Boolean).",
+            ok: true,
+            msg: "Eso es. El tipo deja de estar fijo en Int y la operación que no " +
+              "existe para un T cualquiera entra por parámetro, escrita por quien llama."
+          }]
       },
       {
         titulo: "Si msort[T] se queda con el if (m < n) y sin el parámetro menorQue, " +
@@ -239,6 +239,14 @@
           "¿Qué pasa si se escribe merge(msort(izq), msort(der))?",
         opciones: [
           {
+            txt: "Da igual, porque menorQue ya está en el ámbito donde se escribe la línea.",
+            ok: false,
+            msg: "merge sí ve menorQue, por estar escrita dentro de msort. La llamada " +
+              "recursiva es a msort, que tiene su propia lista de parámetros, y esa hay " +
+              "que llenarla."
+          }
+        ,
+          {
             txt: "No compila: a msort(izq) le falta la segunda lista de parámetros, así " +
               "que no es una List[T].",
             ok: true,
@@ -259,33 +267,11 @@
             msg: "Las mitades no quedan a medio ordenar, porque la expresión no llega a " +
               "compilar: sin la segunda lista de parámetros, msort(izq) no es una lista y " +
               "merge no la puede recibir."
-          },
-          {
-            txt: "Da igual, porque menorQue ya está en el ámbito donde se escribe la línea.",
-            ok: false,
-            msg: "merge sí ve menorQue, por estar escrita dentro de msort. La llamada " +
-              "recursiva es a msort, que tiene su propia lista de parámetros, y esa hay " +
-              "que llenarla."
-          }
-        ]
+          }]
       },
       {
         titulo: "¿Qué responde msort(List(5, 2, 4, 1))((x: Int, y: Int) => x > y)?",
         opciones: [
-          {
-            txt: conMayor,
-            ok: true,
-            msg: "Eso es: " + conMayor + ". msort no define qué es estar ordenado; lo " +
-              "define la función que recibe, y con x > y la cabeza que sale primero es " +
-              "la mayor de las dos."
-          },
-          {
-            txt: conMenor,
-            ok: false,
-            msg: "Esa es la respuesta con (x: Int, y: Int) => x < y. El cuerpo de msort " +
-              "es el mismo en las dos corridas: lo único que cambió es la función que " +
-              "decide cuál cabeza sale."
-          },
           {
             txt: textoLista(USOS[1].xs),
             ok: false,
@@ -300,7 +286,21 @@
               "nombre menorQue dice cómo se usa el resultado, no obliga a que la función " +
               "signifique menor que."
           }
-        ]
+        ,
+          {
+            txt: conMayor,
+            ok: true,
+            msg: "Eso es: " + conMayor + ". msort no define qué es estar ordenado; lo " +
+              "define la función que recibe, y con x > y la cabeza que sale primero es " +
+              "la mayor de las dos."
+          },
+          {
+            txt: conMenor,
+            ok: false,
+            msg: "Esa es la respuesta con (x: Int, y: Int) => x < y. El cuerpo de msort " +
+              "es el mismo en las dos corridas: lo único que cambió es la función que " +
+              "decide cuál cabeza sale."
+          }]
       }
     ];
   }

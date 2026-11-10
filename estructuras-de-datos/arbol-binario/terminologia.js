@@ -128,10 +128,10 @@ var EJERCICIO = (function () {
         { tipo: "opciones", titulo: "Aristas o nodos", columna: true, correcta: "cinco",
           html: "<p>Un enunciado define la altura contando <b>nodos</b>: una hoja tiene altura 1. Con esa definición, ¿cuál es la altura de este árbol?</p>",
           opciones: [
-            { op: "cuatro", texto: String(alturaArbol), msg: "Esa es la altura contando aristas. Contando nodos, el camino R, M, S, U, V tiene cinco." },
-            { op: "cinco", texto: String(alturaArbol + 1), msg: "Correcto. Contando nodos todo sube en uno. Antes de programar se lee cuál de las dos definiciones usa el enunciado." },
             { op: "once", texto: String(n), msg: n + " es el número de nodos del árbol, no los de su camino más largo." }
-          ] }
+          ,
+            { op: "cuatro", texto: String(alturaArbol), msg: "Esa es la altura contando aristas. Contando nodos, el camino R, M, S, U, V tiene cinco." },
+            { op: "cinco", texto: String(alturaArbol + 1), msg: "Correcto. Contando nodos todo sube en uno. Antes de programar se lee cuál de las dos definiciones usa el enunciado." }] }
       ]
     };
   }

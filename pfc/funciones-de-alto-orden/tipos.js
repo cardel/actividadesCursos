@@ -4,14 +4,14 @@
 (function () {
   var PREGUNTAS = [
     { expr: "suma4(x => x)", correcta: "(Int => Int) => (Int, Int) => Int",
-      opciones: ["(Int => Int) => (Int, Int) => Int", "(Int, Int) => Int", "Int => Int", "Int"],
+      opciones: [ "Int => Int", "Int","(Int => Int) => (Int, Int) => Int", "(Int, Int) => Int"],
       msg: {
         "(Int => Int) => (Int, Int) => Int": "Correcto. Se llenó el primer grupo; quedan dos por llenar: prox, y después (a, b). Una función que espera prox y devuelve la que espera el rango.",
         "(Int, Int) => Int": "No. Ese es el tipo después de dar también prox. Con un solo grupo llenado falta el de prox antes del rango.",
         "Int => Int": "No. Falta más de un argumento: prox (una función) y luego a y b. El tipo tiene que reflejar los dos grupos que quedan.",
         "Int": "No. suma4 con un solo grupo no calcula nada todavía: devuelve una función. Solo da un Int cuando se llenan los tres grupos." } },
     { expr: "suma4(x => x)(x => x + 1)", correcta: "(Int, Int) => Int",
-      opciones: ["(Int, Int) => Int", "Int => Int => Int", "Int", "(Int => Int) => Int"],
+      opciones: [ "Int => Int => Int", "Int", "(Int => Int) => Int","(Int, Int) => Int"],
       msg: {
         "(Int, Int) => Int": "Correcto. Dos grupos llenos; queda el del rango, que recibe a y b juntos y devuelve el Int.",
         "Int => Int => Int": "No. El último grupo es (a: Int, b: Int), dos parámetros en un solo grupo: se reciben juntos, no uno por uno.",
@@ -25,14 +25,14 @@
         "(Int, Int) => Int": "No. Solo falta un argumento, b, y va en su propio grupo.",
         "Int => Int => Int": "No. Ese es el tipo de sumaC entera, sin llenar ningún grupo. Con el 2 puesto queda un solo grupo." } },
     { expr: "derivada(cube, 0.1)", correcta: "Double => Double",
-      opciones: ["Double => Double", "Double", "(Double => Double) => Double", "(Double, Double) => Double"],
+      opciones: [ "(Double, Double) => Double","Double => Double", "Double", "(Double => Double) => Double"],
       msg: {
         "Double => Double": "Correcto. derivada devuelve una función de una variable, del mismo tipo que cube. Por eso se le puede volver a pasar a derivada.",
         "Double": "No. Falta el x donde evaluar: derivada(cube, 0.1)(2) sí es un Double.",
         "(Double => Double) => Double": "No. La función devuelta recibe un número, no una función. derivada ya recibió su función.",
         "(Double, Double) => Double": "No. derivada tiene dos parámetros, pero lo que devuelve es un literal de un solo parámetro: x." } },
     { expr: "sumador (la función misma, sin aplicar)", correcta: "Int => Int => Int",
-      opciones: ["Int => Int => Int", "Int => Int", "(Int, Int) => Int", "Int"],
+      opciones: [ "(Int, Int) => Int", "Int","Int => Int => Int", "Int => Int"],
       msg: {
         "Int => Int => Int": "Correcto. Recibe n y devuelve una función Int => Int. La flecha asocia a la derecha: Int => (Int => Int).",
         "Int => Int": "No. Ese es el tipo de sumador(5), después de darle n. sumador solo todavía espera n.",
