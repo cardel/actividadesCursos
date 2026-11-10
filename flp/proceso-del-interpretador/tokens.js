@@ -16,24 +16,24 @@ var BLOQUES = (function () {
         "numero         (digit (arbno digit))                    number\n" +
         "numero         (\"-\" digit (arbno digit))                number",
       explicacion:
-        "Esas son las reglas léxicas del lenguaje. Cada paréntesis, cada " +
-        "coma y cada nombre de primitiva también es un token, porque son " +
-        "literales de la gramática. Cuente cuántos tokens produce cada " +
+        "Esas son las reglas léxicas del lenguaje. Lo que la gramática " +
+        "escribe entre comillas también deja token: los paréntesis, la coma, " +
+        "los nombres de las primitivas y las palabras <code>let</code>, " +
+        "<code>=</code> e <code>in</code>. Cuente cuántos tokens produce cada " +
         "programa.",
-      opciones: ["4", "6", "8"],
       items: [
-        { valor: c("add1(b)"), opciones: ["3", "4", "5"], correcta: 1,
-          razon: "Cuatro: add1, (, b y ). El nombre de la primitiva es un solo token, no cuatro letras sueltas, y los dos paréntesis cuentan uno cada uno." },
+        { valor: c("add1(b)"), opciones: ["2", "3", "4"], correcta: 2,
+          razon: "Cuatro: add1, (, b y ). El nombre de la primitiva entra entero como un solo token y cada paréntesis cuenta aparte. Contar el par de paréntesis como una unidad da tres; leer add1(b) como la primitiva y su argumento da dos." },
         { valor: c("*(x, b)"), opciones: ["4", "5", "6"], correcta: 2,
-          razon: "Seis: *, (, x, la coma, b y ). Los espacios no dejan nada, y la coma sí es un token porque la gramática la escribe en la producción." },
+          razon: "Seis: *, (, x, la coma, b y ). El espacio no deja nada. La coma sí es un token, porque la gramática la escribe en la producción de la primitiva, y descontarla es lo que lleva a cinco; descontar además los paréntesis, a cuatro." },
+        { valor: c("sub1(add1(b))"), opciones: ["6", "7", "8"], correcta: 1,
+          razon: "Siete: sub1, (, add1, (, b, ) y ). Los dos paréntesis de cierre llegan pegados y cada uno deja su token. Coma no hay ninguna: estas dos primitivas llevan un solo operando, y esperar una da ocho." },
         { valor: c("-(x,3)     % sin espacios"), opciones: ["6", "7", "9"], correcta: 0,
-          razon: "Seis, los mismos que tendría con espacios. El comentario tampoco deja token: su regla léxica tiene salida skip, igual que la de los espacios." },
-        { valor: c("sub1(add1(b))"), opciones: ["5", "6", "7"], correcta: 2,
-          razon: "Siete: sub1, (, add1, (, b, ) y ). Los dos paréntesis de cierre son tokens distintos, y no hay ninguna coma porque cada una de estas primitivas lleva un solo operando." },
-        { valor: c("let y = 7 in *(y, y)"), opciones: ["8", "10", "11"], correcta: 2,
-          razon: "Once: let, y, =, 7, in, *, (, y, la coma, y, ). Seis de los once son literales de la gramática, y esa proporción es lo normal en un programa corto." },
-        { valor: c("% nada más que esto"), opciones: ["Ninguno", "Uno", "Cuatro"], correcta: 0,
-          razon: "Ninguno. El scanner lee la línea entera, la descarta y llega al final sin emitir nada; el parser recibe una lista vacía y se queja de que falta la expresión." }
+          razon: "Seis, los mismos que con espacios. El comentario arranca en el % y llega hasta el fin de la línea, y su regla léxica sale con skip igual que la de los espacios: ni el signo deja token ni lo dejan las dos palabras que lo siguen." },
+        { valor: c("let y = 7 z = 2 in *(y, z)"), opciones: ["13", "14", "15"], correcta: 1,
+          razon: "Catorce: let, y, =, 7, z, =, 2, in, *, (, y, la coma, z y ). La producción repite el par identificador = expresión, así que un solo let alcanza para las dos declaraciones; escribirlo delante de cada una da quince tokens y olvidar la coma, trece." },
+        { valor: c("% nada más que esto"), opciones: ["0", "1", "4"], correcta: 0,
+          razon: "Ninguno. El scanner lee la línea entera, la descarta y llega al final sin emitir nada: ni el signo ni las cuatro palabras dejan token. El parser se queda sin entrada y responde que un programa no puede empezar donde la entrada termina." }
       ],
       cierre:
         "Los espacios y los comentarios desaparecen; todo lo demás deja " +

@@ -6,7 +6,7 @@ var INTERFAZ =
   "(empty-env)                    (empty-env? env)\n" +
   "(extend-env id val env)        (extend-env? env)\n" +
   "(extend-env->id env)           (extend-env->val env)\n" +
-  "(extend-env->old-env env)";
+  "(extend-env->env env)";
 
 var CABECERA =
   ";; Representación con listas. El cliente no debe depender de ella.\n" +
@@ -16,7 +16,7 @@ var CABECERA =
   "(define (extend-env? env) (eq? (car env) 'extend-env))\n" +
   "(define (extend-env->id env) (cadr env))\n" +
   "(define (extend-env->val env) (caddr env))\n" +
-  "(define (extend-env->old-env env) (cadddr env))\n" +
+  "(define (extend-env->env env) (cadddr env))\n" +
   "\n" +
   ";; El ambiente de las pruebas: m aparece tres veces.\n" +
   "(define e\n" +
@@ -54,7 +54,7 @@ var RETOS = (function () {
       pistas: function (llamada, esperado, obtenido) {
         if (llamada === "(ligada? e 'k)" && obtenido === "#f") {
           return "k está en el eslabón más viejo y la búsqueda no llegó. La " +
-            "cláusula del else sigue con extend-env->old-env.";
+            "cláusula del else sigue con extend-env->env.";
         }
         return "Vacío: #f. El nombre coincide: #t. Si no, se sigue con el " +
           "ambiente anterior.";

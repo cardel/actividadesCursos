@@ -9,7 +9,7 @@ var DEFINICION =
 var CABECERA =
   "(define N 10)\n" +
   "(define zero '())\n" +
-  "(define (is-zero? n) (null? n))\n";
+  "(define (zero? n) (null? n))\n";
 
 var RETOS = (function () {
   "use strict";
@@ -97,7 +97,7 @@ var RETOS = (function () {
       cierre:
         "El préstamo es la operación inversa del acarreo y también es una " +
         "llamada recursiva. El caso del cero al final es lo que hace que " +
-        "cada número tenga una sola forma, y sin él is-zero? dejaría de " +
+        "cada número tenga una sola forma, y sin él zero? dejaría de " +
         "funcionar."
     },
     {
@@ -185,7 +185,7 @@ var RETOS = (function () {
         "        ((and (= (car n) 1) (null? (cdr n))) '())\n" +
         "        (else (cons (- (car n) 1) (cdr n)))))\n" +
         "(define (suma a b)\n" +
-        "  (if (is-zero? b) a (suma (succ a) (pred b))))\n" +
+        "  (if (zero? b) a (suma (succ a) (pred b))))\n" +
         "\n" +
         "(define (multiplica a b)\n" +
         "  (if ???\n" +

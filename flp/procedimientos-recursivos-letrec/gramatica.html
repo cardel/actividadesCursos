@@ -11,7 +11,7 @@
 <div class="contenedor">
   <a class="volver" href="#">← Volver a los ejercicios</a>
   <h1>La producción de letrec</h1>
-  <p class="intro">La producción nueva de la gramática (EOPL §3.4), trabajada en los dos sentidos: diez programas para decidir si los genera, el reparto de un programa en los cuatro campos de la variante, y cuatro árboles que no se generan con lo que habría que cambiarle a la producción para admitirlos. Cada respuesta muestra su razón, se acierte o no.</p>
+  <p class="intro">La producción nueva de la gramática (EOPL §3.4), trabajada en los dos sentidos: diez programas para decidir si los genera, el reparto de un programa en los cuatro campos de la variante, y cuatro formas que alguien querría escribir, para decir qué habría que cambiarle a la producción si hace falta cambiarle algo. Cada respuesta muestra su razón, se acierte o no.</p>
 
   <div id="bloques"></div>
 
@@ -32,6 +32,9 @@
     decorativos: son lo que obliga a que la parte derecha sea el cuerpo de un
     procedimiento y no una expresión cualquiera, que es lo que deja fuera a
     <code>letrec x = +(x,1) in x</code>.</div>
+
+    <h2 class="ejercicio-abierto">Un ejercicio más</h2>
+    <p style="margin-top:0">Agregue al lenguaje una forma <code>letrec*</code> en la que cada declaración solo alcance a las que están escritas antes de ella. Escriba la producción, los campos de la variante y el árbol de <code>letrec* f(n) = add1(n) g(m) = (f m) in (g 2)</code>. Después escriba un programa que <code>letrec</code> resuelva y <code>letrec*</code> deje con una variable libre, y diga qué tendría que construir el evaluador en lugar de un solo marco.</p>
   </div>
 
 </div>

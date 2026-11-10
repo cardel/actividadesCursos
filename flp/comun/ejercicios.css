@@ -156,3 +156,8 @@
 .alm-flecha.alm-flecha-gris { stroke: #b8c4dc; stroke-width: 1; }
 .alm-punta { fill: #2a5db0; }
 .tabla-traza .fila-reserva td { background: #f2fbf2; font-size: 0.85rem; color: #2e6b2e; }
+
+/* El ejercicio abierto que cierra cada actividad: va dentro de la carta de
+   cierre, debajo de lo que ya había, y necesita aire para no leerse como
+   parte de la tabla anterior. */
+.carta h2.ejercicio-abierto { margin-top: 1.4rem; }

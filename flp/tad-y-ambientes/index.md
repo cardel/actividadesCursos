@@ -53,10 +53,12 @@ contrato habla de cómo se comportan entre sí.
 ### [¿Cuánto vale este dato?](valor.html){ target=_blank rel=noopener }
 
 Un mismo valor de Racket leído bajo cinco representaciones del natural, tres
-de la sesión y dos que no aparecen en ella. Primero cuánto vale `(1 2)` en
-cada una; después si se puede saber sin conocer la representación, y qué pasa
-con un dato que la definición nunca produce; por último el acarreo y el
-préstamo, que son lo que mantiene a `succ` y `pred` dentro del contrato.
+de la sesión y dos que no aparecen en ella. Se abre por la unaria, que se lee
+de un vistazo, y de ahí sube hasta `(1 2)`, que vale distinto en cada
+representación; después si se puede saber cuánto vale sin conocer la
+representación, y qué pasa con un dato que la definición nunca produce; por
+último el acarreo y el préstamo, que son lo que mantiene a `succ` y `pred`
+dentro del contrato.
 
 ### [Bignum en base 10](bignum.html){ target=_blank rel=noopener }
 

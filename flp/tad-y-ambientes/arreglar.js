@@ -5,14 +5,14 @@
    mini-scheme.js. */
 var INTERFAZ =
   "zero              = ⌈0⌉\n" +
-  "(is-zero? ⌈n⌉)    = #t si n = 0, #f en otro caso\n" +
+  "(zero? ⌈n⌉)    = #t si n = 0, #f en otro caso\n" +
   "(succ ⌈n⌉)        = ⌈n+1⌉\n" +
   "(pred ⌈n+1⌉)      = ⌈n⌉";
 
 var REP =
   ";; Representación anidada: ⌈0⌉ = () y ⌈n+1⌉ = (list ⌈n⌉).\n" +
   "(define zero '())\n" +
-  "(define (is-zero? n) (null? n))\n" +
+  "(define (zero? n) (null? n))\n" +
   "(define (succ n) (list n))\n" +
   "(define (pred n) (car n))\n";
 
@@ -130,8 +130,8 @@ var RETOS = (function () {
       esqueleto:
         REP + "\n" +
         "(define (mayor? a b)\n" +
-        "  (cond ((is-zero? b) ???)\n" +
-        "        ((is-zero? a) ???)\n" +
+        "  (cond ((zero? b) ???)\n" +
+        "        ((zero? a) ???)\n" +
         "        (else ???)))\n",
       pruebas: [
         { llamada: "(mayor? (succ (succ zero)) (succ zero))", esperado: "#t" },

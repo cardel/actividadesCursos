@@ -10,7 +10,7 @@ var BLOQUES = (function () {
       opciones: ["Sobrevive", "Se rompe"],
       definicion:
         "zero              = ⌈0⌉\n" +
-        "(is-zero? ⌈n⌉)    = #t si n = 0, #f en otro caso\n" +
+        "(zero? ⌈n⌉)    = #t si n = 0, #f en otro caso\n" +
         "(succ ⌈n⌉)        = ⌈n+1⌉\n" +
         "(pred ⌈n+1⌉)      = ⌈n⌉",
       explicacion:
@@ -19,22 +19,22 @@ var BLOQUES = (function () {
         "bignum en base 16. Para cada cliente, decida si funciona con " +
         "<b>las tres</b> sin cambiarle una letra, o si alguna lo rompe.",
       items: [
-        { valor: "(define (doble n)<br>&nbsp;&nbsp;(if (is-zero? n) zero (succ (succ (doble (pred n))))))",
+        { valor: "(define (doble n)<br>&nbsp;&nbsp;(if (zero? n) zero (succ (succ (doble (pred n))))))",
           correcta: 0,
-          razon: "Solo aparecen zero, is-zero?, succ y pred. No importa qué sea ⌈n⌉ por dentro: el cliente nunca lo mira." },
+          razon: "Solo aparecen zero, zero?, succ y pred. No importa qué sea ⌈n⌉ por dentro: el cliente nunca lo mira." },
         { valor: "(define (doble n) (* 2 n))",
           correcta: 1,
           razon: "Multiplicar supone que ⌈n⌉ es un número de Racket. Con la representación unaria, (* 2 '(#t #t)) revienta." },
         { valor: "(define (es-uno? n) (equal? n '(#t)))",
           correcta: 1,
           razon: "Compara contra la forma unaria. Con los números nativos, (equal? 1 '(#t)) es #f, y el cliente responde mal sin dar error, que es peor." },
-        { valor: "(define (es-uno? n)<br>&nbsp;&nbsp;(and (not (is-zero? n)) (is-zero? (pred n))))",
+        { valor: "(define (es-uno? n)<br>&nbsp;&nbsp;(and (not (zero? n)) (zero? (pred n))))",
           correcta: 0,
           razon: "Uno es el natural que no es cero y cuyo predecesor sí lo es. Está dicho con la interfaz y nada más." },
         { valor: "(define (mayor? a b) (> (length a) (length b)))",
           correcta: 1,
           razon: "length pide una lista: funciona en la unaria y se cae con los números de Racket. Y en bignum length cuenta dígitos, no el valor: ⌈255⌉ = (15 15) y ⌈17⌉ = (1 1) tienen los mismos, y el cliente diría que ninguno es mayor." },
-        { valor: "(define (mayor? a b)<br>&nbsp;&nbsp;(cond [(is-zero? b) (not (is-zero? a))]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[(is-zero? a) #f]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[else (mayor? (pred a) (pred b))]))",
+        { valor: "(define (mayor? a b)<br>&nbsp;&nbsp;(cond [(zero? b) (not (zero? a))]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[(zero? a) #f]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[else (mayor? (pred a) (pred b))]))",
           correcta: 0,
           razon: "Baja los dos al tiempo hasta que uno se agota. Cada paso es una operación de la interfaz, así que da igual la representación." },
         { valor: "(define tres (list #t #t #t))",
@@ -60,7 +60,7 @@ var BLOQUES = (function () {
         "(empty-env)                    (empty-env? env)\n" +
         "(extend-env id val env)        (extend-env? env)\n" +
         "(extend-env->id env)           (extend-env->val env)\n" +
-        "(extend-env->old-env env)      (apply-env env id)",
+        "(extend-env->env env)      (apply-env env id)",
       explicacion:
         "La representación en uso es la de listas: " +
         "<code>(extend-env id val old)</code> es literalmente esa lista de " +
@@ -79,12 +79,12 @@ var BLOQUES = (function () {
         { valor: "(define (vacio? env) (empty-env? env))",
           correcta: 0,
           razon: "El predicado de la interfaz existe justamente para esta pregunta." },
-        { valor: "(define (tiene? env id)<br>&nbsp;&nbsp;(cond [(empty-env? env) #f]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[(eq? (extend-env->id env) id) #t]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[else (tiene? (extend-env->old-env env) id)]))",
+        { valor: "(define (tiene? env id)<br>&nbsp;&nbsp;(cond [(empty-env? env) #f]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[(eq? (extend-env->id env) id) #t]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[else (tiene? (extend-env->env env) id)]))",
           correcta: 0,
           razon: "Es apply-env sin el error: recorre la cadena por los extractores y se detiene en el vacío. Todo por la interfaz." },
         { valor: "(define (cuantos env) (if (empty-env? env) 0 (+ 1 (cuantos (cadddr env)))))",
           correcta: 1,
-          razon: "Mezcla. Pregunta bien por el vacío, pero baja al ambiente anterior con cadddr en vez de extend-env->old-env. Basta un acceso posicional para que el cliente dependa de la lista." }
+          razon: "Mezcla. Pregunta bien por el vacío, pero baja al ambiente anterior con cadddr en vez de extend-env->env. Basta un acceso posicional para que el cliente dependa de la lista." }
       ],
       cierre:
         "Un cliente que pasa por la interfaz en cinco lugares y mete la mano " +
