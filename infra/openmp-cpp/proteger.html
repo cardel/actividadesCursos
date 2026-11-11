@@ -112,8 +112,8 @@
     ¿Cuál conviene?</p>
     <div class="opciones" id="opciones-acumular">
       <button data-op="critical">critical</button>
-      <button data-op="atomic">atomic</button>
       <button data-op="correcta">reduction</button>
+      <button data-op="atomic">atomic</button>
       <button data-op="privada">ninguno: basta declarar la variable private</button>
     </div>
     <div id="veredicto-acumular" class="veredicto"></div>
@@ -125,9 +125,9 @@
     compartido y actualizar tres campos de una estructura que deben quedar consistentes entre sí.
     ¿Qué pide cada uno?</p>
     <div class="opciones" id="opciones-casos">
-      <button data-op="correcta">atomic para el contador y critical para los tres campos</button>
       <button data-op="invertida">critical para el contador y atomic para los tres campos</button>
       <button data-op="reduccion">atomic para el contador y reduction para los tres campos</button>
+      <button data-op="correcta">atomic para el contador y critical para los tres campos</button>
       <button data-op="ambos">critical en los dos casos</button>
     </div>
     <div id="veredicto-casos" class="veredicto"></div>

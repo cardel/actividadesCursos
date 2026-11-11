@@ -110,8 +110,8 @@
     bajó a la mitad. El programa que los lanza es el mismo.</p>
     <div class="opciones" id="opciones-escala">
       <button data-op="procesos">Porque NumPy usa procesos en vez de hilos</button>
-      <button data-op="correcta">Porque <code>.sum()</code> libera el GIL mientras recorre la memoria</button>
       <button data-op="pequeno">Porque el arreglo de NumPy es más pequeño</button>
+      <button data-op="correcta">Porque <code>.sum()</code> libera el GIL mientras recorre la memoria</button>
       <button data-op="singil">Porque NumPy no tiene GIL</button>
     </div>
     <div id="veredicto-escala" class="veredicto"></div>
@@ -123,8 +123,8 @@
     veces más hilos para bajar 3 ms.</p>
     <div class="opciones" id="opciones-techo">
       <button data-op="gil">Porque el GIL vuelve a aparecer</button>
-      <button data-op="nucleos">Porque solo hay dos núcleos</button>
       <button data-op="correcta">Porque el bus de memoria ya está saturado con dos hilos</button>
+      <button data-op="nucleos">Porque solo hay dos núcleos</button>
       <button data-op="creacion">Porque 0,024 s es el costo de crear los hilos</button>
     </div>
     <div id="veredicto-techo" class="veredicto"></div>

@@ -68,10 +68,10 @@
     contenedor se levanta con <code>docker run -d hola-mundo</code>, sin
     <code>-p</code>. ¿Responde <code>curl http://localhost:5000</code> desde el anfitrión?</p>
     <div class="opciones" id="op-expose">
-      <button data-op="correcta">No: <code>EXPOSE</code> solo documenta el puerto, y publicarlo es tarea de <code>-p</code></button>
       <button data-op="si">Sí: <code>EXPOSE</code> abre el puerto 5000 en el anfitrión</button>
       <button data-op="root">Sí, siempre que la orden se ejecute como <code>root</code></button>
       <button data-op="firewall">No, porque el cortafuegos del anfitrión bloquea el 5000</button>
+      <button data-op="correcta">No: <code>EXPOSE</code> solo documenta el puerto, y publicarlo es tarea de <code>-p</code></button>
     </div>
     <div id="ver-expose" class="veredicto"></div>
     <div class="nota">Sirve para quien lee el <code>Dockerfile</code> y para las herramientas
@@ -89,17 +89,17 @@
     <p style="margin-top:0.7rem;margin-bottom:0.3rem">Con el <strong>B</strong>, ¿qué ejecuta
     <code>docker run img --puerto 8080</code>?</p>
     <div class="opciones" id="op-entrypoint">
-      <button data-op="correcta"><code>python app.py --puerto 8080</code>: el argumento reemplaza al <code>CMD</code>, que era la lista de argumentos por defecto</button>
       <button data-op="defecto"><code>python app.py --puerto 5000</code>: el <code>CMD</code> del Dockerfile manda</button>
       <button data-op="ambos"><code>python app.py --puerto 5000 --puerto 8080</code>: se concatenan</button>
+      <button data-op="correcta"><code>python app.py --puerto 8080</code>: el argumento reemplaza al <code>CMD</code>, que era la lista de argumentos por defecto</button>
       <button data-op="solo"><code>--puerto 8080</code>: reemplaza todo lo anterior</button>
     </div>
     <div id="ver-entrypoint" class="veredicto"></div>
     <p style="margin-top:0.9rem;margin-bottom:0.3rem">Y con el <strong>A</strong>, ¿qué ejecuta
     la misma orden?</p>
     <div class="opciones" id="op-cmd">
-      <button data-op="correcta">Intenta ejecutar <code>--puerto 8080</code> como orden, porque el argumento reemplaza el <code>CMD</code> completo</button>
       <button data-op="suma"><code>python app.py --puerto 8080</code>: los argumentos se añaden</button>
+      <button data-op="correcta">Intenta ejecutar <code>--puerto 8080</code> como orden, porque el argumento reemplaza el <code>CMD</code> completo</button>
       <button data-op="ignora"><code>python app.py</code>: lo que viene en la orden se ignora</button>
       <button data-op="igual">Lo mismo que el <strong>B</strong>: las dos instrucciones son sinónimas</button>
     </div>

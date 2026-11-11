@@ -54,10 +54,10 @@
     <p style="margin-top:0.7rem;margin-bottom:0.3rem">La imagen ya existía como
     <code>hola-mundo</code>. ¿Para qué hace falta la primera orden?</p>
     <div class="opciones" id="op-tag">
-      <button data-op="correcta">Para darle un nombre que diga a qué cuenta del registro va: sin eso, <code>push</code> no sabe dónde publicarla</button>
       <button data-op="copia">Para hacer una copia de la imagen, que es la que se publica</button>
       <button data-op="comprime">Para empaquetar las capas en un archivo que se pueda subir</button>
       <button data-op="version">Para incrementar la versión de la imagen</button>
+      <button data-op="correcta">Para darle un nombre que diga a qué cuenta del registro va: sin eso, <code>push</code> no sabe dónde publicarla</button>
     </div>
     <div id="ver-tag" class="veredicto"></div>
   </div>
@@ -67,16 +67,16 @@
     <p style="margin-top:0;margin-bottom:0.3rem">Dos despliegues seguidos de
     <code>cardel87/hola-mundo:latest</code> pueden traer imágenes distintas. ¿Por qué?</p>
     <div class="opciones" id="op-latest">
-      <button data-op="correcta">Porque <code>latest</code> no está fijo: apunta a lo último que alguien haya publicado con ese tag</button>
       <button data-op="cache">Porque la caché del segundo despliegue reutiliza capas viejas</button>
       <button data-op="azar">Porque el registro reparte entre varias copias de la imagen</button>
+      <button data-op="correcta">Porque <code>latest</code> no está fijo: apunta a lo último que alguien haya publicado con ese tag</button>
       <button data-op="nunca">No pueden: un tag siempre apunta a la misma imagen</button>
     </div>
     <div id="ver-latest" class="veredicto"></div>
     <p style="margin-top:0.9rem;margin-bottom:0.3rem">¿Con qué se reemplaza en producción?</p>
     <div class="opciones" id="op-fijar">
-      <button data-op="correcta">Con una versión semántica, <code>0.1.0</code>, o con el digest <code>sha256:…</code>, que identifica un contenido exacto</button>
       <button data-op="fecha">Con la fecha del despliegue en el nombre de la imagen</button>
+      <button data-op="correcta">Con una versión semántica, <code>0.1.0</code>, o con el digest <code>sha256:…</code>, que identifica un contenido exacto</button>
       <button data-op="pull">Con <code>docker pull</code> antes de cada arranque</button>
       <button data-op="local">Construyendo la imagen en cada máquina en vez de bajarla</button>
     </div>

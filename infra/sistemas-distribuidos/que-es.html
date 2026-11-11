@@ -46,9 +46,9 @@
     <p style="margin-bottom:0.3rem">La segunda es más lenta por elemento. ¿Por qué se usa?</p>
     <div class="opciones" id="op-sumar">
       <button data-op="rapida">Porque cien máquinas siempre terminan antes que una</button>
-      <button data-op="correcta">Porque esos mil millones de elementos no caben en la memoria de ninguna máquina sola</button>
       <button data-op="barata">Porque cien máquinas pequeñas cuestan menos que una grande</button>
       <button data-op="tolerante">Porque si una máquina falla el cálculo sigue</button>
+      <button data-op="correcta">Porque esos mil millones de elementos no caben en la memoria de ninguna máquina sola</button>
     </div>
     <div id="ver-sumar" class="veredicto"></div>
     <div class="nota">La tolerancia a fallos y el costo también son razones para distribuir, y
@@ -61,9 +61,9 @@
     que trabajan juntas y se presentan al usuario como un solo sistema coherente. De las cuatro
     afirmaciones, ¿cuál <em>no</em> se sigue de esa definición?</p>
     <div class="opciones" id="op-definicion">
+      <button data-op="correcta">Todos los nodos tienen el mismo reloj, así que el orden de dos escrituras es claro</button>
       <button data-op="estado">Hay estado compartido entre los nodos</button>
       <button data-op="concurrente">Los nodos operan de forma concurrente</button>
-      <button data-op="correcta">Todos los nodos tienen el mismo reloj, así que el orden de dos escrituras es claro</button>
       <button data-op="falla">Un nodo puede fallar sin tumbar el servicio</button>
     </div>
     <div id="ver-definicion" class="veredicto"></div>

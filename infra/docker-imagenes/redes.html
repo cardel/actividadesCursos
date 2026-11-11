@@ -44,10 +44,10 @@
   <div class="carta">
     <h2>2. Qué hizo posible el ping por nombre</h2>
     <div class="opciones" id="op-dns">
-      <button data-op="correcta">El DNS interno que Docker levanta en cada red creada por el usuario, que traduce el nombre del contenedor a su dirección</button>
       <button data-op="hosts">Que Docker escribe los nombres en el <code>/etc/hosts</code> de todos los contenedores de la máquina</button>
       <button data-op="dns-externo">El DNS del anfitrión, que resuelve los nombres de los contenedores</button>
       <button data-op="broadcast">Que <code>ping</code> busca el nombre por difusión en la red local</button>
+      <button data-op="correcta">El DNS interno que Docker levanta en cada red creada por el usuario, que traduce el nombre del contenedor a su dirección</button>
     </div>
     <div id="ver-dns" class="veredicto"></div>
     <p style="margin-top:0.9rem;margin-bottom:0.3rem">La API se conecta a la base de datos con
@@ -71,8 +71,8 @@
     <p style="margin-top:0.7rem;margin-bottom:0.3rem">¿Qué contesta ese <code>ping</code>
     ahora?</p>
     <div class="opciones" id="op-caliente">
-      <button data-op="correcta">Responde: al entrar a la red, el contenedor queda con una dirección en ella y el DNS interno ya traduce <code>db</code></button>
       <button data-op="reinicio">Sigue fallando hasta que se reinicie el contenedor</button>
+      <button data-op="correcta">Responde: al entrar a la red, el contenedor queda con una dirección en ella y el DNS interno ya traduce <code>db</code></button>
       <button data-op="bad">Sigue dando <code>bad address</code>: el nombre solo se resuelve si la red se indicó al crearlo</button>
       <button data-op="ip">Responde solo por dirección, no por nombre</button>
     </div>

@@ -48,10 +48,10 @@
     </div>
     <p style="margin-bottom:0.3rem">¿Qué imprime el programa?</p>
     <div class="opciones" id="opciones-salida">
-      <button data-op="correcta">En el hijo [1, 4, 9, 16] y en el padre []</button>
       <button data-op="hilos">[1, 4, 9, 16] en los dos</button>
       <button data-op="vacias">[] en los dos</button>
       <button data-op="error">Un error de acceso a memoria</button>
+      <button data-op="correcta">En el hijo [1, 4, 9, 16] y en el padre []</button>
     </div>
     <div id="veredicto-salida" class="veredicto"></div>
     <div class="codigo" id="salida-real" hidden style="margin-top:0.8rem"></div>
@@ -117,8 +117,8 @@
     <p style="margin:0.8rem 0 0.3rem">Un programa funciona en Linux leyendo una variable global
     desde el hijo y falla en Windows. ¿Por qué?</p>
     <div class="opciones" id="opciones-windows">
-      <button data-op="nohay">Windows no tiene multiprocessing</button>
       <button data-op="correcta">En Windows el arranque es spawn y el hijo no hereda la memoria del padre</button>
+      <button data-op="nohay">Windows no tiene multiprocessing</button>
       <button data-op="lock">Falta un Lock</button>
       <button data-op="grande">La variable es muy grande para copiarse</button>
     </div>

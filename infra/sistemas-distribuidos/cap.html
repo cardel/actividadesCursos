@@ -25,8 +25,8 @@
     <p style="margin-bottom:0.3rem;margin-top:1rem">La consistencia se define como <em>toda lectura
     devuelve la escritura más reciente o un error</em>. ¿Qué permite esa última cláusula?</p>
     <div class="opciones" id="op-clausula">
-      <button data-op="correcta">Contestar <em>no disponible</em> sin dejar de ser consistente</button>
       <button data-op="viejo">Devolver un valor viejo cuando no hay nada mejor</button>
+      <button data-op="correcta">Contestar <em>no disponible</em> sin dejar de ser consistente</button>
       <button data-op="ignora">Ignorar la escritura que no se pudo propagar</button>
       <button data-op="nada">Nada: es una forma de decir que el sistema falló</button>
     </div>
@@ -61,10 +61,10 @@
     <div id="ver-cp" class="veredicto"></div>
     <p style="margin-bottom:0.3rem;margin-top:1rem">¿Y un sistema AP?</p>
     <div class="opciones" id="op-ap">
-      <button data-op="correcta">3, el valor viejo, y avisa después cuando converja</button>
       <button data-op="cinco">5, porque replica la escritura por otro camino</button>
       <button data-op="error">Un error, igual que CP</button>
       <button data-op="ambos">Los dos valores, para que el cliente elija</button>
+      <button data-op="correcta">3, el valor viejo, y avisa después cuando converja</button>
     </div>
     <div id="ver-ap" class="veredicto"></div>
     <div class="alerta" id="nota-traza" hidden>Cuando la red vuelve, los dos sistemas terminan

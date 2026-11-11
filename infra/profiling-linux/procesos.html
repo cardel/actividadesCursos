@@ -65,9 +65,9 @@
     habitual de un porcentaje. ¿De dónde sale?</p>
     <div class="opciones" id="op-pasa100">
       <button data-op="medido">El proceso está mal medido: ningún porcentaje pasa de 100</button>
-      <button data-op="correcta">%CPU se cuenta sobre un núcleo, y la máquina tiene doce</button>
       <button data-op="memoria">El programa usa más memoria de la que tiene el equipo</button>
       <button data-op="doble">El kernel cuenta dos veces los hilos lógicos del SMT</button>
+      <button data-op="correcta">%CPU se cuenta sobre un núcleo, y la máquina tiene doce</button>
     </div>
     <div id="ver-pasa100" class="veredicto"></div>
   </div>
@@ -78,8 +78,8 @@
     <code>%CPU</code> 919,1 y <code>%MEM</code> 1,2, con <code>RES</code> en 395.268 kB.
     ¿Por qué una columna pasa de 100 y la otra se queda en 1,2?</p>
     <div class="opciones" id="op-mem">
-      <button data-op="sube">%MEM debería subir con los hilos, y algo lo está frenando</button>
       <button data-op="correcta">Miden cosas distintas: una es tiempo de CPU por núcleo, la otra memoria residente sobre la RAM física</button>
+      <button data-op="sube">%MEM debería subir con los hilos, y algo lo está frenando</button>
       <button data-op="virtual">%MEM está calculado sobre la memoria virtual del proceso</button>
       <button data-op="nousa">1,2 % indica que el programa no está tocando su matriz</button>
     </div>

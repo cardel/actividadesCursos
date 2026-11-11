@@ -128,8 +128,8 @@
     <p style="margin-top:0">Un proceso llama a <code>q.get()</code> sobre una cola vacía. ¿Qué
     ocurre?</p>
     <div class="opciones" id="opciones-vacia">
-      <button data-op="none">Devuelve None</button>
       <button data-op="correcta">Se queda bloqueado hasta que alguien ponga algo</button>
+      <button data-op="none">Devuelve None</button>
       <button data-op="empty">Lanza una excepción Empty</button>
       <button data-op="ultimo">Devuelve el último elemento que hubo</button>
     </div>
@@ -156,9 +156,9 @@
     bucle. El productor ya puso su último dato. ¿Cómo se les avisa que no viene nada más?</p>
     <div class="opciones" id="opciones-centinela">
       <button data-op="close">Cerrar la cola con q.close()</button>
-      <button data-op="correcta">Poner tres centinelas, uno por consumidor</button>
       <button data-op="vacia">Esperar a que la cola quede vacía</button>
       <button data-op="uno">Poner un solo centinela al final</button>
+      <button data-op="correcta">Poner tres centinelas, uno por consumidor</button>
     </div>
     <div id="veredicto-centinela" class="veredicto"></div>
     <div class="alerta">Un <code>get()</code> sin plazo espera indefinidamente. Si el productor

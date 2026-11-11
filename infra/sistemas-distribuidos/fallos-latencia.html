@@ -69,9 +69,9 @@
     5 % de paquetes perdidos. ¿Es mejor noticia que un promedio de 60 ms sin pérdida?</p>
     <div class="opciones" id="op-perdida">
       <button data-op="mejor">Sí: 20 ms es menos de la mitad de 60 ms</button>
-      <button data-op="correcta">No: cada paquete que falta lo retransmite TCP, y eso se paga en segundos</button>
       <button data-op="igual">Da lo mismo, porque el promedio ya incluye las pérdidas</button>
       <button data-op="depende">Solo importa si la aplicación usa UDP</button>
+      <button data-op="correcta">No: cada paquete que falta lo retransmite TCP, y eso se paga en segundos</button>
     </div>
     <div id="ver-perdida" class="veredicto"></div>
   </div>
@@ -92,8 +92,8 @@
     demora; un ADSL responde en 15 ms y no pasa de 5 Mbit/s. ¿Cuál sirve?</p>
     <div class="opciones" id="op-enlace">
       <button data-op="satelital">El satelital: una videollamada necesita ancho de banda</button>
-      <button data-op="correcta">El ADSL: medio segundo de demora hace la conversación imposible, y 5 Mbit/s alcanzan para video</button>
       <button data-op="ninguno">Ninguno: una videollamada pide las dos cosas a la vez</button>
+      <button data-op="correcta">El ADSL: medio segundo de demora hace la conversación imposible, y 5 Mbit/s alcanzan para video</button>
       <button data-op="promedio">El satelital, porque en promedio los dos quedan parecidos</button>
     </div>
     <div id="ver-enlace" class="veredicto"></div>
@@ -119,8 +119,8 @@
     midió 27,9 Gbit/s y una descarga HTTP por el mismo camino dio 10,5 Gbit/s. ¿Qué explica el
     tercio?</p>
     <div class="opciones" id="op-brecha">
-      <button data-op="correcta">Un solo flujo TCP, el cifrado y el disco del destino, que iperf3 con cuatro flujos no paga</button>
       <button data-op="miente">Que una de las dos herramientas informa mal</button>
+      <button data-op="correcta">Un solo flujo TCP, el cifrado y el disco del destino, que iperf3 con cuatro flujos no paga</button>
       <button data-op="loopback">Que el loopback no admite HTTP</button>
       <button data-op="tamano">Que el archivo era muy pequeño para llenar el enlace</button>
     </div>

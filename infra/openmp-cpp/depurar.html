@@ -73,8 +73,8 @@
     <p style="margin-top:0;margin-bottom:0.3rem">Si el ciclo acumula, ¿por qué <code>print suma</code> responde 0 dentro de la región, y cuándo deja de valer 0?</p>
     <div class="opciones" id="op-arranque">
       <button data-op="roto">El ciclo no está sumando: el programa tiene un error</button>
-      <button data-op="correcta">gdb muestra la copia privada de cada hilo, que parte en 0; la variable original recibe las copias al terminar la región</button>
       <button data-op="compilador">El compilador eliminó la variable porque no se usa</button>
+      <button data-op="correcta">gdb muestra la copia privada de cada hilo, que parte en 0; la variable original recibe las copias al terminar la región</button>
       <button data-op="atomica">Cada suma es atómica y gdb todavía no la ve</button>
     </div>
     <div id="ver-arranque" class="veredicto"></div>
@@ -96,9 +96,9 @@
     <h2>4. Lo mismo con -O2</h2>
     <p style="margin-top:0;margin-bottom:0.3rem">Se recompila con <code>-g -O2</code> y se repite la sesión. ¿Qué responde el depurador?</p>
     <div class="opciones" id="op-o2">
+      <button data-op="correcta">Se detiene donde debe, pero print suma responde que el valor fue optimizado</button>
       <button data-op="igual">Lo mismo: print suma devuelve 0</button>
       <button data-op="nodetiene">No se detiene: sin -O0 los puntos de parada no funcionan</button>
-      <button data-op="correcta">Se detiene donde debe, pero print suma responde que el valor fue optimizado</button>
       <button data-op="nohilos">Arranca un solo hilo, porque -O2 desactiva OpenMP</button>
     </div>
     <div id="ver-o2" class="veredicto"></div>
@@ -120,17 +120,17 @@
     <p style="margin-bottom:0.3rem"><b>a)</b> ¿Qué dos operaciones están en conflicto?</p>
     <div class="opciones" id="op-pares">
       <button data-op="dosescrituras">Dos escrituras de T2, una en la línea 7 y otra en la 9</button>
-      <button data-op="correcta">Una escritura de T2 en la línea 9 y una lectura anterior del hilo principal en la 7, sobre la misma dirección</button>
       <button data-op="lineas">Una escritura en la línea 7 y una lectura en la 9</button>
       <button data-op="mismohilo">Dos accesos del hilo principal, que se pisan a sí mismos</button>
+      <button data-op="correcta">Una escritura de T2 en la línea 9 y una lectura anterior del hilo principal en la 7, sobre la misma dirección</button>
     </div>
     <div id="ver-pares" class="veredicto"></div>
     <p style="margin-bottom:0.3rem;margin-top:1rem"><b>b)</b> ¿Qué cláusula arregla la carrera?</p>
     <div class="opciones" id="op-clausula">
       <button data-op="privada">private(suma)</button>
       <button data-op="firstprivada">firstprivate(suma)</button>
-      <button data-op="dinamico">schedule(dynamic)</button>
       <button data-op="correcta">reduction(+ : suma)</button>
+      <button data-op="dinamico">schedule(dynamic)</button>
     </div>
     <div id="ver-clausula" class="veredicto"></div>
     <div class="nota">ThreadSanitizer instrumenta cada acceso a memoria y avisa cuando dos hilos

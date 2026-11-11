@@ -97,9 +97,9 @@
     <p style="margin:0.8rem 0 0.3rem">Los dos programas hacen las mismas 100.000.000 de
     asignaciones y ninguno usa hilos. ¿De dónde sale la diferencia?</p>
     <div class="opciones" id="opciones-diferencia">
+      <button data-op="correcta">Del número de fallos de caché</button>
       <button data-op="trabajo">El segundo hace más trabajo</button>
       <button data-op="nucleos">El primero usa varios núcleos</button>
-      <button data-op="correcta">Del número de fallos de caché</button>
       <button data-op="tamano">La matriz del segundo es más grande</button>
     </div>
     <div id="veredicto-diferencia" class="veredicto"></div>
@@ -133,9 +133,9 @@
     ¿Qué detiene el ping-pong?</p>
     <div class="opciones" id="opciones-falsa">
       <button data-op="critico">Poner un critical alrededor de la escritura</button>
-      <button data-op="correcta">Acumular en una variable local por hilo y combinar al final</button>
       <button data-op="privado">Declarar el arreglo como private</button>
       <button data-op="mas">Usar más hilos</button>
+      <button data-op="correcta">Acumular en una variable local por hilo y combinar al final</button>
     </div>
     <div id="veredicto-falsa" class="veredicto"></div>
   </div>

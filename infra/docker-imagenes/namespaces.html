@@ -43,9 +43,9 @@
     <p style="margin-top:0;margin-bottom:0.3rem">El namespace de usuario trae el mismo número a
     los dos lados. ¿Qué consecuencia tiene?</p>
     <div class="opciones" id="op-user">
-      <button data-op="correcta">El <code>root</code> del contenedor es el <code>root</code> de la máquina: quien salga del namespace de montaje sale con UID 0 real</button>
       <button data-op="suerte">Es una coincidencia de números, sin efecto</button>
       <button data-op="root">Significa que dentro del contenedor no hay usuario <code>root</code></button>
+      <button data-op="correcta">El <code>root</code> del contenedor es el <code>root</code> de la máquina: quien salga del namespace de montaje sale con UID 0 real</button>
       <button data-op="bug">Es un defecto de esta instalación de Docker</button>
     </div>
     <div id="ver-user" class="veredicto"></div>
@@ -59,8 +59,8 @@
     <p style="margin-top:0.6rem;margin-bottom:0.3rem">¿Qué cambia en la tabla del primer
     apartado si el contenedor se levanta así?</p>
     <div class="opciones" id="op-host">
-      <button data-op="correcta">El identificador <code>net</code> pasa a coincidir con el del anfitrión y los otros tres siguen distintos</button>
       <button data-op="todos">Todos los identificadores coinciden: el contenedor deja de estar aislado</button>
+      <button data-op="correcta">El identificador <code>net</code> pasa a coincidir con el del anfitrión y los otros tres siguen distintos</button>
       <button data-op="ninguno">Ninguno cambia: la bandera solo afecta al mapeo de puertos</button>
       <button data-op="pid">Coinciden <code>net</code> y <code>pid</code>, porque la red depende del árbol de procesos</button>
     </div>

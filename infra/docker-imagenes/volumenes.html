@@ -50,17 +50,17 @@
     <p style="margin-top:0.7rem;margin-bottom:0.3rem">¿Qué devuelve ese último
     <code>SELECT</code>?</p>
     <div class="opciones" id="op-pg">
-      <button data-op="correcta"><code>persiste</code>: la tabla y su fila están en el volumen, no en el contenedor</button>
       <button data-op="vacia">La tabla existe pero sin filas: el contenedor nuevo la volvió a crear</button>
       <button data-op="error"><code>relation "nota" does not exist</code>: el contenedor se recreó desde cero</button>
+      <button data-op="correcta"><code>persiste</code>: la tabla y su fila están en el volumen, no en el contenedor</button>
       <button data-op="conexion">Un error de conexión: la base de datos tarda en volver a arrancar</button>
     </div>
     <div id="ver-pg" class="veredicto"></div>
     <p style="margin-top:0.9rem;margin-bottom:0.3rem">Y la misma secuencia sin
     <code>-v</code>, ¿qué devuelve?</p>
     <div class="opciones" id="op-sin-volumen">
-      <button data-op="correcta"><code>relation "nota" does not exist</code>: al recrear el contenedor la base se inicializa vacía</button>
       <button data-op="persiste">Lo mismo, <code>persiste</code>: Postgres guarda sus datos en la imagen</button>
+      <button data-op="correcta"><code>relation "nota" does not exist</code>: al recrear el contenedor la base se inicializa vacía</button>
       <button data-op="niega">Un error de permisos: sin volumen el directorio de datos no se puede escribir</button>
       <button data-op="arranca">Nada: sin <code>-v</code> el contenedor no arranca</button>
     </div>
@@ -86,10 +86,10 @@
     <p style="margin-top:0.9rem;margin-bottom:0.3rem">Y <code>docker volume prune</code>, ¿qué
     borra?</p>
     <div class="opciones" id="op-prune">
-      <button data-op="correcta">Los volúmenes que ningún contenedor está usando, incluidos los de contenedores ya borrados</button>
       <button data-op="todos">Todos los volúmenes de la máquina</button>
       <button data-op="contenido">El contenido de los volúmenes, dejándolos vacíos</button>
       <button data-op="imagenes">Las imágenes y las capas que ninguna imagen usa</button>
+      <button data-op="correcta">Los volúmenes que ningún contenedor está usando, incluidos los de contenedores ya borrados</button>
     </div>
     <div id="ver-prune" class="veredicto"></div>
     <div class="nota">Un volumen que nadie monta no avisa de que está ahí, y ocupa lo que

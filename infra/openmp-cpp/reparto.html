@@ -76,8 +76,8 @@
     <p style="margin:0.8rem 0 0.3rem">¿Cuál política dio el mejor tiempo?</p>
     <div class="opciones" id="opciones-tiempos">
       <button data-op="static">static</button>
-      <button data-op="correcta">dynamic con bloques de 2</button>
       <button data-op="guided">guided</button>
+      <button data-op="correcta">dynamic con bloques de 2</button>
       <button data-op="dynamic1000">dynamic con bloques de 1000</button>
     </div>
     <div id="veredicto-tiempos" class="veredicto"></div>
@@ -135,8 +135,8 @@
     <p style="margin-top:0;margin-bottom:0.3rem">Un ciclo de 12 filas con uno de 10.000 columnas
     adentro, en una máquina de 12 hilos de hardware. ¿Cómo se reparte?</p>
     <div class="opciones" id="opciones-ciclos">
-      <button data-op="correcta">collapse(2) sobre los dos ciclos</button>
       <button data-op="anidar">Activar el anidamiento con OMP_MAX_ACTIVE_LEVELS</button>
+      <button data-op="correcta">collapse(2) sobre los dos ciclos</button>
       <button data-op="interno">parallel for solo en el ciclo interno</button>
       <button data-op="externo">parallel for solo en el ciclo externo</button>
     </div>

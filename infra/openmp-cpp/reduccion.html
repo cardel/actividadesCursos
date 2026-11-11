@@ -107,10 +107,10 @@
     <p style="margin:0.9rem 0 0.3rem">La versión por columnas tarda 140,24 ms y la de filas
     47,72 ms, con el mismo número de hilos. ¿Por qué?</p>
     <div class="opciones" id="opciones-recorrido">
-      <button data-op="correcta">El recorrido por columnas desperdicia cada línea de caché</button>
       <button data-op="carrera">Porque por columnas hay carrera de datos</button>
       <button data-op="hilos">Porque por columnas usa menos hilos</button>
       <button data-op="tamano">Porque la matriz es más grande</button>
+      <button data-op="correcta">El recorrido por columnas desperdicia cada línea de caché</button>
     </div>
     <div id="veredicto-recorrido" class="veredicto"></div>
   </div>

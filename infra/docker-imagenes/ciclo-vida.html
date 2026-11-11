@@ -74,8 +74,8 @@
     <p style="margin-top:0;margin-bottom:0.3rem">Dos de los tres contenedores salieron con 137 y
     uno con 0. ¿De dónde sale ese 137?</p>
     <div class="opciones" id="op-codigo">
-      <button data-op="correcta">De 128 + 9: el proceso murió por la señal 9, que es SIGKILL</button>
       <button data-op="error">Es un código de error propio de Docker</button>
+      <button data-op="correcta">De 128 + 9: el proceso murió por la señal 9, que es SIGKILL</button>
       <button data-op="memoria">Significa que el contenedor se quedó sin memoria</button>
       <button data-op="azar">Lo asigna el núcleo sin un criterio fijo</button>
     </div>
@@ -83,9 +83,9 @@
     <p style="margin-bottom:0.3rem;margin-top:1rem">Un servicio en producción tarda siempre
     exactamente diez segundos en parar. ¿Qué dice ese síntoma?</p>
     <div class="opciones" id="op-sintoma">
-      <button data-op="correcta">Que su proceso número uno no recibe la señal, así que pierde las peticiones en curso en cada despliegue</button>
       <button data-op="lento">Que el servicio tiene mucho que guardar antes de cerrar</button>
       <button data-op="red">Que está esperando a que se cierren las conexiones de red</button>
+      <button data-op="correcta">Que su proceso número uno no recibe la señal, así que pierde las peticiones en curso en cada despliegue</button>
       <button data-op="normal">Que diez segundos es lo que tarda cualquier contenedor</button>
     </div>
     <div id="ver-sintoma" class="veredicto"></div>
@@ -104,10 +104,10 @@
     <p style="margin-top:0.6rem;margin-bottom:0.3rem">¿Qué hace <code>docker rm -f web</code>
     que la orden sin bandera se niega a hacer?</p>
     <div class="opciones" id="op-forzar">
-      <button data-op="correcta">Equivale a kill más rm: no da tiempo a cerrar conexiones ni a vaciar buffers</button>
       <button data-op="espera">Espera el plazo de diez segundos y después borra</button>
       <button data-op="igual">Lo mismo, con otro mensaje</button>
       <button data-op="volumen">Borra además los volúmenes del contenedor</button>
+      <button data-op="correcta">Equivale a kill más rm: no da tiempo a cerrar conexiones ni a vaciar buffers</button>
     </div>
     <div id="ver-forzar" class="veredicto"></div>
     <div class="nota">Lo que se escribió dentro del contenedor se pierde al borrarlo, con

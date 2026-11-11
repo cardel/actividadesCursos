@@ -122,8 +122,8 @@
     <p style="margin:0.8rem 0 0.3rem"><code>nproc</code> dice 12 y la máquina tiene 6
     núcleos físicos. ¿Qué son esos 12?</p>
     <div class="opciones" id="opciones-logicos">
-      <button data-op="fisicos">Doce núcleos físicos</button>
       <button data-op="correcta">Hilos lógicos: 6 núcleos por 2 hilos por núcleo</button>
+      <button data-op="fisicos">Doce núcleos físicos</button>
       <button data-op="procesos">Doce procesos</button>
       <button data-op="regiones">El número de regiones paralelas del programa</button>
     </div>
@@ -142,8 +142,8 @@
     <div class="opciones" id="opciones-dinamico">
       <button data-op="subir">Subir OMP_NUM_THREADS</button>
       <button data-op="o3">Compilar con -O3</button>
-      <button data-op="correcta">OMP_DYNAMIC en false</button>
       <button data-op="llamada">Usar omp_set_num_threads en vez de la variable</button>
+      <button data-op="correcta">OMP_DYNAMIC en false</button>
     </div>
     <div id="veredicto-dinamico" class="veredicto"></div>
     <div class="codigo" id="codigo-dinamico" hidden style="margin-top:0.8rem">

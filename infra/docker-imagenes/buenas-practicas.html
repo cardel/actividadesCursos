@@ -36,8 +36,8 @@
     <p style="margin-top:0;margin-bottom:0.3rem">Hay un problema que no está en ninguna línea
     porque es una instrucción ausente. ¿Cuál?</p>
     <div class="opciones" id="op-falta">
-      <button data-op="correcta">Un <code>USER</code>: sin él la aplicación corre como <code>root</code> dentro del contenedor</button>
       <button data-op="healthcheck">Un <code>HEALTHCHECK</code> que diga si el servicio responde</button>
+      <button data-op="correcta">Un <code>USER</code>: sin él la aplicación corre como <code>root</code> dentro del contenedor</button>
       <button data-op="expose">Un <code>EXPOSE</code> que abra el puerto del servicio</button>
       <button data-op="volume">Un <code>VOLUME</code> para los datos de la aplicación</button>
     </div>
@@ -45,9 +45,9 @@
     <p style="margin-top:0.9rem;margin-bottom:0.3rem">Con la instrucción puesta, ¿qué debe
     mostrar <code>docker run --rm app:bueno id</code>?</p>
     <div class="opciones" id="op-id">
-      <button data-op="correcta">Un UID distinto de 0, el del usuario creado con <code>useradd</code></button>
       <button data-op="cero"><code>uid=0(root)</code>, que es el usuario del contenedor</button>
       <button data-op="anfitrion">El UID de quien ejecutó <code>docker run</code> en el anfitrión</button>
+      <button data-op="correcta">Un UID distinto de 0, el del usuario creado con <code>useradd</code></button>
       <button data-op="vacio">Nada: <code>id</code> no funciona dentro de un contenedor</button>
     </div>
     <div id="ver-id" class="veredicto"></div>
@@ -60,10 +60,10 @@
     cambiaron. ¿Cuál de esos cambios evita que la caché de <code>pip</code> viaje dentro de la
     imagen?</p>
     <div class="opciones" id="op-cache">
-      <button data-op="correcta"><code>--no-cache-dir</code> en el <code>pip install</code></button>
       <button data-op="version">La versión fija en la imagen base</button>
       <button data-op="user">El <code>USER appuser</code></button>
       <button data-op="orden">Copiar <code>requirements.txt</code> antes del código</button>
+      <button data-op="correcta"><code>--no-cache-dir</code> en el <code>pip install</code></button>
     </div>
     <div id="ver-cache" class="veredicto"></div>
     <div class="nota">Lo que se descarga durante un <code>RUN</code> queda en la capa que ese

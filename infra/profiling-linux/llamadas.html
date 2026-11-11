@@ -66,8 +66,8 @@
     <p style="margin-bottom:0.3rem;margin-top:1rem">El tiempo dentro del núcleo cambia 964
     veces y el reloj apenas 12. ¿Por qué no coinciden?</p>
     <div class="opciones" id="op-reloj">
-      <button data-op="miente">Las cifras de strace no son de fiar</button>
       <button data-op="correcta">El reloj mide todo lo que hace el programa, y el núcleo es solo una parte</button>
+      <button data-op="miente">Las cifras de strace no son de fiar</button>
       <button data-op="disco">El disco es el límite y no deja bajar más el tiempo</button>
       <button data-op="iguales">Las dos cifras miden lo mismo, así que una de las dos está mal leída</button>
     </div>
@@ -80,9 +80,9 @@
     lo mismo que uno de 8.192 bytes. ¿Qué dice eso del búfer de <code>./rapido</code>?</p>
     <div class="opciones" id="op-cruce">
       <button data-op="bytes">Que el ahorro está en escribir menos bytes</button>
-      <button data-op="correcta">Que el costo va por llamada, así que agrupar líneas reduce lo que se paga</button>
       <button data-op="disco">Que el disco rinde más con bloques grandes</button>
       <button data-op="comprime">Que fprintf comprime la salida antes de escribirla</button>
+      <button data-op="correcta">Que el costo va por llamada, así que agrupar líneas reduce lo que se paga</button>
     </div>
     <div id="ver-cruce" class="veredicto"></div>
     <div class="nota">Las dos cifras de microsegundos por llamada de la tabla anterior están
@@ -104,8 +104,8 @@
     <p style="margin-bottom:0.3rem;margin-top:1rem">¿Qué se hace con ese resultado?</p>
     <div class="opciones" id="op-bueno">
       <button data-op="brk">Reducir las 2.503 llamadas a brk, que son casi toda la traza</button>
-      <button data-op="correcta">Descartar las llamadas al sistema y seguir midiendo hacia la memoria</button>
       <button data-op="optimizado">Dar el programa por optimizado: hace muy pocas llamadas</button>
+      <button data-op="correcta">Descartar las llamadas al sistema y seguir midiendo hacia la memoria</button>
       <button data-op="bufer">Agrandar el búfer de salida, como en ./rapido</button>
     </div>
     <div id="ver-bueno" class="veredicto"></div>

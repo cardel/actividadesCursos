@@ -96,8 +96,8 @@
     bien. ¿Qué le falta a esa lectura?</p>
     <div class="opciones" id="op-tasa">
       <button data-op="despreciable">Nada: 6,3 % es despreciable y el problema hay que buscarlo en otra parte</button>
-      <button data-op="correcta">La tasa se lee junto al número de accesos: 6,3 % de 1.901.594.268 accesos son 118.909.812 fallos, y los que llegan a memoria cuestan unos 200 ciclos cada uno</button>
       <button data-op="umbral">Una tasa de fallo solo preocupa cuando pasa del 50 %, que es cuando la caché falla más de lo que acierta</button>
+      <button data-op="correcta">La tasa se lee junto al número de accesos: 6,3 % de 1.901.594.268 accesos son 118.909.812 fallos, y los que llegan a memoria cuestan unos 200 ciclos cada uno</button>
       <button data-op="instrucciones">El problema está en las instrucciones, que son 3.504 millones y dominan el tiempo del programa</button>
     </div>
     <div id="ver-tasa" class="veredicto"></div>
@@ -117,9 +117,9 @@
     <p style="margin:0.8rem 0 0.3rem">¿Qué se hace con esa tabla?</p>
     <div class="opciones" id="op-funcion">
       <button data-op="main">Optimizar main, que tiene más instrucciones que sumaMatriz</button>
-      <button data-op="correcta">Entrar a sumaMatriz: ahí está el problema, y el perfilador lo señaló sin leer una línea del programa</button>
       <button data-op="coincidir">Nada todavía: los dos porcentajes deberían coincidir y hay que repetir la medición hasta que lo hagan</button>
       <button data-op="medicion">Descartar la corrida: 48 % de instrucciones con 99 % de fallos es un error de medición</button>
+      <button data-op="correcta">Entrar a sumaMatriz: ahí está el problema, y el perfilador lo señaló sin leer una línea del programa</button>
     </div>
     <div id="ver-funcion" class="veredicto"></div>
   </div>
@@ -130,8 +130,8 @@
     veces más lento, y la herramienta no lee los contadores del procesador: simula una caché
     de dos niveles. ¿Para qué sirve entonces?</p>
     <div class="opciones" id="op-cierre">
-      <button data-op="tiempos">Para medir cuánto tarda cada función, multiplicando los tiempos simulados por diez</button>
       <button data-op="correcta">Para comparar patrones de acceso y encontrar la función culpable; los tiempos absolutos se miden con el binario sin instrumentar</button>
+      <button data-op="tiempos">Para medir cuánto tarda cada función, multiplicando los tiempos simulados por diez</button>
       <button data-op="reemplaza">Para reemplazar a perf, porque la simulación da los mismos contadores sin pedir permisos del sistema</button>
       <button data-op="inutil">Para nada en una medición de rendimiento: diez veces más lento invalida cualquier conclusión</button>
     </div>
