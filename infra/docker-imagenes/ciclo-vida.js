@@ -97,7 +97,8 @@ var RAZONES_SINTOMA = {
 
 var RAZONES_FORZAR = {
   correcta: "Es lo que hace, y por eso la orden sin bandera se niega: <code>-f</code> manda " +
-    "SIGKILL y borra, sin plazo. Lo que el contenedor tuviera a medias se pierde ahí mismo.",
+    "SIGKILL y borra, sin plazo para cerrar conexiones ni vaciar buffers. Lo que el " +
+    "contenedor tuviera a medias se pierde ahí mismo.",
   espera: "No espera: ese es <code>docker stop</code> seguido de <code>docker rm</code>. La " +
     "bandera <code>-f</code> se salta justamente el plazo.",
   igual: "No es lo mismo. Sin bandera, Docker se niega para no matar un proceso que está " +

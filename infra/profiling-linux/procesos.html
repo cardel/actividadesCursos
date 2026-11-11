@@ -78,9 +78,9 @@
     <code>%CPU</code> 919,1 y <code>%MEM</code> 1,2, con <code>RES</code> en 395.268 kB.
     ¿Por qué una columna pasa de 100 y la otra se queda en 1,2?</p>
     <div class="opciones" id="op-mem">
-      <button data-op="correcta">Miden cosas distintas: una es tiempo de CPU por núcleo, la otra memoria residente sobre la RAM física</button>
+      <button data-op="correcta">Miden cosas distintas: %CPU por núcleo, %MEM sobre la RAM física</button>
       <button data-op="sube">%MEM debería subir con los hilos, y algo lo está frenando</button>
-      <button data-op="virtual">%MEM está calculado sobre la memoria virtual del proceso</button>
+      <button data-op="virtual">%MEM está calculado sobre la memoria virtual que reservó el proceso</button>
       <button data-op="nousa">1,2 % indica que el programa no está tocando su matriz</button>
     </div>
     <div id="ver-mem" class="veredicto"></div>
@@ -118,8 +118,8 @@
     dura la corrida.</div>
     <p style="margin-bottom:0.3rem;margin-top:1rem">¿Qué conclusión admite ese reparto?</p>
     <div class="opciones" id="op-psr">
-      <button data-op="roto">El programa reparte mal el trabajo</button>
-      <button data-op="correcta">Es la foto de un instante: dos pares de hilos coincidieron de núcleo y otra consulta da otro reparto</button>
+      <button data-op="roto">El programa reparte mal el trabajo entre los núcleos</button>
+      <button data-op="correcta">Es la foto de un instante: otra consulta da otro reparto</button>
       <button data-op="faltan">Faltan hilos: solo aparecen diez núcleos distintos</button>
       <button data-op="afinidad">Hay que fijar la afinidad de cada hilo con taskset siempre</button>
     </div>

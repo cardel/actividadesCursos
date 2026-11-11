@@ -97,7 +97,7 @@
     al final del Dockerfile y nota que el <code>build</code> volvió a tardar lo mismo que antes.
     ¿Qué pasó?</p>
     <div class="opciones" id="op-invalida">
-      <button data-op="correcta">Nada raro: la instrucción nueva es la última, así que solo ella se ejecuta y el resto sigue viniendo de la caché</button>
+      <button data-op="correcta">Solo se ejecuta la instrucción nueva: es la última del archivo</button>
       <button data-op="todo">Agregar una instrucción invalida toda la imagen</button>
       <button data-op="apt">apt-get update siempre invalida la caché de las capas anteriores</button>
       <button data-op="azar">La caché de Docker se vence con el tiempo</button>

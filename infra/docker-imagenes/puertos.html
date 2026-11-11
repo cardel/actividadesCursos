@@ -51,7 +51,7 @@
       <button data-op="mapeo">El mapeo está al revés: debería ser <code>-p 5000:8080</code></button>
       <button data-op="firewall">El cortafuegos del anfitrión corta el 8080</button>
       <button data-op="arranque">El contenedor se cayó al arrancar y no hay nada escuchando</button>
-      <button data-op="correcta">El mapeo entra por la interfaz del contenedor, y el servicio solo atiende en su loopback: desde dentro responde, desde fuera no</button>
+      <button data-op="correcta">El servicio solo atiende en su loopback, no en la interfaz del mapeo</button>
     </div>
     <div id="ver-loopback" class="veredicto"></div>
     <div class="nota">El síntoma se separa del segundo caso con <code>docker logs</code>: si el
@@ -73,7 +73,7 @@
     <div class="opciones" id="op-host">
       <button data-op="imagen">Es un identificador de la imagen, igual en todos sus contenedores</button>
       <button data-op="anfitrion">Es el nombre de la máquina anfitriona</button>
-      <button data-op="correcta">Son los doce primeros caracteres del identificador del contenedor: el namespace <code>uts</code> lo puso como nombre de la máquina</button>
+      <button data-op="correcta">Son los doce primeros caracteres del identificador del contenedor</button>
       <button data-op="nombre">Es el nombre que puso <code>--name</code>, abreviado</button>
     </div>
     <div id="ver-host" class="veredicto"></div>
@@ -98,7 +98,7 @@
     dirección?</p>
     <div class="opciones" id="op-gateway">
       <button data-op="contenedor">La dirección del contenedor, que se llamó a sí mismo</button>
-      <button data-op="correcta">La puerta de enlace de la red <code>bridge</code>: la petición entró por el mapeo y el anfitrión aparece con la dirección que tiene en esa red</button>
+      <button data-op="correcta">La puerta de enlace de la red <code>bridge</code>: el anfitrión visto desde dentro</button>
       <button data-op="externa">Una dirección de Internet: alguien llamó desde fuera</button>
       <button data-op="docker">La dirección del demonio de Docker, que reenvía todas las peticiones</button>
     </div>

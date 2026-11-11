@@ -54,7 +54,7 @@
     <p style="margin-top:0.9rem;margin-bottom:0.3rem">¿Qué son las dos líneas
     <code>Running in</code> y <code>Removed intermediate container</code>?</p>
     <div class="opciones" id="op-intermedio">
-      <button data-op="correcta">Un contenedor temporal donde se ejecutó la instrucción: se crea, corre y se descarta, y lo que sobrevive es su sistema de archivos</button>
+      <button data-op="correcta">Un contenedor temporal donde se ejecutó la instrucción</button>
       <button data-op="error">Un reintento: la instrucción falló y Docker la repitió</button>
       <button data-op="limpieza">La limpieza de una construcción anterior que quedó a medias</button>
       <button data-op="capa">La capa final de la imagen, con otro nombre</button>
@@ -91,7 +91,7 @@
     <div class="opciones" id="op-entrypoint">
       <button data-op="defecto"><code>python app.py --puerto 5000</code>: el <code>CMD</code> del Dockerfile manda</button>
       <button data-op="ambos"><code>python app.py --puerto 5000 --puerto 8080</code>: se concatenan</button>
-      <button data-op="correcta"><code>python app.py --puerto 8080</code>: el argumento reemplaza al <code>CMD</code>, que era la lista de argumentos por defecto</button>
+      <button data-op="correcta"><code>python app.py --puerto 8080</code>: el argumento reemplaza al <code>CMD</code></button>
       <button data-op="solo"><code>--puerto 8080</code>: reemplaza todo lo anterior</button>
     </div>
     <div id="ver-entrypoint" class="veredicto"></div>
@@ -99,7 +99,7 @@
     la misma orden?</p>
     <div class="opciones" id="op-cmd">
       <button data-op="suma"><code>python app.py --puerto 8080</code>: los argumentos se añaden</button>
-      <button data-op="correcta">Intenta ejecutar <code>--puerto 8080</code> como orden, porque el argumento reemplaza el <code>CMD</code> completo</button>
+      <button data-op="correcta">Intenta ejecutar <code>--puerto 8080</code> como orden, que no existe</button>
       <button data-op="ignora"><code>python app.py</code>: lo que viene en la orden se ignora</button>
       <button data-op="igual">Lo mismo que el <strong>B</strong>: las dos instrucciones son sinónimas</button>
     </div>
@@ -121,10 +121,10 @@
     <p style="margin-top:0.7rem;margin-bottom:0.3rem">Las dos levantan el servicio. ¿En qué se
     diferencian cuando llega <code>docker stop</code>?</p>
     <div class="opciones" id="op-forma">
-      <button data-op="correcta">La primera deja a <code>/bin/sh -c</code> como proceso número uno y la señal muere ahí; la segunda deja a la aplicación, que recibe SIGTERM</button>
+      <button data-op="correcta">En la primera el proceso número uno es <code>/bin/sh -c</code> y la señal muere ahí</button>
       <button data-op="ninguna">En nada: son dos formas de escribir lo mismo</button>
       <button data-op="velocidad">La primera arranca más lento por el intérprete de órdenes</button>
-      <button data-op="argumentos">La primera no admite argumentos en <code>docker run</code></button>
+      <button data-op="argumentos">La primera no admite argumentos en <code>docker run</code>, porque los recibe el intérprete</button>
     </div>
     <div id="ver-forma" class="veredicto"></div>
     <div class="nota">Es la diferencia entre parar en milésimas y agotar el plazo de diez

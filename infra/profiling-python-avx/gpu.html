@@ -89,9 +89,9 @@
     <p style="margin-bottom:0.3rem">perf_counter marca 40 µs para <code>b = a * 2.5 + 1.0</code>
     sobre 50 millones de <code>float32</code> en la GPU. ¿Qué pasó?</p>
     <div class="opciones" id="opciones-medir">
-      <button data-op="rapida">La GPU es así de rápida</button>
-      <button data-op="correcta">La llamada encoló el trabajo y retornó antes de que la GPU terminara</button>
-      <button data-op="cprofile">Con cProfile habría salido bien</button>
+      <button data-op="rapida">La GPU despacha 50 millones de float32 en 40 µs</button>
+      <button data-op="correcta">La llamada encoló el trabajo y retornó enseguida</button>
+      <button data-op="cprofile">Con cProfile el número habría salido bien</button>
       <button data-op="perf">perf_counter no sirve para medir la GPU</button>
     </div>
     <div id="veredicto-medir" class="veredicto"></div>

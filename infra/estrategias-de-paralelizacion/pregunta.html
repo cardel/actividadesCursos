@@ -48,10 +48,10 @@
     <h2>3. En qué se fue el tiempo</h2>
     <p style="margin-top:0">En la primera fila, ¿en qué se fueron los 6,6 ms?</p>
     <div class="opciones" id="opciones-tiempo">
-      <button data-op="lento">En calcular más lento con hilos</button>
-      <button data-op="memoria">En esperar la memoria</button>
-      <button data-op="correcta">En crear, planificar y unir 400 hilos en 100 tandas</button>
-      <button data-op="cache">En competir por la caché</button>
+      <button data-op="lento">En calcular más lento dentro de cada hilo</button>
+      <button data-op="memoria">En esperar los datos desde la memoria</button>
+      <button data-op="correcta">En crear, planificar y unir los 400 hilos</button>
+      <button data-op="cache">En competir cuatro hilos por la caché</button>
     </div>
     <div id="veredicto-tiempo" class="veredicto"></div>
   </div>
@@ -61,11 +61,10 @@
     <p style="margin-top:0">Un programa envuelve su ciclo más largo en cuatro
     hilos y tarda lo mismo. ¿Qué concluye?</p>
     <div class="opciones" id="opciones-conclusion">
-      <button data-op="noparalelizable">El problema no es paralelizable</button>
-      <button data-op="nucleos">La máquina no tiene núcleos suficientes</button>
-      <button data-op="mashilos">Hay que poner más hilos</button>
-      <button data-op="correcta">Falta responder alguna de las tres preguntas:
-      qué se reparte, de qué tamaño y cómo se asigna</button>
+      <button data-op="noparalelizable">El problema no es paralelizable, da lo mismo cómo se parta</button>
+      <button data-op="nucleos">La máquina no tiene núcleos suficientes para los cuatro hilos</button>
+      <button data-op="mashilos">Hay que poner más hilos para que el tiempo baje</button>
+      <button data-op="correcta">Falta decidir qué se reparte, de qué tamaño y cómo se asigna</button>
     </div>
     <div id="veredicto-conclusion" class="veredicto"></div>
   </div>

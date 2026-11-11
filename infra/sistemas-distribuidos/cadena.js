@@ -73,10 +73,11 @@ function explicarCopia(bien, horas) {
 }
 
 var RAZONES_SILENCIO = {
-  correcta: "Es lo único que se sabe. Un nodo caído y uno lento se ven igual desde afuera: " +
-    "ninguno contesta antes del límite. El tiempo de espera no detecta caídas, solo decide " +
-    "cuánto se está dispuesto a esperar, y por eso un límite corto declara muerto a un nodo " +
-    "que estaba vivo y ocupado.",
+  correcta: "Es lo único que se sabe. La base puede estar caída, puede estar lenta, o puede " +
+    "haber contestado y perderse la respuesta en el camino: los tres casos se ven igual desde " +
+    "afuera, porque ninguno llega antes del límite. El tiempo de espera no detecta caídas, " +
+    "solo decide cuánto se está dispuesto a esperar, y por eso un límite corto declara muerto " +
+    "a un nodo que estaba vivo y ocupado.",
   caido: "No se puede afirmar. Puede estar vivo con la CPU saturada, o haber contestado y que " +
     "la respuesta se perdiera en la red. Desde el otro lado, los tres casos se ven iguales.",
   red: "Puede ser la red, y puede no serlo. El silencio no dice dónde está la falla.",

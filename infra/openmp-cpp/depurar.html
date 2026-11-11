@@ -74,7 +74,7 @@
     <div class="opciones" id="op-arranque">
       <button data-op="roto">El ciclo no está sumando: el programa tiene un error</button>
       <button data-op="compilador">El compilador eliminó la variable porque no se usa</button>
-      <button data-op="correcta">gdb muestra la copia privada de cada hilo, que parte en 0; la variable original recibe las copias al terminar la región</button>
+      <button data-op="correcta">Es la copia privada del hilo: parte en 0 y se combina al salir</button>
       <button data-op="atomica">Cada suma es atómica y gdb todavía no la ve</button>
     </div>
     <div id="ver-arranque" class="veredicto"></div>
@@ -85,7 +85,7 @@
     <p style="margin-top:0;margin-bottom:0.3rem">El marco dice <code>_Z8integrarv._omp_fn.0</code>, no <code>integrar</code>. ¿Por qué?</p>
     <div class="opciones" id="op-nombre">
       <button data-op="inlinea">El compilador copió integrar dentro de main</button>
-      <button data-op="correcta">El cuerpo de la región paralela se extrajo a una función nueva, _omp_fn.0, y _Z8integrarv es el nombre decorado de integrar()</button>
+      <button data-op="correcta">La región paralela se extrajo a una función nueva</button>
       <button data-op="gdb">gdb agrega el sufijo para distinguir los hilos</button>
       <button data-op="hilo">El 0 es el número del hilo que está detenido</button>
     </div>
@@ -122,7 +122,7 @@
       <button data-op="dosescrituras">Dos escrituras de T2, una en la línea 7 y otra en la 9</button>
       <button data-op="lineas">Una escritura en la línea 7 y una lectura en la 9</button>
       <button data-op="mismohilo">Dos accesos del hilo principal, que se pisan a sí mismos</button>
-      <button data-op="correcta">Una escritura de T2 en la línea 9 y una lectura anterior del hilo principal en la 7, sobre la misma dirección</button>
+      <button data-op="correcta">Una escritura de T2 en la 9 y una lectura del hilo principal en la 7</button>
     </div>
     <div id="ver-pares" class="veredicto"></div>
     <p style="margin-bottom:0.3rem;margin-top:1rem"><b>b)</b> ¿Qué cláusula arregla la carrera?</p>

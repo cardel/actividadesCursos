@@ -116,11 +116,10 @@
     <p style="margin-top:0;margin-bottom:0.3rem">En el árbol de Pyinstrument de
     <code>ruta.py</code> no aparece cuántas veces se llamó <code>distancia</code>. ¿Por qué?</p>
     <div class="opciones" id="opciones-conteo">
-      <button data-op="intervalo">Porque el intervalo era muy grande</button>
-      <button data-op="correcta">Porque el muestreo mira dónde está el programa cada vez que
-      despierta; no cuenta entradas ni salidas de funciones</button>
-      <button data-op="c">Porque distancia está escrita en C</button>
-      <button data-op="pocas">Porque se llamó pocas veces</button>
+      <button data-op="intervalo">Porque el intervalo de muestreo era muy grande</button>
+      <button data-op="correcta">Porque el muestreo anota la pila, no las llamadas</button>
+      <button data-op="c">Porque distancia está escrita en C, no en Python</button>
+      <button data-op="pocas">Porque se llamó pocas veces y el conteo no salió</button>
     </div>
     <div id="veredicto-conteo" class="veredicto"></div>
   </div>

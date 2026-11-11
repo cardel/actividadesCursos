@@ -117,10 +117,10 @@
     <p style="margin:0.8rem 0 0.3rem">Un programa funciona en Linux leyendo una variable global
     desde el hijo y falla en Windows. ¿Por qué?</p>
     <div class="opciones" id="opciones-windows">
-      <button data-op="correcta">En Windows el arranque es spawn y el hijo no hereda la memoria del padre</button>
-      <button data-op="nohay">Windows no tiene multiprocessing</button>
-      <button data-op="lock">Falta un Lock</button>
-      <button data-op="grande">La variable es muy grande para copiarse</button>
+      <button data-op="correcta">Con spawn el hijo no hereda la memoria del padre</button>
+      <button data-op="nohay">En Windows no existe el módulo multiprocessing</button>
+      <button data-op="lock">Falta un Lock que proteja la variable global</button>
+      <button data-op="grande">La variable es demasiado grande para copiarla al hijo</button>
     </div>
     <div id="veredicto-windows" class="veredicto"></div>
     <p id="texto-hereda" style="margin:0.6rem 0 0"></p>
@@ -142,10 +142,10 @@
     <p style="margin:0.8rem 0 0.3rem">Cuatro procesos suman sobre el mismo
     <code>multiprocessing.Value</code> y el total sale mal. ¿Qué falta?</p>
     <div class="opciones" id="opciones-cerrojo">
-      <button data-op="array">Cambiar Value por Array</button>
-      <button data-op="correcta">Tomar el cerrojo del Value alrededor de la lectura y la escritura</button>
-      <button data-op="manager">Usar un Manager</button>
-      <button data-op="copia">Pasar el valor como argumento</button>
+      <button data-op="array">Cambiar el Value por un Array compartido</button>
+      <button data-op="correcta">Tomar el cerrojo del Value en cada aumento</button>
+      <button data-op="manager">Usar un Manager para guardar el total</button>
+      <button data-op="copia">Pasar el valor como argumento a cada proceso</button>
     </div>
     <div id="veredicto-cerrojo" class="veredicto"></div>
     <div class="nota">En la suma paralela por segmentos no aparece este problema: cada proceso

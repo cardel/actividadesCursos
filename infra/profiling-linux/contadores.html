@@ -57,8 +57,8 @@
     esa pareja de cifras?</p>
     <div class="opciones" id="op-ciclos">
       <button data-op="compilador">El compilador optimizó uno de los dos y el otro no</button>
-      <button data-op="correcta">Cada instrucción tarda más porque espera datos de memoria: lo que cambió es el patrón de acceso, no el algoritmo</button>
-      <button data-op="trabajo">./malo ejecuta más trabajo que ./bueno</button>
+      <button data-op="correcta">Cada instrucción tarda más porque espera datos de memoria</button>
+      <button data-op="trabajo">./malo ejecuta más trabajo que ./bueno en cada vuelta</button>
       <button data-op="frecuencia">La frecuencia del procesador bajó durante la corrida de ./malo</button>
     </div>
     <div id="ver-ciclos" class="veredicto"></div>
@@ -95,7 +95,7 @@
     <div class="opciones" id="op-brecha">
       <button data-op="multiplexado">Porque perf reparte los contadores y el conteo de fallos queda inflado</button>
       <button data-op="barato">Porque un fallo de caché cuesta tan poco que 415 veces más no alcanza a verse</button>
-      <button data-op="correcta">Porque el tiempo de reloj incluye todo lo demás y el procesador alcanza a tapar parte de la espera: cuanto más abajo se mide, más grande se ve la diferencia</button>
+      <button data-op="correcta">Porque el reloj mide todo el programa y el procesador tapa parte de la espera</button>
       <button data-op="promedio">Porque <code>--repeat 10</code> promedia y aplana la diferencia</button>
     </div>
     <div id="ver-brecha" class="veredicto"></div>
@@ -111,7 +111,7 @@
       <button data-op="normal">Nada: por debajo de 1 es lo normal en un programa paralelo</button>
       <button data-op="hilos">Levantar más hilos, porque con los que hay no alcanza a llenar el procesador</button>
       <button data-op="compilado">Recompilar: un IPC así delata un binario sin optimizar</button>
-      <button data-op="correcta">Por debajo de 1 el procesador está esperando datos; optimizar la aritmética no sirve y hay que arreglar el acceso a memoria</button>
+      <button data-op="correcta">Arreglar el acceso a memoria: con 0,9 el procesador está esperando datos</button>
     </div>
     <div id="ver-ipc-paralelo" class="veredicto"></div>
     <div class="nota">El IPC es alto cuando el procesador tiene con qué trabajar en cada
@@ -126,9 +126,9 @@
     <code>&lt;not supported&gt;</code> en todos los eventos al pedirle la máquina completa con
     <code>perf stat -a</code>. ¿Qué pasó?</p>
     <div class="opciones" id="op-no-soporta">
-      <button data-op="correcta">Es <code>kernel.perf_event_paranoid</code> en 2, que no deja medir la máquina entera; se baja a 1 con <code>sudo sysctl</code></button>
-      <button data-op="procesador">El procesador no tiene ese contador</button>
-      <button data-op="instalar">Falta instalar <code>perf</code> para el núcleo que corre</button>
+      <button data-op="correcta">Es <code>kernel.perf_event_paranoid</code> en 2, que no deja medir la máquina entera</button>
+      <button data-op="procesador">El procesador no tiene ese contador y <code>perf</code> lo dice en todos los eventos</button>
+      <button data-op="instalar">Falta instalar el <code>perf</code> que corresponde al núcleo que corre</button>
       <button data-op="programa">El programa no usa ese contador, así que no hay nada que contar</button>
     </div>
     <div id="ver-no-soporta" class="veredicto"></div>

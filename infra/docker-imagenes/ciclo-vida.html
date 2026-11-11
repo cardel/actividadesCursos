@@ -85,7 +85,7 @@
     <div class="opciones" id="op-sintoma">
       <button data-op="lento">Que el servicio tiene mucho que guardar antes de cerrar</button>
       <button data-op="red">Que está esperando a que se cierren las conexiones de red</button>
-      <button data-op="correcta">Que su proceso número uno no recibe la señal, así que pierde las peticiones en curso en cada despliegue</button>
+      <button data-op="correcta">Que su proceso número uno no recibe la señal de parada</button>
       <button data-op="normal">Que diez segundos es lo que tarda cualquier contenedor</button>
     </div>
     <div id="ver-sintoma" class="veredicto"></div>
@@ -107,7 +107,7 @@
       <button data-op="espera">Espera el plazo de diez segundos y después borra</button>
       <button data-op="igual">Lo mismo, con otro mensaje</button>
       <button data-op="volumen">Borra además los volúmenes del contenedor</button>
-      <button data-op="correcta">Equivale a kill más rm: no da tiempo a cerrar conexiones ni a vaciar buffers</button>
+      <button data-op="correcta">Equivale a kill más rm, sin plazo para cerrar</button>
     </div>
     <div id="ver-forzar" class="veredicto"></div>
     <div class="nota">Lo que se escribió dentro del contenedor se pierde al borrarlo, con

@@ -55,7 +55,7 @@
     base y espera dos segundos. No llega respuesta. ¿Qué sabe en ese momento?</p>
     <div class="opciones" id="op-silencio">
       <button data-op="caido">Que la base de datos está caída</button>
-      <button data-op="correcta">Solo que no hubo respuesta en dos segundos: la base puede estar caída, lenta, o haber contestado y perdido la respuesta</button>
+      <button data-op="correcta">Solo que no hubo respuesta en los dos segundos de espera</button>
       <button data-op="red">Que la red entre los dos se cortó</button>
       <button data-op="reintentar">Que debe reintentar, porque la primera solicitud no se ejecutó</button>
     </div>
@@ -65,7 +65,7 @@
     <div class="opciones" id="op-reintento">
       <button data-op="nunca">No se reintenta nunca un pago</button>
       <button data-op="esperar">Se espera más tiempo antes de reintentar, hasta estar seguro</button>
-      <button data-op="correcta">Se envía con un identificador único, y si el servidor ya lo procesó devuelve la respuesta guardada sin cobrar otra vez</button>
+      <button data-op="correcta">Se envía con el mismo identificador único en cada intento</button>
       <button data-op="revisar">Se revisa el saldo de la tarjeta antes de reintentar</button>
     </div>
     <div id="ver-reintento" class="veredicto"></div>
