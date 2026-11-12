@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Una fuente, varias ejecuciones: contar las intercalaciones</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .codigo { max-height: none; }
+  .item { border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem; }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.93rem; font-weight: 700; color: var(--azul);
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button { font-size: 0.88rem; min-width: 4rem; }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 18rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .item .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  #salidas .codigo { margin-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Una fuente, varias ejecuciones: contar las intercalaciones</h1>
+  <p class="intro">El cuerpo de cada hilo corre de arriba abajo, en orden. Con
+  dos hilos, lo que se ejecuta de verdad es una mezcla de las dos secuencias, y
+  cuál de todas ocurre lo decide el planificador del sistema operativo. De ahí
+  que un programa concurrente no tenga una traza sino muchas, y que haya que
+  razonar sobre todas. Este programa es el del deck, con un hilo y un
+  <code>join</code>: cuente sus salidas antes de verlas, decida si seis
+  candidatas pueden ocurrir y revise qué ordena el <code>join</code>.</p>
+
+  <div class="carta">
+    <h2>1. Cuántas salidas distintas admite</h2>
+    <div class="codigo" id="codigo-programa"></div>
+    <p class="nota" style="margin-top:0.5rem">Las dos líneas de puntos
+    suspensivos imprimen lo mismo, así que dos salidas que solo difieran en
+    cuál de las dos salió primero no se distinguen.</p>
+    <div class="prediccion">
+      <span>¿Cuántas salidas distintas puede imprimir?</span>
+      <input type="number" id="prediccion" min="1" placeholder="su número">
+      <button id="btn-comprobar" class="primario">Comprobar</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+    <div id="salidas"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Posible o imposible</h2>
+    <p class="nota" style="margin-top:0">Seis candidatas. Para cada una,
+    decida si alguna intercalación del programa la produce.</p>
+    <div id="candidatos"></div>
+    <div class="progreso" id="marcador-candidatos"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Qué ordena el join y qué no</h2>
+    <div id="razones"></div>
+    <div class="progreso" id="marcador-razones"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>4. Para resolver por su cuenta</h2>
+    <p style="margin-top:0">Mueva el <code>t.join()</code> a la línea siguiente
+    al <code>thread</code> y cuente cuántas salidas distintas quedan. Después
+    agregue un segundo hilo que imprima su propia línea, con un solo
+    <code>join</code> al final para los dos, y cuente de nuevo.</p>
+  </div>
+</div>
+<script src="intercalaciones.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

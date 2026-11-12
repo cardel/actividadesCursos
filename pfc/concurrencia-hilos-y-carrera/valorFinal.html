@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dos incrementos sobre la misma variable: qué puede imprimir</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .codigo { max-height: none; }
+  .item { border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem; }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.93rem; font-weight: 700; color: var(--azul);
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button { font-size: 0.88rem; min-width: 4rem; }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 18rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .item .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  #tabla-ordenes td { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 0.82rem; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Dos incrementos sobre la misma variable: qué puede imprimir</h1>
+  <p class="intro">Dos hilos leen la misma variable y escriben de vuelta un
+  valor calculado a partir de lo que leyeron. Uno suma 1 y el otro suma 10, así
+  que cada valor final delata qué lectura llegó primero y qué escritura quedó
+  encima. Antes de ver la tabla, cuente dos cosas: cuántas intercalaciones
+  admite el programa y cuántos valores distintos puede imprimir. No son el
+  mismo número.</p>
+
+  <div class="carta">
+    <h2>1. El programa</h2>
+    <div class="codigo" id="codigo-x"></div>
+    <p class="nota">Cada hilo tiene dos pasos y su orden interno es fijo: la
+    lectura antes de la escritura. Lo que no está fijo es cómo se intercalan
+    los pasos de un hilo con los del otro.</p>
+    <div class="prediccion">
+      <span>¿Cuántas intercalaciones de A1, A2, B1 y B2 respetan el orden
+      interno de cada hilo?</span>
+      <input type="number" id="pred-ordenes" min="1" placeholder="su número">
+      <button id="btn-ordenes" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-ordenes" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Cuántos valores distintos</h2>
+    <div class="prediccion">
+      <span>¿Cuántos valores distintos puede imprimir el
+      <code>println(x)</code>?</span>
+      <input type="number" id="pred-valores" min="1" placeholder="su número">
+      <button id="btn-valores" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-valores" class="veredicto"></div>
+    <div class="envoltura-tabla" id="tabla-ordenes" style="margin-top:0.7rem"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Qué dice la enumeración</h2>
+    <div id="lecturas"></div>
+    <div class="progreso" id="marcador-lecturas"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>4. Para resolver por su cuenta</h2>
+    <p style="margin-top:0">Agregue un tercer hilo C con los pasos
+    <code>val c = x</code> y <code>x = c + 100</code>, y un
+    <code>C.join()</code> junto a los otros dos. Cuente cuántas
+    intercalaciones hay ahora y cuántos valores distintos puede imprimir el
+    programa.</p>
+  </div>
+</div>
+<script src="valorFinal.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Speedup: cuánto se ganó de verdad</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .codigo { max-height: none; }
+  .item { border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem; }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.93rem; font-weight: 700; color: var(--azul);
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button { font-size: 0.88rem; min-width: 4rem; }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 18rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .item .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  .formula {
+    font-size: 1.05rem; text-align: center; margin: 0.6rem 0;
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace; color: var(--azul);
+  }
+  #tabla-medidas td.pend { font-weight: 700; color: var(--gris); }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Speedup: cuánto se ganó de verdad</h1>
+  <p class="intro">Repartir un cálculo entre varios núcleos es una apuesta, y
+  el speedup es la forma de cobrarla: el tiempo de la versión secuencial
+  dividido por el de la paralela. Con cuatro núcleos el ideal es 4 y lo que
+  sale es menos, porque lanzar hilos cuesta, hay trabajo que no se reparte y
+  los núcleos compiten por la memoria. Los tiempos de abajo son los que
+  reporta la sesión al sumar diez millones de enteros en una máquina de cuatro
+  núcleos.</p>
+
+  <div class="carta">
+    <h2>1. La medida</h2>
+    <div class="formula">S<sub>p</sub> = T<sub>1</sub> / T<sub>p</sub></div>
+    <p class="nota" style="margin-top:0">T<sub>1</sub> es el tiempo de la
+    versión secuencial y T<sub>p</sub> el de la versión paralela con p
+    núcleos.</p>
+    <div id="barras"></div>
+    <div class="envoltura-tabla" id="tabla-medidas" style="margin-top:0.7rem"></div>
+    <div class="prediccion">
+      <span>¿Cuál es el speedup de la versión con 4 hilos?</span>
+      <input type="text" id="prediccion" inputmode="decimal" placeholder="su número">
+      <button id="btn-comprobar" class="primario">Comprobar</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Leer un speedup</h2>
+    <div id="lecturas"></div>
+    <div class="progreso" id="marcador-lecturas"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>3. Para resolver por su cuenta</h2>
+    <p style="margin-top:0">Averigüe cuántos núcleos tiene su máquina. Mida
+    <code>sumaSec</code> y <code>sumaPar4</code> con diez millones de enteros,
+    calcule el speedup y compárelo con el número de núcleos. Repita la medida
+    con diez mil enteros y explique a qué se debe la diferencia entre los dos
+    resultados.</p>
+  </div>
+</div>
+<script src="speedup.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

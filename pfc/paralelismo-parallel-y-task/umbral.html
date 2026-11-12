@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Divide y vencerás con umbral: cuántas tareas salen de ahí</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .codigo { max-height: none; }
+  .item { border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem; }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.93rem; font-weight: 700; color: var(--azul);
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button { font-size: 0.88rem; min-width: 4rem; }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 18rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .item .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  #presets button { font-size: 0.83rem; }
+  .cuentas { display: flex; gap: 0.6rem; flex-wrap: wrap; font-size: 0.85rem; }
+  .cuentas span {
+    background: var(--codigo-fondo); border: 1px solid var(--borde);
+    border-radius: 999px; padding: 0.15rem 0.6rem;
+  }
+  .cuentas b { color: var(--azul); }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Divide y vencerás con umbral: cuántas tareas salen de ahí</h1>
+  <p class="intro">Partir el arreglo en dos aprovecha dos núcleos. Para
+  aprovechar cuatro u ocho hay que partir recursivamente, y partir hasta
+  segmentos de un elemento sale más caro que sumarlos: cada partición lanza una
+  tarea y coordinar tareas cuesta. El umbral es el punto donde la recursión
+  deja de repartir y se pone a sumar. La condición que lo compara es estricta,
+  y de ahí sale el segmento que se parte aunque mida exactamente el
+  umbral.</p>
+
+  <div class="carta">
+    <h2>1. Cuántas sumas secuenciales</h2>
+    <p style="margin-top:0">Con un arreglo de <code>40000</code> elementos y
+    <code>UMBRAL = 10000</code>, la recursión parte hasta que el segmento sea
+    menor que el umbral.</p>
+    <div class="prediccion">
+      <span>¿Cuántas llamadas a <code>sumSegment</code> hace en total?</span>
+      <input type="number" id="prediccion" min="1" placeholder="su número">
+      <button id="btn-comprobar" class="primario">Comprobar</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. El recorrido, un paso a la vez</h2>
+    <div class="presets" id="presets"></div>
+    <div class="panel-doble" style="margin-top:0.8rem">
+      <div class="codigo" id="panel-codigo"></div>
+      <div class="estado">
+        <div class="chips" id="chips"></div>
+        <div class="progreso">paso <b id="ver-paso">0</b> de <b id="ver-total">0</b></div>
+        <div class="botones">
+          <button id="btn-paso">Paso</button>
+          <button id="btn-auto">Auto</button>
+          <button id="btn-fin">Al final</button>
+          <button id="btn-reiniciar">Reiniciar</button>
+        </div>
+        <div class="cuentas">
+          <span>sumas secuenciales: <b id="cuenta-hojas">0</b></span>
+          <span>llamadas a parallel: <b id="cuenta-parallel">0</b></span>
+        </div>
+      </div>
+    </div>
+    <p class="nota" id="pie-arbol"></p>
+    <p class="nota">Los contadores a la derecha de cada línea dicen cuántas
+    veces se evaluó. El de la línea 2 cuenta las sumas secuenciales y el de la
+    línea 4, las llamadas a <code>parallel</code>. El recorrido visita primero
+    la mitad izquierda completa y después la derecha, que es el orden en que la
+    recursión arma el árbol.</p>
+  </div>
+
+  <div class="carta">
+    <h2>3. Qué decide el umbral</h2>
+    <div id="decisiones"></div>
+    <div class="progreso" id="marcador-decisiones"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>4. Para resolver por su cuenta</h2>
+    <p style="margin-top:0">Escriba <code>sumaPar(a: Array[Int], s: Int, t:
+    Int, umbral: Int): Long</code>, que sume el segmento con el mismo patrón de
+    <code>segmentRec</code>. Mida el tiempo con diez millones de elementos para
+    umbrales de 100, de 10000 y de un millón, y reporte cuál resultó mejor en
+    su máquina.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="umbral.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

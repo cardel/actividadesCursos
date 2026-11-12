@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Un proceso, varios hilos: qué comparten y qué no</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .codigo { max-height: none; }
+  .item { border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem; }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.93rem; font-weight: 700; color: var(--azul);
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button { font-size: 0.88rem; min-width: 4rem; }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 18rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .item .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  .mapa { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; margin: 0.6rem 0; }
+  .mapa .pila {
+    background: var(--azul-suave); border: 1px solid var(--azul); color: var(--azul);
+    border-radius: 8px; padding: 0.5rem; font-size: 0.82rem; text-align: center;
+  }
+  .mapa .heap {
+    grid-column: 1 / -1; background: var(--ambar-suave); border: 1px solid var(--ambar);
+    color: #a86a12; border-radius: 8px; padding: 0.5rem; font-size: 0.82rem; text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Un proceso, varios hilos: qué comparten y qué no</h1>
+  <p class="intro">Un proceso tiene su propio espacio de memoria. Dentro de
+  él, un hilo es un flujo de ejecución independiente, y un proceso puede
+  tener muchos. De ese reparto salen las dos reglas con que se razona el
+  resto de la sesión: cada hilo tiene su pila y todos comparten el heap.
+  Siete preguntas sobre los dos conceptos que se confunden, sobre lo que un
+  hilo alcanza a tocar y sobre los dos mensajes con que se maneja. Cada
+  opción equivocada dice en qué consiste la confusión.</p>
+
+  <div class="carta">
+    <h2>1. Paralelismo y concurrencia</h2>
+    <div id="conceptos"></div>
+    <div class="progreso" id="marcador-conceptos"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Dónde vive cada cosa</h2>
+    <div class="mapa">
+      <div class="pila">Pila<br>Hilo 1</div>
+      <div class="pila">Pila<br>Hilo 2</div>
+      <div class="pila">Pila<br>Hilo 3</div>
+      <div class="heap">Heap: los objetos, compartidos por los tres</div>
+    </div>
+    <p class="nota" style="margin-top:0">La función que imprime en qué hilo
+    corre cada cosa, y la que lanza un bloque en un hilo nuevo:</p>
+    <div class="codigo" id="codigo-log"></div>
+    <div id="memoria"></div>
+    <div class="progreso" id="marcador-memoria"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>3. Para resolver por su cuenta</h2>
+    <p style="margin-top:0">Escriba <code>enParalelo(c1: =&gt; Unit, c2: =&gt;
+    Unit): Unit</code>, que ejecute los dos cuerpos en hilos distintos y no
+    retorne hasta que los dos hayan terminado. Use únicamente
+    <code>thread</code> y <code>join</code>. Después responda qué cambia en el
+    tiempo total si el <code>join</code> del primer hilo se escribe antes de
+    lanzar el segundo.</p>
+  </div>
+</div>
+<script src="hilos.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

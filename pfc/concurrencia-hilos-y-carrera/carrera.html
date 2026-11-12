@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dos hilos, un contador: la condición de carrera</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .codigo { max-height: none; }
+  .item { border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem; }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.93rem; font-weight: 700; color: var(--azul);
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button { font-size: 0.88rem; min-width: 4rem; }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 18rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .item .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  #traza table { margin-bottom: 0.6rem; }
+  #traza td { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 0.85rem; }
+  #traza td.pend { font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Dos hilos, un contador: la condición de carrera</h1>
+  <p class="intro">El requisito es corto: <code>getUniqueId()</code> tiene que
+  retornar un entero distinto cada vez, sin importar cuántos hilos la
+  invoquen. El primer intento lo resuelve con un contador compartido, y es el
+  código que la sesión muestra para no escribirlo: lee el contador, suma uno
+  aparte y lo escribe de vuelta. Entre la lectura y la escritura hay un hueco,
+  y por ese hueco cabe otro hilo. Nueve preguntas, una traza de los dos hilos
+  paso a paso y la corrida de cuatro hilos con cien mil llamadas cada uno.</p>
+
+  <div class="carta">
+    <h2>1. El primer intento</h2>
+    <div class="codigo" id="codigo-uid"></div>
+    <div id="entrada"></div>
+    <div class="progreso" id="marcador-entrada"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. La traza de los dos hilos</h2>
+    <p class="nota" style="margin-top:0">Estado inicial del contador en 0. Los
+    hilos A y B invocan la función a la vez, y la fila de cada paso aparece
+    cuando se predice.</p>
+    <div class="envoltura-tabla" id="traza"></div>
+    <div id="pasos"></div>
+    <div class="progreso" id="marcador-traza"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Cuatro hilos y cien mil llamadas cada uno</h2>
+    <p class="nota" style="margin-top:0">El programa de la sesión lanza cuatro
+    hilos, cada uno con cien mil llamadas, hace <code>join</code> de los cuatro
+    e imprime el valor esperado junto al observado.</p>
+    <div id="corrida"></div>
+    <div class="progreso" id="marcador-corrida"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Atomicidad, cerrojo y la salida funcional</h2>
+    <div class="codigo" id="codigo-sync"></div>
+    <div id="atomicidad"></div>
+    <div class="progreso" id="marcador-atomicidad"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>5. Para resolver por su cuenta</h2>
+    <p style="margin-top:0">Considere esta cuenta bancaria:</p>
+    <div class="codigo">
+      <div class="linea"><span class="num">1</span><span class="txt">class Cuenta(var saldo: Int) {</span></div>
+      <div class="linea"><span class="num">2</span><span class="txt">  val cerrojo = new AnyRef</span></div>
+      <div class="linea"><span class="num">3</span><span class="txt">  def depositar(n: Int): Unit = cerrojo.synchronized {</span></div>
+      <div class="linea"><span class="num">4</span><span class="txt">    saldo = saldo + n</span></div>
+      <div class="linea"><span class="num">5</span><span class="txt">  }</span></div>
+      <div class="linea"><span class="num">6</span><span class="txt">  def retirar(n: Int): Unit = cerrojo.synchronized {</span></div>
+      <div class="linea"><span class="num">7</span><span class="txt">    if (saldo &gt;= n) saldo = saldo - n</span></div>
+      <div class="linea"><span class="num">8</span><span class="txt">  }</span></div>
+      <div class="linea"><span class="num">9</span><span class="txt">}</span></div>
+    </div>
+    <p>Formule el invariante que quiere preservar, argumente que se mantiene
+    para cualquier intercalación de <code>depositar</code> y
+    <code>retirar</code> sobre la misma cuenta, y construya un contraejemplo
+    que lo viole cuando se quita el <code>synchronized</code> de
+    <code>retirar</code> y se deja el de <code>depositar</code>.</p>
+  </div>
+</div>
+<script src="carrera.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

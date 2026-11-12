@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>parallel: qué promete y por qué sus parámetros van por nombre</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .codigo { max-height: none; }
+  .item { border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem; }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.93rem; font-weight: 700; color: var(--azul);
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button { font-size: 0.88rem; min-width: 4rem; }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 18rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .item .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>parallel: qué promete y por qué sus parámetros van por nombre</h1>
+  <p class="intro">Los hilos crudos de la sesión anterior funcionan y obligan a
+  escribir <code>var</code>, <code>start</code> y <code>join</code> a mano.
+  <code>parallel</code> es la primitiva que tapa todo eso: recibe dos
+  expresiones, las evalúa en paralelo y devuelve la pareja de sus valores. La
+  firma tiene un detalle que decide si hay paralelismo o no, y está en los dos
+  caracteres que preceden al tipo de cada parámetro. Seis preguntas sobre el
+  contrato y sobre ese detalle.</p>
+
+  <div class="carta">
+    <h2>1. El contrato</h2>
+    <div class="codigo" id="codigo-firma"></div>
+    <div id="contrato"></div>
+    <div class="progreso" id="marcador-contrato"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. El paso por nombre</h2>
+    <p class="nota" style="margin-top:0">La misma firma con los parámetros por
+    valor:</p>
+    <div class="codigo" id="codigo-valor"></div>
+    <div id="nombre"></div>
+    <div class="progreso" id="marcador-nombre"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>3. Para resolver por su cuenta</h2>
+    <p style="margin-top:0">Escriba la firma de una función que reciba tres
+    expresiones y las evalúe en paralelo, devolviendo una tripleta. Después
+    diga qué pasaría con el tiempo total si el tercer parámetro se declarara
+    por valor y los otros dos por nombre.</p>
+  </div>
+</div>
+<script src="porNombre.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

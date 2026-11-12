@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>task: lanzar un cálculo y recogerlo al final</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .codigo { max-height: none; }
+  .item { border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem; }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.93rem; font-weight: 700; color: var(--azul);
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button { font-size: 0.88rem; min-width: 4rem; }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 18rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .item .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  .item .codigo { margin: 0.3rem 0 0.1rem; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>task: lanzar un cálculo y recogerlo al final</h1>
+  <p class="intro"><code>parallel</code> toma dos expresiones, y para cuatro
+  hay que anidarlo. <code>task</code> resuelve eso: convierte un cálculo en un
+  valor que se puede guardar, pasar y esperar cuando convenga. Lo que decide si
+  hay ganancia ya no es la firma sino dónde se escribe el <code>join</code>:
+  lanzar una tarea es barato y esperarla es lo que cuesta. Dos cuentas de
+  tiempo y ocho preguntas, con tres variantes de <code>parallel</code> escritas
+  sobre <code>task</code> de las que solo dos paralelizan.</p>
+
+  <div class="carta">
+    <h2>1. La API y su contrato</h2>
+    <div class="codigo" id="codigo-api"></div>
+    <div id="contrato"></div>
+    <div class="progreso" id="marcador-contrato"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Cuánto tarda la norma con cuatro tareas</h2>
+    <div class="codigo" id="codigo-norma"></div>
+    <p class="nota">Para las dos cuentas de abajo, suponga que cada cuarto del
+    arreglo cuesta 100 ms, que hay un núcleo libre por tarea y que lanzar una
+    tarea y esperarla no cuesta nada.</p>
+    <div class="prediccion">
+      <span>¿Cuánto tarda <code>pNormCuatro</code> tal como está escrita, en
+      milisegundos?</span>
+      <input type="number" id="pred-paralelo" min="1" placeholder="su número">
+      <button id="btn-paralelo" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-paralelo" class="veredicto"></div>
+    <div class="prediccion">
+      <span>¿Y si cada <code>join</code> se escribe pegado a su
+      <code>task</code>, antes de crear la tarea siguiente?</span>
+      <input type="number" id="pred-fila" min="1" placeholder="su número">
+      <button id="btn-fila" class="primario">Comprobar</button>
+    </div>
+    <div id="ver-fila" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Tres formas de escribir parallel con task</h2>
+    <p class="nota" style="margin-top:0">Las tres retornan la pareja correcta.
+    Decida cuáles paralelizan de verdad.</p>
+    <div id="variantes"></div>
+    <div class="progreso" id="marcador-variantes"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Dónde va el join</h2>
+    <div id="moraleja"></div>
+    <div class="progreso" id="marcador-moraleja"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>5. Para resolver por su cuenta</h2>
+    <p style="margin-top:0">Entre <code>p1</code> y <code>p3</code>, las dos
+    que paralelizan, hay una razón práctica para preferir <code>p3</code> en
+    algunos casos. Diga cuál es y qué se paga por ella. Después generalice:
+    escriba <code>parCuatro</code>, que reciba cuatro expresiones por nombre y
+    devuelva una tupla de cuatro valores, usando solo <code>task</code> y
+    <code>join</code>.</p>
+  </div>
+</div>
+<script src="task.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

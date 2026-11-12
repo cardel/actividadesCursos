@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estimar pi con cuatro tareas y sin sincronizar nada</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .codigo { max-height: none; }
+  .item { border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem; }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.93rem; font-weight: 700; color: var(--azul);
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button { font-size: 0.88rem; min-width: 4rem; }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 18rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .item .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  .formula {
+    font-size: 1.05rem; text-align: center; margin: 0.6rem 0;
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace; color: var(--azul);
+  }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Estimar pi con cuatro tareas y sin sincronizar nada</h1>
+  <p class="intro">Un círculo de radio 1 inscrito en un cuadrado de lado 2
+  ocupa una fracción pi partido por 4 del área. Lanzando puntos al azar dentro
+  del cuadrado y contando cuántos caen dentro del círculo se estima esa
+  fracción, y de ahí pi. El cálculo se reparte entre cuatro tareas sin una
+  línea de <code>synchronized</code> y sin un solo <code>var</code>, y vale la
+  pena ver por qué: la razón es la misma que hace innecesario el cerrojo del
+  generador de identificadores.</p>
+
+  <div class="carta">
+    <h2>1. La versión secuencial</h2>
+    <div class="formula">pi ≈ 4 · aciertos / N</div>
+    <div class="codigo" id="codigo-sec"></div>
+    <div id="sincarrera"></div>
+    <div class="progreso" id="marcador-sincarrera"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. El reparto en cuatro</h2>
+    <div class="codigo" id="codigo-par"></div>
+    <div class="prediccion">
+      <span>Con <code>iter = 10</code>, ¿cuántas iteraciones hace la cuarta
+      tarea?</span>
+      <input type="number" id="prediccion" min="0" placeholder="su número">
+      <button id="btn-comprobar" class="primario">Comprobar</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+    <div id="reparto" style="margin-top:0.7rem"></div>
+    <div class="progreso" id="marcador-reparto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Lo que se ganó</h2>
+    <p class="nota" style="margin-top:0">Tiempos de la sesión con diez
+    millones de puntos en una máquina de cuatro núcleos.</p>
+    <div id="barras"></div>
+    <div class="envoltura-tabla" id="tabla-medidas" style="margin-top:0.7rem"></div>
+    <div id="tiempos"></div>
+    <div class="progreso" id="marcador-tiempos"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>4. Para resolver por su cuenta</h2>
+    <p style="margin-top:0">Reparta las iteraciones entre ocho tareas con
+    <code>task</code> en lugar de los tres <code>parallel</code> anidados,
+    cuidando que los ocho pedazos sigan sumando <code>iter</code>. Mida el
+    tiempo en su máquina contra la versión de cuatro y diga si la estimación de
+    pi que sale es la misma.</p>
+  </div>
+</div>
+<script src="montecarlo.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
