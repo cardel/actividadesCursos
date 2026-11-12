@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capa oculta y tasa de aprendizaje</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Capa oculta y tasa de aprendizaje</h1>
+  <p class="intro">Un perceptrón multicapa pronostica la diferencia con hace 12 meses a partir de las 14 columnas de la serie como tabla: los rezagos 1 a 12, el mes y la media de los tres meses anteriores. <code>ocultas</code> es el tamaño de su capa oculta, con ReLU, y <code>ocultas = 0</code> deja una sola neurona sin activación, la regresión lineal. <code>tasa</code> es cuánto mueve Adam cada peso por época. La red entrena con los meses anteriores a marzo de 2022 y valida con los 24 siguientes, hasta febrero de 2024, el último mes antes del primer origen del <em>backtest</em>. Corre 300 épocas sin parada temprana.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Mueva el tamaño y la tasa</h2>
+    <div class="controles">
+      <label>ocultas</label>
+      <span class="selector" id="ocultas">
+        <button data-valor="0">0</button>
+        <button data-valor="8">8</button>
+        <button data-valor="16" class="elegido">16</button>
+        <button data-valor="32">32</button>
+        <button data-valor="64">64</button>
+      </span>
+    </div>
+    <div class="controles">
+      <label>tasa</label>
+      <span class="selector" id="tasa">
+        <button data-valor="0.001" class="elegido">0,001</button>
+        <button data-valor="0.003">0,003</button>
+        <button data-valor="0.01">0,01</button>
+        <button data-valor="0.03">0,03</button>
+      </span>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <div class="figura" id="figura-entrena"></div>
+    <div class="figura" id="figura-valida"></div>
+    <p class="nota">Las curvas salen de <code>Mlp(14, (ocultas,))</code> en PyTorch, con la semilla 2026, Adam, pérdida MSE y la tabla estandarizada con las filas de entrenamiento. Se calcularon fuera de la página con el mismo código del notebook de la sesión. La línea punteada marca la época de menor validación.</p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Lo que mide la validación</h2>
+    <div id="cierre-tabla" class="envoltura-tabla"></div>
+    <div class="nota" id="cierre-texto"></div>
+    <h3>Ejercicio abierto</h3>
+    <p>Con 300 épocas fijas, la validación de casi todas las redes termina por encima de su mínimo. Escoja una pareja de tamaño y tasa, y decida qué paciencia le pondría a la parada temprana para que se detenga cerca de ese mínimo y no en una bajada pasajera. ¿Sirve la misma paciencia para las cuatro tasas?</p>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["pandemia", "transformaciones"] });</script>
+<script src="datos.js"></script>
+<script src="redes.js"></script>
+<script src="capa.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

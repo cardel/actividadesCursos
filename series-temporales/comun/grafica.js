@@ -207,8 +207,29 @@ var Grafica = (function () {
     return lienzo(W, H, s);
   }
 
+  /* Igual que lineas, con rectas verticales punteadas en las posiciones de
+     op.verticales, una lista de { en, color }. */
+  function lineasMarcadas(op) {
+    var largo = 0;
+    op.lineas.forEach(function (l) { largo = Math.max(largo, (l.desde || 0) + l.valores.length); });
+    var ys = extremos(op.lineas.map(function (l) { return l.valores; }));
+    var f = marco(op, 0, largo - 1, ys[0], ys[1]);
+    var s = f.svg;
+    op.lineas.forEach(function (l) {
+      var desde = l.desde || 0;
+      var pts = l.valores.map(function (v, i) { return f.sx(i + desde).toFixed(1) + "," + f.sy(v).toFixed(1); });
+      s += '<polyline fill="none" stroke="' + (l.color || AZUL) + '" stroke-width="1.6" points="' + pts.join(" ") + '"/>';
+    });
+    (op.verticales || []).forEach(function (m) {
+      var x = f.sx(m.en).toFixed(1);
+      s += '<line x1="' + x + '" x2="' + x + '" y1="' + f.sy(ys[1]) + '" y2="' + f.sy(ys[0]) +
+        '" stroke="' + (m.color || GRIS) + '" stroke-width="1.4" stroke-dasharray="4 3"/>';
+    });
+    return lienzo(f.W, f.H, s);
+  }
+
   return {
-    lineas: lineas, correlograma: correlograma, dispersion: dispersion,
+    lineas: lineas, lineasMarcadas: lineasMarcadas, correlograma: correlograma, dispersion: dispersion,
     barras: barras, franjas: franjas,
     numero: numero, AZUL: AZUL, ROJO: ROJO
   };

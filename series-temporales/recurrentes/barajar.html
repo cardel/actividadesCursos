@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Barajar</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Barajar</h1>
+  <p class="intro">El perceptrón multicapa recibe <code>rezago_1</code> a <code>rezago_12</code> como columnas de una fila; la LSTM recibe los mismos doce meses como pasos de una ventana. Barajar es poner los doce meses en otro orden fijo, el mismo para las dos redes: 7, 2, 10, 9, 12, 1, 3, 4, 6, 8, 5, 11. Cada red se entrena otra vez con la entrada barajada y pronostica 2025.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Recorra las cuatro posiciones</h2>
+    <div class="controles">
+      <label>posición</label>
+      <span class="selector" id="posicion">
+        <button data-valor="MLP en orden" class="elegido">MLP en orden</button>
+        <button data-valor="MLP barajado">MLP barajado</button>
+        <button data-valor="LSTM en orden">LSTM en orden</button>
+        <button data-valor="LSTM barajada">LSTM barajada</button>
+      </span>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <div class="figura" id="figura"></div>
+    <p class="nota">Cada pronóstico es el promedio de cinco redes, con las semillas 2026, 1, 7, 42 y 11, entrenadas con los meses hasta diciembre de 2024: <code>Mlp(14, (16,))</code> sobre la tabla de rezagos, mes y media móvil, y <code>Lstm(1, 32)</code> sobre ventanas de 12 pasos. Se calcularon fuera de la página con el mismo código del notebook de la sesión; el MAE se calcula aquí.</p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Columnas sueltas y pasos en orden</h2>
+    <div id="cierre-tabla" class="envoltura-tabla"></div>
+    <div class="nota" id="cierre-texto"></div>
+    <h3>Ejercicio abierto</h3>
+    <p>En lugar de barajar la ventana de la LSTM, inviértala: el mes más reciente en el paso 1 y el más viejo en el paso 12. ¿Cambia el pronóstico de 2025 tanto como al barajar? Pruébelo con las cinco semillas y explique lo que encuentre.</p>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["estacional", "transformaciones"] });</script>
+<script src="datos.js"></script>
+<script src="pronostico.js"></script>
+<script src="barajar.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

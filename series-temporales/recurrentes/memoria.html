@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ventana y memoria</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Ventana y memoria</h1>
+  <p class="intro">Una RNN lee la ventana paso a paso y lleva lo leído en un estado, <code>h<sub>t</sub> = tanh(W x<sub>t</sub> + U h<sub>t−1</sub> + b)</code>. Una LSTM agrega una memoria con tres compuertas, de olvido, de entrada y de salida, que deciden qué se conserva de un paso al siguiente. Tres controles: la red, <code>pasos</code>, cuántos meses tiene la ventana, y <code>oculta</code>, cuántas neuronas tiene el estado. El objetivo es la diferencia con hace 12 meses.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Elija red, pasos y neuronas</h2>
+    <div class="controles">
+      <label>red</label>
+      <span class="selector" id="red">
+        <button data-valor="RNN">RNN</button>
+        <button data-valor="LSTM" class="elegido">LSTM</button>
+      </span>
+    </div>
+    <div class="controles">
+      <label>pasos</label>
+      <span class="selector" id="pasos">
+        <button data-valor="3">3</button>
+        <button data-valor="6">6</button>
+        <button data-valor="12" class="elegido">12</button>
+        <button data-valor="24">24</button>
+      </span>
+    </div>
+    <div class="controles">
+      <label>oculta</label>
+      <span class="selector" id="oculta">
+        <button data-valor="8">8</button>
+        <button data-valor="16">16</button>
+        <button data-valor="32" class="elegido">32</button>
+        <button data-valor="64">64</button>
+      </span>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <div class="figura" id="figura"></div>
+    <p class="nota">Los pronósticos salen de <code>nn.RNN</code> y <code>nn.LSTM</code> de PyTorch con una capa, entrenadas con los meses hasta diciembre de 2024: Adam con tasa 0,001, pérdida MSE, las 24 últimas ventanas para validar, parada temprana con paciencia 30 y semilla 2026. Se calcularon fuera de la página con el mismo código del notebook de la sesión. La validación mínima es el MSE en la escala de la red; el MAE se calcula aquí.</p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Un año y una semilla</h2>
+    <div id="cierre-tabla" class="envoltura-tabla"></div>
+    <div class="nota" id="cierre-texto"></div>
+    <h3>Ejercicio abierto</h3>
+    <p>Repita la LSTM de 12 pasos con 8, 32 y 64 neuronas usando cinco semillas y promedie los cinco pronósticos de cada tamaño. ¿Se mantiene el orden de los tres MAE de 2025 que ve con una sola semilla?</p>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["cambio", "muestra"] });</script>
+<script src="datos.js"></script>
+<script src="pronostico.js"></script>
+<script src="memoria.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

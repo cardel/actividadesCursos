@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Épocas y escala</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Épocas y escala</h1>
+  <p class="intro">El perceptrón multicapa de la sesión, con una capa oculta de 16 neuronas y tasa 0,001, entrena con los meses hasta diciembre de 2024 y pronostica los doce de 2025, uno tras otro. No tiene parada temprana: corre las épocas que diga el control. La red aprende la diferencia con hace 12 meses estandarizada, menos su media y dividida por su desviación; para llegar a pasajeros hay que invertir ese escalado y sumarle el mismo mes del año anterior. La casilla deja ver lo que sale de la red antes de invertirlo.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Mueva las épocas y la casilla</h2>
+    <div class="controles">
+      <label>épocas</label>
+      <span class="selector" id="epocas">
+        <button data-valor="5">5</button>
+        <button data-valor="10">10</button>
+        <button data-valor="25">25</button>
+        <button data-valor="50">50</button>
+        <button data-valor="100">100</button>
+        <button data-valor="200">200</button>
+        <button data-valor="500" class="elegido">500</button>
+      </span>
+    </div>
+    <div class="controles">
+      <label for="invertir">invertir el escalado</label>
+      <input type="checkbox" id="invertir" checked>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <div class="figura" id="figura"></div>
+    <p class="nota">Los pronósticos salen de <code>Mlp(14, (16,))</code> en PyTorch, con la semilla 2026, Adam y pérdida MSE, y se calcularon fuera de la página con el mismo código del notebook de la sesión. El MAE se calcula aquí contra lo observado en 2025.</p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Más épocas no es mejor pronóstico</h2>
+    <div id="cierre-tabla" class="envoltura-tabla"></div>
+    <div class="nota" id="cierre-texto"></div>
+    <h3>Ejercicio abierto</h3>
+    <p>El MAE de 2025 es un solo origen. Proponga cómo escoger el número de épocas sin mirar 2025, con los meses que la red tiene hasta diciembre de 2024, y diga cuántos meses dejaría fuera del entrenamiento para eso.</p>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["estacional", "transformaciones"] });</script>
+<script src="datos.js"></script>
+<script src="redes.js"></script>
+<script src="epocas.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
