@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kruskal línea por línea</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Kruskal línea por línea</h1>
+  <p class="intro">Se ejecuta <code>kruskal</code> paso a paso. El número que acompaña a cada línea es
+  el de su archivo y el contador dice cuántas veces se ejecuta.</p>
+
+  <div class="carta">
+    <h2>1. El grafo y la predicción</h2>
+    <div class="presets" id="presets-grafo">
+      <span class="nota" style="margin-top:0">Grafo:</span>
+      <button data-preset="0" class="primario">Seis vértices, ocho aristas</button>
+      <button data-preset="1">Ocho vértices, trece aristas</button>
+    </div>
+    <p class="nota" id="ver-texto"></p>
+    <div class="dibujo" id="panel-grafo"></div>
+    <div class="tira"><span class="rot">En orden de peso</span><span id="ver-ordenada"></span></div>
+    <p class="nota" id="pregunta-pred" style="margin-bottom:0"></p>
+    <div class="prediccion">
+      <span>Se descartan por cerrar ciclo:</span>
+      <input type="text" id="pred-descartadas" class="texto corta" placeholder="cuántas">
+      <span>y el árbol se completa en el puesto:</span>
+      <input type="text" id="pred-cierra" class="texto corta" placeholder="cuál">
+      <button id="btn-comprobar" class="primario">Comprobar</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Ejecute el código</h2>
+    <div class="panel-doble">
+      <div class="codigo" id="panel-codigo"></div>
+      <div class="estado">
+        <div class="chips" id="chips"></div>
+        <div class="progreso">Paso <span id="ver-paso">0</span> de <span id="ver-total">0</span></div>
+        <div class="botones">
+          <button id="btn-paso" class="primario">Un paso</button>
+          <button id="btn-auto">Auto</button>
+          <button id="btn-fin">Al final</button>
+          <button id="btn-reiniciar">Reiniciar</button>
+        </div>
+        <div class="tira"><span class="rot">Decisión</span><span id="ver-decide"></span></div>
+        <div class="nota">En ámbar, la arista en turno. Verde: entró. Gris punteada: cerraba ciclo.</div>
+      </div>
+    </div>
+    <div class="tira"><span class="rot">Lista ordenada</span><span id="ver-lista"></span></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Los conjuntos disjuntos</h2>
+    <div class="caja-struct" id="caja-p"></div>
+    <div class="tira"><span class="rot">Pedazos</span><span id="ver-pedazos"></span></div>
+    <div class="tira"><span class="rot">mst</span><span id="ver-mst"></span></div>
+    <div class="nota"><code>p</code> cambia dos veces: cuando <code>union</code> cuelga una raíz de la
+    otra y cuando <code>find_set</code> acorta el camino que recorrió.</div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Lo que quedó</h2>
+    <div id="resumen"></div>
+  </div>
+
+  <div class="carta">
+    <h2>5. Para llevarse</h2>
+    <p style="margin-top:0">En el grafo de ocho vértices, baje el peso de 0–2 de 7 a 1. Diga cuál arista
+    sale del árbol, cuánto pesa el nuevo y en qué puesto se completa. Después construya un grafo de seis
+    vértices en el que se descarten tres aristas seguidas antes de completar el árbol.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="lib.js"></script>
+<script src="kruskal.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

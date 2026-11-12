@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Armar un árbol a mano</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Armar un árbol a mano</h1>
+  <p class="intro">Hay que dejar todos los barrios comunicados y gastar lo menos posible. Los tendidos
+  se escogen de uno en uno, con un clic, y el que cierre un ciclo queda rechazado.</p>
+
+  <div class="carta">
+    <h2>1. Antes de escoger</h2>
+    <div class="presets" id="presets-grafo">
+      <span class="nota" style="margin-top:0">Grafo:</span>
+      <button data-preset="0" class="primario">Cinco barrios, siete tendidos</button>
+      <button data-preset="1">Ocho barrios, doce tendidos</button>
+    </div>
+    <p class="nota" id="ver-texto"></p>
+    <div class="prediccion">
+      <span id="pregunta-pred"></span>
+      <input type="text" id="prediccion" class="texto corta" placeholder="un número">
+      <button id="btn-comprobar" class="primario">Comprobar</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. El tablero</h2>
+    <div class="dibujo" id="panel-grafo"></div>
+    <div class="leyenda">Verde: los tendidos puestos. Dos barrios con el mismo relleno ya se alcanzan
+    entre sí. Rojo punteado: el último rechazado.</div>
+    <div class="aristas" id="aristas"></div>
+    <div class="marcador">
+      <span>Tendidos: <b id="ver-puestas"></b></span>
+      <span>Peso: <b id="ver-peso"></b></span>
+      <span>Pedazos: <b id="ver-pedazos"></b></span>
+    </div>
+    <div id="mensaje" class="veredicto"></div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-reiniciar">Empezar de nuevo</button>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Qué tan cerca quedó</h2>
+    <div id="resultado"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Para llevarse</h2>
+    <p style="margin-top:0">Busque en el grafo de ocho barrios un tendido que no aparezca en ninguna
+    selección de peso mínimo, y diga cómo lo reconoció sin correr ningún algoritmo. Después dibuje un
+    grafo de cinco barrios en el que dos selecciones distintas lleguen al mismo peso mínimo.</p>
+  </div>
+</div>
+<script src="../comun/grafo-svg.js"></script>
+<script src="lib.js"></script>
+<script src="tanteo.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
