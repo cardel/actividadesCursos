@@ -171,9 +171,7 @@ if (typeof module !== "undefined") {
       rota = -1;
       el("ver-texto").textContent = G.texto;
       el("pregunta-pred").textContent = "¿Cuántos tendidos va a tener su selección en este grafo de " + G.n + " barrios?";
-      el("prediccion").value = "";
-      el("veredicto").className = "veredicto";
-      el("veredicto").textContent = "";
+      if (opciones) { opciones.refrescar(); }
       el("mensaje").className = "veredicto";
       el("mensaje").textContent = "";
       botones();
@@ -182,21 +180,18 @@ if (typeof module !== "undefined") {
       resultado();
     }
 
-    el("btn-comprobar").addEventListener("click", function () {
-      var G = g(), x = parseInt(el("prediccion").value, 10), v = el("veredicto"), msg;
-      if (isNaN(x)) {
-        msg = "Escriba un número primero."; v.className = "veredicto mal";
-      } else if (x === G.n - 1) {
-        msg = "Correcto: " + (G.n - 1) + ". Con menos queda un barrio sin alcanzar y con más se repite un camino, que es un ciclo.";
-        v.className = "veredicto bien";
-      } else if (x > G.n - 1) {
-        msg = "Con " + x + " tendidos sobra alguno: entre dos barrios habría dos caminos, y se puede quitar una arista de ese ciclo sin desconectar nada.";
-        v.className = "veredicto mal";
-      } else {
-        msg = "Con " + x + " tendidos los " + G.n + " barrios no alcanzan a quedar conectados: cada tendido junta a lo sumo dos pedazos en uno.";
-        v.className = "veredicto mal";
-      }
-      v.textContent = msg;
+    var opciones = Motor.opcionesNumericas("opciones-tendidos", "veredicto", function () {
+      var G = g(), m = G.aristas.length;
+      return [
+        { valor: G.n - 1, clave: "correcta",
+          razon: "Correcto: " + (G.n - 1) + ". Con menos queda un barrio sin alcanzar y con más se repite un camino, que es un ciclo." },
+        { valor: G.n, clave: "uno-por-barrio",
+          razon: "Con " + G.n + " tendidos sobra alguno: entre dos barrios habría dos caminos, y se puede quitar una arista de ese ciclo sin desconectar nada." },
+        { valor: G.n - 2, clave: "uno-menos",
+          razon: "Con " + (G.n - 2) + " tendidos los " + G.n + " barrios no alcanzan a quedar conectados: cada tendido junta a lo sumo dos pedazos en uno." },
+        { valor: m, clave: "todos",
+          razon: "Esos son todos los tendidos posibles, " + m + ". Ponerlos todos cierra ciclos y gasta de más." }
+      ];
     });
 
     el("btn-reiniciar").addEventListener("click", preparar);

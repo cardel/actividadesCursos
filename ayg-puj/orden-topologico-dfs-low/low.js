@@ -209,7 +209,58 @@ var EJERCICIO = (function () {
     return "No coincide. Mire los hijos de árbol, que aportan su low, y las demás flechas, que aportan el d del otro extremo solo si ese vértice sigue en la pila.";
   }
 
-  return { traza: traza, explicar: explicar, diagnostico: diagnostico };
+  /* Opciones para escoger low[u]: la correcta con su explicacion y los errores
+     tipicos, cada uno con la razon que ya daba diagnostico. */
+  function opciones(t, nom, u) {
+    var lista = [{ valor: t.low[u], clave: "correcta", razon: "Correcto. " + explicar(t, nom, u) }];
+    var c = candidatos(t, u), mayor = t.d[u], j = 0;
+    while (j < t.terminos[u].length) {
+      var x = t.terminos[u][j];
+      if ((x.t === "hijo" || x.t === "pila") && x.val > mayor) { mayor = x.val; }
+      j = j + 1;
+    }
+    var padre = -1, w = 0;
+    while (w < t.terminos.length) {
+      var q = 0;
+      while (q < t.terminos[w].length) {
+        if (t.terminos[w][q].t === "hijo" && t.terminos[w][q].v === u) { padre = w; }
+        q = q + 1;
+      }
+      w = w + 1;
+    }
+    var errores = [
+      { valor: c.soloD, clave: "soloD", razon: null },
+      { valor: c.conCerradas, clave: "cerradas", razon: null },
+      { valor: c.conLow, clave: "conLow", razon: null },
+      { valor: mayor, clave: "mayor",
+        razon: "Tomó el mayor de los términos. low es el <b>mínimo</b>: busca el vértice más viejo que se alcanza." },
+      { valor: padre >= 0 ? t.d[padre] : 0, clave: "dPadre",
+        razon: "Ese es el d del padre de árbol. La flecha que llegó a " + nom[u] + " es la del recorrido, no una flecha de vuelta que cuente para low." },
+      { valor: padre >= 0 ? t.low[padre] : 0, clave: "lowPadre",
+        razon: "Ese es el low del padre. low[" + nom[u] + "] se calcula con lo que alcanza " + nom[u] + ", no con lo que alcanza quien lo descubrió." },
+      { valor: t.low[u] + 1, clave: "masUno",
+        razon: "Quedó uno por encima: low es un tiempo de descubrimiento que existe, y aquí el mínimo de los términos es otro." },
+      { valor: t.d.length, clave: "total",
+        razon: "Ese es el número de vértices. low es un tiempo de descubrimiento, no una cuenta de vértices." },
+      { valor: t.low[u] + 2, clave: "masDos",
+        razon: "Pasó de largo: ningún término del mínimo vale eso. Vuelva a listar d[u], los low de los hijos y los d de las flechas hacia la pila." },
+      { valor: 1, clave: "uno",
+        razon: "Ese es el d de la raíz de la búsqueda. Solo baja hasta allá si algún término lo trae; no se supone." }
+    ];
+    var e = 0;
+    while (e < errores.length && lista.length < 4) {
+      var o = errores[e], repetido = o.valor < 1, k = 0;
+      while (k < lista.length) { if (lista[k].valor === o.valor) { repetido = true; } k = k + 1; }
+      if (!repetido) {
+        if (o.razon === null) { o.razon = diagnostico(t, nom, u, o.valor); }
+        lista.push(o);
+      }
+      e = e + 1;
+    }
+    return lista;
+  }
+
+  return { traza: traza, explicar: explicar, diagnostico: diagnostico, opciones: opciones };
 })();
 
 if (typeof module !== "undefined") {
@@ -233,7 +284,17 @@ if (typeof module !== "undefined") {
         G: [[1, 2, 4, 6], [2], [3], [0], [2, 5], [4], [5, 7], []],
         pos: [[0.0, 1.6], [1.2, 2.9], [2.6, 2.9], [2.0, 0.4], [3.8, 1.6], [4.8, 2.9], [4.8, 0.4], [5.9, 1.6]] }
     ];
-    var presetActual = 0, T = null, comprobado = false;
+    var presetActual = 0, T = null, comprobado = false, seleccion = [];
+    function cablear(i) {
+      var caja = document.getElementById("low-op-" + i);
+      caja.addEventListener("click", function (ev) {
+        var b = ev.target;
+        if (b && b.tagName === "BUTTON") { seleccion[i] = parseInt(b.textContent, 10); }
+      });
+      Motor.opcionesNumericas("low-op-" + i, "low-ver-" + i, function () {
+        return EJERCICIO.opciones(T, g().nombres, i);
+      });
+    }
     function g() { return GRAFOS[presetActual]; }
 
     function dibujar() {
@@ -262,13 +323,19 @@ if (typeof module !== "undefined") {
       T = EJERCICIO.traza(p.G); comprobado = false;
       var h = "", i = 0;
       while (i < p.nombres.length) {
-        h += "<label style='display:flex;align-items:center;gap:0.4rem;border:1px solid var(--borde);border-radius:8px;padding:0.3rem 0.5rem'>" +
+        h += "<label style='display:flex;flex-wrap:wrap;align-items:center;gap:0.4rem;border:1px solid var(--borde);border-radius:8px;padding:0.3rem 0.5rem'>" +
              "<span style='font-family:ui-monospace,monospace;white-space:nowrap'>low[" + p.nombres[i] + "]</span> " +
              "<span class='nota' style='margin:0;white-space:nowrap'>(d = " + T.d[i] + ")</span> " +
-             "<input type='number' id='low-" + i + "' min='1' style='width:4rem;padding:0.3rem;border:1px solid var(--borde);border-radius:6px'></label>";
+             "<div class='opciones' id='low-op-" + i + "'></div><div class='veredicto' id='low-ver-" + i + "'></div></label>";
         i = i + 1;
       }
       document.getElementById("entradas").innerHTML = h;
+      seleccion = [];
+      i = 0;
+      while (i < p.nombres.length) {
+        cablear(i);
+        i = i + 1;
+      }
       document.getElementById("explicaciones").innerHTML = "";
       var v = document.getElementById("veredicto"); v.className = "veredicto"; v.textContent = "";
       document.getElementById("ver-texto").textContent = p.texto;
@@ -282,26 +349,24 @@ if (typeof module !== "undefined") {
       orden.sort(function (a, b) { return T.d[a] - T.d[b]; });
       i = 0;
       while (i < n) {
-        var campo = document.getElementById("low-" + i), val = parseInt(campo.value, 10);
-        if (isNaN(val)) { vacios = vacios + 1; }
+        var val = seleccion[i];
+        if (val === undefined || isNaN(val)) { vacios = vacios + 1; }
         i = i + 1;
       }
       var v = document.getElementById("veredicto");
       if (vacios > 0) {
-        v.className = "veredicto mal"; v.textContent = "Faltan " + vacios + " valores por escribir.";
+        v.className = "veredicto mal"; v.textContent = "Faltan " + vacios + " valores por escoger.";
         return;
       }
       comprobado = true;
       var k = 0;
       while (k < n) {
-        var u = orden[k], campo2 = document.getElementById("low-" + u), valor = parseInt(campo2.value, 10);
+        var u = orden[k], valor = seleccion[u];
         var ok = valor === T.low[u];
         if (ok) { bien = bien + 1; }
-        campo2.style.borderColor = ok ? "#2e7d32" : "#b3261e";
-        campo2.style.background = ok ? "#e7f2e8" : "#fbe9e7";
         var diag = ok ? "" : "<br><i>" + EJERCICIO.diagnostico(T, p.nombres, u, valor) + "</i>";
         h += "<div class='veredicto " + (ok ? "bien" : "mal") + "' style='display:block;margin-top:0.4rem'><b>" + p.nombres[u] +
-             "</b> (d = " + T.d[u] + "): " + (ok ? "correcto. " : "usted escribió " + valor + ". ") +
+             "</b> (d = " + T.d[u] + "): " + (ok ? "correcto. " : "usted escogió " + valor + ". ") +
              EJERCICIO.explicar(T, p.nombres, u) + diag + "</div>";
         k = k + 1;
       }

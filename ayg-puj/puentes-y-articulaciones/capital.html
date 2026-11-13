@@ -10,13 +10,11 @@
   .leyenda { font-size: 0.85rem; color: var(--gris); text-align: center; }
   .leyenda span { white-space: nowrap; margin-right: 0.8rem; }
   #entradas { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 0.5rem; margin-bottom: 0.7rem; }
-  label.campo-valor { display: flex; align-items: center; gap: 0.4rem; border: 1px solid var(--borde); border-radius: 8px; padding: 0.3rem 0.5rem; }
-  label.campo-valor .mono { font-family: ui-monospace, monospace; white-space: nowrap; }
-  label.campo-valor input { width: 3.6rem; padding: 0.3rem; border: 1px solid var(--borde); border-radius: 6px; }
+  .campo-valor { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; border: 1px solid var(--borde); border-radius: 8px; padding: 0.3rem 0.5rem; }
+  .campo-valor .mono { font-family: ui-monospace, monospace; white-space: nowrap; }
   .piezas { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.3rem 0 0.7rem; }
   button.pieza { font-family: ui-monospace, monospace; font-size: 0.85rem; padding: 0.25rem 0.55rem; }
   #ver-datos { font-family: ui-monospace, monospace; font-size: 0.82rem; color: var(--gris); }
-  #salida { font-family: ui-monospace, monospace; padding: 0.4rem 0.6rem; border: 1px solid var(--borde); border-radius: 6px; min-width: 14rem; }
 </style>
 </head>
 <body>
@@ -57,7 +55,7 @@
 
   <div class="carta">
     <h2>2. Marque los componentes fuertemente conexos</h2>
-    <p class="nota" style="margin-top:0">Para cada ciudad, escriba el número
+    <p class="nota" style="margin-top:0">Para cada ciudad, escoja el número
     menor de su componente. Dos ciudades van juntas cuando hay camino de la
     primera a la segunda <em>y</em> de la segunda a la primera; una sola
     dirección no alcanza. Una ciudad sin nadie con quien ir y venir queda sola y
@@ -88,12 +86,9 @@
 
   <div class="carta">
     <h2>4. La salida que pide el juez</h2>
-    <p style="margin-top:0">Escriba la lista de candidatas en orden creciente,
+    <p style="margin-top:0">Escoja la lista de candidatas en orden creciente,
     separadas por espacios, o un <code>0</code> si no hay ninguna.</p>
-    <div class="prediccion">
-      <input type="text" id="salida" placeholder="por ejemplo 3 5 6">
-      <button id="btn-salida" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-salida"></div>
     <div id="veredicto-salida" class="veredicto"></div>
   </div>
 

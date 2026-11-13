@@ -187,7 +187,8 @@ if (typeof module !== "undefined") {
   module.exports = EJERCICIO;
 } else {
   (function () {
-    var presetActual = 0, R = null, agrupado = false, marcado = {}, mirada = -1, opcionesPrediccion = null;
+    var presetActual = 0, R = null, agrupado = false, marcado = {}, mirada = -1, opcionesPrediccion = null,
+        opcionesSalida = null, escogido = {}, manejadoresRep = {};
 
     function g() { return EJERCICIO.grafos[presetActual]; }
 
@@ -309,14 +310,57 @@ if (typeof module !== "undefined") {
       }
     }
 
+    /* Una ciudad, un grupo de opciones. escogido[i] guarda el ultimo valor
+       que el estudiante pulso para la ciudad i. */
+    function opcionesRep(i) {
+      var p = g(), correcto = R.C.rep[i], lista = [], vistos = {}, v = 1, hechas = {};
+      lista.push({ valor: correcto, clave: "correcta",
+        razon: "Correcto, " + correcto + ". " + EJERCICIO.explicarCiudad(p.n, p.aristas, R.C, i) });
+      vistos[correcto] = true;
+      while (v <= p.n) {
+        if (!vistos[v]) {
+          var ida = EJERCICIO.alcanzanA(p.n, p.aristas, v).indexOf(i) >= 0;
+          var vuelta = EJERCICIO.alcanzanA(p.n, p.aristas, i).indexOf(v) >= 0;
+          var tipo = R.C.ind[v] === R.C.ind[i] ? "mismo" : (ida && !vuelta ? "ida" : (!ida && vuelta ? "vuelta" : "ninguno"));
+          if (!hechas[tipo] && lista.length < 4) {
+            hechas[tipo] = true;
+            vistos[v] = true;
+            lista.push({ valor: v, clave: "d" + v, razon: EJERCICIO.diagnosticoRep(p.n, p.aristas, R.C, i, v) });
+          }
+        }
+        v = v + 1;
+      }
+      v = 1;
+      while (v <= p.n && lista.length < 3) {
+        if (!vistos[v]) {
+          vistos[v] = true;
+          lista.push({ valor: v, clave: "d" + v, razon: EJERCICIO.diagnosticoRep(p.n, p.aristas, R.C, i, v) });
+        }
+        v = v + 1;
+      }
+      return lista;
+    }
+
     function armarEntradas() {
       var p = g(), h = "", i = 1;
+      escogido = {};
       while (i <= p.n) {
-        h += "<label class='campo-valor'><span class='mono'>rep[" + i + "]</span>" +
-          "<input type='number' id='rep-" + i + "' min='1' max='" + p.n + "'></label>";
+        h += "<div class='campo-valor'><span class='mono'>rep[" + i + "]</span>" +
+          "<span class='opciones' id='opciones-rep-" + i + "' style='margin-top:0'></span></div>" +
+          "<div id='veredicto-rep-" + i + "' class='veredicto' style='grid-column:1/-1'></div>";
         i = i + 1;
       }
       document.getElementById("entradas").innerHTML = h;
+      i = 1;
+      while (i <= p.n) {
+        if (manejadoresRep[i]) {
+          manejadoresRep[i].refrescar();
+        } else {
+          manejadoresRep[i] = Motor.opcionesNumericas("opciones-rep-" + i, "veredicto-rep-" + i,
+            opcionesRep.bind(null, i));
+        }
+        i = i + 1;
+      }
     }
 
     function armarMarcas() {
@@ -373,21 +417,18 @@ if (typeof module !== "undefined") {
     function comprobarRep() {
       var p = g(), i = 1, vacios = 0, bien = 0, h = "";
       while (i <= p.n) {
-        if (isNaN(parseInt(document.getElementById("rep-" + i).value, 10))) { vacios = vacios + 1; }
+        if (escogido[i] === undefined) { vacios = vacios + 1; }
         i = i + 1;
       }
       var v = document.getElementById("veredicto");
       if (vacios > 0) {
         v.className = "veredicto mal";
-        v.textContent = "Faltan " + vacios + " representantes por escribir.";
+        v.textContent = "Faltan " + vacios + " representantes por escoger.";
       } else {
         i = 1;
         while (i <= p.n) {
-          var campo = document.getElementById("rep-" + i);
-          var dado = parseInt(campo.value, 10), ok = dado === R.C.rep[i];
+          var dado = escogido[i], ok = dado === R.C.rep[i];
           if (ok) { bien = bien + 1; }
-          campo.style.borderColor = ok ? "#2e7d32" : "#b3261e";
-          campo.style.background = ok ? "#e7f2e8" : "#fbe9e7";
           h += "<div class='veredicto " + (ok ? "bien" : "mal") + "' style='display:block;margin-top:0.4rem'><b>" + i + "</b>: " +
             (ok ? "correcto, " + R.C.rep[i] + ". " : "usted escribió " + dado + "; va " + R.C.rep[i] + ". ") +
             EJERCICIO.explicarCiudad(p.n, p.aristas, R.C, i) +
@@ -441,40 +482,55 @@ if (typeof module !== "undefined") {
       });
     }
 
-    function comprobarSalida() {
-      var p = g(), texto = document.getElementById("salida").value.trim();
-      var v = document.getElementById("veredicto-salida");
-      var dada = texto.length === 0 ? [] : texto.split(/[\s,]+/).map(function (x) { return parseInt(x, 10); });
-      var esperada = R.hay ? R.lista : [0];
-      var igual = dada.length === esperada.length, i = 0;
-      while (i < esperada.length) { if (dada[i] !== esperada[i]) { igual = false; } i = i + 1; }
-      if (dada.some(isNaN)) {
-        v.className = "veredicto mal";
-        v.textContent = "Escriba los números separados por espacios, o un 0 si no hay candidatas.";
-      } else if (igual) {
-        v.className = "veredicto bien";
-        v.textContent = R.hay
-          ? "Correcto. El único sumidero es " + EJERCICIO.nombreComp(R.C, R.K.sumideros[0]) +
-            ", así que el juez recibe primero el " + R.lista.length + " y después la lista " + R.lista.join(" ") + "."
-          : "Correcto: 0. Los sumideros son " + R.K.sumideros.map(function (k) { return EJERCICIO.nombreComp(R.C, k); }).join(" y ") +
-            ", y entre ellos no hay camino en ninguna dirección, así que ninguna ciudad se alcanza desde todas.";
-      } else {
-        var msg;
-        if (!R.hay && dada.length > 1) {
-          msg = "Hay " + R.K.sumideros.length + " sumideros, " +
-            R.K.sumideros.map(function (k) { return EJERCICIO.nombreComp(R.C, k); }).join(" y ") +
-            ". Las ciudades de uno no se alcanzan desde las del otro, así que la respuesta es 0 y no la unión de los dos.";
-        } else if (R.hay && dada.length === R.C.listas[R.K.sumideros[0]].length) {
-          msg = "El conjunto es el del sumidero, pero el orden va creciente: " + R.lista.join(" ") + ".";
-        } else if (R.hay) {
-          msg = "La lista es " + R.lista.join(" ") + ", que son las ciudades del sumidero " +
-            EJERCICIO.nombreComp(R.C, R.K.sumideros[0]) + ". Las de un componente con alguna carretera de salida quedan fuera: de allá no se vuelve.";
-        } else {
-          msg = "La respuesta es 0.";
-        }
-        v.className = "veredicto mal";
-        v.textContent = msg;
+    /* Las listas que el estudiante daria de verdad al equivocarse, cada una
+       con su razon; la lista vacia se escribe 0 como en el juez. */
+    function opcionesDeSalida() {
+      var lista = [], usados = {};
+      function agregar(valor, clave, razon) {
+        if (!usados[valor]) { usados[valor] = true; lista.push({ valor: valor, clave: clave, razon: razon }); }
       }
+      var nombres = R.K.sumideros.map(function (k) { return EJERCICIO.nombreComp(R.C, k); });
+      var p = g(), k = 0, fuera = -1;
+      while (k < R.C.total) {
+        if (R.K.salidas[k] > 0 && (fuera < 0 || R.C.listas[k].length > R.C.listas[fuera].length)) { fuera = k; }
+        k = k + 1;
+      }
+      if (R.hay) {
+        agregar(R.lista.join(" "), "correcta",
+          "Correcto. El único sumidero es " + nombres[0] + ", así que el juez recibe primero el " +
+          R.lista.length + " y después la lista " + R.lista.join(" ") + ".");
+        agregar(R.lista.slice().reverse().join(" "), "orden",
+          "El conjunto es el del sumidero, pero el orden va creciente: " + R.lista.join(" ") + ".");
+        if (fuera >= 0) {
+          agregar(R.C.listas[fuera].join(" "), "fuera",
+            "Esas son las ciudades de " + EJERCICIO.nombreComp(R.C, fuera) + ", que tiene carreteras de salida. " +
+            "La lista es " + R.lista.join(" ") + ", las del sumidero " + nombres[0] + ": de un componente con salida no se vuelve.");
+        }
+        agregar("0", "cero", "El 0 se escribe cuando hay dos sumideros o más. Aquí hay uno solo, " + nombres[0] +
+          ", y sus ciudades se alcanzan desde todas las demás.");
+        var todas = [], c = 1;
+        while (c <= p.n) { todas.push(c); c = c + 1; }
+        agregar(todas.join(" "), "todas", "Una candidata se alcanza desde todas las demás, y la lista es " +
+          R.lista.join(" ") + ". No toda ciudad cumple eso.");
+      } else {
+        var union = [];
+        R.K.sumideros.forEach(function (s) { union = union.concat(R.C.listas[s]); });
+        union.sort(function (x, y) { return x - y; });
+        agregar("0", "correcta",
+          "Correcto: 0. Los sumideros son " + nombres.join(" y ") +
+          ", y entre ellos no hay camino en ninguna dirección, así que ninguna ciudad se alcanza desde todas.");
+        agregar(union.join(" "), "union", "Hay " + R.K.sumideros.length + " sumideros, " + nombres.join(" y ") +
+          ". Las ciudades de uno no se alcanzan desde las del otro, así que la respuesta es 0 y no la unión de los dos.");
+        if (fuera >= 0) {
+          agregar(R.C.listas[fuera].join(" "), "fuera", "Esas son las ciudades de " + EJERCICIO.nombreComp(R.C, fuera) +
+            ", que tiene carreteras de salida: de allá no se vuelve, y ninguna puede ser capital.");
+        }
+        var todas2 = [], c2 = 1;
+        while (c2 <= p.n) { todas2.push(c2); c2 = c2 + 1; }
+        agregar(todas2.join(" "), "todas", "Una candidata se alcanza desde todas las demás, y con " +
+          R.K.sumideros.length + " sumideros ninguna lo logra.");
+      }
+      return lista.slice(0, 4);
     }
 
     function armar() {
@@ -492,8 +548,7 @@ if (typeof module !== "undefined") {
       armarMiradas();
       document.getElementById("explicaciones").innerHTML = "";
       document.getElementById("detalle-marcas").innerHTML = "";
-      document.getElementById("salida").value = "";
-      ["veredicto", "veredicto-marcas", "veredicto-salida", "veredicto-mirar"].forEach(function (id) {
+      ["veredicto", "veredicto-marcas", "veredicto-mirar"].forEach(function (id) {
         var v = document.getElementById(id);
         v.className = "veredicto";
         v.textContent = "";
@@ -501,10 +556,16 @@ if (typeof module !== "undefined") {
       dibujar();
       dibujarCondensacion();
       if (opcionesPrediccion) { opcionesPrediccion.refrescar(); }
+      if (opcionesSalida) { opcionesSalida.refrescar(); }
     }
 
     document.getElementById("btn-comprobar").addEventListener("click", comprobarRep);
-    document.getElementById("btn-salida").addEventListener("click", comprobarSalida);
+    document.getElementById("entradas").addEventListener("click", function (e) {
+      var b = e.target, caja = b && b.parentNode;
+      if (b && b.tagName === "BUTTON" && caja && /^opciones-rep-/.test(caja.id || "")) {
+        escogido[parseInt(caja.id.replace("opciones-rep-", ""), 10)] = parseInt(b.textContent, 10);
+      }
+    });
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (btn) {
       btn.addEventListener("click", function () {
         Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (b) { b.classList.remove("primario"); });
@@ -515,6 +576,7 @@ if (typeof module !== "undefined") {
     });
     armar();
 
+    opcionesSalida = Motor.opcionesNumericas("opciones-salida", "veredicto-salida", opcionesDeSalida);
     opcionesPrediccion = Motor.opcionesNumericas("opciones-prediccion", "veredicto-prediccion", function () {
       var p = g(), total = R.lista.length, lista = [], usados = {};
       var sumideros = R.K.sumideros.length, mayor = 0;

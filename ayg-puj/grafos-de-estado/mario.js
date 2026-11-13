@@ -232,22 +232,97 @@ if (typeof module !== "undefined") {
       el("ver-salida").textContent = a === null ? "" : a.salida.join("\n");
     }
 
-    /* Preguntas sobre transiciones */
+    /* Preguntas sobre transiciones: cada casilla del estado siguiente es un grupo de opciones */
+    var CAMPOS = [["u", "lugar"], ["l", "carga"], ["k", "usos"], ["dc", "costo"]];
+
+    function opcionesCampo(q, c) {
+      var e = q.estado, r = q.res, t = q.acc.tipo, w = t === "calzar" ? null : peso(q), lista = [], vistos = {}, ref, mal;
+      function peso(qq) { return E.peso(M, qq.estado.u, qq.acc.v); }
+      function meter(valor, clave, razon) {
+        if (valor >= 0 && !vistos[valor] && (c !== "u" || (valor >= 1 && valor <= M.a + M.b))) { vistos[valor] = true; lista.push({ valor: valor, clave: clave, razon: razon }); }
+      }
+      if (!r.ok) {
+        mal = "Esa transición no existe: " + r.razon + ".";
+        ref = { u: [e.u, e.u + 1, e.u - 1], l: [e.l, e.l + 1, 0], k: [e.k, e.k + 1, e.k + 2], dc: [0, e.c, 1] }[c];
+        ref.forEach(function (v) { meter(v, "mal", mal); });
+        return lista;
+      }
+      if (c === "u") {
+        meter(r.u, "correcta", "Correcto: se llega a " + r.u + ".");
+        if (t === "calzar") {
+          meter(e.u + 1, "mal", "Calzar la bota no mueve de lugar: el lugar al que se llega es " + r.u + ".");
+          meter(e.u - 1, "mal", "Calzar la bota no mueve de lugar: el lugar al que se llega es " + r.u + ".");
+        } else {
+          meter(e.u, "mal", "Ese es el lugar de partida; al moverse se llega a " + r.u + ".");
+          meter(r.u + 1, "mal", "El lugar al que se llega es " + r.u + ", el otro extremo de la vía.");
+          meter(e.u === 1 ? e.u + 2 : e.u - 1, "mal", "El lugar al que se llega es " + r.u + ".");
+        }
+      } else if (c === "l") {
+        meter(r.l, "correcta", "Correcto: l queda en " + r.l + ".");
+        if (t === "caminar") {
+          meter(e.l, "mal", "Al caminar la carga de la bota queda en 0, porque se pierde (l = 0).");
+          meter(M.L, "mal", "Al caminar la carga de la bota queda en 0, porque se pierde (l = 0); la carga completa solo la da calzarla.");
+          meter(1, "mal", "Al caminar la carga de la bota queda en 0, porque se pierde (l = 0).");
+        } else if (t === "calzar") {
+          meter(e.l, "mal", "Al calzarse la bota queda con la carga completa, L = " + r.l + ".");
+          meter(r.l - 1, "mal", "Al calzarse la bota queda con la carga completa, L = " + r.l + ", no una menos.");
+          meter(0, "mal", "Al calzarse la bota queda con la carga completa, L = " + r.l + "; 0 es la bota sin cargar.");
+        } else {
+          meter(e.l, "mal", "Al correr se gasta el peso de la vía: l − p = " + e.l + " − " + w + " = " + r.l + ".");
+          meter(e.l + w, "mal", "El peso se resta, no se suma: l − p = " + e.l + " − " + w + " = " + r.l + ".");
+          meter(0, "mal", "Al correr se gasta el peso de la vía: l − p = " + e.l + " − " + w + " = " + r.l + "; la carga no se pierde del todo.");
+        }
+      } else if (c === "k") {
+        meter(r.k, "correcta", "Correcto: k queda en " + r.k + ".");
+        if (t === "calzar") {
+          meter(e.k, "mal", "Calzarse gasta un uso: k − 1 = " + r.k + ".");
+          meter(e.k + 1, "mal", "Calzarse gasta un uso, no lo devuelve: k − 1 = " + r.k + ".");
+          meter(0, "mal", "Calzarse gasta un solo uso: k − 1 = " + r.k + ".");
+        } else {
+          meter(e.k - 1, "mal", "Los usos no cambian al moverse: k = " + r.k + ". Solo calzar la bota gasta uno.");
+          meter(e.k + 1, "mal", "Los usos no cambian al moverse: k = " + r.k + ".");
+          meter(e.k + 2, "mal", "Los usos no cambian al moverse: k = " + r.k + ".");
+        }
+      } else {
+        meter(r.dc, "correcta", "Correcto: el costo es " + r.dc + ".");
+        if (t === "caminar") {
+          meter(0, "mal", "Caminar cuesta el peso de la vía, " + r.dc + ".");
+          meter(e.c + r.dc, "mal", "Ese es el tiempo acumulado después de caminar; el costo de la transición es el peso de la vía, " + r.dc + ".");
+          meter(e.c, "mal", "Ese es el tiempo que ya llevaba; caminar cuesta el peso de la vía, " + r.dc + ".");
+          meter(r.dc + 1, "mal", "Caminar cuesta exactamente el peso de la vía, " + r.dc + ", sin tiempo de más.");
+        } else {
+          meter(t === "correr" ? w : M.L, "mal", t === "correr" ? "Ese es el peso de la vía, pero correr con la bota no cuesta tiempo: el costo es 0." : "Esa es la carga de la bota; calzarla no cuesta tiempo: el costo es 0.");
+          meter(e.c, "mal", "Ese es el tiempo acumulado, no el costo de este paso: correr con la bota y calzarla no cuestan tiempo, el costo es 0.");
+          meter(1, "mal", "Correr con la bota y calzarla no cuestan tiempo: el costo es 0.");
+        }
+      }
+      return lista;
+    }
+
     var caja = el("preguntas");
     E.PREGUNTAS.forEach(function (q, i) {
-      var d = document.createElement("div"), e = q.estado;
+      var d = document.createElement("div"), e = q.estado, dado = { u: null, l: null, k: null, dc: null }, celdas = "";
       d.className = "fila-tr";
       d.style.gridTemplateColumns = "1fr";
+      CAMPOS.forEach(function (c) {
+        celdas += "<div style='margin:0.3rem 0'><b>" + c[1] + "</b><div class='opciones' id='op-q" + i + "-" + c[0] + "'></div><div class='veredicto' id='ver-q" + i + "-" + c[0] + "'></div></div>";
+      });
       d.innerHTML = "<div><b>" + (i + 1) + ".</b> Estado <code class='exp'>(" + e.u + ", " + e.l + ", " + e.k + ")</code>, tiempo acumulado " + e.c + ". " + q.texto + "</div>" +
-        "<div class='res'>Estado siguiente: (<input class='mini' type='number' data-c='u'>, <input class='mini' type='number' data-c='l'>, <input class='mini' type='number' data-c='k'>) " +
-        "costo <input class='mini' type='number' data-c='dc'> <label><input type='checkbox' data-c='imp'> no se puede</label> <button>Comprobar</button></div><div class='fb'></div>";
+        "<div class='res'>Estado siguiente y costo:" + celdas + "<label><input type='checkbox' data-c='imp'> no se puede</label> <button>Comprobar</button></div><div class='fb'></div>";
+      caja.appendChild(d);
+      CAMPOS.forEach(function (c) {
+        var idOp = "op-q" + i + "-" + c[0];
+        Motor.opcionesNumericas(idOp, "ver-q" + i + "-" + c[0], function () { return opcionesCampo(q, c[0]); });
+        el(idOp).addEventListener("click", function (ev) {
+          var x = parseInt(ev.target.textContent, 10);
+          dado[c[0]] = isNaN(x) ? null : x;
+        });
+      });
       d.querySelector("button").addEventListener("click", function () {
-        function num(c) { var x = parseInt(d.querySelector("[data-c=" + c + "]").value, 10); return isNaN(x) ? null : x; }
-        var r = E.evaluarPregunta(q, { imposible: d.querySelector("[data-c=imp]").checked, u: num("u"), l: num("l"), k: num("k"), dc: num("dc") }), fb = d.querySelector(".fb");
+        var r = E.evaluarPregunta(q, { imposible: d.querySelector("[data-c=imp]").checked, u: dado.u, l: dado.l, k: dado.k, dc: dado.dc }), fb = d.querySelector(".fb");
         fb.className = "fb " + (r.ok ? "bien" : "mal");
         fb.textContent = r.msg;
       });
-      caja.appendChild(d);
     });
 
     var tuplas = E.sim(M), imprime = parseInt(tuplas[tuplas.length - 1].salida[0], 10);

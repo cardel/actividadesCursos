@@ -37,7 +37,7 @@ var EJERCICIO = (function () {
       v = v + 1;
     }
     if (falta) {
-      res = { ok: false, msg: "Escriba un número para cada vértice. Si cree que uno nunca sale, es un 0." };
+      res = { ok: false, msg: "Escoja una opción para cada vértice. Si cree que uno nunca sale, es un 0." };
     } else if (mal.length === 0) {
       res = { ok: true, msg: "Correcto. El orden de salida es " + r.extraidos.join(", ") + ": " + r.extraidos.length + " salidas en total. Un vértice sale una vez por cada vez que entró a la cola, y entra cuando su d baja y no está esperando; la fuente entra además al principio." };
     } else {
@@ -119,10 +119,54 @@ if (typeof module !== "undefined") {
     }
     function ceros(n) { var r = [], i = 0; while (i < n) { r.push(0); i = i + 1; } return r; }
 
+    var dado = [], manejadores = [];
+
+    function entrantes(G, v) {
+      var c = 0;
+      G.forEach(function (l) { l.forEach(function (e) { if (e[0] === v) { c = c + 1; } }); });
+      return c;
+    }
+
+    function opcionesDe(v, params) {
+      var r = B.resumen("bfm5", params.G, params.s), s = r.salen[v];
+      var ent = entrantes(params.G, v), lista = [], vistos = {};
+      function agregar(valor, clave, razon) {
+        if (valor >= 0 && !vistos[valor]) { vistos[valor] = true; lista.push({ valor: valor, clave: clave, razon: razon }); }
+      }
+      agregar(s, "correcta", "Correcto: el vértice " + v + " sale " + s + (s === 1 ? " vez" : " veces") +
+        ". Sale una vez por cada vez que entró a la cola, y entra cuando su d baja y no está esperando; la fuente entra además al principio.");
+      agregar(1, "una", "Una sola salida supone que cada vértice entra a la cola una vez, como en BFS. Aquí d puede bajar después de que el vértice salió, y entonces vuelve a entrar.");
+      agregar(ent, "entrantes", "Ese es el número de aristas que llegan al vértice " + v + ". Una arista que llega no siempre baja d, y si el vértice ya está en la cola, enCola evita que entre otra vez.");
+      agregar(s - 1, "menos", params.s === v
+        ? "Falta la salida inicial de la fuente: entra a la cola antes del ciclo, y además puede reentrar si algún camino le baja d."
+        : "Se escapó una reentrada: revise si llega un camino mejor después de que el vértice ya salió de la cola.");
+      agregar(r.extraidos.length, "total", "Ese es el total de salidas de todos los vértices juntos, no las del vértice " + v + ".");
+      agregar(s + 1, "mas", "Es una salida de más: una mejora de d con el vértice ya esperando en la cola no produce otra salida, porque enCola lo impide.");
+      return lista.slice(0, 4);
+    }
+
     function armarPredicciones() {
       var html = "", i = 0;
-      while (i < g().n) { html += "<label>vértice " + i + " <input type='number' min='0' step='1' data-v='" + i + "'></label>"; i = i + 1; }
+      while (i < g().n) {
+        html += "<div class='celda-pred' data-v='" + i + "'><label>vértice " + i + "</label>" +
+                "<div class='opciones' id='opciones-sale-" + i + "'></div>" +
+                "<div class='veredicto' id='veredicto-sale-" + i + "'></div></div>";
+        i = i + 1;
+      }
       document.getElementById("preds").innerHTML = html;
+      i = 0;
+      while (i < g().n) {
+        if (manejadores[i]) { manejadores[i].refrescar(); }
+        else { manejadores[i] = cablear(i); }
+        i = i + 1;
+      }
+    }
+
+    function cablear(v) {
+      return Motor.opcionesNumericas("opciones-sale-" + v, "veredicto-sale-" + v, function (params) {
+        dado[v] = null;
+        return opcionesDe(v, params);
+      });
     }
 
     function preparar() {
@@ -136,12 +180,16 @@ if (typeof module !== "undefined") {
       chips: [{ campo: "u", rotulo: "u" }, { campo: "v", rotulo: "v" }, { campo: "peso", rotulo: "peso" }, { campo: "ans", rotulo: "ans" }],
       paramsIniciales: paramsActuales(), alPintar: alPintar
     });
+    document.getElementById("preds").addEventListener("click", function (ev) {
+      var b = ev.target, celda = b.closest ? b.closest(".celda-pred") : null;
+      if (celda && b.getAttribute("data-op") !== null) { dado[parseInt(celda.getAttribute("data-v"), 10)] = parseInt(b.textContent, 10); }
+    });
     preparar();
 
     document.getElementById("btn-comprobar").addEventListener("click", function () {
-      var dado = [], campos = document.querySelectorAll("#preds input"), v = document.getElementById("veredicto");
-      Array.prototype.forEach.call(campos, function (c) { var x = parseInt(c.value, 10); dado.push(isNaN(x) ? null : x); });
-      var r = EJERCICIO.evaluar(dado, g());
+      var v = document.getElementById("veredicto"), dados = [], i = 0;
+      while (i < g().n) { dados.push(dado[i] === undefined ? null : dado[i]); i = i + 1; }
+      var r = EJERCICIO.evaluar(dados, g());
       v.className = r.ok ? "veredicto bien" : "veredicto mal";
       v.textContent = r.msg;
     });

@@ -14,7 +14,7 @@ las técnicas son los mismos; los grafos, los vértices y los números son otros
 
 Un grafo no dirigido con la profundidad ya corrida: el árbol en azul, las
 aristas de retroceso punteadas en verde, el identificador de cada arista
-encima y el `d` de cada vértice. Se escribe el `low` de todos y después se
+encima y el `d` de cada vértice. Se escoge el `low` de todos y después se
 marcan, de un lado, los vértices que son punto de articulación y, del otro, las
 aristas que son puente. Cada `low` equivocado dice qué se contó mal: el `d` sin
 mirar lo que lo baja, la arista de entrada tomada por retroceso, o el `low` del
@@ -29,7 +29,7 @@ ningún puente, y el tercero tiene tres puentes y cinco puntos de articulación.
 
 Las tres pasadas, una por una. Antes de empezar se predice cuántos nodos va a
 tener el árbol. Después se marcan a mano los puentes, con la comparación
-`low[w] > d[v]` explicada arista por arista; se escribe el `comp` de cada
+`low[w] > d[v]` explicada arista por arista; se escoge el `comp` de cada
 vértice, y la comprobación distingue entre agrupar bien y numerar como lo hace
 el código; y por último se ejecutan las pasadas dos y tres línea por línea, en
 la versión recursiva y en la de pila explícita, con `comp` llenándose, la pila
@@ -57,7 +57,7 @@ entera de una vía.
 ### [paloma](paloma.html){ target=_blank rel=noopener }
 
 UVa 10765, Doves and Bombs. La red con el `d/low` de cada estación a la vista.
-Se predice el valor más alto y después se escribe el valor de cada una. La
+Se predice el valor más alto y después se escoge el valor de cada una. La
 comprobación lista, por vértice, la comparación de cada hijo y cuáles suman, y
 señala aparte la raíz, que arranca
 en 0 y cuenta hijos del árbol. Los diagnósticos separan los dos errores que más
@@ -72,7 +72,7 @@ vale 2, 1 y 3.
 
 Capital, el único de los cuatro sobre un grafo dirigido. Tres países de ocho,
 siete y nueve ciudades con carreteras de una sola vía. Se predice cuántas
-candidatas hay y después se escribe, ciudad por ciudad, la menor de su
+candidatas hay y después se escoge, ciudad por ciudad, la menor de su
 componente fuertemente conexo. La comprobación sostiene cada grupo con los dos
 caminos que lo forman, y el diagnóstico separa las tres maneras de errarle:
 agrupar bien y numerar por otro vértice, tomar una sola dirección por las dos, y

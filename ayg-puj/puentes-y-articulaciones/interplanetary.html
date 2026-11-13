@@ -10,11 +10,9 @@
   .leyenda { font-size: 0.85rem; color: var(--gris); text-align: center; }
   .leyenda span { white-space: nowrap; margin-right: 0.8rem; }
   #entradas-infl { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.5rem; margin-bottom: 0.7rem; }
-  label.campo-valor { display: flex; align-items: center; gap: 0.4rem; border: 1px solid var(--borde); border-radius: 8px; padding: 0.3rem 0.5rem; }
-  label.campo-valor .mono { font-family: ui-monospace, monospace; white-space: nowrap; font-size: 0.85rem; }
-  label.campo-valor input { width: 3.8rem; padding: 0.3rem; border: 1px solid var(--borde); border-radius: 6px; }
+  .campo-valor { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; border: 1px solid var(--borde); border-radius: 8px; padding: 0.3rem 0.5rem; }
+  .campo-valor .mono { font-family: ui-monospace, monospace; white-space: nowrap; font-size: 0.85rem; }
   #ver-datos { font-family: ui-monospace, monospace; font-size: 0.82rem; color: var(--gris); }
-  #salida { font-family: ui-monospace, monospace; padding: 0.4rem 0.6rem; border: 1px solid var(--borde); border-radius: 6px; min-width: 16rem; }
 </style>
 </head>
 <body>
@@ -72,7 +70,7 @@
   <div class="carta">
     <h2>3. La influencia de cada grupo</h2>
     <p style="margin-top:0">Sin los puentes, el mapa queda repartido en
-    grupos, cada uno conexo por las rutas que quedan. Escriba la influencia
+    grupos, cada uno conexo por las rutas que quedan. Escoja la influencia
     total de cada grupo: la suma de la influencia de sus planetas.</p>
     <div id="entradas-infl"></div>
     <div class="prediccion">
@@ -104,14 +102,11 @@
 
   <div class="carta">
     <h2>5. La lista en orden</h2>
-    <p style="margin-top:0">Escriba los planetas alcanzados separados por
+    <p style="margin-top:0">Escoja los planetas alcanzados separados por
     espacios, ordenados por influencia del grupo, después por influencia propia
     y al final por número. Las tres claves se comparan en ese orden y la
     siguiente solo entra a decidir cuando la anterior empata.</p>
-    <div class="prediccion">
-      <input type="text" id="salida" placeholder="por ejemplo 4 2 7 1">
-      <button id="btn-salida" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-salida"></div>
     <div id="veredicto-salida" class="veredicto"></div>
   </div>
 

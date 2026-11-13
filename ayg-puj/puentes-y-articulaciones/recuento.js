@@ -267,6 +267,8 @@ if (typeof module !== "undefined") {
     var presetActual = 0, A = null;
     var comprobadoLow = false, marcasVert = [], marcasAristas = [];
 
+    var escogido = {}, manejadoresLow = {};
+
     function g() { return EJERCICIO.grafos[presetActual]; }
 
     function dibujar() {
@@ -322,6 +324,61 @@ if (typeof module !== "undefined") {
       document.getElementById("panel-grafo").innerHTML = svg;
     }
 
+    /* Opciones del low de u: el correcto y los tres valores que salen de los
+       errores de siempre, con el diagnostico que ya tenia la pagina. */
+    function opcionesLow(u) {
+      var lista = [], usados = {}, conEntrada = [A.d[u]], conLowRetro = [A.d[u]], j = 0;
+      while (j < A.terminos[u].length) {
+        var x = A.terminos[u][j];
+        if (x.t === "hijo") { conEntrada.push(x.val); conLowRetro.push(x.val); }
+        if (x.t === "retroceso") { conEntrada.push(x.val); conLowRetro.push(A.low[x.v]); }
+        if (x.t === "entrada") { conEntrada.push(A.d[x.v]); }
+        j = j + 1;
+      }
+      function menor(l) { var m = l[0], k = 1; while (k < l.length) { if (l[k] < m) { m = l[k]; } k = k + 1; } return m; }
+      function agregar(valor, clave, razon) {
+        if (!usados[valor]) { usados[valor] = true; lista.push({ valor: valor, clave: clave, razon: razon }); }
+      }
+      agregar(A.low[u], "correcta", "Correcto, low[" + u + "] = " + A.low[u] + ". " + EJERCICIO.explicarLow(A, u));
+      function distractor(valor, clave, respaldo) {
+        if (valor !== A.low[u] && !usados[valor]) {
+          var d = EJERCICIO.diagnosticoLow(A, u, valor);
+          if (d.indexOf("No coincide") !== 0) { agregar(valor, clave, d); }
+          else if (respaldo !== null) { agregar(valor, clave, respaldo); }
+        }
+      }
+      distractor(A.d[u], "descubrimiento", null);
+      distractor(menor(conEntrada), "con-entrada", null);
+      distractor(menor(conLowRetro), "low-del-retroceso", null);
+      if (A.padre[u] !== -1) {
+        distractor(A.low[A.padre[u]], "low-del-padre", "Ese es el low del padre, " + A.low[A.padre[u]] +
+          ". Cada vértice calcula el suyo con sus propios términos: low[" + u + "] se calcula antes y el del padre lo usa como un término más.");
+      }
+      if (A.padre[u] !== -1) {
+        distractor(A.d[A.padre[u]], "d-del-padre", "Ese es el d del padre, " + A.d[A.padre[u]] +
+          ". La arista que sube al padre es la de entrada, y el código la descarta por su identificador: no aporta término a low[" + u + "].");
+      }
+      if (A.padre[u] !== -1 && A.padre[A.padre[u]] !== -1) {
+        var ab = A.padre[A.padre[u]];
+        distractor(A.d[ab], "d-del-abuelo", "Ese es el d del abuelo, " + A.d[ab] + ". Ninguna arista del subárbol de " + u +
+          " salta hasta allá: low[" + u + "] solo baja con un retroceso o con el low de un hijo, y aquí vale " + A.low[u] + ".");
+      }
+      // un hijo aporta su low, no su d; y low es el menor de los terminos, no el mayor
+      var t = 0, mayor = conLowRetro[0];
+      while (t < A.terminos[u].length) {
+        var y = A.terminos[u][t];
+        if (y.t === "hijo") {
+          distractor(A.d[y.v], "d-del-hijo", "Tomó el d de " + y.v + ", " + A.d[y.v] +
+            ", en vez de su low. De un hijo de árbol entra low[" + y.v + "] = " + y.val + ".");
+        }
+        t = t + 1;
+      }
+      t = 0;
+      while (t < conEntrada.length) { if (conEntrada[t] > mayor) { mayor = conEntrada[t]; } t = t + 1; }
+      distractor(mayor, "mayor", "Tomó el mayor de los términos. low[" + u + "] es el menor: " + A.low[u] + ".");
+      return lista.slice(0, 4);
+    }
+
     function armar() {
       var p = g();
       A = EJERCICIO.analizar(p.n, p.aristas);
@@ -334,14 +391,25 @@ if (typeof module !== "undefined") {
       while (i < p.aristas.length) { marcasAristas.push(false); i = i + 1; }
 
       var h = "";
+      escogido = {};
       i = 0;
       while (i < p.n) {
-        h += "<label class='campo-low'><span class='mono'>low[" + i + "]</span> " +
+        h += "<div class='campo-low'><span class='mono'>low[" + i + "]</span> " +
              "<span class='nota' style='margin:0'>(d = " + A.d[i] + ")</span> " +
-             "<input type='number' id='low-" + i + "' min='1'></label>";
+             "<span class='opciones' id='opciones-low-" + i + "' style='margin-top:0'></span></div>" +
+             "<div id='veredicto-low-" + i + "' class='veredicto' style='grid-column:1/-1'></div>";
         i = i + 1;
       }
       document.getElementById("entradas").innerHTML = h;
+      i = 0;
+      while (i < p.n) {
+        if (manejadoresLow[i]) {
+          manejadoresLow[i].refrescar();
+        } else {
+          manejadoresLow[i] = Motor.opcionesNumericas("opciones-low-" + i, "veredicto-low-" + i, opcionesLow.bind(null, i));
+        }
+        i = i + 1;
+      }
       document.getElementById("explicaciones").innerHTML = "";
       document.getElementById("ver-texto").textContent = p.texto;
       document.getElementById("lista-aristas").textContent =
@@ -390,22 +458,19 @@ if (typeof module !== "undefined") {
     function comprobarLow() {
       var p = g(), n = p.n, i = 0, vacios = 0, bien = 0, h = "";
       while (i < n) {
-        if (isNaN(parseInt(document.getElementById("low-" + i).value, 10))) { vacios = vacios + 1; }
+        if (escogido[i] === undefined) { vacios = vacios + 1; }
         i = i + 1;
       }
       var v = document.getElementById("veredicto");
       if (vacios > 0) {
         v.className = "veredicto mal";
-        v.textContent = "Faltan " + vacios + " valores por escribir.";
+        v.textContent = "Faltan " + vacios + " valores por escoger.";
       } else {
         comprobadoLow = true;
         i = 0;
         while (i < n) {
-          var campo = document.getElementById("low-" + i);
-          var valor = parseInt(campo.value, 10), ok = valor === A.low[i];
+          var valor = escogido[i], ok = valor === A.low[i];
           if (ok) { bien = bien + 1; }
-          campo.style.borderColor = ok ? "#2e7d32" : "#b3261e";
-          campo.style.background = ok ? "#e7f2e8" : "#fbe9e7";
           h += "<div class='veredicto " + (ok ? "bien" : "mal") + "' style='display:block;margin-top:0.4rem'><b>" +
                i + "</b> (d = " + A.d[i] + "): " + (ok ? "correcto. " : "usted escribió " + valor + ". ") +
                EJERCICIO.explicarLow(A, i) +
@@ -459,6 +524,12 @@ if (typeof module !== "undefined") {
 
     document.getElementById("btn-comprobar").addEventListener("click", comprobarLow);
     document.getElementById("btn-comprobar-marcas").addEventListener("click", comprobarMarcas);
+    document.getElementById("entradas").addEventListener("click", function (e) {
+      var b = e.target, caja = b && b.parentNode;
+      if (b && b.tagName === "BUTTON" && caja && /^opciones-low-/.test(caja.id || "")) {
+        escogido[parseInt(caja.id.replace("opciones-low-", ""), 10)] = parseInt(b.textContent, 10);
+      }
+    });
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (btn) {
       btn.addEventListener("click", function () {
         Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (b) { b.classList.remove("primario"); });

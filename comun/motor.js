@@ -115,7 +115,7 @@
     if (nuevosParams !== undefined) { params = nuevosParams; }
     pasos = cfg.simular(params);
     k = 0;
-    repintarOpciones.forEach(function (f) { f(); });
+    repintarOpciones.forEach(function (r) { r.pintar(); });
     pintar();
   }
 
@@ -232,7 +232,14 @@
         caja.appendChild(b);
       });
     }
-    repintarOpciones.push(pintar);
+    // una pagina que vuelve a cablear la misma caja reemplaza su repintado, en
+    // vez de dejar el anterior apuntando a botones que ya no existen
+    var i = repintarOpciones.length - 1;
+    while (i >= 0) {
+      if (repintarOpciones[i].id === idOpciones) { repintarOpciones.splice(i, 1); }
+      i = i - 1;
+    }
+    repintarOpciones.push({ id: idOpciones, pintar: pintar });
     pintar();
     return { refrescar: pintar };
   }

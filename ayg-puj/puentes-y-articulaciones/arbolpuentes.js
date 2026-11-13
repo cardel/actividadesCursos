@@ -424,7 +424,7 @@ if (typeof module !== "undefined") {
 } else {
   (function () {
     var presetActual = 0, version = "pila";
-    var R = null, marcas = [], etapa = 0;
+    var R = null, marcas = [], etapa = 0, escogido = {}, manejadoresComp = {};
 
     function g() { return EJERCICIO.grafos[presetActual]; }
 
@@ -595,29 +595,75 @@ if (typeof module !== "undefined") {
       pintarGrafoEstatico();
     }
 
+    /* Opciones del comp del vertice i: el correcto y los numeros que da quien
+       cruza un puente o numera los componentes de otra forma. */
+    function opcionesComp(i) {
+      var p = g(), lista = [], usados = {}, correcto = R.comp[i], e = 0, k = 0;
+      function agregar(valor, clave, razon) {
+        if (valor >= 0 && !usados[valor]) { usados[valor] = true; lista.push({ valor: valor, clave: clave, razon: razon }); }
+      }
+      agregar(correcto, "correcta", "Correcto: comp[" + i + "] = " + correcto + ", el componente c" + correcto +
+        " = {" + R.miembros[correcto].join(", ") + "}. El número sale del orden del segundo for, que recorre los vértices de 0 a " +
+        (p.n - 1) + " y abre un componente nuevo con el primero que todavía tiene −1.");
+      // el componente del otro lado de un puente que toca a i
+      while (e < p.aristas.length) {
+        if (R.analisis.esPuente[e] && (p.aristas[e][0] === i || p.aristas[e][1] === i)) {
+          var w = p.aristas[e][0] === i ? p.aristas[e][1] : p.aristas[e][0];
+          agregar(R.comp[w], "cruza-puente", "Ese es el número del componente de " + w + ", y de " + i + " a " + w +
+            " la única arista es el puente " + i + "–" + w + ". El recorrido no cruza puentes, así que " + i +
+            " queda en c" + correcto + ", sin " + w + ".");
+        }
+        e = e + 1;
+      }
+      // grupos bien hechos pero numerados al reves
+      agregar(R.total - 1 - correcto, "al-reves", "Ese número sale de numerar los componentes de atrás hacia adelante. El código los abre en el orden del segundo for: " +
+        "recorre los vértices de 0 a " + (p.n - 1) + " y el primero que todavía tiene −1 abre el siguiente, así que " + i + " queda en " + correcto + ".");
+      // numerar desde uno en vez de desde cero
+      agregar(correcto + 1, "desde-uno", "Numeró desde 1. El primer componente que abre el código es el 0, porque total arranca en 0, y " + i +
+        " queda en " + correcto + ".");
+      // un grupo cualquiera al que no llega sin cruzar un puente
+      while (k < R.total) {
+        agregar(k, "otro-grupo", "El componente c" + k + " = {" + R.miembros[k].join(", ") + "} no se alcanza desde " + i +
+          " sin cruzar un puente. Dos vértices caen juntos exactamente cuando hay camino entre ellos sin pasar por ninguno: " + i + " va en c" + correcto + ".");
+        k = k + 1;
+      }
+      return lista.slice(0, 4);
+    }
+
     function armarEtiquetas() {
       var p = g(), h = "", i = 0;
+      escogido = {};
       while (i < p.n) {
-        h += "<label class='campo-comp'><span class='mono'>comp[" + i + "]</span>" +
-             "<input type='number' id='comp-" + i + "' min='0'></label>";
+        h += "<div class='campo-comp'><span class='mono'>comp[" + i + "]</span>" +
+             "<span class='opciones' id='opciones-comp-" + i + "' style='margin-top:0'></span></div>" +
+             "<div id='veredicto-comp-" + i + "' class='veredicto' style='grid-column:1/-1'></div>";
         i = i + 1;
       }
       document.getElementById("entradas-comp").innerHTML = h;
+      i = 0;
+      while (i < p.n) {
+        if (manejadoresComp[i]) {
+          manejadoresComp[i].refrescar();
+        } else {
+          manejadoresComp[i] = Motor.opcionesNumericas("opciones-comp-" + i, "veredicto-comp-" + i, opcionesComp.bind(null, i));
+        }
+        i = i + 1;
+      }
     }
 
     function comprobarEtiquetas() {
       var p = g(), n = p.n, i = 0, vacios = 0;
       var dados = [];
       while (i < n) {
-        var x = parseInt(document.getElementById("comp-" + i).value, 10);
-        if (isNaN(x)) { vacios = vacios + 1; }
+        var x = escogido[i];
+        if (x === undefined) { vacios = vacios + 1; }
         dados.push(x);
         i = i + 1;
       }
       var v = document.getElementById("veredicto-comp");
       if (vacios > 0) {
         v.className = "veredicto mal";
-        v.textContent = "Faltan " + vacios + " números por escribir.";
+        v.textContent = "Faltan " + vacios + " números por escoger.";
       } else {
         /* Dos etiquetados valen lo mismo si parten los vertices igual. */
         var mismaParticion = true, iguales = 0, j;
@@ -640,7 +686,7 @@ if (typeof module !== "undefined") {
         } else if (mismaParticion) {
           v.className = "veredicto bien";
           v.textContent = "Los grupos están bien, los números no. El código numera por el orden del segundo for: " +
-            piezas.join("; ") + ". Vuelva a escribirlos así, que la tercera pasada usa esos números como nodos.";
+            piezas.join("; ") + ". Vuelva a escogerlos así, que la tercera pasada usa esos números como nodos.";
           etapa = Math.max(etapa, 2);
         } else {
           v.className = "veredicto mal";
@@ -801,5 +847,11 @@ if (typeof module !== "undefined") {
     });
     document.getElementById("btn-comprobar-puentes").addEventListener("click", comprobarPuentes);
     document.getElementById("btn-comprobar-comp").addEventListener("click", comprobarEtiquetas);
+    document.getElementById("entradas-comp").addEventListener("click", function (e) {
+      var b = e.target, caja = b && b.parentNode;
+      if (b && b.tagName === "BUTTON" && caja && /^opciones-comp-/.test(caja.id || "")) {
+        escogido[parseInt(caja.id.replace("opciones-comp-", ""), 10)] = parseInt(b.textContent, 10);
+      }
+    });
   })();
 }

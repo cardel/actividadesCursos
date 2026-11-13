@@ -70,7 +70,34 @@ var EJERCICIO = (function () {
     return pasos;
   }
 
-  return { codigo: CODIGO, simular: simular, gradosDeEntrada: gradosDeEntrada, gradosDeSalida: gradosDeSalida };
+  /* Opciones para el grado de entrada de u: la correcta y errores tipicos. */
+  function opciones(G, u) {
+    var ent = gradosDeEntrada(G)[u], sal = gradosDeSalida(G)[u];
+    var lista = [{ valor: ent, clave: "correcta",
+      razon: "Correcto: " + ent + ". Se cuenta cuántas veces aparece " + u + " en las listas de los demás." }];
+    var cand = [
+      { valor: sal, clave: "salida",
+        razon: "Ese es el grado de salida: el largo de la lista de " + u + ". El de entrada se cuenta en las listas de los demás." },
+      { valor: ent + sal, clave: "total",
+        razon: "Sumó entrada y salida. Son dos grados distintos y se piden por separado." },
+      { valor: ent + 1, clave: "mas",
+        razon: "Contó una flecha de más. Revise cada lista y cuente solo las veces que aparece " + u + "." },
+      { valor: ent - 1, clave: "menos",
+        razon: "Se le escapó una flecha. Revise todas las listas, no solo las de los vecinos cercanos." },
+      { valor: ent + 2, clave: "mas2",
+        razon: "Contó dos de más. Cada flecha cuenta una sola vez, en la lista de su cola." }
+    ];
+    var e = 0;
+    while (e < cand.length && lista.length < 4) {
+      var o = cand[e], repetido = o.valor < 0, k = 0;
+      while (k < lista.length) { if (lista[k].valor === o.valor) { repetido = true; } k = k + 1; }
+      if (!repetido) { lista.push(o); }
+      e = e + 1;
+    }
+    return lista;
+  }
+
+  return { codigo: CODIGO, simular: simular, gradosDeEntrada: gradosDeEntrada, gradosDeSalida: gradosDeSalida, opciones: opciones };
 })();
 
 if (typeof module !== "undefined") {
@@ -129,18 +156,29 @@ if (typeof module !== "undefined") {
       while (u < G.length) {
         var tr = document.createElement("tr");
         tr.innerHTML = "<td><b>" + u + "</b></td><td><code>[" + G[u].join(", ") + "]</code></td>" +
-          "<td><input type='number' min='0' data-ent='" + u + "' style='width:4.5rem'></td>" +
+          "<td><div class='opciones' id='ent-op-" + u + "'></div><div class='veredicto' id='ent-ver-" + u + "'></div></td>" +
           "<td><span class='res' id='res-" + u + "'></span></td>";
         caja.appendChild(tr);
+        cablear(u);
         u = u + 1;
       }
+    }
+
+    var seleccion = [];
+    function cablear(u) {
+      document.getElementById("ent-op-" + u).addEventListener("click", function (ev) {
+        var b = ev.target;
+        if (b && b.tagName === "BUTTON") { seleccion[u] = parseInt(b.textContent, 10); }
+      });
+      Motor.opcionesNumericas("ent-op-" + u, "ent-ver-" + u, function () {
+        return EJERCICIO.opciones(G, u);
+      });
     }
 
     document.getElementById("btn-mano").addEventListener("click", function () {
       var aciertos = 0, vacios = 0, u = 0;
       while (u < G.length) {
-        var campo = document.querySelector("input[data-ent='" + u + "']");
-        var valor = parseInt(campo.value, 10);
+        var valor = seleccion[u] === undefined ? NaN : seleccion[u];
         var celda = document.getElementById("res-" + u);
         if (isNaN(valor)) { celda.textContent = "–"; celda.className = "res"; vacios = vacios + 1; }
         else if (valor === ENT[u]) { celda.textContent = "✓"; celda.className = "res bien"; aciertos = aciertos + 1; }
@@ -148,7 +186,7 @@ if (typeof module !== "undefined") {
         u = u + 1;
       }
       var v = document.getElementById("veredicto-mano");
-      if (vacios > 0) { v.className = "veredicto mal"; v.textContent = "Faltan " + vacios + " por llenar."; }
+      if (vacios > 0) { v.className = "veredicto mal"; v.textContent = "Faltan " + vacios + " por escoger."; }
       else if (aciertos === G.length) {
         v.className = "veredicto bien";
         v.textContent = "Los siete bien. La suma de los grados de entrada es " + ENT.reduce(function (a, b) { return a + b; }, 0) +

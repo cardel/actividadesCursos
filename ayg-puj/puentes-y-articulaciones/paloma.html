@@ -10,9 +10,8 @@
   .leyenda { font-size: 0.85rem; color: var(--gris); text-align: center; }
   .leyenda span { white-space: nowrap; margin-right: 0.8rem; }
   #entradas { display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 0.5rem; margin-bottom: 0.7rem; }
-  label.campo-valor { display: flex; align-items: center; gap: 0.4rem; border: 1px solid var(--borde); border-radius: 8px; padding: 0.3rem 0.5rem; }
-  label.campo-valor .mono { font-family: ui-monospace, monospace; white-space: nowrap; }
-  label.campo-valor input { width: 3.6rem; padding: 0.3rem; border: 1px solid var(--borde); border-radius: 6px; }
+  .campo-valor { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; border: 1px solid var(--borde); border-radius: 8px; padding: 0.3rem 0.5rem; }
+  .campo-valor .mono { font-family: ui-monospace, monospace; white-space: nowrap; }
   .piezas { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.3rem 0 0.7rem; }
   button.pieza { font-family: ui-monospace, monospace; font-size: 0.85rem; padding: 0.25rem 0.55rem; }
   #ver-datos { font-family: ui-monospace, monospace; font-size: 0.82rem; color: var(--gris); }
@@ -56,7 +55,7 @@
   </div>
 
   <div class="carta">
-    <h2>2. Escriba el valor de cada estación</h2>
+    <h2>2. Escoja el valor de cada estación</h2>
     <p class="nota" style="margin-top:0">Para cada vértice que no es la raíz, el
     valor arranca en 1 y suma un hijo por cada <code>low[w] ≥ d[u]</code>. La
     comparación admite la igualdad: si el subárbol de <code>w</code> vuelve a

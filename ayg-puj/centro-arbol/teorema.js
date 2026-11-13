@@ -134,14 +134,47 @@ if (typeof document !== "undefined") {
       document.getElementById("tabla-despues").innerHTML = E.tablaDespues();
     }
 
+    var elegidas = {};
+
+    function opcionesDe(v) {
+      var d = E.despues(), esperado = d.ecc[v], antes = E.ANTES.ecc[v], g = E.G[v].length;
+      var lista = [
+        { valor: esperado, clave: "correcta",
+          razon: "Correcto: ε(" + v + ") queda en " + esperado + ", uno menos que los " + antes +
+            " de antes." },
+        { valor: antes, clave: "igual",
+          razon: E.fbCelda(v, antes).txt },
+        { valor: antes - 2, clave: "dos",
+          razon: E.fbCelda(v, antes - 2).txt },
+        { valor: g, clave: "grado",
+          razon: "Ese es el grado de " + v + " en el árbol original (" + g +
+            "): cuenta vecinos, y la excentricidad mide la distancia al vértice más lejano." }
+      ];
+      var vistos = {}, r = [];
+      lista.forEach(function (o) {
+        if (o.valor >= 1 && !vistos[o.valor]) { vistos[o.valor] = true; r.push(o); }
+      });
+      return r;
+    }
+
     function entradas() {
       var h = "";
       vivos.forEach(function (v) {
-        h = h + "<span class='fila-par' style='display:inline-flex;margin-right:0.9rem'>" +
+        h = h + "<span class='fila-par' style='display:inline-block;margin:0 0.9rem 0.6rem 0;vertical-align:top'>" +
             "<span class='rotulo'>ε(" + v + ")</span>" +
-            "<input type='number' class='corto' data-v='" + v + "' placeholder='" + E.ANTES.ecc[v] + "'></span>";
+            "<span class='opciones' id='opciones-ecc-" + v + "'></span>" +
+            "<div id='veredicto-ecc-" + v + "' class='veredicto'></div></span>";
       });
       document.getElementById("entradas").innerHTML = h;
+      vivos.forEach(function (v) {
+        var caja = document.getElementById("opciones-ecc-" + v);
+        Motor.opcionesNumericas("opciones-ecc-" + v, "veredicto-ecc-" + v,
+          function () { return opcionesDe(v); });
+        caja.addEventListener("click", function (ev) {
+          var t = ev.target;
+          if (t && t.tagName === "BUTTON") { elegidas[v] = parseInt(t.textContent, 10); }
+        });
+      });
     }
 
     pintar();
@@ -149,9 +182,7 @@ if (typeof document !== "undefined") {
 
     document.getElementById("btn-comprobar").addEventListener("click", function () {
       var r = {}, d;
-      document.querySelectorAll("#entradas input").forEach(function (i) {
-        r[parseInt(i.getAttribute("data-v"), 10)] = parseInt(i.value, 10);
-      });
+      r = elegidas;
       d = E.fbFila(r);
       var c = document.getElementById("fb-fila");
       c.textContent = d.txt;

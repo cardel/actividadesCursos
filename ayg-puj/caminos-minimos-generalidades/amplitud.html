@@ -10,6 +10,7 @@
   .viva { font-family: ui-monospace, monospace; background: var(--codigo-fondo); border-radius: 8px; padding: 0.3rem 0.6rem; display: inline-block; word-break: break-all; }
   .prediccion select { padding: 0.4rem 0.5rem; font-size: 1rem; border: 1px solid var(--borde); border-radius: 8px; }
   .leyenda { font-size: 0.85rem; color: var(--gris); text-align: center; }
+  .opciones button { text-align: left; }
   .opcion { display: block; margin: 0.35rem 0; cursor: pointer; }
 </style>
 </head>
@@ -48,10 +49,9 @@
     <div class="prediccion">
       <span>Fuente <b id="ver-fuente">0</b>. Destino:</span>
       <select id="destino"></select>
-      <span>¿Cuánto vale <code>d[<span id="rot-destino">0</span>]</code> al terminar? Escriba <code>inf</code> si no se alcanza.</span>
-      <input type="text" id="prediccion" size="6" placeholder="entero o inf">
-      <button id="btn-comprobar" class="primario">Comprobar</button>
+      <span>¿Cuánto vale <code>d[<span id="rot-destino">0</span>]</code> al terminar?</span>
     </div>
+    <div class="opciones" id="opciones-d"></div>
     <div id="veredicto" class="veredicto"></div>
   </div>
 

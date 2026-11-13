@@ -374,7 +374,6 @@ if (typeof module !== "undefined") {
 
     function limpiar() {
       Motor.limpiarVeredicto();
-      document.getElementById("prediccion").value = "";
       var r = document.getElementById("porque-veredicto");
       r.className = "veredicto"; r.textContent = "";
       Array.prototype.forEach.call(document.querySelectorAll("input[name=porque]"), function (b) { b.checked = false; });
@@ -388,25 +387,29 @@ if (typeof module !== "undefined") {
       Motor.reiniciar(paramsActuales());
     }
 
-    /* valor: entero, o Infinity cuando se escribe inf. */
-    function evaluar(valor, params) {
-      var r = EJERCICIO.resumen(params), real = r.d[destino], res;
+    /* Opciones de d[destino]: la correcta y los errores tipicos, cada uno con su razon. */
+    function armarOpciones(params) {
+      var r = EJERCICIO.resumen(params), real = r.d[params.t], n = params.G.length, ops;
       if (real === Infinity) {
-        res = valor === Infinity
-          ? { ok: true, msg: "Correcto: d[" + destino + "] = inf. Ninguna arista une la componente de " + params.s + " con " + destino + ", así que la búsqueda nunca lo descubre y d conserva el infinito del inicio." }
-          : { ok: false, msg: "No. Desde " + params.s + " no hay camino hasta " + destino + ": están en componentes distintas. Un vértice que la búsqueda no descubre se queda con d = inf, no con un número de aristas." };
-      } else if (valor === real) {
-        res = { ok: true, msg: "Correcto: d[" + destino + "] = " + real + ". Es el número de aristas del camino " + lista(r.ruta) + ", el más corto que la búsqueda por niveles encuentra." };
-      } else if (valor === Infinity) {
-        res = { ok: false, msg: "Sí hay camino de " + params.s + " a " + destino + ": ambos están en la misma componente. El inf queda solo para los vértices que la búsqueda no descubre." };
-      } else if (valor === real + 1) {
-        res = { ok: false, msg: "Un número de más: d cuenta aristas, no vértices. El camino tiene " + (real + 1) + " vértices y " + real + " aristas." };
-      } else if (valor > real) {
-        res = { ok: false, msg: "Ese número sirve para un camino de " + valor + " aristas, pero la amplitud descubre cada vértice en el nivel más bajo en que aparece. Cuente los niveles desde " + params.s + " hasta llegar a " + destino + "." };
+        ops = [
+          { valor: "inf", clave: "correcta", razon: "Correcto: d[" + params.t + "] = inf. Ninguna arista une la componente de " + params.s + " con " + params.t + ", así que la búsqueda nunca lo descubre y d conserva el infinito del inicio." },
+          { valor: -1, clave: "menosuno", razon: "Ese -1 es el valor de p para un vértice sin padre, no de d. Un vértice que la búsqueda no descubre conserva d = inf." },
+          { valor: n, clave: "vertices", razon: "No. Desde " + params.s + " no hay camino hasta " + params.t + ": están en componentes distintas. Un vértice que la búsqueda no descubre se queda con d = inf, no con un número de aristas." },
+          { valor: 0, clave: "cero", razon: "El cero es d de la fuente. Un vértice de otra componente nunca se descubre y d conserva inf." }
+        ];
       } else {
-        res = { ok: false, msg: "Ningún camino de " + params.s + " a " + destino + " tiene tan pocas aristas. Los vértices a distancia 1 son los vecinos de " + params.s + "; vaya nivel por nivel." };
+        ops = [
+          { valor: real, clave: "correcta", razon: "Correcto: d[" + params.t + "] = " + real + ". Es el número de aristas del camino " + lista(r.ruta) + ", el más corto que la búsqueda por niveles encuentra." },
+          { valor: real + 1, clave: "vertices", razon: "Un número de más: d cuenta aristas, no vértices. El camino tiene " + (real + 1) + " vértices y " + real + " aristas." },
+          { valor: "inf", clave: "inf", razon: "Sí hay camino de " + params.s + " a " + params.t + ": ambos están en la misma componente. El inf queda solo para los vértices que la búsqueda no descubre." }
+        ];
+        if (real >= 2) {
+          ops.push({ valor: real - 1, clave: "corto", razon: "Ningún camino de " + params.s + " a " + params.t + " tiene tan pocas aristas. Los vértices a distancia 1 son los vecinos de " + params.s + "; vaya nivel por nivel." });
+        } else {
+          ops.push({ valor: real + 2, clave: "largo", razon: "Ese número sirve para un camino de " + (real + 2) + " aristas, pero la amplitud descubre cada vértice en el nivel más bajo en que aparece. Cuente los niveles desde " + params.s + " hasta llegar a " + params.t + "." });
+        }
       }
-      return res;
+      return ops;
     }
 
     function arrancar() {
@@ -421,17 +424,7 @@ if (typeof module !== "undefined") {
 
     arrancar();
     llenarDestinos();
-    document.getElementById("btn-comprobar").addEventListener("click", function () {
-      var t = document.getElementById("prediccion").value.trim().toLowerCase().replace("∞", "inf");
-      var ver = document.getElementById("veredicto"), res, valor;
-      if (t === "inf") { valor = Infinity; }
-      else if (/^-?\d+$/.test(t)) { valor = parseInt(t, 10); }
-      else { valor = null; }
-      if (valor === null) { res = { ok: false, msg: "Escriba un entero o inf." }; }
-      else { res = evaluar(valor, paramsActuales()); }
-      ver.className = res.ok ? "veredicto bien" : "veredicto mal";
-      ver.textContent = res.msg;
-    });
+    Motor.opcionesNumericas("opciones-d", "veredicto", armarOpciones);
     document.getElementById("destino").addEventListener("change", function () {
       destino = parseInt(this.value, 10);
       document.getElementById("rot-destino").textContent = String(destino);

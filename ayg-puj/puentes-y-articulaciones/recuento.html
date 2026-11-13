@@ -10,9 +10,8 @@
   .leyenda { font-size: 0.85rem; color: var(--gris); text-align: center; }
   .leyenda span { white-space: nowrap; margin-right: 0.8rem; }
   #entradas { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 0.5rem; margin-bottom: 0.7rem; }
-  label.campo-low { display: flex; align-items: center; gap: 0.4rem; border: 1px solid var(--borde); border-radius: 8px; padding: 0.3rem 0.5rem; }
-  label.campo-low .mono { font-family: ui-monospace, monospace; white-space: nowrap; }
-  label.campo-low input { width: 4rem; padding: 0.3rem; border: 1px solid var(--borde); border-radius: 6px; }
+  .campo-low { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; border: 1px solid var(--borde); border-radius: 8px; padding: 0.3rem 0.5rem; }
+  .campo-low .mono { font-family: ui-monospace, monospace; white-space: nowrap; }
   .piezas { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.3rem 0 0.7rem; }
   button.pieza { font-family: ui-monospace, monospace; font-size: 0.85rem; padding: 0.25rem 0.55rem; }
   #lista-aristas { font-family: ui-monospace, monospace; font-size: 0.82rem; color: var(--gris); }
@@ -26,7 +25,7 @@
   el momento en que se descubre, y <code>low</code>, el <code>d</code> más bajo
   al que llega su subárbol con un salto de retroceso. Con esos dos números salen
   los puntos de articulación y los puentes. La profundidad ya corrió: el árbol
-  está dibujado y cada vértice trae su <code>d</code>. Falta escribir los
+  está dibujado y cada vértice trae su <code>d</code>. Falta escoger los
   <code>low</code> y después marcar las piezas de corte.</p>
 
   <div class="carta">
@@ -49,7 +48,7 @@
   </div>
 
   <div class="carta">
-    <h2>2. Escriba el low de cada vértice</h2>
+    <h2>2. Escoja el low de cada vértice</h2>
     <p class="nota" style="margin-top:0">Conviene empezar por las hojas del árbol
     y subir: el <code>low</code> de un vértice necesita el de sus hijos. Cada
     hijo aporta su <code>low</code>, cada retroceso aporta el <code>d</code> del

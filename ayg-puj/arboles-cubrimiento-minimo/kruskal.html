@@ -25,14 +25,12 @@
     <div class="dibujo" id="panel-grafo"></div>
     <div class="tira"><span class="rot">En orden de peso</span><span id="ver-ordenada"></span></div>
     <p class="nota" id="pregunta-pred" style="margin-bottom:0"></p>
-    <div class="prediccion">
-      <span>Se descartan por cerrar ciclo:</span>
-      <input type="text" id="pred-descartadas" class="texto corta" placeholder="cuántas">
-      <span>y el árbol se completa en el puesto:</span>
-      <input type="text" id="pred-cierra" class="texto corta" placeholder="cuál">
-      <button id="btn-comprobar" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto" class="veredicto"></div>
+    <div><b>¿Cuántas aristas se descartan por cerrar ciclo?</b></div>
+    <div class="opciones" id="opciones-descartadas"></div>
+    <div id="veredicto-descartadas" class="veredicto"></div>
+    <div style="margin-top:0.8rem"><b>¿En qué puesto de la lista ordenada se completa el árbol?</b></div>
+    <div class="opciones" id="opciones-cierra"></div>
+    <div id="veredicto-cierra" class="veredicto"></div>
   </div>
 
   <div class="carta">

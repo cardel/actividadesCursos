@@ -184,6 +184,7 @@ if (typeof module !== "undefined") {
 } else {
   (function () {
     var opcionesPrediccion = null, presetActual = 0, A = null, comprobado = false, quitado = -1;
+    var escogido = {}, manejadoresValor = {};
 
     function g() { return EJERCICIO.grafos[presetActual]; }
 
@@ -252,19 +253,68 @@ if (typeof module !== "undefined") {
       document.getElementById("panel-grafo").innerHTML = svg;
     }
 
+    /* Opciones del valor de la estacion u: el correcto y los que da quien
+       cae en cada error de siempre, con el diagnostico que ya tenia la pagina. */
+    function opcionesValor(u) {
+      var correcto = A.valor[u], lista = [], usados = {}, vecinos = A.G[u].length;
+      var estricto = 1, k = 0;
+      while (k < A.suma[u].length) {
+        if (A.suma[u][k].lowv > A.suma[u][k].du) { estricto = estricto + 1; }
+        k = k + 1;
+      }
+      function agregar(valor, clave, razon) {
+        if (valor >= 0 && !usados[valor]) { usados[valor] = true; lista.push({ valor: valor, clave: clave, razon: razon }); }
+      }
+      // el diagnostico de la pagina o, si es el generico, el texto de respaldo
+      function razonDe(dado, respaldo) {
+        var d = EJERCICIO.diagnosticoValor(A, u, dado);
+        return d.indexOf("No coincide") === 0 ? respaldo : d;
+      }
+      agregar(correcto, "correcta", "Correcto, vale " + correcto + ". " + EJERCICIO.explicarValor(A, u));
+      var descartar = lista.length;
+      function distractor(valor, clave, respaldo) {
+        if (valor !== correcto && !usados[valor] && lista.length - descartar < 3) {
+          var r = razonDe(valor, respaldo);
+          if (r !== null) { agregar(valor, clave, r); }
+        }
+      }
+      distractor(vecinos, "vecinos", "Ese es el número de vecinos de la estación " + u +
+        ". Dos vecinos que quedan en el mismo pedazo al quitarla cuentan una sola vez; vale " + correcto + ".");
+      distractor(A.hijos[u].length + 1, "hijos-mas-uno", null);
+      if (!A.raiz[u]) { distractor(estricto, "estricto", null); }
+      if (!A.raiz[u]) { distractor(correcto - 1, "sin-uno", null); }
+      if (A.raiz[u]) {
+        distractor(correcto - 1, "menos-un-hijo", "Dejó fuera un hijo. La raíz suma uno por cada llamada que vuelve, y volvieron " +
+          correcto + ": " + A.hijos[u].join(", ") + ".");
+      }
+      distractor(correcto + 1, "mas-uno", "Contó un pedazo de más: quitando la estación " + u + " quedan " + correcto + " pedazos.");
+      return lista;
+    }
+
     function armar() {
       var p = g();
       A = EJERCICIO.analizar(p.n, p.aristas);
       comprobado = false;
       quitado = -1;
+      escogido = {};
       var h = "", i = 0;
       while (i < p.n) {
-        h += "<label class='campo-valor'><span class='mono'>valor[" + i + "]</span>" +
+        h += "<div class='campo-valor'><span class='mono'>valor[" + i + "]</span>" +
              "<span class='nota' style='margin:0'>(" + A.d[i] + "/" + A.low[i] + ")</span>" +
-             "<input type='number' id='valor-" + i + "' min='1'></label>";
+             "<span class='opciones' id='opciones-valor-" + i + "' style='margin-top:0'></span></div>" +
+             "<div id='veredicto-valor-" + i + "' class='veredicto' style='grid-column:1/-1'></div>";
         i = i + 1;
       }
       document.getElementById("entradas").innerHTML = h;
+      i = 0;
+      while (i < p.n) {
+        if (manejadoresValor[i]) {
+          manejadoresValor[i].refrescar();
+        } else {
+          manejadoresValor[i] = Motor.opcionesNumericas("opciones-valor-" + i, "veredicto-valor-" + i, opcionesValor.bind(null, i));
+        }
+        i = i + 1;
+      }
       document.getElementById("explicaciones").innerHTML = "";
       document.getElementById("ver-texto").textContent = p.texto;
       document.getElementById("ver-datos").textContent =
@@ -317,23 +367,20 @@ if (typeof module !== "undefined") {
     function comprobar() {
       var p = g(), n = p.n, i = 0, vacios = 0, bien = 0, h = "";
       while (i < n) {
-        if (isNaN(parseInt(document.getElementById("valor-" + i).value, 10))) { vacios = vacios + 1; }
+        if (escogido[i] === undefined) { vacios = vacios + 1; }
         i = i + 1;
       }
       var v = document.getElementById("veredicto");
       if (vacios > 0) {
         v.className = "veredicto mal";
-        v.textContent = "Faltan " + vacios + " valores por escribir.";
+        v.textContent = "Faltan " + vacios + " valores por escoger.";
       } else {
         comprobado = true;
         quitado = -1;
         i = 0;
         while (i < n) {
-          var campo = document.getElementById("valor-" + i);
-          var dado = parseInt(campo.value, 10), ok = dado === A.valor[i];
+          var dado = escogido[i], ok = dado === A.valor[i];
           if (ok) { bien = bien + 1; }
-          campo.style.borderColor = ok ? "#2e7d32" : "#b3261e";
-          campo.style.background = ok ? "#e7f2e8" : "#fbe9e7";
           h += "<div class='veredicto " + (ok ? "bien" : "mal") + "' style='display:block;margin-top:0.4rem'><b>" + i +
                "</b>" + (A.raiz[i] ? " (raíz)" : "") + ": " + (ok ? "correcto, vale " + A.valor[i] + ". " : "usted escribió " + dado + "; vale " + A.valor[i] + ". ") +
                EJERCICIO.explicarValor(A, i) + (ok ? "" : "<br><i>" + EJERCICIO.diagnosticoValor(A, i, dado) + "</i>") + "</div>";
@@ -361,6 +408,12 @@ if (typeof module !== "undefined") {
     }
 
     document.getElementById("btn-comprobar").addEventListener("click", comprobar);
+    document.getElementById("entradas").addEventListener("click", function (e) {
+      var b = e.target, caja = b && b.parentNode;
+      if (b && b.tagName === "BUTTON" && caja && /^opciones-valor-/.test(caja.id || "")) {
+        escogido[parseInt(caja.id.replace("opciones-valor-", ""), 10)] = parseInt(b.textContent, 10);
+      }
+    });
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (btn) {
       btn.addEventListener("click", function () {
         Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (b) { b.classList.remove("primario"); });

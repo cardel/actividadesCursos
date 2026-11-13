@@ -27,22 +27,25 @@ var EJERCICIO = (function () {
 
   var PRED = {
     respuesta: SIN.perfil.altura,
-    evaluar: function (valor) {
+    opciones: function () {
       var camino = UF.camino(SIN.estados[SIN.estados.length - 1].p, SIN.perfil.hondo);
-      if (valor === SIN.perfil.altura) {
-        return { ok: true, msg: "Son " + SIN.perfil.altura + ": el camino de " + SIN.perfil.hondo +
-          " es " + camino.join(" → ") + "." };
-      }
-      if (valor === CON.perfil.altura) {
-        return { ok: false, msg: "Eso cuesta con la unión por rango encendida. Sin ella el camino más largo es el doble." };
-      }
-      if (valor === UF.SEC.length) {
-        return { ok: false, msg: "Siete uniones no dejan siete niveles: una unión agrega un nivel solo si el árbol que cuelga ya tenía altura." };
-      }
-      if (valor === UF.ELEMS.length) {
-        return { ok: false, msg: "Ocho es la cantidad de elementos. Lo que se cuenta son los saltos de uno de ellos hasta su raíz." };
-      }
-      return { ok: false, msg: "Son " + SIN.perfil.altura + ", por el camino " + camino.join(" → ") + "." };
+      var lista = [
+        { valor: SIN.perfil.altura, clave: "correcta",
+          razon: "Correcto: son " + SIN.perfil.altura + ", el camino de " + SIN.perfil.hondo +
+            " es " + camino.join(" → ") + "." },
+        { valor: CON.perfil.altura, clave: "con-rango",
+          razon: "Eso cuesta con la unión por rango encendida. Sin ella el camino más largo es el doble." },
+        { valor: UF.SEC.length, clave: "uniones",
+          razon: "Siete uniones no dejan siete niveles: una unión agrega un nivel solo si el árbol que cuelga ya tenía altura." },
+        { valor: UF.ELEMS.length, clave: "elementos",
+          razon: "Ocho es la cantidad de elementos. Lo que se cuenta son los saltos de uno de ellos hasta su raíz." }
+      ];
+      var vistos = [];
+      return lista.filter(function (o) {
+        var nuevo = vistos.indexOf(o.valor) < 0;
+        vistos.push(o.valor);
+        return nuevo;
+      });
     }
   };
 
@@ -126,12 +129,8 @@ if (typeof document !== "undefined") {
       dibujo("tras-con", E.CON_TRAS.p, null, [x]);
     });
 
-    el("btn-comprobar").addEventListener("click", function () {
-      var campo = el("prediccion"), v = el("veredicto"), valor = parseInt(campo.value, 10), r;
-      if (isNaN(valor)) { r = { ok: false, msg: "Escriba un número primero." }; }
-      else { r = E.PRED.evaluar(valor); }
-      v.className = r.ok ? "veredicto bien" : "veredicto mal";
-      v.textContent = r.msg;
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto", function () {
+      return E.PRED.opciones();
     });
 
     el("btn-comprimir").textContent = "Correr find_set(" + E.COMPRIMIR + ") en los dos";

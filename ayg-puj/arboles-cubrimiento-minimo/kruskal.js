@@ -163,11 +163,7 @@ if (typeof module !== "undefined") {
     function preparar() {
       var G = g();
       el("ver-texto").textContent = G.texto + " Aristas: " + MST.textoAristas(G.aristas) + ".";
-      el("pred-descartadas").value = "";
-      el("pred-cierra").value = "";
       el("pregunta-pred").textContent = "La lista ordenada tiene " + G.aristas.length + " aristas.";
-      el("veredicto").className = "veredicto";
-      el("veredicto").textContent = "";
       el("ver-ordenada").textContent = MST.textoAristas(G.res.ordenadas);
       resumen();
     }
@@ -181,16 +177,50 @@ if (typeof module !== "undefined") {
     });
     preparar();
 
-    el("btn-comprobar").addEventListener("click", function () {
-      var d = parseInt(el("pred-descartadas").value, 10), c = parseInt(el("pred-cierra").value, 10);
-      var v = el("veredicto"), r;
-      if (isNaN(d) || isNaN(c)) {
-        r = { ok: false, msg: "Escriba los dos números primero." };
-      } else {
-        r = E.evaluar(d, c, g());
-      }
-      v.className = r.ok ? "veredicto bien" : "veredicto mal";
-      v.textContent = r.msg;
+    function sinRepetir(lista) {
+      var vistos = {}, salida = [];
+      lista.forEach(function (o) {
+        if (vistos[o.valor] !== true && o.valor >= 0) { vistos[o.valor] = true; salida.push(o); }
+      });
+      return salida;
+    }
+
+    Motor.opcionesNumericas("opciones-descartadas", "veredicto-descartadas", function (indice) {
+      var G = E.GRAFOS[indice], r = G.res, m = G.aristas.length;
+      return sinRepetir([
+        { valor: r.descartadas, clave: "correcta",
+          razon: "Correcto: se descartan " + r.descartadas + ". " +
+            r.mirada.filter(function (x) { return !x.entra; })
+              .map(function (x) { return "(" + x.arista.join(",") + ")"; }).join(" ") +
+            " llegan cuando sus dos puntas ya están en el mismo pedazo." },
+        { valor: m - (G.n - 1), clave: "todas",
+          razon: "Eso cuenta también las " + G.sinMirar + " aristas del final de la lista, que el " +
+            "algoritmo nunca llega a mirar porque el árbol ya está completo. Solo se descarta " +
+            "lo que se mira y cierra ciclo." },
+        { valor: G.n - 1, clave: "arbol",
+          razon: "Ese es el número de aristas que entran al árbol, " + (G.n - 1) + ", no las que se rechazan." },
+        { valor: G.sinMirar, clave: "sinmirar",
+          razon: "Esas son las aristas que quedan sin mirar al final. Una arista descartada sí se mira: " +
+            "se compara y se rechaza porque cierra ciclo." }
+      ]);
+    });
+
+    Motor.opcionesNumericas("opciones-cierra", "veredicto-cierra", function (indice) {
+      var G = E.GRAFOS[indice], r = G.res, m = G.aristas.length;
+      return sinRepetir([
+        { valor: r.cierra, clave: "correcta",
+          razon: "Correcto: el árbol se completa en el puesto " + r.cierra + ", con (" +
+            r.mirada[r.cierra - 1].arista.join(",") + "): ahí ya hay " + (G.n - 1) +
+            " aristas y el ciclo no vuelve a entrar. Las " + G.sinMirar + " últimas no se alcanzan a mirar." },
+        { valor: G.n - 1, clave: "sindescartes",
+          razon: "Eso sería si ninguna arista cerrara ciclo. Aquí se descartan " + r.descartadas +
+            " antes de completar el árbol, y cada una ocupa un puesto." },
+        { valor: m, clave: "ultima",
+          razon: "Eso sería recorrer toda la lista. El algoritmo para al tener " + (G.n - 1) +
+            " aristas, y las " + G.sinMirar + " últimas no se miran." },
+        { valor: r.cierra - 1, clave: "desdecero",
+          razon: "Ese es el índice si se cuenta desde cero. El puesto cuenta desde uno: la primera arista de la lista es el puesto 1." }
+      ]);
     });
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (b) {
       b.addEventListener("click", function () {

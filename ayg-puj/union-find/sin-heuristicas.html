@@ -17,12 +17,8 @@
 
   <div class="carta">
     <h2>1. Antes de ver los dos bosques</h2>
-    <div class="prediccion">
-      <span>Sin la unión por rango, el elemento más hondo queda a</span>
-      <input type="text" id="prediccion" class="texto corta" placeholder="saltos">
-      <span>saltos de su raíz.</span>
-      <button id="btn-comprobar" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-top:0">Sin la unión por rango, el elemento más hondo queda a cuántos saltos de su raíz.</p>
+    <div class="opciones" id="opciones-prediccion"></div>
     <div id="veredicto" class="veredicto"></div>
   </div>
 
@@ -87,6 +83,7 @@
     altura 3 con la unión por rango encendida. Después diga si existe una que llegue a altura 4.</p>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="../comun/grafo-svg.js"></script>
 <script src="lib.js"></script>
 <script src="sin-heuristicas.js"></script>

@@ -227,6 +227,7 @@ if (typeof module !== "undefined") {
   (function () {
     var opcionesPrediccion = null, presetActual = 0, A = null, marcaPuente = {}, puentesListos = false;
     var influenciasListas = false, decision = {}, decididos = false;
+    var escogidoInfl = {}, manejadoresInfl = {}, opcionesSalida = null;
 
     function g() { return EJERCICIO.grafos[presetActual]; }
 
@@ -360,18 +361,66 @@ if (typeof module !== "undefined") {
       dibujar();
     }
 
+    /* Opciones del total del grupo i: la suma correcta y los valores que
+       alguien daria al confundir la suma con otra cosa del mismo grupo. */
+    function opcionesInfl(i) {
+      var p = g(), lista = [], usados = {}, correcto = A.C.suma[i];
+      var miembros = A.C.listas[i], maximo = 0, todo = 0, k = 0;
+      miembros.forEach(function (x) { if (p.infl[x] > maximo) { maximo = p.infl[x]; } });
+      while (k < p.n) { todo = todo + p.infl[k + 1]; k = k + 1; }
+      function agregar(valor, clave, razon) {
+        if (valor >= 0 && !usados[valor]) { usados[valor] = true; lista.push({ valor: valor, clave: clave, razon: razon }); }
+      }
+      agregar(correcto, "correcta", "Correcto: " + miembros.map(function (x) { return p.infl[x]; }).join(" + ") +
+        " = " + correcto + ". Es la influencia del grupo, la suma de la de sus planetas.");
+      agregar(miembros.length, "cuenta", "Eso es cuántos planetas tiene el grupo, " + miembros.length +
+        ". Se pide la suma de la influencia de sus planetas: " +
+        miembros.map(function (x) { return p.infl[x]; }).join(" + ") + " = " + correcto + ".");
+      agregar(maximo, "maximo", "Ese es el planeta más influyente del grupo, " + maximo +
+        ". El total suma la influencia de todos los planetas del grupo: " + correcto + ".");
+      if (miembros.length > 1) {
+        agregar(correcto - maximo, "sin-mayor", "Esa suma deja fuera al planeta más influyente del grupo. Entran todos: " +
+          miembros.map(function (x) { return p.infl[x]; }).join(" + ") + " = " + correcto + ".");
+      }
+      // el grupo del otro lado de un puente: se confunde de que lado va cada planeta
+      var e = 0;
+      while (e < p.aristas.length) {
+        if (A.P.esPuente[e]) {
+          var ci = A.C.ind[p.aristas[e][0]], cj = A.C.ind[p.aristas[e][1]];
+          if (ci === i) { agregar(A.C.suma[cj], "vecino", "Esa es la influencia del grupo del otro lado del puente " + p.aristas[e][0] + "–" + p.aristas[e][1] +
+            ", " + A.C.suma[cj] + ". Este grupo suma " + correcto + "."); }
+          if (cj === i) { agregar(A.C.suma[ci], "vecino", "Esa es la influencia del grupo del otro lado del puente " + p.aristas[e][0] + "–" + p.aristas[e][1] +
+            ", " + A.C.suma[ci] + ". Este grupo suma " + correcto + "."); }
+        }
+        e = e + 1;
+      }
+      agregar(todo, "todo", "Ese es el total de todo el mapa, " + todo + ". Los puentes separan el mapa en grupos y cada uno suma lo suyo: " + correcto + ".");
+      return lista.slice(0, 4);
+    }
+
     function armarInfluencias() {
       if (!puentesListos) {
         document.getElementById("entradas-infl").innerHTML =
           "<p class='nota' style='margin-top:0'>Primero clasifique las aristas de arriba.</p>";
       } else {
         var h = "", i = 0;
+        escogidoInfl = {};
         while (i < A.C.total) {
-          h += "<label class='campo-valor'><span class='mono'>" + EJERCICIO.nombreComp(A.C, i) + "</span>" +
-            "<input type='number' id='infl-" + i + "' min='0'></label>";
+          h += "<div class='campo-valor'><span class='mono'>" + EJERCICIO.nombreComp(A.C, i) + "</span>" +
+            "<span class='opciones' id='opciones-infl-" + i + "' style='margin-top:0'></span></div>" +
+            "<div id='veredicto-infl-" + i + "' class='veredicto' style='grid-column:1/-1'></div>";
           i = i + 1;
         }
         document.getElementById("entradas-infl").innerHTML = h;
+        i = 0;
+        while (i < A.C.total) {
+          if (manejadoresInfl[i]) {
+            manejadoresInfl[i].refrescar();
+          } else {
+            manejadoresInfl[i] = Motor.opcionesNumericas("opciones-infl-" + i, "veredicto-infl-" + i, opcionesInfl.bind(null, i));
+          }
+          i = i + 1;
+        }
       }
     }
 
@@ -383,20 +432,17 @@ if (typeof module !== "undefined") {
       } else {
         var p = g(), bien = 0, vacios = 0, h = "", i = 0;
         while (i < A.C.total) {
-          if (isNaN(parseInt(document.getElementById("infl-" + i).value, 10))) { vacios = vacios + 1; }
+          if (escogidoInfl[i] === undefined) { vacios = vacios + 1; }
           i = i + 1;
         }
         if (vacios > 0) {
           v.className = "veredicto mal";
-          v.textContent = "Faltan " + vacios + " totales por escribir.";
+          v.textContent = "Faltan " + vacios + " totales por escoger.";
         } else {
           i = 0;
           while (i < A.C.total) {
-            var campo = document.getElementById("infl-" + i);
-            var dado = parseInt(campo.value, 10), ok = dado === A.C.suma[i];
+            var dado = escogidoInfl[i], ok = dado === A.C.suma[i];
             if (ok) { bien = bien + 1; }
-            campo.style.borderColor = ok ? "#2e7d32" : "#b3261e";
-            campo.style.background = ok ? "#e7f2e8" : "#fbe9e7";
             h += "<div class='veredicto " + (ok ? "bien" : "mal") + "' style='display:block;margin-top:0.35rem'><b>" +
               EJERCICIO.nombreComp(A.C, i) + "</b>: " +
               A.C.listas[i].map(function (x) { return p.infl[x]; }).join(" + ") + " = " + A.C.suma[i] +
@@ -475,35 +521,36 @@ if (typeof module !== "undefined") {
       }
     }
 
-    function comprobarSalida() {
-      var v = document.getElementById("veredicto-salida"), p = g();
-      var texto = document.getElementById("salida").value.trim();
-      var dada = texto.length === 0 ? [] : texto.split(/[\s,]+/).map(function (x) { return parseInt(x, 10); });
-      var esperada = A.R.lista, igual = dada.length === esperada.length, i = 0;
-      while (i < esperada.length) { if (dada[i] !== esperada[i]) { igual = false; } i = i + 1; }
-      var mismoConjunto = dada.length === esperada.length &&
-        dada.slice().sort(function (a, b) { return a - b; }).join(",") === esperada.slice().sort(function (a, b) { return a - b; }).join(",");
-      if (dada.some(isNaN) || dada.length === 0) {
-        v.className = "veredicto mal";
-        v.textContent = "Escriba los números de los planetas separados por espacios.";
-      } else if (igual) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: " + esperada.join(" ") + ". " +
-          esperada.map(function (x) { return x + " (" + A.C.suma[A.C.ind[x]] + ", " + p.infl[x] + ")"; }).join("  ") +
-          ". Las parejas son la influencia del componente y la propia, y el número rompe los empates.";
-      } else if (mismoConjunto) {
-        v.className = "veredicto mal";
-        v.textContent = "Los planetas son esos, pero el orden va por influencia del componente, después por influencia propia y al final por número: " +
-          esperada.join(" ") + ". Dentro de un mismo componente todos comparten el primer campo, así que ahí manda la influencia propia.";
-      } else {
-        var sobran = dada.filter(function (x) { return esperada.indexOf(x) < 0; });
-        var faltan = esperada.filter(function (x) { return dada.indexOf(x) < 0; });
-        v.className = "veredicto mal";
-        v.textContent = "No coincide. " +
-          (sobran.length > 0 ? "Sobran " + sobran.join(", ") + ": el recorrido no llega allá. " : "") +
-          (faltan.length > 0 ? "Faltan " + faltan.join(", ") + ". " : "") +
-          "La lista es " + esperada.join(" ") + ".";
+    /* Las listas que alguien daria al equivocarse, con la razon de cada una. */
+    function opcionesDeSalida() {
+      var p = g(), lista = [], usados = {}, esperada = A.R.lista;
+      function agregar(valor, clave, razon) {
+        if (!usados[valor]) { usados[valor] = true; lista.push({ valor: valor, clave: clave, razon: razon }); }
       }
+      function porClaves(x, y) {
+        var sx = A.C.suma[A.C.ind[x]], sy = A.C.suma[A.C.ind[y]];
+        return sx !== sy ? sx - sy : (p.infl[x] !== p.infl[y] ? p.infl[x] - p.infl[y] : x - y);
+      }
+      var todos = [], k = 1;
+      while (k <= p.n) { todos.push(k); k = k + 1; }
+      var sobran = todos.filter(function (x) { return esperada.indexOf(x) < 0; });
+      var razonOrden = "Los planetas son esos, pero el orden va por influencia del componente, después por influencia propia y al final por número: " +
+        esperada.join(" ") + ". Dentro de un mismo componente todos comparten el primer campo, así que ahí manda la influencia propia.";
+      agregar(esperada.join(" "), "correcta", "Correcto: " + esperada.join(" ") + ". " +
+        esperada.map(function (x) { return x + " (" + A.C.suma[A.C.ind[x]] + ", " + p.infl[x] + ")"; }).join("  ") +
+        ". Las parejas son la influencia del componente y la propia, y el número rompe los empates.");
+      if (sobran.length > 0) {
+        agregar(todos.slice().sort(porClaves).join(" "), "todos", "Sobran " + sobran.join(", ") +
+          ": el recorrido no llega allá. La lista es " + esperada.join(" ") + ".");
+      }
+      agregar(esperada.slice().sort(function (x, y) { return x - y; }).join(" "), "numero", razonOrden);
+      agregar(esperada.slice().sort(function (x, y) { return p.infl[x] !== p.infl[y] ? p.infl[x] - p.infl[y] : x - y; }).join(" "), "propia", razonOrden);
+      agregar(esperada.slice().reverse().join(" "), "inversa", razonOrden);
+      if (esperada.length > 1) {
+        agregar(esperada.slice(0, esperada.length - 1).join(" "), "sin-ultimo", "Faltan " + esperada[esperada.length - 1] +
+          ". La lista es " + esperada.join(" ") + ".");
+      }
+      return lista.slice(0, 4);
     }
 
     function armar() {
@@ -524,20 +571,25 @@ if (typeof module !== "undefined") {
       document.getElementById("detalle-puentes").innerHTML = "";
       document.getElementById("detalle-infl").innerHTML = "";
       document.getElementById("detalle-decisiones").innerHTML = "";
-      document.getElementById("salida").value = "";
-      ["veredicto-puentes", "veredicto-infl", "veredicto-decisiones", "veredicto-salida"].forEach(function (id) {
+      ["veredicto-puentes", "veredicto-infl", "veredicto-decisiones"].forEach(function (id) {
         var v = document.getElementById(id);
         v.className = "veredicto";
         v.textContent = "";
       });
       dibujar();
       if (opcionesPrediccion) { opcionesPrediccion.refrescar(); }
+      if (opcionesSalida) { opcionesSalida.refrescar(); }
     }
 
     document.getElementById("btn-puentes").addEventListener("click", comprobarPuentes);
     document.getElementById("btn-infl").addEventListener("click", comprobarInfluencias);
     document.getElementById("btn-decisiones").addEventListener("click", comprobarDecisiones);
-    document.getElementById("btn-salida").addEventListener("click", comprobarSalida);
+    document.getElementById("entradas-infl").addEventListener("click", function (e) {
+      var b = e.target, caja = b && b.parentNode;
+      if (b && b.tagName === "BUTTON" && caja && /^opciones-infl-/.test(caja.id || "")) {
+        escogidoInfl[parseInt(caja.id.replace("opciones-infl-", ""), 10)] = parseInt(b.textContent, 10);
+      }
+    });
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (btn) {
       btn.addEventListener("click", function () {
         Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (b) { b.classList.remove("primario"); });
@@ -548,6 +600,7 @@ if (typeof module !== "undefined") {
     });
     armar();
 
+    opcionesSalida = Motor.opcionesNumericas("opciones-salida", "veredicto-salida", opcionesDeSalida);
     opcionesPrediccion = Motor.opcionesNumericas("opciones-prediccion", "veredicto-prediccion", function () {
       var p = g(), total = A.R.orden.length, lista = [], usados = {};
       var propio = 0, puentes = 0;

@@ -12,9 +12,8 @@
   .piezas { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.3rem 0 0.7rem; }
   button.pieza { font-family: ui-monospace, monospace; font-size: 0.85rem; padding: 0.25rem 0.55rem; }
   #entradas-comp { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.4rem; margin-bottom: 0.7rem; }
-  label.campo-comp { display: flex; align-items: center; gap: 0.4rem; border: 1px solid var(--borde); border-radius: 8px; padding: 0.3rem 0.5rem; }
-  label.campo-comp .mono { font-family: ui-monospace, monospace; white-space: nowrap; }
-  label.campo-comp input { width: 3.4rem; padding: 0.3rem; border: 1px solid var(--borde); border-radius: 6px; }
+  .campo-comp { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; border: 1px solid var(--borde); border-radius: 8px; padding: 0.3rem 0.5rem; }
+  .campo-comp .mono { font-family: ui-monospace, monospace; white-space: nowrap; }
   .leyenda { font-size: 0.85rem; color: var(--gris); text-align: center; }
   .leyenda span { white-space: nowrap; margin-right: 0.8rem; }
   table.cuenta th { text-align: left; width: 34%; }
@@ -77,7 +76,7 @@
     <p style="margin-top:0">Para cada vértice sin componente, un recorrido que
     <b>no cruza puentes</b>; a todo lo que alcanza se le pone el mismo número.
     Esa es la única condición del recorrido, y es la que separa los pedazos.
-    Escriba el <code>comp</code> de cada vértice, numerando desde el 0 en el
+    Escoja el <code>comp</code> de cada vértice, numerando desde el 0 en el
     orden en que el código abre los componentes.</p>
     <div id="entradas-comp"></div>
     <div class="prediccion">
