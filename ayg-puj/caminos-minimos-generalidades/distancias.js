@@ -382,22 +382,155 @@ if (typeof module !== "undefined") {
       });
     }
 
+    var elegido = [];
+
+    /* Costos de los caminos simples de la fuente a v, con el camino. */
+    function caminosSimples(p, v) {
+      var G = EJERCICIO.adyacencia(p), res = [], usado = [], i = 0;
+      while (i < p.nombres.length) { usado.push(false); i = i + 1; }
+      function dfs(u, cam, costo) {
+        if (u === v) { res.push({ cam: cam, costo: costo }); }
+        else {
+          var j = 0;
+          while (j < G[u].length) {
+            var x = G[u][j];
+            if (!usado[x]) {
+              usado[x] = true;
+              dfs(x, cam.concat([x]), costo + EJERCICIO.pesoDe(p, u, x));
+              usado[x] = false;
+            }
+            j = j + 1;
+          }
+        }
+      }
+      usado[p.s] = true;
+      dfs(p.s, [p.s], 0);
+      return res;
+    }
+
+    function nombresRuta(p, cam) {
+      return cam.map(function (x) { return p.nombres[x]; }).join(" → ");
+    }
+
+    function opcionesDe(k) {
+      var p = g(), dl = EJERCICIO.delta(p), F = EJERCICIO.F, nom = p.nombres;
+      var t = dl.d[k], d = dl.d, lista = [], vistos = {};
+      function poner(valor, clave, razon) {
+        var etiqueta = F(valor);
+        if (!vistos[etiqueta]) {
+          vistos[etiqueta] = true;
+          lista.push({ valor: etiqueta, clave: clave, razon: razon });
+        }
+      }
+      var ev = EJERCICIO.evaluar(p, dl, k, t);
+      poner(t, "correcta", "Correcto. " + ev.texto);
+      var cs = caminosSimples(p, k).sort(function (x, y) { return x.costo - y.costo; });
+      var corto = EJERCICIO.ruta(p, p.s, k);
+      var entradas = [], salidas = [], i = 0;
+      while (i < p.aristas.length) {
+        if (p.aristas[i][1] === k) { entradas.push(p.aristas[i]); }
+        if (p.aristas[i][0] === k) { salidas.push(p.aristas[i]); }
+        i = i + 1;
+      }
+      if (t !== Infinity) {
+        // un camino que existe pero no es el mas corto (o, con ciclo negativo, uno finito)
+        i = 0;
+        var otro = null;
+        while (i < cs.length && otro === null) {
+          if (cs[i].costo !== t) { otro = cs[i]; }
+          i = i + 1;
+        }
+        if (otro !== null) {
+          poner(otro.costo, "camino",
+            "Ese es el costo de " + nombresRuta(p, otro.cam) + ", un camino que existe" +
+            (t === -Infinity ? ", pero con el ciclo negativo ninguno es el más corto: siempre hay uno mejor dando otra vuelta."
+                             : ", pero no es el más corto de " + nom[p.s] + " a " + nom[k] + "."));
+        }
+        if (corto !== null && corto.length > 1) {
+          poner(corto.length - 1, "aristas",
+            "Eso es el número de aristas del camino " + nombresRuta(p, corto) +
+            ". La distancia suma los pesos, no cuenta las aristas.");
+        }
+        if (k === p.s) {
+          poner(Infinity, "infinito",
+            "La fuente llega a sí misma con el camino vacío, así que no es ∞.");
+        } else if (t !== -Infinity) {
+          poner(Infinity, "infinito",
+            "Sí hay camino de " + nom[p.s] + " a " + nom[k] + ", así que no es ∞.");
+        } else {
+          poner(Infinity, "infinito",
+            "Sí hay camino de " + nom[p.s] + " a " + nom[k] + " (y un ciclo negativo que lo mejora sin parar), así que no es ∞.");
+        }
+        // la distancia de un vecino en vez de la del vertice
+        var vec = null;
+        i = 0;
+        while (i < entradas.length && vec === null) {
+          if (d[entradas[i][0]] !== Infinity && d[entradas[i][0]] !== t) { vec = entradas[i][0]; }
+          i = i + 1;
+        }
+        i = 0;
+        while (i < salidas.length && vec === null) {
+          if (d[salidas[i][1]] !== Infinity && d[salidas[i][1]] !== t) { vec = salidas[i][1]; }
+          i = i + 1;
+        }
+        if (vec !== null) {
+          poner(d[vec], "vecino", k === p.s
+            ? "Esa es la distancia de " + nom[vec] + ", un vecino de " + nom[k] + ", no la de " + nom[k] + " a sí misma."
+            : "Esa es la distancia de " + nom[vec] + ", un vecino de " + nom[k] +
+              ". Llegar a " + nom[k] + " cuesta lo que cuesta llegar al vecino más el peso de la arista que los une.");
+        }
+      } else {
+        // sin camino: menos infinito, cero o el peso de una arista que llega
+        poner(-Infinity, "menosinf",
+          "Un ciclo negativo solo afecta a lo que la fuente alcanza. " + nom[k] + " no se alcanza desde " + nom[p.s] + ", así que no es −∞.");
+        if (entradas.length > 0) {
+          poner(entradas[0][2], "arista",
+            "Ese es el peso de la arista " + nom[entradas[0][0]] + " → " + nom[k] +
+            ", pero " + nom[entradas[0][0]] + " no se alcanza desde " + nom[p.s] + ".");
+        }
+        poner(0, "cero",
+          "Cero es la distancia de " + nom[p.s] + " a sí misma. Sin camino no hay ningún número que sirva.");
+        if (salidas.length > 0) {
+          poner(salidas[0][2], "arista",
+            "Ese es el peso de una arista que sale de " + nom[k] + ", pero la fuente no llega hasta " + nom[k] + ".");
+        }
+      }
+      return lista.slice(0, 4);
+    }
+
     function armar() {
       var p = g(), h = "", k = 0;
-      comprobado = false; resultados = []; resalte = null;
+      comprobado = false; resultados = []; resalte = null; elegido = [];
       while (k < p.nombres.length) {
         h += "<div class='prop' style='border:1px solid var(--borde);border-radius:8px;padding:0.5rem 0.7rem;margin-bottom:0.6rem'>" +
-             "<label style='font-weight:600'>δ(" + p.nombres[p.s] + ", " + p.nombres[k] + ") = " +
-             "<input type='text' id='resp-" + k + "' size='6' autocomplete='off' style='font:inherit;padding:0.2rem 0.4rem'></label>" +
+             "<div style='font-weight:600'>δ(" + p.nombres[p.s] + ", " + p.nombres[k] + ") = ?</div>" +
+             "<div class='opciones' id='opciones-" + k + "'></div>" +
+             "<div id='opc-ver-" + k + "' class='veredicto'></div>" +
              "<div id='ver-" + k + "' class='veredicto'></div>" +
              "<div id='btn-ver-" + k + "' style='display:none;margin-top:0.4rem'><button data-k='" + k + "'>Ver en el dibujo</button></div></div>";
+        elegido.push(NaN);
         k = k + 1;
       }
       document.getElementById("respuestas").innerHTML = h;
       document.getElementById("resumen").className = "veredicto";
       document.getElementById("resumen").textContent = "";
       document.getElementById("ver-texto").textContent = p.texto;
-      Array.prototype.forEach.call(document.querySelectorAll("#respuestas button"), function (b) {
+      k = 0;
+      while (k < p.nombres.length) {
+        (function (kk) {
+          Motor.opcionesNumericas("opciones-" + kk, "opc-ver-" + kk, function () { return opcionesDe(kk); });
+          document.getElementById("opciones-" + kk).addEventListener("click", function (ev) {
+            var b = ev.target;
+            if (b && b.tagName === "BUTTON") {
+              elegido[kk] = EJERCICIO.parsear(b.textContent);
+              Array.prototype.forEach.call(this.querySelectorAll("button"), function (x) { x.classList.remove("primario"); });
+              b.classList.add("primario");
+            }
+          });
+        })(k);
+        k = k + 1;
+      }
+      Array.prototype.forEach.call(document.querySelectorAll("#respuestas button[data-k]"), function (b) {
         b.addEventListener("click", function () {
           var r = resultados[parseInt(b.getAttribute("data-k"), 10)];
           resalte = r.aristas;
@@ -411,12 +544,12 @@ if (typeof module !== "undefined") {
       var p = g(), dl = EJERCICIO.delta(p), k = 0, aciertos = 0;
       resultados = [];
       while (k < p.nombres.length) {
-        var r = EJERCICIO.evaluar(p, dl, k, EJERCICIO.parsear(document.getElementById("resp-" + k).value));
+        var r = EJERCICIO.evaluar(p, dl, k, elegido[k]);
         resultados.push(r);
         if (r.ok) { aciertos = aciertos + 1; }
         var v = document.getElementById("ver-" + k);
         v.className = r.ok ? "veredicto bien" : "veredicto mal";
-        v.textContent = (r.ok ? "Acierto. " : "Error. ") + r.texto;
+        v.textContent = isNaN(elegido[k]) ? "Sin escoger. " + r.texto.replace(/^Sin respuesta válida\. Se espera un entero, inf o -inf\. /, "") : (r.ok ? "Acierto. " : "Error. ") + r.texto;
         document.getElementById("btn-ver-" + k).style.display = (r.aristas.rojo && r.aristas.rojo.length) || (r.aristas.verde && r.aristas.verde.length) ? "block" : "none";
         k = k + 1;
       }

@@ -18,8 +18,8 @@
   <p class="intro">La distancia δ(s, v) es el peso mínimo de un camino de s a v. Con
   pesos puede ser un entero, ∞ cuando no hay camino, o −∞ cuando algún camino
   pasa por un ciclo de peso negativo y se puede abaratar sin límite. Cada grafo
-  trae una fuente s y varios vértices; hay que escribir la distancia de cada
-  uno (un entero, <code>inf</code> o <code>-inf</code>) y después leer, vértice
+  trae una fuente s y varios vértices; hay que escoger la distancia de cada
+  uno entre las opciones (un entero, ∞ o −∞) y después leer, vértice
   por vértice, el camino o el ciclo que la justifica.</p>
 
   <div class="carta">
@@ -36,7 +36,7 @@
   </div>
 
   <div class="carta">
-    <h2>2. Escriba δ(s, v) para cada vértice</h2>
+    <h2>2. Escoja δ(s, v) para cada vértice</h2>
     <div id="respuestas"></div>
     <div class="prediccion">
       <button id="btn-comprobar" class="primario">Comprobar</button>
@@ -62,6 +62,7 @@
   </div>
 
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="distancias.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>
