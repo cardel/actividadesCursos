@@ -283,27 +283,22 @@ if (typeof module !== "undefined") {
     }
 
     /* Tarjeta 1: la prediccion. */
-    document.getElementById("btn-comprobar").addEventListener("click", function () {
-      var campo = document.getElementById("prediccion");
-      var v = document.getElementById("veredicto");
-      var valor = parseInt(campo.value, 10);
-      if (isNaN(valor)) {
-        v.className = "veredicto mal"; v.textContent = "Escriba un número primero.";
-      } else if (valor === SCC.length) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: " + SCC.length + ". " + SCC.map(pintarConjunto).join(", ") +
-          ". Pinte los componentes en el dibujo y siga los ciclos con el dedo.";
-      } else if (valor === 9) {
-        v.className = "veredicto mal";
-        v.textContent = "Ese es el número de vértices. Un vértice forma componente por su cuenta solo cuando no comparte ida y vuelta con nadie; aquí hay tres ciclos que agrupan vértices.";
-      } else if (valor === 1) {
-        v.className = "veredicto mal";
-        v.textContent = "Con un solo componente se podría ir del 8 a cualquier otro vértice. Mire qué flechas salen del 8.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "No coincide. Busque los ciclos del dibujo: cada ciclo agrupa a todos sus vértices, y lo que no esté en ningún ciclo con nadie queda solo.";
-      }
+    var RAZONES_SCC = {
+      correcta: "Correcto: " + SCC.length + ". " + SCC.map(pintarConjunto).join(", ") +
+        ". Pinte los componentes en el dibujo y siga los ciclos con el dedo.",
+      vertices: "Ese es el número de vértices. Un vértice forma componente por su cuenta solo cuando no comparte ida y vuelta con nadie; aquí hay tres ciclos que agrupan vértices.",
+      soloCiclos: "Esos son los tres ciclos, {0, 1, 2}, {3, 4} y {5, 6, 7}. Falta el 8: no está en ningún ciclo y por eso forma un componente por su cuenta.",
+      uno: "Con un solo componente se podría ir del 8 a cualquier otro vértice. Mire qué flechas salen del 8."
+    };
+    Array.prototype.forEach.call(document.querySelectorAll("#opciones-scc button"), function (btn) {
+      btn.addEventListener("click", function () {
+        var op = btn.getAttribute("data-op");
+        var v = document.getElementById("veredicto");
+        v.className = op === "correcta" ? "veredicto bien" : "veredicto mal";
+        v.textContent = RAZONES_SCC[op];
+      });
     });
+
 
     document.getElementById("btn-voltear").addEventListener("click", function () {
       mostrandoT = !mostrandoT;
@@ -356,26 +351,21 @@ if (typeof module !== "undefined") {
     });
 
     /* Tarjeta 4: cuantas aristas tiene el grafo de componentes. */
-    document.getElementById("btn-aristas").addEventListener("click", function () {
-      var campo = document.getElementById("cuantas");
-      var v = document.getElementById("veredicto-aristas");
-      var valor = parseInt(campo.value, 10);
-      var total = CONDENSA.length;
-      var detalle = CONDENSA.map(function (a) {
+    var RAZONES_CONDENSA = {
+      correcta: "Correcto: " + CONDENSA.length + ". " + CONDENSA.map(function (a) {
         return NOMBRES[a[0]] + " → " + NOMBRES[a[1]] + " por " + a[2] + " → " + a[3];
-      }).join("; ");
-      if (isNaN(valor)) {
-        v.className = "veredicto mal"; v.textContent = "Escriba un número primero.";
-      } else if (valor === total) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: " + total + ". " + detalle + ".";
-      } else if (valor === 13) {
-        v.className = "veredicto mal";
-        v.textContent = "Esas son las trece aristas de G. Las que quedan dentro de un componente no aparecen —serían lazos— y varias aristas entre los mismos dos componentes se cuentan una sola vez.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "No coincide. Recorra las trece aristas de G, descarte las que empiezan y terminan en el mismo componente, y de las que quedan cuente parejas distintas de componentes.";
-      }
+      }).join("; ") + ".",
+      original: "Esas son las trece aristas de G. Las que quedan dentro de un componente no aparecen —serían lazos— y varias aristas entre los mismos dos componentes se cuentan una sola vez.",
+      internas: "Esas son las aristas que quedan dentro de los componentes, justo las que el grafo de componentes descarta. Cuente las que cruzan de un componente a otro.",
+      arbol: "Tres es lo que tendría un árbol sobre " + SCC.length + " componentes. Aquí el componente D recibe aristas de dos componentes distintos y cada arista que cruza suma una."
+    };
+    Array.prototype.forEach.call(document.querySelectorAll("#opciones-condensa button"), function (btn) {
+      btn.addEventListener("click", function () {
+        var op = btn.getAttribute("data-op");
+        var v = document.getElementById("veredicto-aristas");
+        v.className = op === "correcta" ? "veredicto bien" : "veredicto mal";
+        v.textContent = RAZONES_CONDENSA[op];
+      });
     });
 
     Array.prototype.forEach.call(document.querySelectorAll("#opciones-dag button"), function (btn) {

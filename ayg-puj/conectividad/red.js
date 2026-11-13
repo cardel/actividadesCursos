@@ -411,24 +411,19 @@ if (typeof module !== "undefined") {
     }
 
     /* 1. Cuantos componentes fuertemente conexos. */
-    document.getElementById("btn-cuantos").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-cuantos");
-      var valor = parseInt(document.getElementById("cuantos").value, 10);
-      if (isNaN(valor)) {
-        v.className = "veredicto mal"; v.textContent = "Escriba un número primero.";
-      } else if (valor === SCC.length) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: " + SCC.length + ". " + lista(SCC) + ". Ejecute la segunda pasada y véalos aparecer uno por uno.";
-      } else if (valor === N) {
-        v.className = "veredicto mal";
-        v.textContent = "Ese es el número de páginas. Solo sería la respuesta si ningún par de páginas se enlazara en los dos sentidos, y aquí hay varios ciclos.";
-      } else if (valor === 1) {
-        v.className = "veredicto mal";
-        v.textContent = "Con un solo componente se podría volver desde la página 13 hasta la 0. Siga las flechas desde el 13 y vea hasta dónde llega.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "No coincide. Los ciclos del dibujo agrupan páginas; las que no están en ningún ciclo con nadie forman componente por su cuenta. Ejecute la segunda pasada y compare.";
-      }
+    var RAZONES_CUANTOS = {
+      correcta: "Correcto: " + SCC.length + ". " + lista(SCC) + ". Ejecute la segunda pasada y véalos aparecer uno por uno.",
+      paginas: "Ese es el número de páginas. Solo sería la respuesta si ningún par de páginas se enlazara en los dos sentidos, y aquí hay varios ciclos.",
+      uno: "Con un solo componente se podría volver desde la página 13 hasta la 0. Siga las flechas desde el 13 y vea hasta dónde llega.",
+      soloCiclos: "Esos son los ciclos de dos o más páginas. Falta contar las páginas que no están en ningún ciclo, la 9 y la 12: cada una es un componente por su cuenta."
+    };
+    Array.prototype.forEach.call(document.querySelectorAll("#opciones-cuantos button"), function (btn) {
+      btn.addEventListener("click", function () {
+        var op = btn.getAttribute("data-op");
+        var v = document.getElementById("veredicto-cuantos");
+        v.className = op === "correcta" ? "veredicto bien" : "veredicto mal";
+        v.textContent = RAZONES_CUANTOS[op];
+      });
     });
 
     /* 2. La segunda pasada, una llamada por vez. */
@@ -454,73 +449,61 @@ if (typeof module !== "undefined") {
     });
 
     /* 3. El grafo de componentes. */
-    document.getElementById("btn-aristas").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-aristas");
-      var valor = parseInt(document.getElementById("aristas").value, 10);
-      verCondensacion = true;
-      dibujarCondensacion();
-      var detalle = CONDENSA.map(function (a) {
-        return NOMBRES[a[0]] + " → " + NOMBRES[a[1]] + " por " + a[2] + " → " + a[3];
-      }).join("; ");
-      if (isNaN(valor)) {
-        v.className = "veredicto mal"; v.textContent = "Escriba un número primero.";
-      } else if (valor === CONDENSA.length) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: " + CONDENSA.length + ". " + detalle +
-          ". El orden en que Kosaraju los entrega, " + NOMBRES.slice(0, SCC.length).join(", ") +
-          ", es un orden topológico de este grafo: todas las flechas van hacia adelante.";
-      } else if (valor === EJERCICIO.aristas.length) {
-        v.className = "veredicto mal";
-        v.textContent = "Esas son las " + EJERCICIO.aristas.length + " flechas del grafo original. Las que quedan dentro de un componente no aparecen, y varias flechas entre los mismos dos componentes cuentan como una.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "No coincide. De las " + EJERCICIO.aristas.length + " flechas, descarte las que empiezan y terminan en el mismo componente y cuente parejas distintas entre las que quedan.";
-      }
+    var DETALLE = CONDENSA.map(function (a) {
+      return NOMBRES[a[0]] + " → " + NOMBRES[a[1]] + " por " + a[2] + " → " + a[3];
+    }).join("; ");
+    var RAZONES_ARISTAS = {
+      correcta: "Correcto: " + CONDENSA.length + ". " + DETALLE +
+        ". El orden en que Kosaraju los entrega, " + NOMBRES.slice(0, SCC.length).join(", ") +
+        ", es un orden topológico de este grafo: todas las flechas van hacia adelante.",
+      original: "Esas son las " + EJERCICIO.aristas.length + " flechas del grafo original. Las que quedan dentro de un componente no aparecen, y varias flechas entre los mismos dos componentes cuentan como una.",
+      arbol: "Seis es lo que tendría un árbol sobre " + SCC.length + " bloques. Aquí hay bloques a los que se llega por dos caminos distintos, y cada flecha entre bloques distintos suma una arista.",
+      internas: "Esas son las flechas que quedan dentro de los componentes, justo las que el grafo de componentes descarta. Cuente las que cruzan de un bloque a otro."
+    };
+    Array.prototype.forEach.call(document.querySelectorAll("#opciones-aristas button"), function (btn) {
+      btn.addEventListener("click", function () {
+        var op = btn.getAttribute("data-op");
+        var v = document.getElementById("veredicto-aristas");
+        verCondensacion = true;
+        dibujarCondensacion();
+        v.className = op === "correcta" ? "veredicto bien" : "veredicto mal";
+        v.textContent = RAZONES_ARISTAS[op];
+      });
     });
 
     /* 4. El mismo grafo sin direcciones. */
-    document.getElementById("btn-sin").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-sin");
-      var debiles = EJERCICIO.componentesConexos(EJERCICIO.noDirigido(N, SUB)).length;
-      var art = EJERCICIO.puntosDeArticulacion(N, SUB);
-      var pts = EJERCICIO.puentes(N, SUB);
-      var a = parseInt(document.getElementById("sin-comp").value, 10);
-      var b = parseInt(document.getElementById("sin-art").value, 10);
-      if (isNaN(a) || isNaN(b)) {
-        v.className = "veredicto mal"; v.textContent = "Escriba los dos números primero.";
-      } else if (a === debiles && b === art.length) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: " + debiles + " componente y " + art.length +
-          " puntos de articulación; tampoco tiene puentes, porque cada una de las " + SUB.length +
-          " aristas está en algún ciclo. Sin direcciones el sitio es una sola pieza que aguanta la caída de cualquier página; con las direcciones puestas se parte en " +
-          SCC.length + " bloques. Un solo componente débil nunca implica conectividad fuerte.";
-      } else if (a !== debiles) {
-        v.className = "veredicto mal";
-        v.textContent = "El número de componentes sin direcciones no es " + a + ". Borre mentalmente las puntas y siga cualquier camino: desde el 0 se llega a las quince páginas.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "Los puntos de articulación no son " + b + ". Pruebe a quitar cualquier página del dibujo sin direcciones: las demás siguen comunicadas, porque entre cada par hay dos caminos que no comparten páginas intermedias.";
-      }
+    var RAZONES_SIN = {
+      correcta: "Correcto: " + EJERCICIO.componentesConexos(EJERCICIO.noDirigido(N, SUB)).length + " componente y " + EJERCICIO.puntosDeArticulacion(N, SUB).length +
+        " puntos de articulación; tampoco tiene puentes, porque cada una de las " + SUB.length +
+        " aristas está en algún ciclo. Sin direcciones el sitio es una sola pieza que aguanta la caída de cualquier página; con las direcciones puestas se parte en " +
+        SCC.length + " bloques. Un solo componente débil nunca implica conectividad fuerte.",
+      bloques: "Siete son los bloques con las direcciones puestas. Al borrar las puntas ya no hace falta camino de ida y vuelta, y desde el 0 se llega a las quince páginas: es un solo componente.",
+      pequenos: "Un componente sí, pero no hay puntos de articulación. Las páginas 9 y 12 son bloques de una sola página con las direcciones puestas; sin ellas cada una tiene dos caminos distintos hacia el resto, así que quitarla no parte el grafo."
+    };
+    Array.prototype.forEach.call(document.querySelectorAll("#opciones-sin button"), function (btn) {
+      btn.addEventListener("click", function () {
+        var op = btn.getAttribute("data-op");
+        var v = document.getElementById("veredicto-sin");
+        v.className = op === "correcta" ? "veredicto bien" : "veredicto mal";
+        v.textContent = RAZONES_SIN[op];
+      });
     });
 
     /* 5. La flecha de mas. */
-    document.getElementById("btn-extra").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-extra");
-      var conExtra = EJERCICIO.kosaraju(EJERCICIO.dirigido(N, EJERCICIO.aristas.concat([[14, 0]])));
-      var valor = parseInt(document.getElementById("extra").value, 10);
-      if (isNaN(valor)) {
-        v.className = "veredicto mal"; v.textContent = "Escriba un número primero.";
-      } else if (valor === conExtra.length) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: " + conExtra.length + ". " + lista(conExtra) +
-          ". Cada uno de los siete bloques está en algún camino de A a G, así que el enlace de vuelta los cierra a todos en un solo ciclo. Una sola flecha vuelve fuertemente conexo un sitio que estaba partido en siete.";
-      } else if (valor === SCC.length) {
-        v.className = "veredicto mal";
-        v.textContent = "Esos son los " + SCC.length + " de antes. El enlace 14 → 0 va del último bloque al primero y cierra el recorrido: mire qué bloques quedan dentro de ese ciclo.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "No coincide. Un componente se funde con otro cuando hay camino de ida y de vuelta entre los dos. Con 14 → 0 puesto, pregúntese desde cuáles bloques se llega a G y desde A se llega a cuáles.";
-      }
+    var CON_EXTRA = EJERCICIO.kosaraju(EJERCICIO.dirigido(N, EJERCICIO.aristas.concat([[14, 0]])));
+    var RAZONES_EXTRA = {
+      correcta: "Correcto: " + CON_EXTRA.length + ". " + lista(CON_EXTRA) +
+        ". Cada uno de los siete bloques está en algún camino de A a G, así que el enlace de vuelta los cierra a todos en un solo ciclo. Una sola flecha vuelve fuertemente conexo un sitio que estaba partido en siete.",
+      antes: "Esos son los " + SCC.length + " de antes. El enlace 14 → 0 va del último bloque al primero y cierra el recorrido: mire qué bloques quedan dentro de ese ciclo.",
+      extremos: "Seis sería si el enlace solo fundiera el primer y el último bloque. Pero entre A y G hay caminos que pasan por los demás, y todos quedan dentro del ciclo que cierra 14 → 0."
+    };
+    Array.prototype.forEach.call(document.querySelectorAll("#opciones-extra button"), function (btn) {
+      btn.addEventListener("click", function () {
+        var op = btn.getAttribute("data-op");
+        var v = document.getElementById("veredicto-extra");
+        v.className = op === "correcta" ? "veredicto bien" : "veredicto mal";
+        v.textContent = RAZONES_EXTRA[op];
+      });
     });
 
     dibujar();

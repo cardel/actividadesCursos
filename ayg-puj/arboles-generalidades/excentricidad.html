@@ -80,14 +80,13 @@
 
   <div class="carta" id="carta-roto">
     <h2>5. Un grafo que no es conexo</h2>
-    <div class="fila-par">
-      <span class="rotulo">Al correr <code>amplitud(p)</code>, ¿cuántos vértices se quedan en −1?</span>
-      <input type="number" id="in-menos" class="corto" placeholder="0">
-      <span class="fb" id="fb-menos"></span>
+    <div class="pregunta">Al correr <code>amplitud(p)</code>, ¿cuántos vértices se quedan en −1?</div>
+    <div class="opciones" id="opciones-menos">
+      <button data-op="portriangulo">3</button>
+      <button data-op="correcta">5</button>
+      <button data-op="todosmenosp">7</button>
     </div>
-    <div class="botones" style="margin-top:0.4rem">
-      <button id="btn-menos" class="primario">Comprobar</button>
-    </div>
+    <div id="veredicto-menos" class="veredicto"></div>
     <p class="pregunta">¿Qué devuelve <code>excentricidad(p)</code> en este grafo?</p>
     <div class="opciones col" id="opciones-roto"></div>
     <div id="fb-roto" class="fb"></div>

@@ -255,9 +255,8 @@ if (typeof module !== "undefined") {
       el("carta-ecc").style.display = g.conexo ? "" : "none";
       el("carta-rdc").style.display = g.conexo ? "" : "none";
       el("carta-roto").style.display = g.conexo ? "none" : "";
-      el("in-menos").value = "";
-      el("fb-menos").className = "fb";
-      el("fb-menos").textContent = "";
+      el("veredicto-menos").className = "veredicto";
+      el("veredicto-menos").textContent = "";
       el("fb-roto").className = "fb";
       el("fb-roto").textContent = "";
       fuentes();
@@ -302,14 +301,12 @@ if (typeof module !== "undefined") {
 
     el("btn-ecc").addEventListener("click", comprobarEcc);
     el("btn-rdc").addEventListener("click", comprobarRdc);
-    el("btn-menos").addEventListener("click", function () {
-      var g = grafo(), v = parseInt(el("in-menos").value, 10), esperado = E.menosUno(g, 0);
-      el("fb-menos").className = v === esperado ? "fb bien" : "fb mal";
-      el("fb-menos").textContent = v === esperado
-        ? "Correcto: " + esperado + ". Son los del otro pedazo, " + E.NOM.split("").filter(function (nm, u) { return g.DIST[0][u] < 0; }).join(", ") +
-          ", y se quedan con el −1 con que arrancó el arreglo en la línea 23."
-        : "Son " + esperado + ". La amplitud desde p solo visita su propia componente, que tiene " + (8 - esperado) + " vértices contando a p.";
-    });
+    var RAZONES_MENOS = {
+      correcta: "Cinco: s, t, u, v y w, los del otro pedazo. Se quedan con el −1 con que arrancó el arreglo en la línea 23, porque la amplitud desde p nunca los alcanza.",
+      portriangulo: "Tres es el tamaño del pedazo de p, el triángulo pqr, y esos vértices sí se alcanzan: q y r quedan a distancia 1 y p a 0. Los que se quedan en −1 son los del otro pedazo, no los de este.",
+      todosmenosp: "Siete cuenta a q y r como inalcanzables, pero la arista pq y la arista pr los alcanzan desde p. Solo quedan en −1 los cinco del otro pedazo."
+    };
+    Motor.conectarOpciones("opciones-menos", "veredicto-menos", RAZONES_MENOS);
     opcionesRoto();
     preparar();
   })();

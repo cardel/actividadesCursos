@@ -33,10 +33,12 @@
     <p style="margin-top:0">Una red de <b>100 000 vértices</b> donde cada uno
     tiene, en promedio, <b>4 vecinos</b>. Un computador hace unas cien millones
     de operaciones por segundo.</p>
-    <div class="prediccion">
-      <span>¿Cuántos segundos tarda el recorrido sobre la matriz de adyacencia?</span>
-      <input type="number" id="prediccion" min="0" placeholder="segundos">
-      <button id="btn-comprobar" class="primario">Comprobar</button>
+    <div style="margin-bottom:0.3rem"><b>¿Cuántos segundos tarda el recorrido sobre la matriz de adyacencia?</b></div>
+    <div class="opciones" id="opciones-tiempo">
+      <button data-op="lista">5 ms</button>
+      <button data-op="tasa">10 s</button>
+      <button data-op="correcta">100 s</button>
+      <button data-op="aristas">200 s</button>
     </div>
     <div id="veredicto" class="veredicto"></div>
   </div>

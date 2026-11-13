@@ -37,10 +37,12 @@
 
   <div class="carta">
     <h2>3. Predecir el resultado</h2>
-    <div class="prediccion">
-      <span>¿Qué número imprime el programa en este mapa?</span>
-      <input type="number" id="prediccion" step="1" placeholder="tiempo">
-      <button id="btn-comprobar" class="primario">Comprobar</button>
+    <p style="margin:0.3rem 0">¿Qué número imprime el programa en este mapa?</p>
+    <div class="opciones" id="opciones-imprime">
+      <button data-op="sinbota">9</button>
+      <button data-op="soloaldea">3</button>
+      <button data-op="inicio">6</button>
+      <button data-op="correcta">5</button>
     </div>
     <div id="veredicto" class="veredicto"></div>
   </div>

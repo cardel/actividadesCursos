@@ -171,15 +171,13 @@ if (typeof module !== "undefined") {
       paramsIniciales: { G: G }, alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor) {
-      var total = ENT.reduce(function (a, b) { return a + b; }, 0);
-      if (valor === total) {
-        return { ok: true, msg: "Correcto: " + total + " veces, una por flecha. La línea 6 se ejecuta una vez por cada entrada de cada lista de adyacencia, y la suma de los largos de las listas es el número de flechas." };
-      }
-      if (valor === G.length) { return { ok: false, msg: "Ese es el número de vértices, que es cuántas veces se ejecuta la línea 7. La 6 está dentro del for, no del while." }; }
-      if (valor === total * 2) { return { ok: false, msg: "Esa sería la cuenta en un grafo no dirigido, donde cada arista aparece en las dos listas. Aquí cada flecha aparece una sola vez: en la lista de su cola." }; }
-      return { ok: false, msg: "No coincide. Sume los largos de las siete listas de adyacencia: la línea 6 se ejecuta una vez por cada elemento." };
-    });
+    var RAZONES_SUMA = {
+      correcta: "Correcto: 8 veces, una por flecha. La línea 6 se ejecuta una vez por cada entrada de cada lista de adyacencia, y la suma de los largos de las listas es el número de flechas.",
+      vertices: "Ese es el número de vértices, que es cuántas veces se ejecuta la línea 7. La 6 está dentro del for, no del while.",
+      listas: "Esa es la cuenta de las listas que tienen algo, seis de siete. El for recorre cada elemento de cada lista, no cada lista: una lista de dos vecinos ejecuta la línea 6 dos veces.",
+      doble: "Esa sería la cuenta en un grafo no dirigido, donde cada arista aparece en las dos listas. Aquí cada flecha aparece una sola vez: en la lista de su cola."
+    };
+    Motor.conectarOpciones("opciones-suma", "veredicto-suma", RAZONES_SUMA);
 
     function veredicto(id, ok, texto) {
       var v = document.getElementById(id); v.className = ok ? "veredicto bien" : "veredicto mal"; v.innerHTML = texto;

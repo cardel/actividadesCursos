@@ -257,28 +257,21 @@ if (typeof module !== "undefined") {
       });
     });
 
-    document.getElementById("btn-cuantos").addEventListener("click", function () {
-      var campo = document.getElementById("cuantos");
-      var v = document.getElementById("veredicto-cuantos");
-      var valor = parseInt(campo.value, 10);
-      var total = EJERCICIO.sinReverse(G).length;
-      if (isNaN(valor)) {
-        v.className = "veredicto mal"; v.textContent = "Escriba un número primero.";
-      } else if (valor === total) {
-        v.className = "veredicto bien";
-        v.innerHTML = "Correcto: " + total + ", contra " + CORRECTO.length + " de la versión correcta. Devuelve " +
-          pintarLista(EJERCICIO.sinReverse(G)) + ". No es que pierda vértices: los junta mal.";
-      } else if (valor === CORRECTO.length) {
-        v.className = "veredicto mal";
-        v.innerHTML = "Ese es el número correcto, " + CORRECTO.length + ". La versión sin invertir da otro: arranca por el vértice de <i>f</i> más pequeño y desde ahí, en Gᵀ, alcanza más de un componente.";
-      } else if (valor === 1) {
-        v.className = "veredicto mal";
-        v.innerHTML = "No se funde todo en uno: el 4 queda aparte. Cuando le llega el turno, lo único que sale de él en Gᵀ es la arista hacia el 2, que ya tiene componente, y la recursión se detiene ahí.";
-      } else {
-        v.className = "veredicto mal";
-        v.innerHTML = "No coincide. La lista sin invertir es [" + SIN_INVERTIR.join(", ") +
-          "]; arranque la segunda pasada por su primer vértice, sobre Gᵀ, y vea hasta dónde llega.";
-      }
+    var RAZONES_CUANTOS = {
+      correcta: "Correcto: " + EJERCICIO.sinReverse(G).length + ", contra " + CORRECTO.length + " de la versión correcta. Devuelve " +
+        pintarLista(EJERCICIO.sinReverse(G)) + ". No es que pierda vértices: los junta mal.",
+      correcto4: "Esos son los " + CORRECTO.length + " grupos de la versión que sí invierte la lista. La versión sin invertir da otro número: arranca por el vértice de <i>f</i> más pequeño y desde ahí, en Gᵀ, alcanza más de un componente.",
+      uno: "No se funde todo en uno: el 4 queda aparte. Cuando le llega el turno, lo único que sale de él en Gᵀ es la arista hacia el 2, que ya tiene componente, y la recursión se detiene ahí.",
+      porvertice: "Siete grupos son los de la falla del nombre, donde cada vértice se queda con su propia etiqueta. Aquí las etiquetas están bien: la lista sin invertir es [" + SIN_INVERTIR.join(", ") +
+        "] y el recorrido sí agrupa, solo que de más."
+    };
+    Array.prototype.forEach.call(document.querySelectorAll("#opciones-cuantos button"), function (btn) {
+      btn.addEventListener("click", function () {
+        var op = btn.getAttribute("data-op");
+        var v = document.getElementById("veredicto-cuantos");
+        v.className = op === "correcta" ? "veredicto bien" : "veredicto mal";
+        v.innerHTML = RAZONES_CUANTOS[op];
+      });
     });
 
     dibujar();

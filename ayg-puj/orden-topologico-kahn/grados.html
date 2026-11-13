@@ -48,12 +48,14 @@
 
   <div class="carta">
     <h2>3. Cuántas veces se ejecuta la suma</h2>
-    <div class="prediccion">
-      <span>¿Cuántas veces se ejecuta la línea 6 sobre este grafo?</span>
-      <input type="number" id="prediccion" min="0" placeholder="su número">
-      <button id="btn-comprobar" class="primario">Comprobar</button>
+    <div style="margin-bottom:0.3rem"><b>¿Cuántas veces se ejecuta la línea 6 sobre este grafo?</b></div>
+    <div class="opciones" id="opciones-suma">
+      <button data-op="vertices">7</button>
+      <button data-op="correcta">8</button>
+      <button data-op="listas">6</button>
+      <button data-op="doble">16</button>
     </div>
-    <div id="veredicto" class="veredicto"></div>
+    <div id="veredicto-suma" class="veredicto"></div>
   </div>
 
   <div class="carta">

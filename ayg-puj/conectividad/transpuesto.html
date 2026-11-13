@@ -33,10 +33,12 @@
       <button id="btn-voltear" class="primario">Ver Gᵀ</button>
       <button id="btn-pintar">Pintar los componentes</button>
     </div>
-    <div class="prediccion">
-      <span>¿Cuántos componentes fuertemente conexos tiene?</span>
-      <input type="number" id="prediccion" min="1" placeholder="su número">
-      <button id="btn-comprobar" class="primario">Comprobar</button>
+    <p style="margin-top:0">¿Cuántos componentes fuertemente conexos tiene?</p>
+    <div class="opciones" id="opciones-scc">
+      <button data-op="vertices">9 componentes</button>
+      <button data-op="soloCiclos">3 componentes</button>
+      <button data-op="correcta">4 componentes</button>
+      <button data-op="uno">1 componente</button>
     </div>
     <div id="veredicto" class="veredicto"></div>
   </div>
@@ -70,10 +72,12 @@
   <div class="carta">
     <h2>4. El grafo de componentes</h2>
     <div id="panel-condensa"></div>
-    <div class="prediccion">
-      <span>¿Cuántas aristas tiene este grafo de componentes?</span>
-      <input type="number" id="cuantas" min="0" placeholder="su número">
-      <button id="btn-aristas" class="primario">Comprobar</button>
+    <p style="margin-top:0">¿Cuántas aristas tiene este grafo de componentes?</p>
+    <div class="opciones" id="opciones-condensa">
+      <button data-op="correcta">5 aristas</button>
+      <button data-op="original">13 aristas</button>
+      <button data-op="internas">8 aristas</button>
+      <button data-op="arbol">3 aristas</button>
     </div>
     <div id="veredicto-aristas" class="veredicto"></div>
   </div>

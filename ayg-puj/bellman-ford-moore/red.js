@@ -278,7 +278,6 @@ if (typeof module !== "undefined") {
       ["veredicto-pred", "veredicto-ciclo", "veredicto-costo"].forEach(function (id) {
         var v = document.getElementById(id); v.className = "veredicto"; v.textContent = "";
       });
-      document.getElementById("costo").value = "";
     }
 
     Motor.iniciar({
@@ -303,13 +302,13 @@ if (typeof module !== "undefined") {
       v.className = r.ok ? "veredicto bien" : "veredicto mal";
       v.textContent = r.msg;
     });
-    document.getElementById("btn-costo").addEventListener("click", function () {
-      var valor = parseInt(document.getElementById("costo").value, 10), v = document.getElementById("veredicto-costo"), r;
-      if (isNaN(valor)) { r = { ok: false, msg: "Escriba un número primero." }; }
-      else { r = EJERCICIO.evaluarCosto(valor, ultimo, esc()); }
-      v.className = r.ok ? "veredicto bien" : "veredicto mal";
-      v.textContent = r.msg;
-    });
+    var RAZONES_COSTO = {
+      correcta: "Diecisiete. La ruta Bodega → Planta → Silo → Centro → Frigorífico → Mercado → Terminal → Muelle → Puerto suma 4 + 7 − 4 + 5 + 4 − 2 + 6 − 3 = 17, y es d[5] cuando la cola se vacía. Aprovecha los tres bonos: Silo → Centro, Mercado → Terminal y Muelle → Puerto.",
+      acopio: "Dieciocho es el costo de una ruta real, pero pasa por Acopio: Bodega → Acopio → Planta cuesta 2 + 3 = 5 y llegar directo a Planta cuesta 4. Ese desvío suma uno de más y no mejora nada.",
+      sinbono: "Diecinueve es lo que cuesta la mejor ruta que no usa el bono Silo → Centro (−4). Por Planta → Centro directo el tramo pesa 5 y no 7 − 4 = 3, así que se pierde dos. El camino más barato rodea por Silo para cobrar el bono.",
+      sinmuelle: "Veinte es el costo de ir de Mercado directo a Muelle, que pesa 7. Quien lo escoge no ve que pasar por Terminal cuesta −2 + 6 = 4: el tramo largo se paga menos que el directo porque Mercado → Terminal trae bono."
+    };
+    Motor.conectarOpciones("opciones-costo", "veredicto-costo", RAZONES_COSTO);
 
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (btn) {
       btn.addEventListener("click", function () {

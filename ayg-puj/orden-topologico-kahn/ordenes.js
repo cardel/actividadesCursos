@@ -129,16 +129,19 @@ if (typeof module !== "undefined") {
         : aciertos + " de " + LISTAS.length + ". Para cada lista descartada, la flecha que la descarta está al lado; para cada lista que sí sirve, revise las seis flechas una por una.";
     });
 
-    document.getElementById("btn-contar").addEventListener("click", function () {
-      var campo = document.getElementById("cuantos");
-      var v = document.getElementById("veredicto-contar");
-      var valor = parseInt(campo.value, 10);
-      var total = EJERCICIO.contarOrdenes(G);
-      if (isNaN(valor)) { v.className = "veredicto mal"; v.textContent = "Escriba un número primero."; }
-      else if (valor === total) { v.className = "veredicto bien"; v.textContent = "Correcto: " + total + ". El 3 tiene que ir después de 0 y 1, y el 5 después de 3 y 4; lo demás se acomoda de varias formas."; }
-      else if (valor === 720) { v.className = "veredicto mal"; v.textContent = "Esas son todas las permutaciones de seis vértices. Las flechas descartan casi todas: cuente solo las que dejan cada vértice después de sus predecesores."; }
-      else if (valor === 1) { v.className = "veredicto mal"; v.textContent = "Hay más de uno: las listas 1, 2 y 4 de arriba son tres distintos. El orden es único solo cuando las flechas encadenan todos los vértices en fila."; }
-      else { v.className = "veredicto mal"; v.textContent = "No coincide. Una forma de contar: fije quién va de primero (solo puede ser 0 o 1), quite ese vértice y sus flechas, y cuente lo que queda."; }
+    var RAZONES_CUANTOS = {
+      correcta: "Correcto: 12. El 3 tiene que ir después de 0 y 1, y el 5 después de 3 y 4; lo demás se acomoda de varias formas.",
+      muestra: "Esas son las listas de arriba que sirven, pero las seis listas son solo una muestra. Fije quién va de primero (0 o 1), quite ese vértice y sus flechas, y cuente lo que queda: salen más.",
+      vertices: "Seis es el número de vértices, y también el de flechas, no el de órdenes. Cada orden es una permutación de los seis vértices; lo que se cuenta es cuántas respetan las flechas.",
+      todas: "Esas son todas las permutaciones de seis vértices. Las flechas descartan casi todas: cuente solo las que dejan cada vértice después de sus predecesores."
+    };
+    Array.prototype.forEach.call(document.querySelectorAll("#opciones-cuantos button"), function (btn) {
+      btn.addEventListener("click", function () {
+        var op = btn.getAttribute("data-op");
+        var v = document.getElementById("veredicto-contar");
+        v.className = op === "correcta" ? "veredicto bien" : "veredicto mal";
+        v.innerHTML = RAZONES_CUANTOS[op];
+      });
     });
 
     dibujar();

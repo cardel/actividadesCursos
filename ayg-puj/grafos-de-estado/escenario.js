@@ -260,24 +260,35 @@ if (typeof module !== "undefined") {
     var caja = el("preguntas");
     E.PREGUNTAS.forEach(function (q) { caja.appendChild(carta(q)); });
 
-    el("btn-tiempo").addEventListener("click", function () {
-      var v = parseInt(el("tiempo").value, 10), r, ver = el("veredicto");
-      r = isNaN(v) ? { ok: false, msg: "Escriba un número primero." } : E.evaluarTiempo(v);
-      ver.className = "veredicto " + (r.ok ? "bien" : "mal");
-      ver.textContent = r.msg;
-      if (r.ok) {
-        el("panel-ruta").innerHTML = "<table><tr><th>Estado</th><th>Qué se hace</th><th>Minutos</th><th>Acumulado</th></tr>" +
-          (function () {
-            var s = "", acc = 0;
-            E.SOL.ruta.forEach(function (p) {
-              acc = acc + p.costo;
-              s += "<tr><td>(" + p.a + ", " + p.b + ")</td><td>" + p.accion + "</td><td>" + p.costo + "</td><td>" + acc + "</td></tr>";
-            });
-            return s;
-          })() + "</table>" +
-          "<p class='nota'>De los " + C.estados + " estados que caben, la búsqueda saca de la cola " + E.SOL.alcanzados +
-          ". Los demás no se alcanzan desde (" + C.s + ", " + C.C + ").</p>";
-      }
+    function mostrarRuta() {
+      el("panel-ruta").innerHTML = "<table><tr><th>Estado</th><th>Qué se hace</th><th>Minutos</th><th>Acumulado</th></tr>" +
+        (function () {
+          var s = "", acc = 0;
+          E.SOL.ruta.forEach(function (p) {
+            acc = acc + p.costo;
+            s += "<tr><td>(" + p.a + ", " + p.b + ")</td><td>" + p.accion + "</td><td>" + p.costo + "</td><td>" + acc + "</td></tr>";
+          });
+          return s;
+        })() + "</table>" +
+        "<p class='nota'>De los " + C.estados + " estados que caben, la búsqueda saca de la cola " + E.SOL.alcanzados +
+        ". Los demás no se alcanzan desde (" + C.s + ", " + C.C + ").</p>";
+    }
+
+    var RAZONES_TIEMPO = {
+      correcta: "Correcto: " + E.SOL.tiempo + " minutos. La ruta es " +
+        E.SOL.ruta.slice(1).map(function (p) { return p.accion + " (" + p.costo + ")"; }).join(", ") + ".",
+      ignora: "Ese es el camino más corto del grafo de cruces, " + E.DIST[C.s][C.f] +
+        " minutos, y el carro no lo puede recorrer con la batería que lleva. Con las cargas, el menor tiempo es " + E.SOL.tiempo + ".",
+      otraruta: "Es una ruta que sí se puede hacer: 0–3 (6), cargar en 3 (5) y 3–4 (7). Pero hay otra más corta que también pasa por una estación, y el menor tiempo es " + E.SOL.tiempo + ".",
+      sinbateria: "Eso cobra una carga en cada estación por la que se pasa, 0–1 (3), cargar (5), 1–3 (2), cargar (5), 3–4 (7). La primera carga sobra: con la batería que queda en 3 basta llegar hasta ahí, y el menor tiempo es " + E.SOL.tiempo + "."
+    };
+    Array.prototype.forEach.call(document.querySelectorAll("#opciones-tiempo button"), function (b) {
+      b.addEventListener("click", function () {
+        var op = b.getAttribute("data-op"), ver = el("veredicto");
+        ver.className = "veredicto " + (op === "correcta" ? "bien" : "mal");
+        ver.innerHTML = RAZONES_TIEMPO[op];
+        if (op === "correcta") { mostrarRuta(); }
+      });
     });
   })();
 }

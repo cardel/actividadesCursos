@@ -92,10 +92,12 @@
 
   <div class="carta">
     <h2>4. Cuántos devuelve la segunda</h2>
-    <div class="prediccion">
-      <span>Antes de comprobarla: ¿cuántos grupos devuelve la versión sin <code>reverse</code>?</span>
-      <input type="number" id="cuantos" min="1" placeholder="su número">
-      <button id="btn-cuantos" class="primario">Comprobar</button>
+    <p style="margin-top:0">Antes de comprobarla: ¿cuántos grupos devuelve la versión sin <code>reverse</code>?</p>
+    <div class="opciones" id="opciones-cuantos">
+      <button data-op="uno">1 grupo</button>
+      <button data-op="correcta">3 grupos</button>
+      <button data-op="correcto4">4 grupos</button>
+      <button data-op="porvertice">7 grupos</button>
     </div>
     <div id="veredicto-cuantos" class="veredicto"></div>
   </div>

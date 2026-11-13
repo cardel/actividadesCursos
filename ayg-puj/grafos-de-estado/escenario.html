@@ -30,10 +30,12 @@
 
   <div class="carta">
     <h2>La respuesta</h2>
-    <div class="prediccion">
-      <span>¿Cuál es el menor tiempo, en minutos, para llegar al destino?</span>
-      <input type="number" id="tiempo" placeholder="0">
-      <button id="btn-tiempo" class="primario">Comprobar</button>
+    <p style="margin:0.3rem 0">¿Cuál es el menor tiempo, en minutos, para llegar al destino?</p>
+    <div class="opciones" id="opciones-tiempo">
+      <button data-op="sinbateria">22 minutos</button>
+      <button data-op="ignora">12 minutos</button>
+      <button data-op="correcta">17 minutos</button>
+      <button data-op="otraruta">18 minutos</button>
     </div>
     <div id="veredicto" class="veredicto"></div>
     <div id="panel-ruta"></div>

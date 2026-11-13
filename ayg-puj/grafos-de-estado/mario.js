@@ -251,12 +251,13 @@ if (typeof module !== "undefined") {
     });
 
     var tuplas = E.sim(M), imprime = parseInt(tuplas[tuplas.length - 1].salida[0], 10);
-    el("btn-comprobar").addEventListener("click", function () {
-      var valor = parseInt(el("prediccion").value, 10), v = el("veredicto");
-      v.className = isNaN(valor) || valor !== imprime ? "veredicto mal" : "veredicto bien";
-      v.textContent = isNaN(valor) ? "Escriba un número primero." : (valor === imprime ?
-        "Correcto: el programa imprime " + imprime + "." : "No. El programa imprime " + imprime + ". Ejecute el código y mire en qué estado sale el castillo " + (M.a + M.b) + " de la cola.");
-    });
+    var RAZONES_IMPRIME = {
+      correcta: "Correcto: el programa imprime " + imprime + ". Se camina de 1 a 2 (3) y ahí, en una aldea, se ponen las botas; con ellas el tramo de 2 a 3 sale gratis y solo falta caminar de 3 a 4 (2).",
+      sinbota: "Ese es el camino más corto sin usar las botas, 1–2–4 o 1–3–4: 9. Con las botas se ahorra un tramo y el resultado baja.",
+      soloaldea: "Eso es el tiempo hasta el castillo 3. La meta es el castillo " + (M.a + M.b) + ", así que falta el tramo de 3 a 4, que dentro de un castillo se camina.",
+      inicio: "Gastar las botas desde el inicio deja gratis el tramo de 1 a 2, pero la carga que sobra no alcanza para el siguiente y quedan 4 + 2 por caminar: 6. Es mejor ponerlas en 2, donde se ahorra el tramo de 4."
+    };
+    Motor.conectarOpciones("opciones-imprime", "veredicto", RAZONES_IMPRIME);
 
     Motor.iniciar({
       codigo: E.CODIGO, simular: function () { return E.sim(M); },

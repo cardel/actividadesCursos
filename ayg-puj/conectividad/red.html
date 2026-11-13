@@ -28,10 +28,12 @@
     1 → 2, 2 → 3, 3 → 0, 4 → 5, 5 → 4, 6 → 7, 7 → 8, 8 → 6, 10 → 11, 11 → 10,
     13 → 14, 14 → 13, 1 → 4, 2 → 6, 5 → 6, 5 → 9, 7 → 9, 8 → 10, 9 → 12,
     11 → 12, 12 → 13, 10 → 14.</p>
-    <div class="prediccion">
-      <span>¿Cuántos bloques de páginas mutuamente alcanzables hay?</span>
-      <input type="number" id="cuantos" min="1" placeholder="su número">
-      <button id="btn-cuantos" class="primario">Comprobar</button>
+    <p style="margin-top:0">¿Cuántos bloques de páginas mutuamente alcanzables hay?</p>
+    <div class="opciones" id="opciones-cuantos">
+      <button data-op="paginas">15 bloques</button>
+      <button data-op="uno">1 bloque</button>
+      <button data-op="soloCiclos">5 bloques</button>
+      <button data-op="correcta">7 bloques</button>
     </div>
     <div id="veredicto-cuantos" class="veredicto"></div>
   </div>
@@ -61,10 +63,12 @@
 
   <div class="carta">
     <h2>3. El mapa de bloques</h2>
-    <div class="prediccion">
-      <span>¿Cuántas aristas tiene el grafo de componentes?</span>
-      <input type="number" id="aristas" min="0" placeholder="su número">
-      <button id="btn-aristas" class="primario">Comprobar y dibujarlo</button>
+    <p style="margin-top:0">¿Cuántas aristas tiene el grafo de componentes?</p>
+    <div class="opciones" id="opciones-aristas">
+      <button data-op="correcta">10 aristas</button>
+      <button data-op="original">23 aristas</button>
+      <button data-op="arbol">6 aristas</button>
+      <button data-op="internas">13 aristas</button>
     </div>
     <div id="veredicto-aristas" class="veredicto"></div>
     <div id="panel-condensa"></div>
@@ -74,12 +78,11 @@
     <h2>4. El mismo sitio sin las direcciones</h2>
     <p style="margin-top:0">Borre las puntas de los enlaces y quedan veinte
     aristas sin dirección. Dos preguntas sobre ese grafo.</p>
-    <div class="prediccion">
-      <span>Componentes conexos:</span>
-      <input type="number" id="sin-comp" class="corto" min="1" placeholder="cuántos">
-      <span>puntos de articulación:</span>
-      <input type="number" id="sin-art" class="corto" min="0" placeholder="cuántos">
-      <button id="btn-sin" class="primario">Comprobar</button>
+    <p style="margin-top:0">Componentes conexos y puntos de articulación del sitio sin direcciones:</p>
+    <div class="opciones" id="opciones-sin">
+      <button data-op="bloques">7 componentes y 0 puntos de articulación</button>
+      <button data-op="pequenos">1 componente y 2 puntos de articulación</button>
+      <button data-op="correcta">1 componente y 0 puntos de articulación</button>
     </div>
     <div id="veredicto-sin" class="veredicto"></div>
   </div>
@@ -88,10 +91,11 @@
     <h2>5. Un enlace de más</h2>
     <p style="margin-top:0">El administrador agrega un enlace de vuelta desde
     la página 14 hasta la portada, 14 → 0.</p>
-    <div class="prediccion">
-      <span>¿Cuántos bloques quedan entonces?</span>
-      <input type="number" id="extra" min="1" placeholder="su número">
-      <button id="btn-extra" class="primario">Comprobar</button>
+    <p style="margin-top:0">¿Cuántos bloques quedan entonces?</p>
+    <div class="opciones" id="opciones-extra">
+      <button data-op="antes">7 bloques</button>
+      <button data-op="correcta">1 bloque</button>
+      <button data-op="extremos">6 bloques</button>
     </div>
     <div id="veredicto-extra" class="veredicto"></div>
   </div>

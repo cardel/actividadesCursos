@@ -45,10 +45,12 @@
 
   <div class="carta">
     <h2>3. Cuántos hay</h2>
-    <div class="prediccion">
-      <span>¿Cuántos órdenes topológicos distintos tiene este grafo?</span>
-      <input type="number" id="cuantos" min="1" placeholder="su número">
-      <button id="btn-contar" class="primario">Comprobar</button>
+    <div style="margin-bottom:0.3rem"><b>¿Cuántos órdenes topológicos distintos tiene este grafo?</b></div>
+    <div class="opciones" id="opciones-cuantos">
+      <button data-op="muestra">3</button>
+      <button data-op="vertices">6</button>
+      <button data-op="correcta">12</button>
+      <button data-op="todas">720</button>
     </div>
     <div id="veredicto-contar" class="veredicto"></div>
   </div>

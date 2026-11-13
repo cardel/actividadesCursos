@@ -121,26 +121,32 @@ if (typeof module !== "undefined") {
       v.innerHTML = texto;
     }
 
-    document.getElementById("btn-comprobar").addEventListener("click", function () {
-      var valor = parseInt(document.getElementById("prediccion").value, 10);
-      var E = EJERCICIO.aristasDe(100000, 4);
-      var c = EJERCICIO.costos(100000, E);
-      var v = document.getElementById("veredicto");
-      if (isNaN(valor)) {
-        veredicto("veredicto", false, "Escriba un número primero.");
-      } else if (valor === 100) {
-        veredicto("veredicto", true, "Correcto: " +
-          EJERCICIO.conSeparador(c.matriz) + " operaciones, unos " +
-          EJERCICIO.comoTiempo(c.matriz) + " a cien millones de operaciones por " +
-          "segundo. La lista hace " + EJERCICIO.conSeparador(c.lista) +
-          " y termina en " + EJERCICIO.comoTiempo(c.lista) + ".");
-      } else if (valor < 100) {
-        veredicto("veredicto", false, "Se queda corto. V² con V = 100 000 son " +
-          "diez mil millones de posiciones: divida eso por cien millones.");
-      } else {
-        veredicto("veredicto", false, "Se pasa. Son 100 000 × 100 000 = diez " +
-          "mil millones de operaciones, divididas por cien millones por segundo.");
-      }
+    Array.prototype.forEach.call(document.querySelectorAll("#opciones-tiempo button"), function (btn) {
+      btn.addEventListener("click", function () {
+        var op = btn.getAttribute("data-op");
+        var E = EJERCICIO.aristasDe(100000, 4);
+        var c = EJERCICIO.costos(100000, E);
+        if (op === "correcta") {
+          veredicto("veredicto", true, "Correcto: " +
+            EJERCICIO.conSeparador(c.matriz) + " operaciones, unos " +
+            EJERCICIO.comoTiempo(c.matriz) + " a cien millones de operaciones por " +
+            "segundo. La lista hace " + EJERCICIO.conSeparador(c.lista) +
+            " y termina en " + EJERCICIO.comoTiempo(c.lista) + ".");
+        } else if (op === "lista") {
+          veredicto("veredicto", false, "Esa es la cuenta de la lista de " +
+            "adyacencia, V + 2E = " + EJERCICIO.conSeparador(c.lista) +
+            " operaciones. La matriz recorre la fila completa de cada vértice, " +
+            "ceros incluidos: V² operaciones.");
+        } else if (op === "tasa") {
+          veredicto("veredicto", false, "V² son diez mil millones de operaciones, " +
+            "pero el computador hace cien millones por segundo, no mil millones. " +
+            "Rehaga la división.");
+        } else {
+          veredicto("veredicto", false, "Ese es el costo de la lista de aristas, " +
+            "V · E = " + EJERCICIO.conSeparador(c.aristas) + " operaciones. La " +
+            "matriz no depende de E: recorre V² posiciones.");
+        }
+      });
     });
 
     Array.prototype.forEach.call(document.querySelectorAll("#opciones-v button"), function (btn) {
