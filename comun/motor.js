@@ -172,6 +172,21 @@
     });
   }
 
+  /* Botones con data-op dentro de #idOpciones; "correcta" pinta en verde y
+     cualquier otra clave en rojo, con el texto que traiga razones[op]. Es la
+     forma de preguntar un valor cuando adivinarlo de memoria no se puede. */
+  function conectarOpciones(idOpciones, idVeredicto, razones) {
+    var caja = document.getElementById(idVeredicto);
+    var botones = document.querySelectorAll("#" + idOpciones + " button");
+    Array.prototype.forEach.call(botones, function (b) {
+      b.addEventListener("click", function () {
+        var op = b.getAttribute("data-op");
+        caja.className = "veredicto " + (op === "correcta" ? "bien" : "mal");
+        caja.innerHTML = razones[op];
+      });
+    });
+  }
+
   function limpiarVeredicto() {
     var v = document.getElementById("veredicto");
     if (v) {
@@ -185,6 +200,7 @@
     reiniciar: reiniciar,
     repintar: pintar,
     prediccionNumerica: prediccionNumerica,
+    conectarOpciones: conectarOpciones,
     limpiarVeredicto: limpiarVeredicto
   };
 })();
