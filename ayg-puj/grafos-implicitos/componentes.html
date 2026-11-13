@@ -86,8 +86,8 @@
     <h2>4. Quién cuenta los componentes</h2>
     <div style="margin-bottom:0.3rem"><b>¿Qué línea del programa decide que empieza un componente nuevo?</b></div>
     <div class="opciones" id="opciones-externo">
-      <button data-op="vertices">La línea 8, que pasa por todos los vértices</button>
       <button data-op="correcta">La línea 6: un vértice sin marcar cuando le llega el turno al ciclo externo</button>
+      <button data-op="vertices">La línea 8, que pasa por todos los vértices</button>
       <button data-op="interno">El recorrido interno, cada vez que entra a un vértice nuevo</button>
     </div>
     <div id="veredicto-externo" class="veredicto"></div>
@@ -98,8 +98,8 @@
     <div class="paso bloqueado" id="paso-1">
       <div class="titulo-paso">Con n vértices, m aristas y k componentes, ¿cuánto cuesta <code>componentes(G)</code>?</div>
       <div class="opciones">
-        <button data-p1="lineal">Θ(n + m): cada vértice y cada arista se miran una vez, sin importar k</button>
         <button data-p1="cuadratico">Θ(k · (n + m)): un recorrido completo por componente</button>
+        <button data-p1="lineal">Θ(n + m): cada vértice y cada arista se miran una vez, sin importar k</button>
         <button data-p1="k">Θ(k): uno por componente</button>
       </div>
       <div id="veredicto-p1" class="veredicto"></div>

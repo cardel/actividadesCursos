@@ -83,8 +83,8 @@
     <h2>4. Por qué falla el primero</h2>
     <div class="opciones" id="opciones-porque">
       <button data-op="orden">Porque la cola procesa las celdas en el orden equivocado</button>
-      <button data-op="correcta">Porque a (1,3) se llega primero con racha 2, se marca, y la llegada con racha 1 —la única que puede seguir— se descarta</button>
       <button data-op="cota">Porque con k = 2 no alcanza para pasar</button>
+      <button data-op="correcta">Porque a (1,3) se llega primero con racha 2, se marca, y la llegada con racha 1 —la única que puede seguir— se descarta</button>
     </div>
     <div id="veredicto-porque" class="veredicto"></div>
   </div>
@@ -94,9 +94,9 @@
     <div class="paso bloqueado" id="paso-1">
       <div class="titulo-paso">¿Cuántos vértices tiene el grafo implícito del segundo programa?</div>
       <div class="opciones">
-        <button data-p1="estados">m · n · (k + 1): una copia de cada celda por cada racha posible</button>
         <button data-p1="celdas">m · n: las celdas</button>
         <button data-p1="exp">Exponencial en k</button>
+        <button data-p1="estados">m · n · (k + 1): una copia de cada celda por cada racha posible</button>
       </div>
       <div id="veredicto-p1" class="veredicto"></div>
       <div class="texto-paso">Cada estado se visita a lo sumo una vez y tiene a

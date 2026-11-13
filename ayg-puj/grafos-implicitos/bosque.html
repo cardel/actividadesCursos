@@ -121,9 +121,9 @@
     <div style="margin-bottom:0.3rem"><b>Un Jigglypuff con L = 1. Sin rocas alrededor, ¿qué celdas quedan peligrosas?</b></div>
     <div class="opciones" id="opciones-volumen">
       <button data-op="ocho">Él y las ocho de alrededor, el cuadrado de 3 × 3</button>
-      <button data-op="correcta">Él y las cuatro vecinas ortogonales, la cruz</button>
       <button data-op="solo">Solo él</button>
       <button data-op="camino">Las que estén a un paso de camino, esquivando rocas</button>
+      <button data-op="correcta">Él y las cuatro vecinas ortogonales, la cruz</button>
     </div>
     <div id="veredicto-volumen" class="veredicto"></div>
   </div>
@@ -133,9 +133,9 @@
     <div class="paso bloqueado" id="paso-1">
       <div class="titulo-paso">Si (1,1) queda dentro del volumen de un Jigglypuff, ¿qué hace <code>salida_mas_corta</code>?</div>
       <div class="opciones">
-        <button data-p1="nada">No encola nada, el while no entra y devuelve el −1 con que arrancó d[R][C]</button>
         <button data-p1="falla">Falla, porque mundo[1][1] no es una celda válida</button>
         <button data-p1="encola">Encola (1,1) de todas formas y sale por la cola vacía</button>
+        <button data-p1="nada">No encola nada, el while no entra y devuelve el −1 con que arrancó d[R][C]</button>
       </div>
       <div id="veredicto-p1" class="veredicto"></div>
       <div class="texto-paso">La pregunta de la línea 3 es la que cubre el
