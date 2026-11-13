@@ -9,7 +9,6 @@
   #panel-grafo { text-align: center; margin: 0.4rem 0; }
   .leyenda { font-size: 0.85rem; color: var(--gris); text-align: center; }
   td.mejor { background: var(--verde-suave); font-weight: 700; }
-  input.celda-in { width: 3.4rem; padding: 0.25rem 0.3rem; font-size: 0.95rem; text-align: center; border: 1px solid var(--borde); border-radius: 6px; }
   #explicacion p { margin: 0.45rem 0; }
 </style>
 </head>
@@ -38,8 +37,8 @@
 
   <div class="carta">
     <h2>2. La tabla, fila por fila</h2>
-    <p style="margin-top:0">Fila que se llena ahora: <b id="rot-fila"></b>. Escriba
-    un entero o <code>inf</code> en cada casilla.</p>
+    <p style="margin-top:0">Fila que se llena ahora: <b id="rot-fila"></b>. Escoja
+    el valor de cada casilla.</p>
     <div class="envoltura-tabla"><table id="tabla"></table></div>
     <div class="prediccion">
       <button id="btn-comprobar" class="primario">Comprobar la fila</button>
@@ -62,6 +61,7 @@
   </div>
 
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="karistas.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

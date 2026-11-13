@@ -48,14 +48,6 @@ var EJERCICIO = (function () {
     return r;
   }
 
-  function leer(texto) {
-    var t = String(texto).trim().toLowerCase().replace("−", "-");
-    var r = null;
-    if (t === "inf" || t === "∞" || t === "infinito") { r = INF; }
-    else if (/^-?\d+$/.test(t)) { r = parseInt(t, 10); }
-    return r;
-  }
-
   function cuenta(x, uno, varios) {
     return x === 0 ? "ninguna " + uno : (x === 1 ? "una " + uno : x + " " + varios);
   }
@@ -102,30 +94,53 @@ var EJERCICIO = (function () {
     return { ok: false, msg: msg };
   }
 
-  function evaluarValor(g, k, texto) {
-    var p = pareja(g, k), v = leer(texto), real = g.T.D[k + 1][p.i][p.j], antes = g.T.D[k][p.i][p.j];
-    if (v === null) { return { ok: false, msg: "Escriba un entero, inf o ∞." }; }
-    if (v === real) {
-      if (real === antes) {
-        return { ok: true, msg: "Correcto: d[" + p.i + "][" + p.j + "] se queda en " + fmt(real) + ". " +
-                 cuentaCelda(g, k, p.i, p.j) + ", así que el mínimo deja la casilla como estaba." };
+  /* Opciones del valor nuevo de la pareja que se pregunta. Cada una es lo que
+     alguien escribiria al equivocarse en la recurrencia. */
+  function opcionesValor(g, k) {
+    var p = pareja(g, k), D = g.T.D[k], real = g.T.D[k + 1][p.i][p.j], antes = D[p.i][p.j];
+    var ik = D[p.i][k], kj = D[k][p.j], via = ik + kj;
+    var cuenta2 = cuentaCelda(g, k, p.i, p.j);
+    var lista = [
+      { valor: fmt(real), num: real, clave: "correcta",
+        razon: real === antes
+          ? "Correcto: d[" + p.i + "][" + p.j + "] se queda en " + fmt(real) + ". " + cuenta2 +
+            ", así que el mínimo deja la casilla como estaba."
+          : "Correcto: d[" + p.i + "][" + p.j + "] = " + fmt(real) + ", por el camino " +
+            p.i + " → " + k + " → " + p.j + ". " + cuenta2 + "." },
+      { valor: fmt(antes), num: antes, clave: "sin-paso",
+        razon: "Ese es el valor de antes del paso. La recurrencia lo compara con la suma por " + k + ": " +
+          cuenta2 + ". El menor es " + fmt(real) + "." },
+      { valor: fmt(via), num: via, clave: "solo-suma",
+        razon: "Esa es solo la suma por " + k + ", sin compararla con lo que la casilla ya tenía: " +
+          cuenta2 + ". La recurrencia toma el mínimo, " + fmt(real) + "." },
+      { valor: fmt(ik), num: ik, clave: "solo-ik",
+        razon: "Eso es d[" + p.i + "][" + k + "] a secas. Falta sumarle d[" + k + "][" + p.j + "] = " +
+          fmt(kj) + " antes de comparar." },
+      { valor: fmt(kj), num: kj, clave: "solo-kj",
+        razon: "Eso es d[" + k + "][" + p.j + "] a secas. Falta sumarle d[" + p.i + "][" + k + "] = " +
+          fmt(ik) + " antes de comparar." },
+      { valor: fmt(Math.max(antes, via)), num: Math.max(antes, via), clave: "maximo",
+        razon: "Eso es el máximo de los dos. La recurrencia toma el mínimo: " + cuenta2 + ", o sea " + fmt(real) + "." }
+    ];
+    var vistos = [], salida = [];
+    lista.forEach(function (o) {
+      if (vistos.indexOf(o.num) < 0 && salida.length < 4) {
+        vistos.push(o.num);
+        salida.push({ valor: o.valor, clave: o.clave, razon: o.razon });
       }
-      return { ok: true, msg: "Correcto: d[" + p.i + "][" + p.j + "] = " + fmt(real) + ", por el camino " +
-               p.i + " → " + k + " → " + p.j + ". " + cuentaCelda(g, k, p.i, p.j) + "." };
-    }
-    return { ok: false, msg: "No. La recurrencia toma el mínimo de dos valores: " + cuentaCelda(g, k, p.i, p.j) +
-             ". El menor es " + fmt(real) + "." };
+    });
+    return salida;
   }
 
-  return { GRAFOS: GRAFOS, mejorasDe: mejorasDe, pareja: pareja, leer: leer,
-           evaluarMarcas: evaluarMarcas, evaluarValor: evaluarValor, cuentaCelda: cuentaCelda };
+  return { GRAFOS: GRAFOS, mejorasDe: mejorasDe, pareja: pareja,
+           evaluarMarcas: evaluarMarcas, opcionesValor: opcionesValor, cuentaCelda: cuentaCelda };
 })();
 
 if (typeof module !== "undefined") {
   module.exports = EJERCICIO;
 } else {
   (function () {
-    var E = EJERCICIO, idx = 0, k = 0, marcas = [], visto = false;
+    var E = EJERCICIO, idx = 0, k = 0, marcas = [], visto = false, opcionesV = null;
     function g() { return E.GRAFOS[idx]; }
     function el(id) { return document.getElementById(id); }
 
@@ -210,14 +225,13 @@ if (typeof module !== "undefined") {
       el("ver-paso").innerHTML = "Se permite pasar por el vértice <b>" + k + "</b>. Los intermedios permitidos son " +
         (k === 0 ? "ninguno todavía" : "{0, …, " + k + "}") + ".";
       el("pregunta-valor").innerHTML = "¿Cuánto vale <code>d[" + p.i + "][" + p.j + "]</code> después del paso?";
-      el("valor").value = "";
       el("fb-marcas").className = "fb";
-      el("fb-valor").className = "fb";
       botonesK();
       dibujo();
       matrizActual();
       rejilla();
       siguiente();
+      if (opcionesV) { opcionesV.refrescar(); }
     }
 
     el("btn-marcas").addEventListener("click", function () {
@@ -227,10 +241,8 @@ if (typeof module !== "undefined") {
       visto = true;
       siguiente();
     });
-    el("btn-valor").addEventListener("click", function () {
-      var r = E.evaluarValor(g(), k, el("valor").value);
-      el("fb-valor").className = "fb " + (r.ok ? "bien" : "mal");
-      el("fb-valor").textContent = r.msg;
+    opcionesV = Motor.opcionesNumericas("opciones-valor", "veredicto-valor", function () {
+      return E.opcionesValor(g(), k);
     });
 
     var caja = "", t = 0;

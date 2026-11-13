@@ -13,7 +13,7 @@
   <h1>La recurrencia de Floyd-Warshall</h1>
   <p class="intro">Un paso del algoritmo agrega un vértice al conjunto de intermedios permitidos y aplica
   <code>d[i][j] = min(d[i][j], d[i][k] + d[k][j])</code> a toda la matriz. Aquí se escoge el paso, se marcan
-  las parejas que mejoran y se escribe el valor nuevo de una de ellas antes de ver la matriz que queda.</p>
+  las parejas que mejoran y se escoge el valor nuevo de una de ellas antes de ver la matriz que queda.</p>
 
   <div class="carta">
     <h2>1. El grafo y el paso</h2>
@@ -43,12 +43,9 @@
 
   <div class="carta">
     <h2>4. El valor nuevo</h2>
-    <div class="prediccion">
-      <span id="pregunta-valor"></span>
-      <input type="text" id="valor" class="corto" placeholder="entero o inf">
-      <button id="btn-valor" class="primario">Comprobar</button>
-    </div>
-    <div id="fb-valor" class="fb"></div>
+    <p class="pregunta" id="pregunta-valor" style="margin-top:0"></p>
+    <div class="opciones" id="opciones-valor"></div>
+    <div id="veredicto-valor" class="veredicto"></div>
   </div>
 
   <div class="carta">
@@ -64,6 +61,7 @@
     mejoran ahora y si la matriz final es la misma.</p>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="../comun/grafo-svg.js"></script>
 <script src="lib.js"></script>
 <script src="intermedios.js"></script>

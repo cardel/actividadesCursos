@@ -212,6 +212,30 @@ var EJERCICIO = (function () {
     return msg.join(" ");
   }
 
+  /* Opciones para d[v] al terminar: la correcta y valores que alguien daria al equivocarse. */
+  function opcionesDv(sc) {
+    var real = resultado(sc), suma = sc.du + sc.w, lista = [];
+    function poner(valor, clave, razon) {
+      var dup = false;
+      lista.forEach(function (o) { if (fmt(o.valor) === fmt(valor)) { dup = true; } });
+      if (!dup) { lista.push({ valor: fmt(valor), clave: clave, razon: razon }); }
+    }
+    poner(real.dv, "correcta", "Correcto. " + (real.cambio
+      ? "d[v] baja a d[u] + w = " + fmt(real.dv) + "."
+      : "d[v] se queda en " + fmt(sc.dv) + ": la condición es falsa y no se reescribe nada."));
+    if (real.cambio) {
+      poner(sc.du, "solodu", "d[v] recibe d[u] + w = " + fmt(real.dv) + ", no solo d[u]: falta sumar el peso de la arista.");
+      poner(sc.dv, "sinbajar", "d[v] no se queda en " + fmt(sc.dv) + ": la condición se cumple y baja a d[u] + w = " + fmt(real.dv) + ".");
+      poner(sc.du - sc.w, "resta", "d[v] recibe d[u] + w, no d[u] − w: el peso se suma aunque sea negativo.");
+    } else {
+      poner(suma, "suma", "Ese d[v] es la suma d[u] + w aplicada sin mirar la comparación. Como la suma no es menor que " + fmt(sc.dv) + ", d[v] se queda en " + fmt(sc.dv) + ".");
+      poner(sc.du, "solodu", "Ese es d[u], no d[v]. Como la condición es falsa, d[v] sigue en " + fmt(sc.dv) + ".");
+      poner(sc.w, "peso", "Ese es el peso de la arista, no una distancia desde la fuente. d[v] sigue en " + fmt(sc.dv) + ".");
+      poner(0, "cero", "Cero es la distancia de la fuente a sí misma. Como la condición es falsa, d[v] sigue en " + fmt(sc.dv) + ".");
+    }
+    return lista.slice(0, 4);
+  }
+
   /* Interpreta el texto escrito para d[v]: numero, "inf", "∞" o "infinito". */
   function leerDistancia(texto) {
     var t = String(texto).trim().toLowerCase().replace("−", "-"), r;
@@ -222,7 +246,7 @@ var EJERCICIO = (function () {
   }
 
   return { codigo: CODIGO, escenarios: ESCENARIOS, simular: simular, resultado: resultado,
-           diagnostico: diagnostico, leerDistancia: leerDistancia, fmt: fmt };
+           diagnostico: diagnostico, opcionesDv: opcionesDv, leerDistancia: leerDistancia, fmt: fmt };
 })();
 
 if (typeof module !== "undefined") {
@@ -232,6 +256,7 @@ if (typeof module !== "undefined") {
     var ESC = EJERCICIO.escenarios, actual = 0;
 
     function sc() { return ESC[actual]; }
+    var elegidoDv = null;
 
     function dibujar() {
       var p = sc(), F = EJERCICIO.fmt;
@@ -261,7 +286,7 @@ if (typeof module !== "undefined") {
       document.getElementById("enunciado").innerHTML = "Se relaja la arista <code>(u, v, w)</code> = <code>(" + p.u + ", " + p.v + ", " + EJERCICIO.fmt(p.w) +
         ")</code> con <code>d[" + p.u + "] = " + EJERCICIO.fmt(p.du) + "</code>, <code>d[" + p.v + "] = " + EJERCICIO.fmt(p.dv) + "</code> y <code>pred[" + p.v + "] = " + p.pv + "</code>.";
       Array.prototype.forEach.call(document.querySelectorAll("input[name=cambia]"), function (b) { b.checked = false; });
-      document.getElementById("resp-dv").value = "";
+      elegidoDv = null;
       llenarPi();
       Motor.limpiarVeredicto();
       Array.prototype.forEach.call(document.querySelectorAll("#presets-esc button"), function (b, k) {
@@ -272,11 +297,11 @@ if (typeof module !== "undefined") {
     function comprobar() {
       var p = sc(), v = document.getElementById("veredicto");
       var marca = document.querySelector("input[name=cambia]:checked");
-      var dv = EJERCICIO.leerDistancia(document.getElementById("resp-dv").value);
+      var dv = elegidoDv;
       var pvTxt = document.getElementById("resp-pv").value;
       if (marca === null || dv === null || pvTxt === "") {
         v.className = "veredicto mal";
-        v.textContent = "Responda las tres preguntas: si cambia algo, el nuevo d[v] (un entero o inf) y el nuevo pred[v].";
+        v.textContent = "Responda las tres preguntas: si cambia algo, el nuevo d[v] (una de las opciones) y el nuevo pred[v].";
         return;
       }
       var r = { cambia: marca.value === "si", dv: dv, pv: parseInt(pvTxt, 10) };
@@ -305,6 +330,15 @@ if (typeof module !== "undefined") {
     while (k < ESC.length) { botones += "<button data-k='" + k + "'>" + (k + 1) + "</button>"; k = k + 1; }
     document.getElementById("presets-esc").innerHTML = "<span class='nota' style='margin-top:0'>Escenario:</span>" + botones;
     arrancar();
+    Motor.opcionesNumericas("opciones-dv", "veredicto-dv", function () { return EJERCICIO.opcionesDv(sc()); });
+    document.getElementById("opciones-dv").addEventListener("click", function (ev) {
+      var b = ev.target;
+      if (b && b.tagName === "BUTTON") {
+        elegidoDv = EJERCICIO.leerDistancia(b.textContent);
+        Array.prototype.forEach.call(this.querySelectorAll("button"), function (x) { x.classList.remove("primario"); });
+        b.classList.add("primario");
+      }
+    });
     mostrar();
     document.getElementById("btn-comprobar").addEventListener("click", comprobar);
     Array.prototype.forEach.call(document.querySelectorAll("#presets-esc button"), function (b) {

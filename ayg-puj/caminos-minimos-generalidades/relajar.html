@@ -28,7 +28,7 @@
   <div class="carta">
     <h2>1. El escenario y la respuesta</h2>
     <div class="presets" id="presets-esc"></div>
-    <p class="nota">Escenario <span id="rot-escenario"></span>. El infinito se escribe <code>inf</code> o ∞.</p>
+    <p class="nota">Escenario <span id="rot-escenario"></span>. </p>
     <div id="panel-grafo"></div>
     <p id="enunciado" style="margin:0.2rem 0"></p>
     <div class="pregunta-fila">
@@ -37,12 +37,13 @@
       <label class="opcion"><input type="radio" name="cambia" value="no"> No</label>
     </div>
     <div class="pregunta-fila">
-      <label for="resp-dv"><b>d[v] al terminar:</b></label>
-      <input type="text" id="resp-dv" autocomplete="off">
       <label for="resp-pv"><b>pred[v] al terminar:</b></label>
       <select id="resp-pv"></select>
       <button id="btn-comprobar" class="primario">Comprobar</button>
     </div>
+    <div class="pregunta-fila"><b>d[v] al terminar:</b></div>
+    <div class="opciones" id="opciones-dv"></div>
+    <div id="veredicto-dv" class="veredicto"></div>
     <div id="veredicto" class="veredicto"></div>
   </div>
 

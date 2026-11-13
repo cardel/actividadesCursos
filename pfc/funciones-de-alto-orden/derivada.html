@@ -35,9 +35,9 @@
     <table class="traza">
       <thead><tr><th>dx</th><th>12 + 6·dx + dx²</th><th>lo que imprime derivada(cube, dx)(2)</th></tr></thead>
       <tbody>
-        <tr><td>1.0</td><td><input id="v-0" placeholder="?"></td><td class="impreso" id="imp-0"></td></tr>
-        <tr><td>0.1</td><td><input id="v-1" placeholder="?"></td><td class="impreso" id="imp-1"></td></tr>
-        <tr><td>0.0001</td><td><input id="v-2" placeholder="?"></td><td class="impreso" id="imp-2"></td></tr>
+        <tr><td>1.0</td><td><div class="opciones" id="opciones-v-0"></div><div id="veredicto-v-0" class="veredicto"></div></td><td class="impreso" id="imp-0"></td></tr>
+        <tr><td>0.1</td><td><div class="opciones" id="opciones-v-1"></div><div id="veredicto-v-1" class="veredicto"></div></td><td class="impreso" id="imp-1"></td></tr>
+        <tr><td>0.0001</td><td><div class="opciones" id="opciones-v-2"></div><div id="veredicto-v-2" class="veredicto"></div></td><td class="impreso" id="imp-2"></td></tr>
       </tbody>
     </table>
     <div class="botones" style="margin-top:0.6rem"><button id="btn-comprobar-tabla" class="primario">Comprobar</button></div>
@@ -67,6 +67,7 @@
     <p><a href="tipos.html">Ir a <b>tipos</b>: qué tipo tiene cada expresión →</a></p>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="derivada.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

@@ -8,22 +8,24 @@ var EJERCICIO = (function () {
 
   var PRED = {
     respuesta: SUB.subidas,
-    evaluar: function (valor) {
-      if (valor === SUB.subidas) {
-        return { ok: true, msg: "Son " + SUB.subidas + ", y la raíz que queda al final es " + SUB.raiz +
-          ": sube en union(1,4) y en union(1,5), los dos empates en que participa." };
-      }
-      if (valor === SUB.empates) {
-        return { ok: false, msg: "Esos son los empates de toda la secuencia. En dos de ellos la raíz que sube es otra: 3 y 5." };
-      }
-      if (valor === Object.keys(SUB.todas).length) {
-        return { ok: false, msg: "Esas son las raíces cuyo rango sube alguna vez: 1, 3 y 5. La pregunta es por una sola de ellas." };
-      }
-      if (valor === UF.SEC.length) {
-        return { ok: false, msg: "El rango no sube en cada unión. Dos de cada tres uniones de esta secuencia lo dejan igual." };
-      }
-      return { ok: false, msg: "Son " + SUB.subidas + ". La raíz final es " + SUB.raiz +
-        " y sube una vez por cada empate en que la comparación la toma como rx." };
+    opciones: function () {
+      var lista = [
+        { valor: SUB.subidas, clave: "correcta",
+          razon: "Son " + SUB.subidas + ", y la raíz que queda al final es " + SUB.raiz +
+            ": sube en union(1,4) y en union(1,5), los dos empates en que participa." },
+        { valor: SUB.empates, clave: "empates",
+          razon: "Esos son los empates de toda la secuencia. En dos de ellos la raíz que sube es otra: 3 y 5." },
+        { valor: Object.keys(SUB.todas).length, clave: "raices",
+          razon: "Esas son las raíces cuyo rango sube alguna vez: 1, 3 y 5. La pregunta es por una sola de ellas." },
+        { valor: UF.SEC.length, clave: "uniones",
+          razon: "El rango no sube en cada unión: de las " + UF.SEC.length + " uniones, solo " + SUB.subidas + " lo suben." }
+      ];
+      var vistos = [];
+      return lista.filter(function (o) {
+        var nuevo = vistos.indexOf(o.valor) < 0;
+        vistos.push(o.valor);
+        return nuevo;
+      });
     }
   };
 
@@ -132,7 +134,9 @@ if (typeof document !== "undefined") {
               { campo: "ry", rotulo: "ry" }, { campo: "caso", rotulo: "caso", clase: "cuenta" }],
       paramsIniciales: null, alPintar: alPintar
     });
-    Motor.prediccionNumerica(function (valor) { return E.PRED.evaluar(valor); });
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto", function () {
+      return E.PRED.opciones();
+    });
 
     el("ver-secuencia").textContent = UF.SEC.map(function (s) {
       return "(" + s[0] + ", " + s[1] + ")";

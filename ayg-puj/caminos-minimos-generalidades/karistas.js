@@ -267,6 +267,63 @@ var EJERCICIO = (function () {
     return { ok: errores.length === 0, errores: errores };
   }
 
+  /* Opciones de una celda (fila k, vertice v): la correcta y valores que alguien daria al equivocarse.
+     Las razones de los errores salen de diagnosticoCelda; solo las de la fila 0 y la del peso de arista son propias. */
+  function opcionesCelda(g, R, k, v) {
+    var real = R[k].d[v], lista = [], vistos = {}, i = 0;
+    function poner(valor, clave, razon) {
+      var et = fmt(valor);
+      if (!vistos[et]) { vistos[et] = true; lista.push({ valor: et, clave: clave, razon: razon }); }
+    }
+    function dif(valor, clave) { if (valor !== real) { poner(valor, clave, diagnosticoCelda(g, R, k, v, valor)); } }
+    var pesoEntra = null;
+    while (i < g.aristas.length) {
+      if (g.aristas[i][1] === v && pesoEntra === null) { pesoEntra = g.aristas[i]; }
+      i = i + 1;
+    }
+    poner(real, "correcta", "Correcto. dist[" + v + "] = " + fmt(real) + (k === 0 ? "." : " con a lo sumo " + k + " aristas."));
+    if (k === 0) {
+      if (v === g.s) {
+        poner(INF, "inf", "El origen cuesta cero: se llega a él sin usar ninguna arista.");
+      } else {
+        poner(0, "cero", "Cero es el costo del origen, y " + v + " no es el origen. Con cero aristas no se llega a " + v + ".");
+      }
+      if (pesoEntra !== null) {
+        poner(pesoEntra[2], "peso", "Ese es el peso de una arista que entra a " + v + ", pero con cero aristas no se usa ninguna.");
+      }
+      if (R[1].d[v] !== real) { poner(R[1].d[v], "despues", "Ese costo necesita una arista, aparece en la fila 1 y no en la fila 0."); }
+    } else {
+      dif(R[k - 1].d[v], "anterior");
+      dif(R[k].enLugar[v], "enlugar");
+      if (real !== INF && !(v === g.s && real === 0)) { dif(INF, "inf"); }
+      if (k + 1 < R.length) { dif(R[k + 1].d[v], "despues"); }
+      if (pesoEntra !== null) {
+        if (real === INF) { dif(pesoEntra[2], "peso"); }
+        else { poner(pesoEntra[2], "peso", "Ese es solo el peso de la arista (" + pesoEntra[0] + ", " + v + "): falta sumarle dist[" + pesoEntra[0] + "] de la fila " + (k - 1) + "."); }
+      }
+      if (real === INF) { dif(0, "cero"); }
+    }
+    if (k > 0 && v === g.s && real === 0 && !vistos[fmt(INF)]) {
+      poner(INF, "inf", "El origen cuesta cero desde la fila 0 y nada lo sube: dist[" + v + "] sigue en 0.");
+    }
+    // si faltan opciones, el valor de otro vertice en la misma fila
+    var o = 0;
+    while (o < g.n && lista.length < 3) {
+      if (o !== v && R[k].d[o] !== real) {
+        poner(R[k].d[o], "otro", "Ese es dist[" + o + "] en la fila " + k + ", no dist[" + v + "]. Cada casilla es la de su propio vértice.");
+      }
+      o = o + 1;
+    }
+    var a = 0;
+    while (k === 0 && a < g.aristas.length && lista.length < 3) {
+      if (g.aristas[a][2] !== real) {
+        poner(g.aristas[a][2], "peso", "Ese es el peso de la arista (" + g.aristas[a][0] + ", " + g.aristas[a][1] + "). Con cero aristas no se usa ninguna, y dist[" + v + "] es " + fmt(real) + ".");
+      }
+      a = a + 1;
+    }
+    return lista.slice(0, 4);
+  }
+
   function leerValor(texto) {
     var t = String(texto).trim().toLowerCase().replace("−", "-").replace("∞", "inf"), r;
     if (t === "inf" || t === "infinito") { r = INF; }
@@ -276,14 +333,14 @@ var EJERCICIO = (function () {
   }
 
   return { grafos: GRAFOS, adyacencia: adyacencia, pesoDe: pesoDe, filas: filas, explicar: explicar,
-           revisar: revisar, leerValor: leerValor, cicloDesde: cicloDesde, pesoCiclo: pesoCiclo, fmt: fmt };
+           revisar: revisar, opcionesCelda: opcionesCelda, leerValor: leerValor, cicloDesde: cicloDesde, pesoCiclo: pesoCiclo, fmt: fmt };
 })();
 
 if (typeof module !== "undefined") {
   module.exports = EJERCICIO;
 } else {
   (function () {
-    var GR = EJERCICIO.grafos, presetActual = 0, R = null, k = 0, mensajes = [];
+    var GR = EJERCICIO.grafos, presetActual = 0, R = null, k = 0, mensajes = [], elegido = [];
 
     function g() { return GR[presetActual]; }
 
@@ -333,7 +390,7 @@ if (typeof module !== "undefined") {
             while (q < R[j].mejoras.length) { if (R[j].mejoras[q].v === v) { mejora = true; } q = q + 1; }
             h += "<td" + (mejora ? " class='mejor'" : "") + ">" + EJERCICIO.fmt(R[j].d[v]) + "</td>";
           } else if (j === k) {
-            h += "<td><input type='text' size='4' class='celda-in' id='in-" + v + "' autocomplete='off'></td>";
+            h += "<td><div class='opciones' id='opciones-" + v + "'></div><div class='veredicto' id='opc-ver-" + v + "'></div></td>";
           } else {
             h += "<td class='pend'>·</td>";
           }
@@ -343,6 +400,25 @@ if (typeof module !== "undefined") {
         j = j + 1;
       }
       document.getElementById("tabla").innerHTML = h;
+      elegido = [];
+      v = 0;
+      while (v < gr.n) {
+        elegido.push(null);
+        if (document.getElementById("opciones-" + v)) {
+          (function (vv) {
+            Motor.opcionesNumericas("opciones-" + vv, "opc-ver-" + vv, function () { return EJERCICIO.opcionesCelda(gr, R, k, vv); });
+            document.getElementById("opciones-" + vv).addEventListener("click", function (ev) {
+              var b = ev.target;
+              if (b && b.tagName === "BUTTON") {
+                elegido[vv] = EJERCICIO.leerValor(b.textContent);
+                Array.prototype.forEach.call(this.querySelectorAll("button"), function (x) { x.classList.remove("primario"); });
+                b.classList.add("primario");
+              }
+            });
+          })(v);
+        }
+        v = v + 1;
+      }
     }
 
     function pintarMensajes() {
@@ -388,7 +464,7 @@ if (typeof module !== "undefined") {
     function comprobar() {
       var gr = g(), resp = [], v = 0, vacio = false, malo = false;
       while (v < gr.n) {
-        var x = EJERCICIO.leerValor(document.getElementById("in-" + v).value);
+        var x = elegido[v];
         if (x === null) { malo = true; }
         resp.push(x);
         v = v + 1;
@@ -396,7 +472,7 @@ if (typeof module !== "undefined") {
       var ver = document.getElementById("veredicto");
       if (malo) {
         ver.className = "veredicto mal";
-        ver.textContent = "Cada casilla lleva un entero o inf.";
+        ver.textContent = "Escoja un valor en cada casilla.";
         return;
       }
       var r = EJERCICIO.revisar(gr, R, k, resp);
@@ -411,7 +487,7 @@ if (typeof module !== "undefined") {
         ver.textContent = txt;
         v = 0;
         while (v < gr.n) {
-          document.getElementById("in-" + v).style.borderColor = resp[v] === R[k].d[v] ? "" : "#b3261e";
+          document.getElementById("opciones-" + v).style.outline = resp[v] === R[k].d[v] ? "" : "2px solid #b3261e";
           v = v + 1;
         }
       }
@@ -419,7 +495,11 @@ if (typeof module !== "undefined") {
 
     function verFila() {
       var gr = g(), v = 0;
-      while (v < gr.n) { document.getElementById("in-" + v).value = EJERCICIO.fmt(R[k].d[v]).replace("−", "-").replace("∞", "inf"); v = v + 1; }
+      while (v < gr.n) {
+        var bt = document.getElementById("opciones-" + v).querySelector("button[data-op=correcta]");
+        if (bt) { bt.click(); }
+        v = v + 1;
+      }
     }
 
     var botones = "<span class='nota' style='margin-top:0'>Grafo:</span>", i = 0;

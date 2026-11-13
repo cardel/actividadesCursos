@@ -30,26 +30,52 @@
     if (hechas.tabla && hechas.segunda) { document.getElementById("carta-cierre").classList.remove("bloqueado"); }
   }
 
-  document.getElementById("btn-comprobar-tabla").addEventListener("click", function () {
-    var malas = 0, vacias = 0;
-    FILAS.forEach(function (f, i) {
-      var inp = document.getElementById("v-" + i);
-      var v = parseFloat(inp.value.replace(",", "."));
-      if (isNaN(v)) { vacias = vacias + 1; inp.className = ""; return; }
-      var ok = Math.abs(v - f.exacto) < 0.0005;
-      inp.className = ok ? "bien" : "mal";
-      if (!ok) { malas = malas + 1; }
+  var acertadas = {};
+  function redondear(x) { return Number(x.toPrecision(12)); }
+  function opcionesFila(f) {
+    var dx = parseFloat(f.dx);
+    var cand = [
+      { valor: 12, clave: "exacto",
+        razon: "Ese es el valor exacto de la derivada, 3x² en x = 2. Pero derivada devuelve un cociente con dx finito, y el resultado es 12 + 6·dx + dx²: dx sí influye." },
+      { valor: redondear(dx * formula(dx)), clave: "sindividir",
+        razon: "Ese es el numerador, f(x + dx) − f(x), sin dividir por dx. La función devuelve el cociente completo." },
+      { valor: redondear(formula(dx * 10)), clave: "dxmayor",
+        razon: "Ese es el resultado con un dx diez veces mayor (" + redondear(dx * 10) + "). Aquí dx vale " + f.dx + "." },
+      { valor: redondear(formula(dx / 10)), clave: "dxmenor",
+        razon: "Ese es el resultado con un dx diez veces menor (" + redondear(dx / 10) + "). Aquí dx vale " + f.dx + "." }
+    ];
+    var lista = [{ valor: f.exacto, clave: "correcta",
+      razon: "Correcto: 12 + 6·" + f.dx + " + " + f.dx + "² = " + f.exacto + "." }];
+    cand.forEach(function (c) {
+      var repetida = false;
+      lista.forEach(function (o) { if (o.valor === c.valor) { repetida = true; } });
+      if (!repetida && lista.length < 4) { lista.push(c); }
     });
+    return lista;
+  }
+  API.opcionesFila = opcionesFila;
+
+  FILAS.forEach(function (f, i) {
+    Motor.opcionesNumericas("opciones-v-" + i, "veredicto-v-" + i, function () { return opcionesFila(f); });
+    document.getElementById("opciones-v-" + i).addEventListener("click", function (e) {
+      var t = e.target;
+      if (t && t.getAttribute && t.getAttribute("data-op") === "correcta") {
+        acertadas[i] = true;
+        document.getElementById("imp-" + i).textContent = f.impreso;
+        if (acertadas[0] && acertadas[1] && acertadas[2]) { avanzar("tabla"); }
+      }
+    });
+  });
+
+  document.getElementById("btn-comprobar-tabla").addEventListener("click", function () {
+    var faltan = 3 - (acertadas[0] ? 1 : 0) - (acertadas[1] ? 1 : 0) - (acertadas[2] ? 1 : 0);
     var ver = document.getElementById("veredicto-tabla");
-    if (vacias > 0) { ver.className = "veredicto mal"; ver.textContent = "Faltan " + vacias + " casillas."; return; }
-    if (malas === 0) {
+    if (faltan === 0) {
       ver.className = "veredicto bien";
       ver.textContent = "Correcto: 19, 12.61 y 12.0006. El error es 6·dx + dx², y por eso cae con dx. Ahora compare con lo que imprime el programa.";
-      FILAS.forEach(function (f, i) { document.getElementById("imp-" + i).textContent = f.impreso; });
-      avanzar("tabla");
     } else {
       ver.className = "veredicto mal";
-      ver.textContent = malas + " en rojo. Con la fórmula: 12 + 6·dx + dx². Para dx = 1 es 12 + 6 + 1; para 0.1 es 12 + 0.6 + 0.01.";
+      ver.textContent = "Faltan " + faltan + " filas por acertar. Con la fórmula: 12 + 6·dx + dx². Para dx = 1 es 12 + 6 + 1; para 0.1 es 12 + 0.6 + 0.01.";
     }
   });
 
