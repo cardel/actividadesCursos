@@ -160,7 +160,6 @@ if (typeof module !== "undefined") {
       var G = g();
       el("ver-texto").textContent = G.texto + " Aristas: " + CDD.textoAristas(G.aristas) + ".";
       el("pregunta-pred").innerHTML = "¿Cuánto vale <code>dist[" + G.t + "]</code> al terminar?";
-      el("prediccion").value = "";
       Motor.limpiarVeredicto();
       comparacion();
     }
@@ -173,10 +172,27 @@ if (typeof module !== "undefined") {
     });
     preparar();
 
-    el("btn-comprobar").addEventListener("click", function () {
-      var r = E.evaluar(el("prediccion").value, g()), v = el("veredicto");
-      v.className = r.ok ? "veredicto bien" : "veredicto mal";
-      v.textContent = r.msg;
+    /* Las opciones son los valores que proponen las aristas que llegan a t,
+       que es lo que de verdad contesta quien toma un camino que existe pero no
+       es el mas corto, mas el infinito de quien lo creyo inalcanzable. La razon
+       de cada una la da el mismo evaluar que antes leia la casilla. */
+    Motor.opcionesNumericas("opciones-pred", "veredicto", function () {
+      var G = g(), r = CDD.resumenDAG(G.G, G.s), vistos = {}, textos = [];
+      function comoTexto(x) { return isFinite(x) ? String(x) : "inf"; }
+      function mete(txt) {
+        if (!vistos[txt]) { vistos[txt] = true; textos.push(txt); }
+      }
+      mete(comoTexto(r.dist[G.t]));
+      G.aristas.forEach(function (a) {
+        if (a[1] === G.t) { mete(comoTexto(r.dist[a[0]] + a[2])); }
+      });
+      mete("inf");
+      return textos.slice(0, 4).map(function (txt, i) {
+        var res = E.evaluar(txt, G);
+        return { valor: txt === "inf" ? "∞" : txt,
+                 clave: res.ok ? "correcta" : "op" + i,
+                 razon: res.msg };
+      });
     });
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (b) {
       b.addEventListener("click", function () {
