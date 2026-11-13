@@ -204,28 +204,35 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
-      var N = params.A.length;
-      var esperado = (N * (N - 1)) / 2;
-      var pasos = EJERCICIO.simular(params);
-      var intercambios = pasos[pasos.length - 1].intercambios;
-      if (valor === esperado) {
-        return { ok: true, msg: "Correcto: " + esperado + " = N(N−1)/2, con " +
-          "N = " + N + ". Y no depende de los datos: pruebe el arreglo ya " +
-          "ordenado y verá la misma cuenta." };
-      }
-      if (valor === intercambios) {
-        return { ok: false, msg: "Esas son las comparaciones que <b>sí</b> " +
-          "terminan en intercambio (" + intercambios + "). La línea 6 se " +
-          "ejecuta muchas más veces: la pregunta es por todas." };
-      }
-      if (valor === N || valor === N - 1) {
-        return { ok: false, msg: "Ese es más o menos el número de pasadas. " +
-          "Cada pasada hace varias comparaciones, y son menos cada vez." };
-      }
-      return { ok: false, msg: "No coincide. La pasada i hace N−1−i " +
-        "comparaciones; sume para i = 0, 1, …, N−2." };
-    });
+    Motor.opcionesNumericas("opciones-comparaciones", "veredicto",
+      function (params) {
+        var N = params.A.length;
+        var esperado = (N * (N - 1)) / 2;
+        var pasos = EJERCICIO.simular(params);
+        var intercambios = pasos[pasos.length - 1].intercambios;
+        var lista = [
+          { valor: esperado, clave: "correcta",
+            razon: "Correcto: " + esperado + " = N(N−1)/2, con N = " + N +
+              ". Y no depende de los datos: pruebe el arreglo ya ordenado y " +
+              "verá la misma cuenta." },
+          { valor: N - 1, clave: "pasadas",
+            razon: "Ese es el número de pasadas. Cada pasada hace varias " +
+              "comparaciones, y son menos cada vez." },
+          { valor: N * N, clave: "cuadrado",
+            razon: "Eso sería si los dos ciclos recorrieran todo el arreglo. " +
+              "El de adentro se queda en N−1−i, que es cada vez más corto." }
+        ];
+        // el conteo de intercambios cambia con el preset y a veces coincide
+        // con otra opcion; solo entra cuando es un valor distinto
+        if (intercambios !== esperado && intercambios !== N - 1 &&
+            intercambios !== N * N) {
+          lista.push({ valor: intercambios, clave: "intercambios",
+            razon: "Esas son las comparaciones que <b>sí</b> terminan en " +
+              "intercambio (" + intercambios + "). La línea 6 se ejecuta " +
+              "muchas más veces: la pregunta es por todas." });
+        }
+        return lista;
+      });
 
     Array.prototype.forEach.call(document.querySelectorAll(".presets button"), function (btn) {
       btn.addEventListener("click", function () {

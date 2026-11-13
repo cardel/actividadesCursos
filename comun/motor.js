@@ -115,6 +115,7 @@
     if (nuevosParams !== undefined) { params = nuevosParams; }
     pasos = cfg.simular(params);
     k = 0;
+    repintarOpciones.forEach(function (f) { f(); });
     pintar();
   }
 
@@ -187,6 +188,54 @@
     });
   }
 
+  /* Opciones de una prediccion numerica, pintadas desde el codigo y vueltas a
+     pintar cada vez que cambian los parametros, de modo que sirven tambien
+     donde la respuesta depende del preset que el estudiante escoge.
+       armar(params) devuelve [{valor, clave, razon}], con clave "correcta" en
+     la buena. El orden se gira una cantidad fija que sale del id, asi la
+     correcta no cae siempre en el mismo sitio y dos cargas dan lo mismo.    */
+  var repintarOpciones = [];
+
+  function giroDe(texto) {
+    var h = 0, i;
+    for (i = 0; i < texto.length; i = i + 1) {
+      h = (h * 31 + texto.charCodeAt(i)) % 100003;
+    }
+    return h;
+  }
+
+  function opcionesNumericas(idOpciones, idVeredicto, armar) {
+    function pintar() {
+      var caja = document.getElementById(idOpciones);
+      var v = document.getElementById(idVeredicto);
+      if (!caja) { return; }
+      var lista = armar(params);
+      var buena = "";
+      lista.forEach(function (o) {
+        if (o.clave === "correcta") { buena = String(o.valor); }
+      });
+      // el giro entra el valor correcto, asi la posicion tambien cambia
+      // cuando cambia el preset y no se aprende de memoria
+      var giro = giroDe(idOpciones + ":" + buena) % lista.length;
+      var ordenadas = lista.slice(giro).concat(lista.slice(0, giro));
+      caja.innerHTML = "";
+      if (v) { v.className = "veredicto"; v.innerHTML = ""; }
+      ordenadas.forEach(function (o) {
+        var b = document.createElement("button");
+        b.setAttribute("data-op", o.clave);
+        b.textContent = o.valor;
+        b.addEventListener("click", function () {
+          if (!v) { return; }
+          v.className = "veredicto " + (o.clave === "correcta" ? "bien" : "mal");
+          v.innerHTML = o.razon;
+        });
+        caja.appendChild(b);
+      });
+    }
+    repintarOpciones.push(pintar);
+    pintar();
+  }
+
   function limpiarVeredicto() {
     var v = document.getElementById("veredicto");
     if (v) {
@@ -201,6 +250,7 @@
     repintar: pintar,
     prediccionNumerica: prediccionNumerica,
     conectarOpciones: conectarOpciones,
+    opcionesNumericas: opcionesNumericas,
     limpiarVeredicto: limpiarVeredicto
   };
 })();
