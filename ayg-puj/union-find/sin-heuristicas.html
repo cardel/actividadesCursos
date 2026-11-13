@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Qué pasa sin las heurísticas</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Qué pasa sin las heurísticas</h1>
+  <p class="intro">Las mismas siete uniones corren dos veces, con un <code>find_set</code> que sube hasta
+  la raíz sin acortar el camino. A la izquierda, colgando siempre la segunda raíz de la primera; a la
+  derecha, comparando los rangos.</p>
+
+  <div class="carta">
+    <h2>1. Antes de ver los dos bosques</h2>
+    <div class="prediccion">
+      <span>Sin la unión por rango, el elemento más hondo queda a</span>
+      <input type="text" id="prediccion" class="texto corta" placeholder="saltos">
+      <span>saltos de su raíz.</span>
+      <button id="btn-comprobar" class="primario">Comprobar</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Las dos uniones</h2>
+    <div class="bosques">
+      <div><h3>sin rango</h3><pre class="codigo-fijo">def union(p, x, y):
+    rx = raiz(p, x)
+    ry = raiz(p, y)
+    if rx != ry:
+        p[ry] = rx</pre></div>
+      <div><h3>con rango</h3><pre class="codigo-fijo">def union(p, rango, x, y):
+    rx = raiz(p, x)
+    ry = raiz(p, y)
+    if rx != ry:
+        if rango[rx] &lt; rango[ry]:
+            p[rx] = ry
+        elif rango[rx] &gt; rango[ry]:
+            p[ry] = rx
+        else:
+            p[ry] = rx
+            rango[rx] = rango[rx] + 1</pre></div>
+    </div>
+    <p class="nota">Las dos llaman a <code>raiz</code>, que sube sin tocar <code>p</code>, de modo que la
+    única diferencia entre las dos columnas son las tres ramas del <code>if</code> interno.</p>
+  </div>
+
+  <div class="carta">
+    <h2>3. Operación por operación</h2>
+    <div class="botones">
+      <button id="btn-paso" class="primario">Una operación</button>
+      <button id="btn-fin">Al final</button>
+      <button id="btn-reiniciar">Reiniciar</button>
+    </div>
+    <div class="marcador">
+      <span>En curso: <b id="ver-op"></b></span>
+      <span>Operación <b id="ver-paso">0</b> de <b id="ver-total">7</b></span>
+    </div>
+    <div class="bosques">
+      <div><h3>sin rango</h3><div class="dibujo" id="bosque-sin"></div></div>
+      <div><h3>con rango</h3><div class="dibujo" id="bosque-con"></div></div>
+    </div>
+    <div class="leyenda">En rojo, el camino del elemento que más salta en cada bosque.</div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Lo que cuesta llegar a la raíz</h2>
+    <div class="envoltura-tabla" id="tabla-saltos"></div>
+  </div>
+
+  <div class="carta">
+    <h2>5. Una sola llamada que acorta</h2>
+    <p class="pregunta" style="margin-top:0">Sobre los dos bosques del final, el <code>find_set</code> de
+    la sesión, el que reescribe <code>p</code> al volver.</p>
+    <div class="botones"><button id="btn-comprimir" class="primario">Correr find_set(6) en los dos</button></div>
+    <div id="ver-comprimir"></div>
+  </div>
+
+  <div class="carta">
+    <h2>6. Para resolver</h2>
+    <p style="margin-top:0">Escriba una secuencia de uniones sobre ocho elementos que deje un árbol de
+    altura 3 con la unión por rango encendida. Después diga si existe una que llegue a altura 4.</p>
+  </div>
+</div>
+<script src="../comun/grafo-svg.js"></script>
+<script src="lib.js"></script>
+<script src="sin-heuristicas.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>De quién cuelga</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>De quién cuelga</h1>
+  <p class="intro">En cada ronda hay dos árboles, con el rango escrito sobre su raíz, y una llamada a
+  <code>union</code>. Hay que decir qué raíz queda colgando de cuál y en qué queda el rango. Al acertar
+  aparece el árbol que deja la llamada.</p>
+  <div class="carta"><b>Acertadas: <span id="resueltas">0</span> de <span id="total">6</span></b></div>
+  <div id="rondas"></div>
+</div>
+<script src="../comun/grafo-svg.js"></script>
+<script src="lib.js"></script>
+<script src="colgar.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

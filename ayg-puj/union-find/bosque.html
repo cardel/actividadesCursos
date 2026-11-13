@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El bosque, operación por operación</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>El bosque, operación por operación</h1>
+  <p class="intro">Ocho elementos, un <code>make_set</code> para cada uno y después siete uniones. El
+  número que acompaña a cada línea es el de su archivo y el contador dice cuántas veces se ejecuta.</p>
+
+  <div class="carta">
+    <h2>1. Antes de arrancar</h2>
+    <p class="pregunta" style="margin-top:0">Las uniones, en este orden: <span id="ver-secuencia"></span>.</p>
+    <div class="prediccion">
+      <span>El rango de la raíz que queda al final sube</span>
+      <input type="text" id="prediccion" class="texto corta" placeholder="cuántas veces">
+      <span>veces.</span>
+      <button id="btn-comprobar" class="primario">Comprobar</button>
+    </div>
+    <div id="veredicto" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Ejecute el código</h2>
+    <div class="panel-doble">
+      <div class="codigo" id="panel-codigo"></div>
+      <div class="estado">
+        <div class="chips" id="chips"></div>
+        <div class="progreso">Paso <span id="ver-paso">0</span> de <span id="ver-total">0</span></div>
+        <div class="botones">
+          <button id="btn-paso" class="primario">Un paso</button>
+          <button id="btn-auto">Auto</button>
+          <button id="btn-fin">Al final</button>
+          <button id="btn-reiniciar">Reiniciar</button>
+        </div>
+        <div class="tira"><span class="rot">En curso</span><span id="ver-op"></span></div>
+        <div class="tira"><span class="rot">Llamadas abiertas</span><span id="ver-pila"></span></div>
+      </div>
+    </div>
+    <div class="tira"><span class="rot">Operaciones</span><span id="ver-ops"></span></div>
+    <div id="aviso" class="alerta oculto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. El bosque</h2>
+    <div class="dibujo" id="panel-bosque"></div>
+    <div class="leyenda">La flecha va del hijo al padre. Verde: raíz, con su rango encima. Ámbar: lo que
+    <code>find_set</code> está mirando. Azul: la flecha que la línea 15 acaba de mover.</div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Los dos arreglos</h2>
+    <div class="envoltura-tabla" id="tabla-arreglos"></div>
+    <div class="tira"><span class="rot">Rangos sobre 0</span><span id="ver-rango"></span></div>
+    <div id="ver-final" class="nota"></div>
+  </div>
+
+  <div class="carta">
+    <h2>5. Y ahora <code>find_set(7)</code></h2>
+    <p class="pregunta" style="margin-top:0">Sobre el árbol que quedó, antes de mirar: por dónde sube la
+    llamada y qué casillas de <code>p</code> deja distintas.</p>
+    <div class="botones"><button id="btn-find7" class="primario">Correr find_set(7)</button></div>
+    <div id="ver-find7"></div>
+  </div>
+
+  <div class="carta">
+    <h2>6. Para llevarse</h2>
+    <p style="margin-top:0">Corra la misma secuencia cambiando <code>union(8, 1)</code> por
+    <code>union(1, 8)</code> y diga qué casillas de <code>p</code> quedan distintas. Después encuentre
+    una unión de la secuencia que se pueda mover de sitio sin que el bosque final cambie.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="lib.js"></script>
+<script src="bosque.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
