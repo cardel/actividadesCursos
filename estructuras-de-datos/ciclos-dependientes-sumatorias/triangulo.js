@@ -180,24 +180,22 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto", function (params) {
       var n = params.n;
       var esperado = n * (n - 1) / 2;
-      if (valor === esperado) {
-        return { ok: true, msg: "Correcto: la línea 6 corre 0 + 1 + … + (n − 1) = " +
-          esperado + " veces. ¿Qué fórmula produce esa suma para cualquier n? La pregunta está al final." };
+      var lista = [];
+      function agregar(valor, clave, razon) {
+        var repetido = false;
+        lista.forEach(function (o) { if (o.valor === valor) { repetido = true; } });
+        if (!repetido && valor >= 0) { lista.push({ valor: valor, clave: clave, razon: razon }); }
       }
-      if (valor === n * n) {
-        return { ok: false, msg: "Multiplicó las dos cotas como si los ciclos fueran independientes. " +
-          "Aquí el interno depende de i: corre 0, 1, 2, … veces. Ejecute paso a paso y mire la escalera." };
-      }
-      if (valor === n * (n - 1)) {
-        return { ok: false, msg: "Cerca: contó cada casilla dos veces. La escalera es la mitad del rectángulo n × (n − 1)." };
-      }
-      if (valor === n * (n + 1) / 2) {
-        return { ok: false, msg: "Esa es la cuenta de la condición (línea 5), que se evalúa una vez más por cada vuelta del interno. La pregunta es por el cuerpo." };
-      }
-      return { ok: false, msg: "No coincide. Pista: congele i, cuente cuántas veces corre el interno en esa vuelta y después sume las vueltas." };
+      agregar(esperado, "correcta", "Correcto: la línea 6 corre 0 + 1 + … + (n − 1) = " +
+        esperado + " veces. ¿Qué fórmula produce esa suma para cualquier n? La pregunta está al final.");
+      agregar(n * n, "cuadrado", "Multiplicó las dos cotas como si los ciclos fueran independientes. " +
+        "Aquí el interno depende de i: corre 0, 1, 2, … veces. Ejecute paso a paso y mire la escalera.");
+      agregar(n * (n - 1), "doble", "Cerca: contó cada casilla dos veces. La escalera es la mitad del rectángulo n × (n − 1).");
+      agregar(n * (n + 1) / 2, "condicion", "Esa es la cuenta de la condición (línea 5), que se evalúa una vez más por cada vuelta del interno. La pregunta es por el cuerpo.");
+      return lista;
     });
 
     document.getElementById("rango-n").addEventListener("input", function (ev) {

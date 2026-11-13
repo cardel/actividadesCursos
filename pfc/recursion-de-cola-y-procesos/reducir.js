@@ -180,13 +180,33 @@
     alPintar: pintarReduccion
   });
 
-  Motor.prediccionNumerica(function (valor, preset) {
-    var real = PRESETS[preset].pasos.length - 1;
-    if (valor === real) {
-      return { ok: true, msg: "Correcto: " + real + " reemplazos hasta el valor." };
-    }
-    return { ok: false, msg: "No. Son " + real + ". Cuente la bajada y la subida por separado: "
-      + "la bajada abre una llamada por paso, la subida cierra una operación por paso." };
+  Motor.opcionesNumericas("opciones-reemplazos", "veredicto", function (preset) {
+    var pasos = PRESETS[preset].pasos;
+    var real = pasos.length - 1;
+    var base = 0;
+    while (base < pasos.length - 1 && pasos[base].linea !== null) { base = base + 1; }
+    var subida = pasos.length - 1 - base;
+    var lista = [
+      { valor: real, clave: "correcta",
+        razon: "Correcto: " + real + " reemplazos. La bajada abre una llamada por "
+          + "paso, el caso base se reemplaza por su valor, y la subida cierra "
+          + "una operación por paso." },
+      { valor: real + 1, clave: "expresiones",
+        razon: "Esas son las expresiones que se escriben, contando la de partida. "
+          + "La de partida no es un reemplazo: es de donde se sale." },
+      { valor: real - 1, clave: "sinbase",
+        razon: "Falta el reemplazo del caso base: la llamada con el argumento en "
+          + "cero también se reemplaza, por su valor." },
+      { valor: subida, clave: "subida",
+        razon: "Eso es solo la subida, las operaciones que se cierran al volver. "
+          + "Falta la bajada, que también reemplaza una cosa por paso." }
+    ];
+    var vistos = {};
+    return lista.filter(function (o) {
+      var nuevo = !vistos[o.valor];
+      vistos[o.valor] = true;
+      return nuevo;
+    });
   });
 
   document.querySelectorAll("[data-preset]").forEach(function (b) {
@@ -194,7 +214,6 @@
       document.querySelectorAll("[data-preset]").forEach(function (o) { o.className = ""; });
       b.className = "primario";
       Motor.limpiarVeredicto();
-      document.getElementById("prediccion").value = "";
       Motor.reiniciar(parseInt(b.getAttribute("data-preset"), 10));
     });
   });

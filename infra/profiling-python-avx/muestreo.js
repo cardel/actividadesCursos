@@ -119,27 +119,6 @@ if (typeof document !== "undefined") (function () {
     return (r > 0 ? "+" : r < 0 ? "−" : "") + num(Math.abs(r), 1);
   }
 
-  // El valor de un input numerico llega con punto decimal aunque el
-  // estudiante escriba coma; aqui se aceptan las dos.
-  function leerDecimal(id) {
-    return parseFloat(String(document.getElementById(id).value).replace(",", "."));
-  }
-
-  // Como Motor.conectarPrediccion, con el lector de arriba y un 2 % justo:
-  // 0,001 no admite el margen fijo de 0,005 del motor.
-  function conectarDecimal(ids, esperado, explicar) {
-    var caja = document.getElementById(ids.veredicto);
-    document.getElementById(ids.boton).addEventListener("click", function () {
-      var dicho = leerDecimal(ids.entrada);
-      var real = esperado();
-      var bien = !isNaN(dicho) && Math.abs(dicho - real) <= Math.abs(real) * 0.02;
-      caja.className = "veredicto " + (bien ? "bien" : "mal");
-      caja.textContent = isNaN(dicho)
-        ? Motor.veredictoNumerico(dicho, real).motivo
-        : explicar(bien, real, dicho);
-    });
-  }
-
   /* Carta 2: la regla 100/X, con la tabla tapada hasta mover el control. */
   function pintarRegla() {
     var x = parseInt(document.getElementById("rango-x").value, 10);
@@ -248,21 +227,64 @@ if (typeof document !== "undefined") (function () {
   }
 
   /* Carta 1: las dos predicciones. */
-  function explicarA(bien, real, dicho) {
-    var t = "Una muestra cada décima de segundo durante " + num(FIB.duracion, 2) + " s: " +
-      num(FIB.duracion, 2) + " / " + num(FIB.interval, 1) + " = " + num(real) + ". El reporte " +
-      "de la clase dice Samples: 46, Duration: 4,640 y CPU time: 4,623, cálculo puro sin esperas. " +
-      "La versión con memoización dura 0,000 s con el mismo interval: cero muestras, y el " +
-      "reporte dice No samples were recorded.";
-    return (bien ? "Sí, " + num(real) + ". " : "No: son " + num(real) + ", no " + num(dicho, 2) + ". ") + t;
+  function razonA() {
+    var real = muestras(FIB.duracion, FIB.interval);
+    return "Sí, " + num(real) + ". Una muestra cada décima de segundo durante " +
+      num(FIB.duracion, 2) + " s: " + num(FIB.duracion, 2) + " / " + num(FIB.interval, 1) +
+      " = " + num(real) + ". El reporte de la clase dice Samples: 46, Duration: 4,640 y " +
+      "CPU time: 4,623, cálculo puro sin esperas. La versión con memoización dura 0,000 s " +
+      "con el mismo interval: cero muestras, y el reporte dice No samples were recorded.";
   }
 
-  function explicarB(bien, real, dicho) {
-    var t = "La regla es 1/100 del tiempo total: 0,1 / 100 = " + num(real, 3) + " s, y caben " +
-      "cerca de 100 muestras. Con interval = 0,1 el programa termina antes de la primera " +
-      "muestra y el reporte queda vacío, como le pasó a fib con memoización. Un programa de " +
-      "10 s pide 0,1.";
-    return (bien ? "Sí, " + num(real, 3) + " s. " : "No: " + num(real, 3) + " s, no " + num(dicho, 4) + ". ") + t;
+  function razonB() {
+    var real = intervalo(0.1);
+    return "Sí, " + num(real, 3) + " s. La regla es 1/100 del tiempo total: 0,1 / 100 = " +
+      num(real, 3) + " s, y caben cerca de 100 muestras. Con interval = 0,1 el programa " +
+      "termina antes de la primera muestra y el reporte queda vacío, como le pasó a fib " +
+      "con memoización. Un programa de 10 s pide 0,1.";
+  }
+
+  function armarMuestras() {
+    var real = muestras(FIB.duracion, FIB.interval);
+    var lista = [{ valor: real, clave: "correcta", razon: razonA() }];
+    [
+      { valor: Math.ceil(FIB.duracion / FIB.interval), clave: "arriba",
+        razon: "Esa cuenta redondea hacia arriba. La muestra número 47 caería en 4,7 s y el " +
+          "programa termina en 4,64: lo que sobra al final no cuenta." },
+      { valor: Math.round(FIB.duracion / (FIB.interval / 10)), clave: "centesima",
+        razon: "Esas serían las muestras con interval = 0,01. Con 0,1 hay una cada décima, " +
+          "diez por segundo, no cien." },
+      { valor: Math.round(FIB.duracion), clave: "porSegundo",
+        razon: "Eso sería una muestra por segundo. El intervalo es de una décima, así que " +
+          "caben diez por cada segundo." }
+    ].forEach(function (o) {
+      var repetido = lista.some(function (x) { return x.valor === o.valor; });
+      if (!repetido) { lista.push(o); }
+    });
+    return lista.map(function (o) {
+      return { valor: num(o.valor), clave: o.clave, razon: o.razon };
+    });
+  }
+
+  function armarInterval() {
+    var real = intervalo(0.1);
+    var lista = [{ valor: num(real, 3) + " s", clave: "correcta", razon: razonB() }];
+    [
+      { v: 0.1, clave: "igual",
+        razon: "Con interval = 0,1 el programa termina antes de la primera muestra: lo que " +
+          "dura menos que el intervalo no existe para el perfilador, y el reporte queda vacío." },
+      { v: 0.01, clave: "decima",
+        razon: "Con 0,01 salen solo diez muestras de un programa de 0,1 s. Es poco para " +
+          "repartir el tiempo; la regla pide cerca de cien." },
+      { v: 0.0001, clave: "milesima",
+        razon: "Con 0,0001 salen mil muestras y el overhead de despertar tantas veces se " +
+          "nota. Cerca de cien bastan, y eso es un centésimo del tiempo total." }
+    ].forEach(function (o) {
+      var texto = num(o.v, 4) + " s";
+      var repetido = lista.some(function (x) { return x.valor === texto; });
+      if (!repetido) { lista.push({ valor: texto, clave: o.clave, razon: o.razon }); }
+    });
+    return lista;
   }
 
   /* Carta 4: por que el arbol no trae el conteo de llamadas. */
@@ -298,14 +320,8 @@ if (typeof document !== "undefined") (function () {
     corridas += 1;
     pintarMuestreo();
   });
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-a", boton: "btn-comprobar-a", veredicto: "veredicto-a" },
-    function () { return muestras(FIB.duracion, FIB.interval); },
-    explicarA);
-  conectarDecimal(
-    { entrada: "prediccion-b", boton: "btn-comprobar-b", veredicto: "veredicto-b" },
-    function () { return intervalo(0.1); },
-    explicarB);
+  Motor.opcionesNumericas("opciones-muestras", "veredicto-a", armarMuestras);
+  Motor.opcionesNumericas("opciones-interval", "veredicto-b", armarInterval);
   Motor.conectarOpciones("opciones-conteo", "veredicto-conteo", RAZONES);
 
   pintarRegla();

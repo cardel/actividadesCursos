@@ -276,42 +276,56 @@ if (typeof module !== "undefined") {
       }
     }
 
-    /* Re-iniciar el motor con otro programa exige soltar los escuchas
-       viejos de los botones: se reemplazan por clones sin escuchas. */
-    function evaluarPrediccion(valor, params) {
+    /* Opciones de la pregunta: se arman con el programa y el grafo del
+       preset activo. */
+    function opcionesDe(params) {
       var real = medir(params);
       var n = params.G.length;
       var E = EJERCICIO.aristasDe(params.G).length;
-      if (valor === real) {
-        medidas[params.forma] = real;
-        Motor.repintar();
-        return { ok: true, msg: "Correcto: " + real + " ejecuciones. Quedó " +
-          "anotado en la tabla de abajo; complete las cuatro." };
-      }
-      if (valor === n * E) {
-        return { ok: false, msg: "Ese es V · E, la cuenta de la matriz de " +
-          "incidencia: una pasada por las E columnas para cada uno de los V " +
-          "vértices." };
-      }
-      if (valor === n) {
-        return { ok: false, msg: "Ese es V. Solo la lista de adyacencia se " +
-          "queda en V: mire cuántos ciclos anidados tiene el programa que está " +
-          "viendo." };
-      }
-      if (valor === n * n) {
-        return { ok: false, msg: "Ese es V². Es la cuenta de la matriz, que " +
-          "recorre la fila completa de cada vértice, ceros incluidos." };
-      }
-      if (valor === E || valor === 2 * E) {
-        return { ok: false, msg: "Va por el lado de E. Cuente exactamente " +
-          "cuántas veces se ejecuta la línea marcada, no cuántas aristas hay." };
-      }
-      return { ok: false, msg: "No coincide. Ejecute con Auto y lea el contador " +
-        "que queda al lado de la línea." };
+    function sinRepetir(lista) {
+      var vistos = {};
+      var salida = [];
+      lista.forEach(function (o) {
+        if (!vistos[o.valor] && o.valor >= 0) {
+          vistos[o.valor] = true;
+          salida.push(o);
+        }
+      });
+      return salida.slice(0, 4);
+    }
+      return sinRepetir([
+        { valor: real, clave: "correcta",
+          razon: "Correcto: " + real + " ejecuciones. Quedó " +
+            "anotado en la tabla de abajo; complete las cuatro." },
+        { valor: n * E, clave: "VE",
+          razon: "Ese es V · E, la cuenta de la matriz de " +
+            "incidencia: una pasada por las E columnas para cada uno de los V " +
+            "vértices." },
+        { valor: n * n, clave: "V2",
+          razon: "Ese es V². Es la cuenta de la matriz, que " +
+            "recorre la fila completa de cada vértice, ceros incluidos." },
+        { valor: n, clave: "V",
+          razon: "Ese es V. Solo la lista de adyacencia se " +
+            "queda en V: mire cuántos ciclos anidados tiene el programa que está " +
+            "viendo." },
+        { valor: E, clave: "E",
+          razon: "Ese es E, el número de aristas. Solo el programa que " +
+            "recorre la lista de aristas ejecuta su línea clave E veces; aquí la " +
+            "cuenta sale de los ciclos del programa que está viendo." },
+        { valor: 2 * E, clave: "2E",
+          razon: "Ese es 2E: cada arista contada por sus dos extremos, como " +
+            "las entradas de las listas de adyacencia. La línea marcada no se " +
+            "ejecuta esa cantidad de veces." }
+      ]);
     }
 
+    var opcionesPred = null;
+
+    var actualK = 0;
+
     function arrancar(k) {
-      var ids = ["btn-paso", "btn-auto", "btn-fin", "btn-reiniciar", "btn-comprobar"];
+      actualK = k;
+      var ids = ["btn-paso", "btn-auto", "btn-fin", "btn-reiniciar"];
       var t = 0;
       while (t < ids.length) {
         var b = document.getElementById(ids[t]);
@@ -325,9 +339,22 @@ if (typeof module !== "undefined") {
         paramsIniciales: PRESETS[k],
         alPintar: alPintar
       });
-      Motor.prediccionNumerica(evaluarPrediccion);
-      document.getElementById("prediccion").value = "";
-      Motor.limpiarVeredicto();
+      if (opcionesPred === null) {
+        opcionesPred = Motor.opcionesNumericas("opciones-prediccion", "veredicto",
+          opcionesDe);
+        // al acertar, la medida queda anotada en la tabla
+        document.getElementById("opciones-prediccion").addEventListener("click",
+          function (ev) {
+            var b = ev.target;
+            if (b && b.getAttribute && b.getAttribute("data-op") === "correcta") {
+              var p = PRESETS[actualK];
+              medidas[p.forma] = medir(p);
+              Motor.repintar();
+            }
+          });
+      } else {
+        opcionesPred.refrescar();
+      }
       document.getElementById("rotulo-clave").textContent = "línea " + PRESETS[k].clave;
     }
 

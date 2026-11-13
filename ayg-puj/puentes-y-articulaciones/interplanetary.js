@@ -225,7 +225,7 @@ if (typeof module !== "undefined") {
   module.exports = EJERCICIO;
 } else {
   (function () {
-    var presetActual = 0, A = null, marcaPuente = {}, puentesListos = false;
+    var opcionesPrediccion = null, presetActual = 0, A = null, marcaPuente = {}, puentesListos = false;
     var influenciasListas = false, decision = {}, decididos = false;
 
     function g() { return EJERCICIO.grafos[presetActual]; }
@@ -525,40 +525,19 @@ if (typeof module !== "undefined") {
       document.getElementById("detalle-infl").innerHTML = "";
       document.getElementById("detalle-decisiones").innerHTML = "";
       document.getElementById("salida").value = "";
-      document.getElementById("prediccion").value = "";
-      ["veredicto-prediccion", "veredicto-puentes", "veredicto-infl", "veredicto-decisiones", "veredicto-salida"].forEach(function (id) {
+      ["veredicto-puentes", "veredicto-infl", "veredicto-decisiones", "veredicto-salida"].forEach(function (id) {
         var v = document.getElementById(id);
         v.className = "veredicto";
         v.textContent = "";
       });
       dibujar();
+      if (opcionesPrediccion) { opcionesPrediccion.refrescar(); }
     }
 
     document.getElementById("btn-puentes").addEventListener("click", comprobarPuentes);
     document.getElementById("btn-infl").addEventListener("click", comprobarInfluencias);
     document.getElementById("btn-decisiones").addEventListener("click", comprobarDecisiones);
     document.getElementById("btn-salida").addEventListener("click", comprobarSalida);
-    document.getElementById("btn-prediccion").addEventListener("click", function () {
-      var valor = parseInt(document.getElementById("prediccion").value, 10);
-      var v = document.getElementById("veredicto-prediccion"), p = g();
-      var total = A.R.orden.length;
-      if (isNaN(valor)) {
-        v.className = "veredicto mal";
-        v.textContent = "Escriba un número primero.";
-      } else if (valor === total) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: " + total + " de " + p.n + ". El recorrido empieza en el componente del planeta " + p.ini +
-          " y solo sale de él por puentes que llevan a más influencia.";
-      } else if (valor === p.n) {
-        v.className = "veredicto mal";
-        v.textContent = "Ese es el total de planetas. El recorrido alcanza " + total +
-          ": cada puente que no sube de influencia deja un trozo del mapa afuera, y con él todo lo que está detrás.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "No coincide: son " + total + ". Agrupe los planetas que no quedan separados por un puente, sume la influencia de cada grupo y siga la cadena desde el " +
-          p.ini + " hacia los grupos de más influencia.";
-      }
-    });
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (btn) {
       btn.addEventListener("click", function () {
         Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (b) { b.classList.remove("primario"); });
@@ -568,5 +547,28 @@ if (typeof module !== "undefined") {
       });
     });
     armar();
+
+    opcionesPrediccion = Motor.opcionesNumericas("opciones-prediccion", "veredicto-prediccion", function () {
+      var p = g(), total = A.R.orden.length, lista = [], usados = {};
+      var propio = 0, puentes = 0;
+      var arranque = A.C.ind[p.ini], u = 1;
+      while (u <= p.n) { if (A.C.ind[u] === arranque) { propio = propio + 1; } u = u + 1; }
+      u = 0;
+      while (u < A.P.esPuente.length) { if (A.P.esPuente[u]) { puentes = puentes + 1; } u = u + 1; }
+      function agregar(valor, clave, razon) {
+        if (valor >= 1 && !usados[valor]) { usados[valor] = true; lista.push({ valor: valor, clave: clave, razon: razon }); }
+      }
+      agregar(total, "correcta", "Correcto: " + total + " de " + p.n + ". El recorrido empieza en el componente del planeta " + p.ini +
+        " y solo sale de él por puentes que llevan a más influencia.");
+      agregar(p.n, "todos", "Ese es el total de planetas. El recorrido alcanza " + total +
+        ": cada puente que no sube de influencia deja un trozo del mapa afuera, y con él todo lo que está detrás.");
+      agregar(propio, "propio", "Ese es el tamaño del componente donde arranca el recorrido, " + propio +
+        ". Falta mirar cada puente: el que lleva a un componente de más influencia se cruza.");
+      agregar(A.C.total, "grupos", "Ese es el número de componentes 2-arista-conexos, " + A.C.total +
+        ". El recorrido alcanza planetas, no grupos, y no todos los grupos se visitan.");
+      agregar(puentes, "puentes", "Ese es el número de puentes del mapa, " + puentes + ". La pregunta es por los planetas que el recorrido alcanza.");
+      agregar(total - 1, "sin-arranque", "Contó los planetas sin el de arranque. El recorrido también lo visita, el " + p.ini + ".");
+      return lista.slice(0, 4);
+    });
   })();
 }

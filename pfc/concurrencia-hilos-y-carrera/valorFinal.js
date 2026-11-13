@@ -141,23 +141,27 @@
     });
   }
 
-  function prediccion(idCampo, idBoton, idVeredicto, esperado, bien, alto, bajo, alAcertar) {
-    document.getElementById(idBoton).addEventListener("click", function () {
-      var v = document.getElementById(idVeredicto);
-      var valor = parseInt(document.getElementById(idCampo).value, 10);
-      if (isNaN(valor)) {
-        v.className = "veredicto mal";
-        v.textContent = "Escriba un número primero.";
-        return;
-      }
-      if (valor === esperado) {
-        v.className = "veredicto bien";
-        v.textContent = bien;
-        alAcertar();
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = valor > esperado ? alto : bajo;
-      }
+  function prediccion(idOpciones, idVeredicto, lista, alAcertar) {
+    var vistos = [];
+    var unicas = lista.filter(function (o) {
+      var nueva = vistos.indexOf(o.valor) < 0;
+      if (nueva) { vistos.push(o.valor); }
+      return nueva;
+    });
+    var buena = unicas.filter(function (o) { return o.clave === "correcta"; })[0];
+    var giro = (idOpciones.length + buena.valor) % unicas.length;
+    var caja = document.getElementById(idOpciones);
+    var v = document.getElementById(idVeredicto);
+    unicas.slice(giro).concat(unicas.slice(0, giro)).forEach(function (o) {
+      var b = document.createElement("button");
+      b.setAttribute("data-op", o.clave);
+      b.textContent = o.valor;
+      b.addEventListener("click", function () {
+        v.className = "veredicto " + (o.clave === "correcta" ? "bien" : "mal");
+        v.textContent = o.razon;
+        if (o.clave === "correcta") { alAcertar(); }
+      });
+      caja.appendChild(b);
     });
   }
 
@@ -236,18 +240,28 @@
   }
 
   construirCodigo("codigo-x", CODIGO);
-  prediccion("pred-ordenes", "btn-ordenes", "ver-ordenes", ORDENES.length,
-    "Seis. Cada hilo aporta dos pasos en orden fijo, y hay seis formas de " +
-      "intercalar dos secuencias de dos pasos.",
-    "Son menos. El orden interno de cada hilo no se puede alterar: A1 va siempre antes de A2, y B1 antes de B2.",
-    "Son más. Cuente en cuántos sitios de la secuencia de A caben los dos pasos de B sin cambiar su orden.",
-    function () { aciertos.ordenes = true; marcar(); });
-  prediccion("pred-valores", "btn-valores", "ver-valores", VALORES.length,
-    "Tres: " + VALORES.join(", ") + ". El " + VALORES[VALORES.length - 1] +
-      " sale cuando un hilo corre entero antes de que el otro lea; los otros dos, cuando ambos leen 0 y una escritura pisa a la otra.",
-    "Son menos: dos de las seis intercalaciones terminan en el mismo valor por partida doble.",
-    "Son más. Ejecute a mano las intercalaciones en que los dos hilos leen antes de que alguno escriba.",
-    function () { aciertos.valores = true; mostrarTabla(); marcar(); });
+  prediccion("opciones-ordenes", "ver-ordenes", [
+    { valor: ORDENES.length, clave: "correcta",
+      razon: "Seis. Cada hilo aporta dos pasos en orden fijo, y hay seis formas de " +
+        "intercalar dos secuencias de dos pasos." },
+    { valor: HILO_A.length * HILO_B.length, clave: "producto",
+      razon: "Eso multiplica los pasos de un hilo por los del otro. Una intercalación es una forma de repartir los cuatro sitios entre A y B, no una pareja de pasos." },
+    { valor: 24, clave: "factorial",
+      razon: "Esas son las 4! permutaciones de A1, A2, B1 y B2, que incluyen las que ponen A2 antes de A1. El orden interno de cada hilo no se puede alterar." },
+    { valor: 2, clave: "dos",
+      razon: "Eso cuenta solo A entero antes que B y B entero antes que A. Hay más: los pasos de un hilo pueden quedar entre los del otro." }
+  ], function () { aciertos.ordenes = true; marcar(); });
+  prediccion("opciones-valores", "ver-valores", [
+    { valor: VALORES.length, clave: "correcta",
+      razon: "Tres: " + VALORES.join(", ") + ". El " + VALORES[VALORES.length - 1] +
+        " sale cuando un hilo corre entero antes de que el otro lea; los otros dos, cuando ambos leen 0 y una escritura pisa a la otra." },
+    { valor: ORDENES.length, clave: "intercalaciones",
+      razon: "Ese es el número de intercalaciones, no de valores. Varias intercalaciones terminan en el mismo valor." },
+    { valor: VALORES.length - 1, clave: "uno-menos",
+      razon: "Falta uno. Ejecute a mano las intercalaciones en que los dos hilos leen antes de que alguno escriba: la última escritura decide entre dos valores distintos." },
+    { valor: VALORES.length + 1, clave: "uno-mas",
+      razon: "Sobra uno. Ese conteo incluye el 0 inicial, pero los dos join garantizan que las escrituras ocurrieron antes del println." }
+  ], function () { aciertos.valores = true; mostrarTabla(); marcar(); });
   construirLecturas();
   marcar();
 })();

@@ -152,23 +152,29 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto", function (params) {
       var n = params.n;
       var esperado = EJERCICIO.vueltas(n);
-      if (valor === esperado) {
-        return { ok: true, msg: "Correcto: la línea 4 corre " + esperado +
-          " veces. Mire la secuencia: son los mismos números de potencias, al revés. La fórmula general se pregunta al final." };
-      }
-      if (valor === esperado - 1) {
-        return { ok: false, msg: "Le faltó una vuelta: cuando i llega a 1 todavía entra una vez más (1 / 2 = 0 recién después)." };
-      }
-      if (valor === Math.floor(n / 2)) {
-        return { ok: false, msg: "El índice no baja de 2 en 2: se parte por la mitad. Después de una vuelta ya va por n/2, después por n/4, …" };
-      }
-      if (valor === n) {
-        return { ok: false, msg: "Eso sería un ciclo que baja de uno en uno. Aquí cada vuelta descarta la mitad de lo que queda." };
-      }
-      return { ok: false, msg: "No coincide. Pista: escriba los valores que toma i (n, n/2, n/4, …) y cuente cuántos hay antes de llegar a 0." };
+      var lista = [
+        { valor: esperado, clave: "correcta",
+          razon: "Correcto: la línea 4 corre " + esperado +
+            " veces. Mire la secuencia: son los mismos números de potencias, al revés. La fórmula general se pregunta al final." },
+        { valor: esperado - 1, clave: "sinuno",
+          razon: "Le faltó una vuelta: cuando i llega a 1 todavía entra una vez más (1 / 2 = 0 recién después)." },
+        { valor: Math.floor(n / 2), clave: "mitad",
+          razon: "El índice no baja de 2 en 2: se parte por la mitad. Después de una vuelta ya va por n/2, después por n/4, …" },
+        { valor: n, clave: "lineal",
+          razon: "Eso sería un ciclo que baja de uno en uno. Aquí cada vuelta descarta la mitad de lo que queda." },
+        { valor: esperado + 1, clave: "condicion",
+          razon: "Esa es la cuenta de la condición del ciclo, que se evalúa una vez más que el cuerpo." }
+      ];
+      // una opcion que repite un valor ya presente se descarta
+      var vistos = {};
+      return lista.filter(function (o) {
+        var nuevo = !vistos[o.valor];
+        vistos[o.valor] = true;
+        return nuevo;
+      });
     });
 
     Array.prototype.forEach.call(document.querySelectorAll("#opciones-analisis button"), function (b) {

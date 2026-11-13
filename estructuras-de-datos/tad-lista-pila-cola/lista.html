@@ -16,14 +16,12 @@
   <div class="carta">
     <h2>1. Seis operaciones seguidas</h2>
     <div class="codigo" id="codigo-ops"></div>
-    <div class="prediccion">
-      <span>imprime:</span>
-      <input type="text" id="pred-ops" placeholder="a b c" style="width:8rem">
-      <span>tamaño:</span>
-      <input type="number" id="pred-ops-n" placeholder="?">
-      <button id="btn-ops" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0.3rem">¿Qué imprime <code>imprimir(l)</code>?</p>
+    <div class="opciones" id="opciones-ops"></div>
     <div id="veredicto-ops" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem">¿Qué tamaño tiene la lista al final?</p>
+    <div class="opciones" id="opciones-ops-n"></div>
+    <div id="veredicto-ops-n" class="veredicto"></div>
   </div>
 
   <div class="carta">
@@ -49,11 +47,7 @@
     <p style="margin-top:0">Con <code>a = ⟨1 2 3⟩</code> y
     <code>b = ⟨8 9⟩</code>, ¿qué devuelve?</p>
     <div class="codigo" id="codigo-intercalar"></div>
-    <div class="prediccion">
-      <span>devuelve:</span>
-      <input type="text" id="pred-inter" placeholder="a b c ..." style="width:9rem">
-      <button id="btn-inter" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-inter"></div>
     <div id="veredicto-inter" class="veredicto"></div>
   </div>
 
@@ -65,6 +59,7 @@
     if; la implementación la vuelve a vigilar con assert.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="lista.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

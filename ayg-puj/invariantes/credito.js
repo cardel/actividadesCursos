@@ -308,23 +308,55 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
-      var A = params.A;
-      var esperado = EJERCICIO.maxParejas(A, A.length - 1, function (x, y) { return x - y; });
-      var alReves = EJERCICIO.maxParejas(A, A.length - 1, function (x, y) { return y - x; });
-      var r;
-      if (valor === esperado) {
-        r = { ok: true, msg: "Correcto: la mayor diferencia es " + esperado +
-          ". Ahora ejecute y siga la terna (j, maximo, mejor) chequeo a chequeo." };
-      } else if (valor === alReves) {
-        r = { ok: false, msg: "Esa es la mayor diferencia con la resta al revés, " +
-          "el nuevo menos el antiguo. Se pide A[i] − A[k] con i < k." };
-      } else {
-        r = { ok: false, msg: "No coincide. Para cada posición k, reste A[k] del " +
-          "mayor de los que están antes, y quédese con la mejor resta." };
-      }
-      return r;
-    });
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto",
+      function (params) {
+        function sinRepetir(lista, maximo) {
+          var vistos = [];
+          var salida = [];
+          var t = 0;
+          while (t < lista.length && salida.length < maximo) {
+            if (vistos.indexOf(lista[t].valor) < 0) {
+              vistos.push(lista[t].valor);
+              salida.push(lista[t]);
+            }
+            t = t + 1;
+          }
+          return salida;
+        }
+        var A = params.A;
+        var esperado = EJERCICIO.maxParejas(A, A.length - 1, function (x, y) { return x - y; });
+        var alReves = EJERCICIO.maxParejas(A, A.length - 1, function (x, y) { return y - x; });
+        var mayor = A[0];
+        var menor = A[0];
+        var t = 0;
+        while (t < A.length) {
+          if (A[t] > mayor) { mayor = A[t]; }
+          if (A[t] < menor) { menor = A[t]; }
+          t = t + 1;
+        }
+        var lista = [
+          { valor: esperado, clave: "correcta",
+            razon: "Correcto: la mayor diferencia es " + esperado + ". Ahora " +
+              "ejecute y siga la terna (j, maximo, mejor) chequeo a chequeo." },
+          { valor: alReves, clave: "alReves",
+            razon: "Esa es la mayor diferencia con la resta al revés, el nuevo " +
+              "menos el antiguo. Se pide A[i] − A[k] con i < k." },
+          { valor: mayor - menor, clave: "extremos",
+            razon: "Esa es la diferencia entre el mayor y el menor del arreglo, " +
+              "sin mirar el orden. El minuendo tiene que estar antes que el " +
+              "sustraendo." },
+          { valor: A[0] - A[1], clave: "primera",
+            razon: "Esa es la diferencia de las dos primeras posiciones, el " +
+              "valor con que arranca mejor. Faltan las demás parejas." },
+          { valor: A[0] - A[A.length - 1], clave: "extremos-posicion",
+            razon: "Esa es la diferencia entre el primero y el último elemento. " +
+              "La mejor pareja puede estar en cualquier par de posiciones i < k." },
+          { valor: mayor + menor, clave: "suma",
+            razon: "Esa es la suma del mayor y el menor. Se pide una diferencia, " +
+              "una resta." }
+        ];
+        return sinRepetir(lista, 4);
+      });
 
     function cargar(n) {
       actual = n;

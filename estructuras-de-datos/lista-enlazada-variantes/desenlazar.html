@@ -18,9 +18,10 @@
   <div class="carta">
     <h2>1. Desenlazar el nodo del 1</h2>
     <div class="codigo" id="codigo-desenlazar"></div>
+    <div><b>¿Cuántas escrituras de puntero ejecuta?</b></div>
+    <div class="opciones" id="opciones-escrituras-uno"></div>
+    <div id="veredicto-escrituras-uno" class="veredicto"></div>
     <div class="prediccion">
-      <span>escrituras de puntero:</span>
-      <input type="number" id="pred-escrituras" placeholder="?">
       <span>cadena desde cabeza:</span>
       <input type="text" id="pred-cadena" placeholder="a b c" style="width:8rem">
       <button id="btn-uno" class="primario">Comprobar</button>
@@ -54,9 +55,10 @@
     <h2>3. El mismo código sobre la cabeza</h2>
     <p style="margin-top:0">Ahora <code>x</code> es el nodo del 3, el primero de
     la cadena.</p>
+    <div><b>¿Cuántas escrituras de puntero ejecuta?</b></div>
+    <div class="opciones" id="opciones-escrituras-tres"></div>
+    <div id="veredicto-escrituras-tres" class="veredicto"></div>
     <div class="prediccion">
-      <span>escrituras de puntero:</span>
-      <input type="number" id="pred-escrituras-3" placeholder="?">
       <span>cadena desde cabeza:</span>
       <input type="text" id="pred-cadena-3" placeholder="a b c" style="width:8rem">
       <button id="btn-cabeza" class="primario">Comprobar</button>
@@ -96,6 +98,7 @@
     nodo anterior: Θ(n).</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="desenlazar.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

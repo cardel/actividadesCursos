@@ -146,21 +146,42 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
-      var A = params.A;
-      var pos = EJERCICIO.posicionDelMinimo(A);
-      if (valor === pos) {
-        return { ok: true, msg: "Correcto: el mínimo está en la posición " +
-          pos + ". Ahora ejecute y mire las etiquetas de abajo: el algoritmo " +
-          "no busca el valor, busca la frontera entre «grande» y «pequeño»." };
-      }
-      if (valor === A[pos]) {
-        return { ok: false, msg: "Ese es el valor mínimo; se pide la posición " +
-          "donde está." };
-      }
-      return { ok: false, msg: "No coincide. El mínimo es el primer elemento " +
-        "del segundo tramo: busque dónde el arreglo deja de crecer." };
-    });
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto",
+      function (params) {
+        function sinRepetir(lista, maximo) {
+          var vistos = [];
+          var salida = [];
+          var t = 0;
+          while (t < lista.length && salida.length < maximo) {
+            if (vistos.indexOf(lista[t].valor) < 0) {
+              vistos.push(lista[t].valor);
+              salida.push(lista[t]);
+            }
+            t = t + 1;
+          }
+          return salida;
+        }
+        var A = params.A;
+        var pos = EJERCICIO.posicionDelMinimo(A);
+        var lista = [
+          { valor: pos, clave: "correcta",
+            razon: "Correcto: el mínimo está en la posición " + pos + ". Ahora " +
+              "ejecute y mire las etiquetas de abajo: el algoritmo no busca el " +
+              "valor, busca la frontera entre «grande» y «pequeño»." },
+          { valor: A[pos], clave: "valor",
+            razon: "Ese es el valor mínimo; se pide la posición donde está." },
+          { valor: pos + 1, clave: "desde-uno",
+            razon: "Esa es la posición contada desde uno. Los índices del " +
+              "arreglo arrancan en 0." },
+          { valor: A.length - 1, clave: "ultima",
+            razon: "Esa es la última posición. El mínimo queda ahí solo si " +
+              "el arreglo está rotado una sola vez hacia la derecha." },
+          { valor: Math.floor(A.length / 2), clave: "mitad",
+            razon: "Esa es la posición de en medio, la primera que mira el " +
+              "algoritmo. El mínimo está donde el arreglo deja de crecer." }
+        ];
+        return sinRepetir(lista, 4);
+      });
 
     Array.prototype.forEach.call(document.querySelectorAll(".presets button"), function (btn) {
       btn.addEventListener("click", function () {

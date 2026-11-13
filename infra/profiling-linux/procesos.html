@@ -27,19 +27,11 @@
     </div>
     <p style="margin-bottom:0.3rem">En la misma captura, <code>dockerd</code> aparece con
     51,8 % y <code>./paralelo 900</code> con una cifra de tres dígitos.</p>
-    <div class="prediccion">
-      <span>¿Cuál es el valor más alto que puede marcar la columna <code>%CPU</code> de un
-      solo proceso en esta máquina?</span>
-      <input type="number" id="pred-techo" min="0" step="1" placeholder="%CPU">
-      <button id="btn-techo" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0.3rem">¿Cuál es el valor más alto que puede marcar la columna <code>%CPU</code> de un solo proceso en esta máquina?</p>
+    <div class="opciones" id="op-techo"></div>
     <div id="ver-techo" class="veredicto"></div>
-    <div class="prediccion">
-      <span>El proceso marca <code>%CPU</code> 919,1. ¿A cuántos núcleos ocupados equivale?
-      Un decimal.</span>
-      <input type="number" id="pred-nucleos" min="0" step="0.1" placeholder="núcleos">
-      <button id="btn-nucleos" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0.3rem">El proceso marca <code>%CPU</code> 919,1. ¿A cuántos núcleos ocupados equivale?</p>
+    <div class="opciones" id="op-nucleos"></div>
     <div id="ver-nucleos" class="veredicto"></div>
     <div class="botones" style="margin-top:0.6rem">
       <button id="btn-destapar-top">Destapar la fila de top</button>
@@ -129,11 +121,8 @@
   <div class="carta">
     <h2>5. La suma de las doce filas</h2>
     <p style="margin-top:0">Los doce hilos traen un <code>%CPU</code> entre 79,6 y 86,4.</p>
-    <div class="prediccion">
-      <span>Sume las doce columnas de <code>%CPU</code> de la tabla. ¿Cuánto da?</span>
-      <input type="number" id="pred-suma" min="0" step="0.1" placeholder="suma de %CPU">
-      <button id="btn-suma" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0.3rem">Sume las doce columnas de <code>%CPU</code> de la tabla. ¿Cuánto da?</p>
+    <div class="opciones" id="op-suma"></div>
     <div id="ver-suma" class="veredicto"></div>
     <p style="margin:1rem 0 0.3rem">El mismo proceso, medido cinco segundos con
     <code>perf stat -p 102237 sleep 5</code>:</p>

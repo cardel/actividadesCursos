@@ -34,33 +34,48 @@ var EJERCICIO = (function () {
     return r;
   }
 
-  function fbAltura(raiz, valor) {
-    var h = altura(raiz), lej = masLejanos(raiz);
-    if (valor === h) {
-      return "La altura es " + h + ". El nodo más profundo es " + lej.join(" y ") + ", a " + h +
-        " aristas de " + NOM[raiz] + ", y la altura es justamente la mayor de esas distancias.";
-    }
-    if (valor === h + 1 || valor === h - 1) {
-      return "Es " + h + ". La altura se cuenta en aristas y no en niveles: con " + (h + 1) +
-        " niveles de nodos hay " + h + " aristas desde la raíz hasta el más profundo, que aquí es " + lej.join(" y ") + ".";
-    }
-    if (valor === 7) {
-      return "Es " + h + ". Siete son las aristas del árbol, no la altura: la altura mide un solo camino, el más largo que sale de la raíz.";
-    }
-    return "Es " + h + ", la distancia de " + NOM[raiz] + " al vértice más lejano, que es " + lej.join(" y ") + ".";
+  /* Nunca dos botones con el mismo valor: gana la primera de la lista. */
+  function unicas(lista) {
+    var vistos = {};
+    return lista.filter(function (o) {
+      var nuevo = !vistos[o.valor] && o.valor >= 0;
+      vistos[o.valor] = true;
+      return nuevo;
+    });
   }
 
-  function fbProfundidad(raiz, valor) {
-    var o = OBJETIVO[raiz], d = DIST[raiz][o];
-    if (valor === d) {
-      return "La profundidad de " + NOM[o] + " es " + d + ": hay " + d + " aristas de " + NOM[raiz] +
-        " a " + NOM[o] + ", y en un árbol ese camino es el único que los une.";
-    }
-    if (valor === d + 1) {
-      return "Es " + d + ". Contar nodos da uno más que contar aristas, y la raíz tiene profundidad 0.";
-    }
-    return "Es " + d + ", la cantidad de aristas del camino de " + NOM[raiz] + " a " + NOM[o] +
-      ". Ese camino no cambia al escoger la raíz; lo que cambia es que ahora se recorre hacia abajo.";
+  function opcionesAltura(raiz) {
+    var h = altura(raiz), lej = masLejanos(raiz);
+    return unicas([
+      { valor: h, clave: "correcta",
+        razon: "La altura es " + h + ". El nodo más profundo es " + lej.join(" y ") + ", a " + h +
+          " aristas de " + NOM[raiz] + ", y la altura es justamente la mayor de esas distancias." },
+      { valor: h + 1, clave: "niveles",
+        razon: "Es " + h + ". La altura se cuenta en aristas y no en niveles: con " + (h + 1) +
+          " niveles de nodos hay " + h + " aristas desde la raíz hasta el más profundo, que aquí es " + lej.join(" y ") + "." },
+      { valor: ARISTAS.length, clave: "aristas",
+        razon: "Es " + h + ". Siete son las aristas del árbol, no la altura: la altura mide un solo camino, el más largo que sale de la raíz." },
+      { valor: h - 1, clave: "antes",
+        razon: "Es " + h + ". Con " + (h - 1) + " el recorrido se detiene una arista antes del más profundo, " +
+          lej.join(" y ") + ": la altura incluye la última arista hasta él." }
+    ]);
+  }
+
+  function opcionesProfundidad(raiz) {
+    var o = OBJETIVO[raiz], d = DIST[raiz][o], h = altura(raiz);
+    return unicas([
+      { valor: d, clave: "correcta",
+        razon: "La profundidad de " + NOM[o] + " es " + d + ": hay " + d + " aristas de " + NOM[raiz] +
+          " a " + NOM[o] + ", y en un árbol ese camino es el único que los une." },
+      { valor: d + 1, clave: "nodos",
+        razon: "Es " + d + ". Contar nodos da uno más que contar aristas, y la raíz tiene profundidad 0." },
+      { valor: d - 1, clave: "padre",
+        razon: "Es " + d + ". Con " + (d - 1) + " el conteo termina en el padre de " + NOM[o] +
+          " y falta la última arista, la que baja hasta él." },
+      { valor: h, clave: "altura",
+        razon: "Es " + d + ". Ese número, " + h + ", es la altura del árbol, la profundidad del vértice más lejano; la pregunta es por " +
+          NOM[o] + ", que no es necesariamente ese." }
+    ]);
   }
 
   function fbHojas(raiz, marcados) {
@@ -105,7 +120,7 @@ var EJERCICIO = (function () {
 
   return { NOM: NOM, ARISTAS: ARISTAS, POS_LIBRE: POS_LIBRE, G: G, GRADO: GRADO, DIST: DIST,
            OBJETIVO: OBJETIVO, altura: altura, hojas: hojas, masLejanos: masLejanos,
-           fbAltura: fbAltura, fbProfundidad: fbProfundidad, fbHojas: fbHojas, invariantes: invariantes };
+           opcionesAltura: opcionesAltura, opcionesProfundidad: opcionesProfundidad, fbHojas: fbHojas, invariantes: invariantes };
 })();
 
 if (typeof module !== "undefined") {
@@ -159,17 +174,15 @@ if (typeof module !== "undefined") {
     }
 
     function limpiar() {
-      ["altura", "prof", "hojas"].forEach(function (c) {
-        el("fb-" + c).className = "fb";
-        el("fb-" + c).textContent = "";
-      });
-      el("in-altura").value = "";
-      el("in-prof").value = "";
+      el("fb-hojas").className = "fb";
+      el("fb-hojas").textContent = "";
       marcados = [];
       el("rot-altura").innerHTML = "Altura del árbol colgado de <i>" + E.NOM[raiz] + "</i>";
       el("rot-prof").innerHTML = "Profundidad de <i>" + E.NOM[E.OBJETIVO[raiz]] + "</i> con esa raíz";
       botonesHojas();
       colgado(false);
+      alturaOpc.refrescar();
+      profOpc.refrescar();
     }
 
     function tabla() {
@@ -195,14 +208,6 @@ if (typeof module !== "undefined") {
     }
 
     function comprobar() {
-      var a = parseInt(el("in-altura").value, 10), p = parseInt(el("in-prof").value, 10);
-      var okA = a === E.altura(raiz), okP = p === E.DIST[raiz][E.OBJETIVO[raiz]];
-      el("fb-altura").className = okA ? "fb bien" : "fb mal";
-      el("fb-altura").textContent = isNaN(a) ? "Falta el número." : E.fbAltura(raiz, a);
-      if (isNaN(a)) { el("fb-altura").className = "fb mal"; }
-      el("fb-prof").className = okP ? "fb bien" : "fb mal";
-      el("fb-prof").textContent = isNaN(p) ? "Falta el número." : E.fbProfundidad(raiz, p);
-      if (isNaN(p)) { el("fb-prof").className = "fb mal"; }
       var h = E.fbHojas(raiz, marcados);
       el("fb-hojas").className = h.ok ? "fb bien" : "fb mal";
       el("fb-hojas").textContent = h.msg;
@@ -210,6 +215,13 @@ if (typeof module !== "undefined") {
       colgado(true);
       tabla();
     }
+
+    var alturaOpc = Motor.opcionesNumericas("opciones-altura", "veredicto-altura", function () {
+      return E.opcionesAltura(raiz);
+    });
+    var profOpc = Motor.opcionesNumericas("opciones-prof", "veredicto-prof", function () {
+      return E.opcionesProfundidad(raiz);
+    });
 
     el("presets").innerHTML = "<span class='nota' style='margin-top:0'>Raíz:</span>" +
       E.NOM.split("").map(function (nm, i) {

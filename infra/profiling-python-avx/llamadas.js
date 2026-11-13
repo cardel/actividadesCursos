@@ -196,30 +196,72 @@ if (typeof document !== "undefined") (function () {
     }).join("");
   }
 
-  function explicarA(bien, real, dicho) {
-    vistaCrece = true;
-    pintarCrece();
-    var t = bien ? "Sí, " + num(real) + ". " : "Son " + num(real) + ", no " + num(dicho) + ". ";
-    t += "fib(6) es una llamada más las de fib(5) y fib(4): 1 + " + num(llamadas(5)) +
-      " + " + num(llamadas(4)) + " = " + num(llamadas(6)) + ". Cada n nuevo multiplica " +
-      "el conteo por cerca de 1,6: es exponencial, O(2ⁿ), y con fib(35) son " +
-      num(llamadas(35)) + " llamadas a fib, las del reporte de la clase.";
-    return t;
+  function razonA() {
+    return "Sí, " + num(llamadas(6)) + ". fib(6) es una llamada más las de fib(5) y fib(4): 1 + " +
+      num(llamadas(5)) + " + " + num(llamadas(4)) + " = " + num(llamadas(6)) +
+      ". Cada n nuevo multiplica el conteo por cerca de 1,6: es exponencial, O(2ⁿ), y con " +
+      "fib(35) son " + num(llamadas(35)) + " llamadas a fib, las del reporte de la clase.";
   }
 
-  function explicarB(bien, real, dicho) {
-    vistaMemo = true;
-    pintarMemo();
-    var t = bien ? "Sí, " + num(real) + ". " : "Son " + num(real) + ", no " + num(dicho) + ". ";
-    t += "Con @lru_cache cada valor de n entra al cuerpo una sola vez: fib(6), fib(5), " +
-      "…, fib(0), siete valores. Las otras " + num(llamadas(6) - llamadasMemo(6)) +
-      " llamadas del árbol las responde la caché antes de entrar a fib y el perfilador " +
-      "no las cuenta. Con fib(35) son " + num(MEDIDO.conMemo.fib) + " en lugar de " +
-      num(MEDIDO.sinMemo.fib) + "; el reporte dice " + num(MEDIDO.conMemo.totales) +
-      " porque suma las " + num(MEDIDO.programa) + " llamadas del resto del programa, y " +
+  function razonB() {
+    return "Sí, " + num(llamadasMemo(6)) + ". Con @lru_cache cada valor de n entra al cuerpo " +
+      "una sola vez: fib(6), fib(5), …, fib(0), siete valores. Las otras " +
+      num(llamadas(6) - llamadasMemo(6)) + " llamadas del árbol las responde la caché antes " +
+      "de entrar a fib y el perfilador no las cuenta. Con fib(35) son " +
+      num(MEDIDO.conMemo.fib) + " en lugar de " + num(MEDIDO.sinMemo.fib) +
+      "; el reporte dice " + num(MEDIDO.conMemo.totales) + " porque suma las " +
+      num(MEDIDO.programa) + " llamadas del resto del programa, y " +
       num(MEDIDO.conMemo.primitivas) + " primitivas en los dos casos: esas " +
       num(MEDIDO.programa) + " y una sola de fib, porque las demás vienen de la recursión.";
-    return t;
+  }
+
+  function sinRepetidos(lista, candidatos) {
+    candidatos.forEach(function (o) {
+      var repetido = lista.some(function (x) { return x.valor === o.valor; });
+      if (!repetido && lista.length < 4) { lista.push(o); }
+    });
+    return lista.map(function (o) {
+      return { valor: num(o.valor), clave: o.clave, razon: o.razon };
+    });
+  }
+
+  function armarA() {
+    return sinRepetidos([{ valor: llamadas(6), clave: "correcta", razon: razonA() }], [
+      { valor: fib(6), clave: "valor",
+        razon: "Ese es el valor que devuelve fib(6), " + fib(6) + ", no cuántas veces se " +
+          "llama a la función para obtenerlo." },
+      { valor: llamadas(5), clave: "unaRama",
+        razon: "Esas son las llamadas de fib(5), " + num(llamadas(5)) + ". Falta la rama de " +
+          "fib(4) y la llamada inicial: fib(6) llama a las dos." },
+      { valor: Math.pow(2, 6), clave: "dosAlN",
+        razon: "2⁶ sería un árbol completo, donde cada llamada hace dos. Pero fib(n - 2) " +
+          "baja más rápido y las ramas terminan antes: el conteo crece cerca de 1,6 veces " +
+          "por cada n, no 2." },
+      { valor: llamadasMemo(6), clave: "distintos",
+        razon: "Esos son los " + llamadasMemo(6) + " valores distintos de n. Sin memoización " +
+          "cada valor se vuelve a calcular las veces que aparezca en el árbol." }
+    ]);
+  }
+
+  function armarB() {
+    return sinRepetidos([{ valor: llamadasMemo(6), clave: "correcta", razon: razonB() }], [
+      { valor: llamadas(6), clave: "sinMemo",
+        razon: "Esas son las " + num(llamadas(6)) + " llamadas sin memoización. Con " +
+          "@lru_cache los repetidos se responden desde la caché sin entrar al cuerpo." },
+      { valor: 2 * 6 - 1, clave: "conAciertos",
+        razon: "Esa cuenta incluye " + (2 * 6 - 1 - llamadasMemo(6)) + " llamadas que " +
+          "devuelven desde la caché. Entran a la función envuelta, pero no ejecutan el " +
+          "cuerpo de fib, y eso es lo que se pregunta." },
+      { valor: 6, clave: "desdeUno",
+        razon: "Falta un valor: n va de 6 a 0, son siete. fib(0) también entra al cuerpo " +
+          "una vez." },
+      { valor: fib(6), clave: "valor",
+        razon: "Ese es el valor que devuelve fib(6), " + fib(6) + ", no las llamadas." }
+    ]);
+  }
+
+  function destapar(idOpciones, poner) {
+    document.getElementById(idOpciones).addEventListener("click", poner);
   }
 
   var RAZONES_TOCAR = {
@@ -283,14 +325,10 @@ if (typeof document !== "undefined") (function () {
   document.getElementById("btn-reiniciar").addEventListener("click", function () {
     k = 0; pintarPaso();
   });
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-a", boton: "btn-comprobar-a", veredicto: "veredicto-a" },
-    function () { return llamadas(6); },
-    explicarA);
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-b", boton: "btn-comprobar-b", veredicto: "veredicto-b" },
-    function () { return llamadasMemo(6); },
-    explicarB);
+  Motor.opcionesNumericas("opciones-llamadas-a", "veredicto-a", armarA);
+  destapar("opciones-llamadas-a", function () { vistaCrece = true; pintarCrece(); });
+  Motor.opcionesNumericas("opciones-llamadas-b", "veredicto-b", armarB);
+  destapar("opciones-llamadas-b", function () { vistaMemo = true; pintarMemo(); });
   Motor.conectarOpciones("opciones-tocar", "veredicto-tocar", RAZONES_TOCAR);
   document.querySelectorAll("#opciones-tocar button").forEach(function (b) {
     b.addEventListener("click", function () { resaltarFila(b.dataset.op); });

@@ -15,16 +15,15 @@
   <div class="carta">
     <h2>1. Apilar, desapilar, tope</h2>
     <div class="codigo" id="codigo-ops"></div>
-    <div class="prediccion">
-      <span>primer tope:</span>
-      <input type="number" id="pred-t1" placeholder="?">
-      <span>segundo:</span>
-      <input type="number" id="pred-t2" placeholder="?">
-      <span>tamaño:</span>
-      <input type="number" id="pred-n" placeholder="?">
-      <button id="btn-ops" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-ops" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem">¿Qué imprime la primera línea con <code>tope</code>?</p>
+    <div class="opciones" id="opciones-t1"></div>
+    <div id="veredicto-t1" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem">¿Qué tope imprime la última línea?</p>
+    <div class="opciones" id="opciones-t2"></div>
+    <div id="veredicto-t2" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem">¿Y qué tamaño imprime esa misma línea?</p>
+    <div class="opciones" id="opciones-n"></div>
+    <div id="veredicto-n" class="veredicto"></div>
   </div>
 
   <div class="carta">
@@ -33,14 +32,12 @@
     tope), ¿cuánto devuelve <code>contar(p, 4)</code> y cuál es el tope de
     <code>p</code> después de la llamada?</p>
     <div class="codigo" id="codigo-contar"></div>
-    <div class="prediccion">
-      <span>devuelve:</span>
-      <input type="number" id="pred-cuenta" placeholder="?">
-      <span>tope después:</span>
-      <input type="number" id="pred-tope" placeholder="?">
-      <button id="btn-contar" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-contar" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem">¿Cuánto devuelve <code>contar(p, 4)</code>?</p>
+    <div class="opciones" id="opciones-cuenta"></div>
+    <div id="veredicto-cuenta" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem">¿Cuál es el tope de <code>p</code> después de la llamada?</p>
+    <div class="opciones" id="opciones-tope"></div>
+    <div id="veredicto-tope" class="veredicto"></div>
   </div>
 
   <div class="carta" id="carta-olvido" style="display:none">
@@ -65,6 +62,7 @@
     llamó.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="pila.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

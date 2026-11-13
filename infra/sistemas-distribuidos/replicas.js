@@ -230,7 +230,7 @@ if (typeof document !== "undefined") (function () {
 
   function aplicar(op) {
     estado = paso(estado, op);
-    if (op !== "fusionar") { fusionado = false; }
+    if (op !== "fusionar") { fusionado = false; opTotal.refrescar(); }
     pintarEstado();
     pintarFusion();
   }
@@ -243,8 +243,7 @@ if (typeof document !== "undefined") (function () {
   document.getElementById("btn-reiniciar").addEventListener("click", function () {
     estado = crear();
     fusionado = false;
-    document.getElementById("ver-total").className = "veredicto";
-    document.getElementById("ver-total").textContent = "";
+    opTotal.refrescar();
     pintarEstado();
     pintarFusion();
   });
@@ -255,24 +254,49 @@ if (typeof document !== "undefined") (function () {
     return total(fusionar(estado.vectores.A, estado.vectores.B));
   }
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-total", boton: "btn-total", veredicto: "ver-total" },
-    totalFusionado,
-    function (bien, real, dicho) {
-      var m = fusionar(estado.vectores.A, estado.vectores.B);
-      var detalle = "La fusión deja [" + m.map(function (x) { return num(x); })
-        .join("; ") + "], y " + m.map(function (x) { return num(x); }).join(" + ") +
-        " = " + num(real) + ".";
-      if (bien) {
-        return "Ese es el total: " + num(real) + ". " + detalle +
+  var opTotal = Motor.opcionesNumericas("op-total", "ver-total", function () {
+    var A = estado.vectores.A, B = estado.vectores.B;
+    var m = fusionar(A, B);
+    var real = totalFusionado();
+    var detalle = "La fusión deja [" + m.map(function (x) { return num(x); })
+      .join("; ") + "], y " + m.map(function (x) { return num(x); }).join(" + ") +
+      " = " + num(real) + ".";
+    var lista = [
+      { valor: real, clave: "correcta",
+        razon: "Ese es el total: " + num(real) + ". " + detalle +
           " Cada casilla guarda los incrementos de su dueña, así que la suma " +
-          "cuenta todo lo que se incrementó en las dos.";
+          "cuenta todo lo que se incrementó en las dos." },
+      { valor: Math.max(total(A), total(B)), clave: "mayor-total",
+        razon: "Eso es el mayor de los dos totales, y es la versión ingenua. " + detalle +
+          " El total no se queda con una réplica: suma las casillas del vector fusionado." },
+      { valor: total(A) + total(B), clave: "suma-totales",
+        razon: "Eso suma los dos totales, y cuenta dos veces lo que las dos réplicas ya " +
+          "comparten. " + detalle + " Se suma una casilla por réplica, después del máximo." },
+      { valor: Math.max.apply(null, m), clave: "casilla",
+        razon: "Eso es la casilla más grande del vector fusionado. " + detalle +
+          " El total es la suma de todas, no la mayor." }
+    ];
+    var distintos = {};
+    lista = lista.filter(function (o) {
+      var ya = distintos[o.valor];
+      distintos[o.valor] = true;
+      return !ya;
+    });
+    /* con pocos incrementos casi todas las cuentas dan lo mismo: se completa
+       con valores cercanos, sin repetir ninguno */
+    var extra = 1;
+    while (lista.length < 3) {
+      if (!distintos[real + extra]) {
+        distintos[real + extra] = true;
+        lista.push({ valor: real + extra, clave: "de-mas-" + extra,
+          razon: "Eso cuenta " + num(extra) + (extra === 1 ? " incremento" : " incrementos") +
+            " que ninguna casilla guarda. " + detalle +
+            " El total es la suma de las casillas del vector fusionado." });
       }
-      return "Queda en " + num(real) + ", no en " + num(dicho) + ". " + detalle +
-        " El total no es el máximo de los dos totales ni la casilla más " +
-        "grande: es la suma de las casillas del vector fusionado.";
+      extra += 1;
     }
-  );
+    return lista;
+  });
 
   function pintarFusion() {
     var caja = document.getElementById("detalle-fusion");
@@ -328,23 +352,39 @@ if (typeof document !== "undefined") (function () {
       }).join("");
   }
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-perdidos", boton: "btn-perdidos", veredicto: "ver-perdidos" },
-    function () { return perdidos(SECUENCIA_DEMO); },
-    function (bien, real, dicho) {
-      var ing = correrIngenuo(SECUENCIA_DEMO);
-      var base = "Se incrementó " + num(incrementosDe(SECUENCIA_DEMO)) +
-        " veces, " + num(filas[filas.length - 1].a[0]) + " en A y " +
-        num(filas[filas.length - 1].b[1]) + " en B. Con un entero suelto, A " +
-        "llegó a " + num(ing.A) + " y B a " + num(ing.B) + "; el mayor es " +
-        num(totalIngenuo(ing)) + " y los otros " + num(real) + " incrementos " +
-        "quedaron tapados por ese máximo.";
-      return (bien ? "Son " + num(real) + ". " : "Son " + num(real) +
-        ", no " + num(dicho) + ". ") + base;
-    }
-  );
+  Motor.opcionesNumericas("op-perdidos", "ver-perdidos", function () {
+    var real = perdidos(SECUENCIA_DEMO);
+    var ing = correrIngenuo(SECUENCIA_DEMO);
+    var hechos = incrementosDe(SECUENCIA_DEMO);
+    var base = "Se incrementó " + num(hechos) +
+      " veces, " + num(filas[filas.length - 1].a[0]) + " en A y " +
+      num(filas[filas.length - 1].b[1]) + " en B. Con un entero suelto, A " +
+      "llegó a " + num(ing.A) + " y B a " + num(ing.B) + "; el mayor es " +
+      num(totalIngenuo(ing)) + " y los otros " + num(real) + " incrementos " +
+      "quedaron tapados por ese máximo.";
+    var lista = [
+      { valor: real, clave: "correcta", razon: "Son " + num(real) + ". " + base },
+      { valor: 0, clave: "ninguno",
+        razon: "Sí pierde. Las dos réplicas terminan con el mismo número, y por eso parece que " +
+          "convergió, pero ese número cuenta " + num(totalIngenuo(ing)) + " de los " +
+          num(hechos) + " incrementos." },
+      { valor: totalIngenuo(ing), clave: "conservados",
+        razon: "Esos son los incrementos que sobreviven, " + num(totalIngenuo(ing)) +
+          ", no los que se pierden. La pregunta es por la diferencia con los " + num(hechos) +
+          " que se hicieron." },
+      { valor: hechos, clave: "todos",
+        razon: "Perder los " + num(hechos) + " sería no conservar nada, y el entero suelto " +
+          "conserva el del lado mayor. Pierde solo los del otro lado." }
+    ];
+    var vistos = {};
+    return lista.filter(function (o) {
+      var ya = vistos[o.valor];
+      vistos[o.valor] = true;
+      return !ya;
+    });
+  });
 
-  document.getElementById("btn-perdidos").addEventListener("click", function () {
+  document.getElementById("op-perdidos").addEventListener("click", function () {
     destapado = true;
     pintarCorrida();
     Motor.pintarChips("marcador-corrida", [

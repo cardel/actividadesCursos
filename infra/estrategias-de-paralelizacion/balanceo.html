@@ -29,12 +29,9 @@
 
   <div class="carta">
     <h2>2. Antes de correr</h2>
-    <div class="prediccion">
-      <span>Con bloques contiguos, ¿qué porcentaje del trabajo total carga el hilo que
-      termina último? Redondee al entero.</span>
-      <input type="number" id="prediccion-a" min="0" max="100" step="1" placeholder="%">
-      <button id="btn-comprobar-a" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-top:0;margin-bottom:0.3rem">Con bloques contiguos, ¿qué porcentaje del trabajo total carga el hilo que
+    termina último? Redondeado al entero.</p>
+    <div class="opciones" id="opciones-carga"></div>
     <div id="veredicto-a" class="veredicto"></div>
   </div>
 
@@ -73,12 +70,9 @@
 
   <div class="carta">
     <h2>4. Contiguo contra demanda</h2>
-    <div class="prediccion">
-      <span>Con los costos i², ¿cuántas veces más tarda el reparto contiguo que el reparto
-      por demanda? Dos decimales.</span>
-      <input type="number" id="prediccion-b" min="0" step="0.01" placeholder="su número">
-      <button id="btn-comprobar-b" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-top:0;margin-bottom:0.3rem">Con los costos i², ¿cuántas veces más tarda el reparto contiguo que el reparto
+    por demanda?</p>
+    <div class="opciones" id="opciones-veces"></div>
     <div id="veredicto-b" class="veredicto"></div>
     <div class="envoltura-tabla" id="tabla-comparacion" hidden style="margin-top:0.8rem">
       <table>

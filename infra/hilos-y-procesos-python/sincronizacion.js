@@ -472,29 +472,32 @@ if (typeof document !== "undefined") (function () {
   var c = CERROJO;
   var total = tiempoConCerrojo(c.hilos, c.critica, c.resto);
 
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-tiempo", boton: "btn-comprobar-tiempo",
-      veredicto: "veredicto-tiempo" },
-    function () { return total; },
-    function (bien, real, dicho) {
-      var num = Motor.num;
-      var s = bien ? "Sí: " + num(real) + " ms. "
-        : "No: " + num(real) + " ms, no " + num(dicho) + ". ";
-      s += "Las " + num(c.hilos) + " secciones críticas no se solapan: el " +
-        "cerrojo lo tiene un hilo a la vez, así que van una tras otra, " +
-        num(c.hilos) + " × " + num(c.critica) + " = " +
-        num(c.hilos * c.critica) + " ms. Cuando el último sale del cerrojo " +
-        "todavía le quedan sus " + num(c.resto) + " ms sin proteger: " +
-        num(c.hilos * c.critica) + " + " + num(c.resto) + " = " + num(real) +
-        " ms. Con un solo hilo el mismo programa tarda " +
-        num(tiempoConCerrojo(1, c.critica, c.resto)) + " ms, y con ocho " +
-        "tarda " + num(real / tiempoConCerrojo(1, c.critica, c.resto), 1) +
-        " veces eso.";
-      return s;
-    }
-  );
+  Motor.opcionesNumericas("opciones-tiempo", "veredicto-tiempo", function () {
+    var num = Motor.num;
+    var uno = tiempoConCerrojo(1, c.critica, c.resto);
+    return [
+      { valor: total, clave: "correcta",
+        razon: "Sí: " + num(total) + " ms. Las " + num(c.hilos) + " secciones críticas no se " +
+          "solapan: el cerrojo lo tiene un hilo a la vez, así que van una tras otra, " +
+          num(c.hilos) + " × " + num(c.critica) + " = " + num(c.hilos * c.critica) +
+          " ms. Cuando el último sale del cerrojo todavía le quedan sus " + num(c.resto) +
+          " ms sin proteger: " + num(c.hilos * c.critica) + " + " + num(c.resto) + " = " +
+          num(total) + " ms. Con un solo hilo el mismo programa tarda " + num(uno) +
+          " ms, y con ocho tarda " + num(total / uno, 1) + " veces eso." },
+      { valor: uno, clave: "paralelo",
+        razon: "Eso es lo que tarda un hilo solo. Con el cerrojo, los otros siete esperan en " +
+          "acquire y las secciones críticas se hacen una tras otra, no a la vez." },
+      { valor: c.hilos * (c.critica + c.resto), clave: "todoenfila",
+        razon: "Eso sería si también el trabajo sin cerrojo se hiciera en fila. Esos " +
+          num(c.resto) + " ms no necesitan el cerrojo y se solapan con las secciones de los " +
+          "demás; solo cuenta el del último hilo." },
+      { valor: c.hilos * c.critica, clave: "sinresto",
+        razon: "Eso suma las ocho secciones críticas pero olvida que, al salir del cerrojo, " +
+          "al último hilo todavía le quedan sus " + num(c.resto) + " ms sin proteger." }
+    ];
+  });
 
-  document.getElementById("btn-comprobar-tiempo").addEventListener("click",
+  document.getElementById("opciones-tiempo").addEventListener("click",
     function () {
       var num = Motor.num;
       Motor.pintarGantt("panel-gantt",

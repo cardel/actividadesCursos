@@ -26,18 +26,11 @@
     </div>
     <p style="margin-bottom:0.3rem">En la traza de <code>./lento</code>, <code>write</code>
     concentra el 99,94 % del tiempo medido, a 4 microsegundos por llamada.</p>
-    <div class="prediccion">
-      <span>¿Cuántas veces más llamadas a <code>write</code> hace <code>./lento</code> que
-      <code>./rapido</code>?</span>
-      <input type="number" id="pred-llamadas" min="0" step="1" placeholder="veces">
-      <button id="btn-llamadas" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0.3rem">¿Cuántas veces más llamadas a <code>write</code> hace <code>./lento</code> que <code>./rapido</code>?</p>
+    <div class="opciones" id="op-llamadas"></div>
     <div id="ver-llamadas" class="veredicto"></div>
-    <div class="prediccion">
-      <span>¿Y cuántas veces más tiempo dentro del núcleo?</span>
-      <input type="number" id="pred-tiempo" min="0" step="1" placeholder="veces">
-      <button id="btn-tiempo" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0.3rem">¿Y cuántas veces más tiempo dentro del núcleo?</p>
+    <div class="opciones" id="op-tiempo"></div>
     <div id="ver-tiempo" class="veredicto"></div>
     <div class="envoltura-tabla" style="margin-top:0.6rem">
       <table>
@@ -57,11 +50,8 @@
     <h2>2. El reloj cambia mucho menos</h2>
     <p style="margin-top:0">Fuera de <code>strace</code>, <code>./lento</code> tarda 0,12 s y
     <code>./rapido</code> 0,01 s.</p>
-    <div class="prediccion">
-      <span>¿Cuántas veces más tarda <code>./lento</code> en el reloj?</span>
-      <input type="number" id="pred-reloj" min="0" step="1" placeholder="veces">
-      <button id="btn-reloj" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0.3rem">¿Cuántas veces más tarda <code>./lento</code> en el reloj?</p>
+    <div class="opciones" id="op-reloj-razon"></div>
     <div id="ver-reloj" class="veredicto"></div>
     <p style="margin-bottom:0.3rem;margin-top:1rem">El tiempo dentro del núcleo cambia 964
     veces y el reloj apenas 12. ¿Por qué no coinciden?</p>

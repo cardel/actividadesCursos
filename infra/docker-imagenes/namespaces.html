@@ -23,11 +23,8 @@
       <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker exec web ls -l /proc/1/ns/</span></div>
       <div class="linea bloque-2"><span class="num">$</span><span class="txt">for n in pid net mnt uts user; do echo "$n -> $(readlink /proc/self/ns/$n)"; done</span></div>
     </div>
-    <div class="prediccion">
-      <span>De los cinco, ¿cuántos identificadores son distintos dentro del contenedor?</span>
-      <input type="number" id="pred-distintos" min="0" max="5" step="1" placeholder="0 a 5">
-      <button id="btn-distintos" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">De los cinco, ¿cuántos identificadores son distintos dentro del contenedor?</p>
+    <div class="opciones" id="op-distintos"></div>
     <div id="ver-distintos" class="veredicto"></div>
     <div class="envoltura-tabla" style="margin-top:0.6rem">
       <table>

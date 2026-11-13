@@ -116,59 +116,141 @@ var EJERCICIO = (function () {
     return r;
   }
 
-  /* Pista para un renglon del arbol. campo: nodos, trabajo o costo. */
-  function pistaNivel(tipo, n, i, campo, valor) {
+  /* Opciones de un renglon del arbol. campo: nodos, trabajo o costo.
+     Las razones son las de las pistas: cada distractor es un error de lectura. */
+  function opcionesNivel(tipo, n, i, campo) {
     var fila = nivelesArbol(tipo, n)[i];
-    var texto = null;
-    if (campo === "nodos" && valor !== fila.nodos) {
-      texto = tipo === "mezcla"
-        ? "Cada nodo llama dos veces: el nivel " + i + " tiene el doble de nodos que el anterior."
-        : "Cada nodo hace una sola llamada, así que cada nivel tiene un solo nodo.";
-    } else if (campo === "trabajo" && valor !== fila.trabajo) {
-      if (tipo === "mezcla" && valor === n && i > 0) {
-        texto = "El trabajo de un nodo depende de su tamaño, no del n de arriba. " +
-          "Aquí cada nodo resuelve T(" + fila.tamano + ").";
-      } else if (tipo === "mezcla") {
-        texto = "Un nodo de tamaño m trabaja cm fuera de sus llamadas; en este nivel m = " +
-          fila.tamano + ".";
+    var lista = [];
+    if (campo === "nodos") {
+      lista.push({ valor: fila.nodos, clave: "correcta",
+        razon: "Correcto: el nivel " + i + " tiene " + fila.nodos + (fila.nodos === 1 ? " nodo." : " nodos.") });
+      if (tipo === "mezcla") {
+        lista.push({ valor: fila.nodos * 2, clave: "doble",
+          razon: "Eso cuenta los hijos de este nivel. Cada nodo llama dos veces: el nivel " + i +
+            " tiene el doble de nodos que el anterior, no el doble de los suyos." });
+        lista.push({ valor: fila.nodos / 2, clave: "mitad",
+          razon: "Eso son los nodos del nivel anterior. Cada nodo llama dos veces: el nivel " + i +
+            " tiene el doble de nodos que el anterior." });
+        lista.push({ valor: i + 1, clave: "suma",
+          razon: "Aquí los nodos se duplican por nivel, no suben de uno en uno." });
+        lista.push({ valor: fila.nodos + 1, clave: "unoMas",
+          razon: "Los nodos se duplican por nivel, no suben de uno en uno respecto al anterior." });
+        lista.push({ valor: 0, clave: "cero",
+          razon: "Ningún nivel del árbol está vacío: al menos tiene un nodo, que también es una llamada." });
       } else {
-        texto = "Fuera de su llamada cada nodo hace c, y la hoja T(1) también vale c: es 1 en unidades de c.";
+        lista.push({ valor: 2, clave: "dosLlamadas",
+          razon: "Cada nodo hace una sola llamada, así que cada nivel tiene un solo nodo." });
+        lista.push({ valor: i + 1, clave: "suma",
+          razon: "Eso es el número de nodos acumulados hasta este nivel. Cada nivel tiene un solo nodo." });
+        lista.push({ valor: fila.tamano, clave: "tamano",
+          razon: "Eso es el tamaño del problema de este nivel, no su número de nodos: cada nodo hace una sola llamada y hay uno solo." });
+        lista.push({ valor: 0, clave: "cero",
+          razon: "Ningún nivel del árbol está vacío: tiene un nodo, que también es una llamada, incluso la hoja." });
       }
-    } else if (campo === "costo" && valor !== fila.costo) {
-      texto = "El costo del nivel es nodos por trabajo de cada nodo.";
+    } else if (campo === "trabajo") {
+      lista.push({ valor: fila.trabajo, clave: "correcta",
+        razon: "Correcto: cada nodo de este nivel trabaja " + fila.trabajo + "c fuera de su llamada." });
+      if (tipo === "mezcla") {
+        lista.push({ valor: n, clave: "nArriba",
+          razon: "El trabajo de un nodo depende de su tamaño, no del n de arriba. Aquí cada nodo resuelve T(" +
+            fila.tamano + ")." });
+        lista.push({ valor: fila.costo, clave: "costoNivel",
+          razon: "Eso es el costo del nivel entero. Un nodo de tamaño m trabaja cm fuera de sus llamadas; en este nivel m = " +
+            fila.tamano + "." });
+        lista.push({ valor: fila.tamano / 2, clave: "hijo",
+          razon: "Eso es el trabajo de un nodo del nivel siguiente. En este nivel m = " + fila.tamano + "." });
+        lista.push({ valor: 1, clave: "uno",
+          razon: "Un nodo de tamaño m trabaja cm, no c; en este nivel m = " + fila.tamano + "." });
+        lista.push({ valor: fila.tamano * 2, clave: "padre",
+          razon: "Eso es el trabajo de un nodo del nivel anterior. En este nivel m = " + fila.tamano + "." });
+        lista.push({ valor: 0, clave: "cero",
+          razon: "Ningún nodo trabaja gratis, ni la hoja T(1): un nodo de tamaño m trabaja cm, con m = " +
+            fila.tamano + " en este nivel." });
+      } else {
+        lista.push({ valor: fila.tamano, clave: "tamano",
+          razon: "Aquí el trabajo no crece con el tamaño: fuera de su llamada cada nodo hace c, es 1 en unidades de c." });
+        lista.push({ valor: 2, clave: "llamadaAparte",
+          razon: "La llamada recursiva no suma otro c: fuera de ella cada nodo hace c, es 1 en unidades de c." });
+        lista.push({ valor: 0, clave: "cero",
+          razon: "Ningún nodo trabaja gratis, ni la hoja T(1): fuera de su llamada cada nodo hace c, es 1 en unidades de c." });
+      }
+    } else {
+      lista.push({ valor: fila.costo, clave: "correcta",
+        razon: "Correcto: " + fila.nodos + " nodos por " + fila.trabajo + "c cada uno son " + fila.costo + "c." });
+      lista.push({ valor: fila.nodos + fila.trabajo, clave: "suma",
+        razon: "El costo del nivel es nodos por trabajo de cada nodo, no su suma." });
+      lista.push({ valor: fila.nodos, clave: "soloNodos",
+        razon: "Eso cuenta los nodos y olvida el trabajo de cada uno: el costo es nodos por trabajo." });
+      lista.push({ valor: fila.trabajo, clave: "soloTrabajo",
+        razon: "Eso es lo que trabaja un solo nodo: el costo del nivel es nodos por trabajo de cada nodo." });
+      lista.push({ valor: fila.costo * 2, clave: "doble",
+        razon: "El costo del nivel es nodos por trabajo de cada nodo; ahí se cuenta cada nodo una sola vez." });
+      lista.push({ valor: fila.nodos + fila.trabajo + 1, clave: "llamadaExtra",
+        razon: "El costo del nivel es nodos por trabajo de cada nodo; la llamada recursiva no suma otra unidad." });
+      lista.push({ valor: totalFormula(tipo, n), clave: "total",
+        razon: "Eso es la suma de todos los niveles. Aquí se pide solo el costo de este nivel: nodos por trabajo de cada nodo." });
     }
-    return texto;
+    lista = lista.filter(function (o) { return o.valor >= 0 && o.valor === Math.floor(o.valor); });
+    return sinRepetidos(lista).slice(0, 4);
   }
 
-  function pistaNiveles(tipo, n, valor) {
+  /* Quita las opciones que repiten un valor ya presente. */
+  function sinRepetidos(lista) {
+    var vistos = {};
+    var r = [];
+    lista.forEach(function (o) {
+      if (!vistos[o.valor]) {
+        vistos[o.valor] = true;
+        r.push(o);
+      }
+    });
+    return r;
+  }
+
+  function opcionesNiveles(tipo, n) {
     var L = niveles(tipo, n);
-    var texto = null;
-    if (valor !== L) {
-      if (valor === L - 1) {
-        texto = tipo === "resta"
+    var lista = [
+      { valor: L, clave: "correcta",
+        razon: "Correcto: " + L + " niveles, de la raíz T(" + n + ") a las hojas T(1)." },
+      { valor: L - 1, clave: "sinHojas",
+        razon: tipo === "resta"
           ? "De n hasta 1 hay n − 1 restas y n niveles: falta contar el de las hojas."
-          : "De n hasta 1 hay log₂ n divisiones y log₂ n + 1 niveles: falta contar el de las hojas.";
-      } else if (tipo !== "resta" && valor === n) {
-        texto = "Partir a la mitad no baja de uno en uno: cuente cuántas veces se divide " + n + " entre 2 hasta llegar a 1.";
-      } else {
-        texto = "Cuente las filas de la tabla, de la raíz T(" + n + ") a las hojas T(1).";
-      }
+          : "De n hasta 1 hay log₂ n divisiones y log₂ n + 1 niveles: falta contar el de las hojas." },
+      { valor: L + 1, clave: "demas",
+        razon: "Eso cuenta un nivel de más: la tabla va del nivel 0 al nivel " + (L - 1) + "." }
+    ];
+    if (tipo !== "resta") {
+      lista.push({ valor: n, clave: "tamano",
+        razon: "Partir a la mitad no baja de uno en uno: cuente cuántas veces se divide " +
+          n + " entre 2 hasta llegar a 1." });
     }
-    return texto;
+    return sinRepetidos(lista);
   }
 
-  function pistaTotal(tipo, n, valor) {
+  function opcionesTotal(tipo, n) {
     var filas = nivelesArbol(tipo, n);
     var t = totalFormula(tipo, n);
-    var texto = null;
-    if (valor !== t) {
-      if (valor === t - filas[filas.length - 1].costo) {
-        texto = "Falta el nivel de las hojas: también trabajan.";
-      } else {
-        texto = "Sume la columna del costo de cada nivel.";
-      }
+    var L = filas.length;
+    var lista = [
+      { valor: t, clave: "correcta",
+        razon: "Correcto: " + t + "c, la suma de la columna del costo de los " + L + " niveles." },
+      { valor: t - filas[L - 1].costo, clave: "sinHojas",
+        razon: "Falta el nivel de las hojas: también trabajan." },
+      { valor: filas[0].costo, clave: "unNivel",
+        razon: tipo === "mezcla"
+          ? "Eso es el costo de un solo nivel: falta multiplicar por el número de niveles."
+          : "Eso es el costo de un solo nivel: hay que sumar todos." }
+    ];
+    if (tipo === "mezcla") {
+      lista.push({ valor: n * n, clave: "nNiveles",
+        razon: "Cada nivel cuesta n, pero no hay n niveles: hay log₂ n + 1." });
+    } else {
+      lista.push({ valor: n * L, clave: "costoN",
+        razon: "Cada nodo trabaja c, no n: el costo de cada nivel es 1c." });
     }
-    return texto;
+    lista.push({ valor: t + filas[L - 1].costo, clave: "hojasDoble",
+      razon: "Eso cuenta dos veces el nivel de las hojas." });
+    return sinRepetidos(lista).slice(0, 4);
   }
 
   function pistaClase(tipo, eleccion) {
@@ -192,8 +274,8 @@ var EJERCICIO = (function () {
 
   return { tamanos: TAMANOS, recurrencias: RECURRENCIAS, log2: log2,
            niveles: niveles, nivelesArbol: nivelesArbol, totalFormula: totalFormula,
-           evaluar: evaluar, desarrollo: desarrollo, pistaNivel: pistaNivel,
-           pistaNiveles: pistaNiveles, pistaTotal: pistaTotal, pistaClase: pistaClase };
+           evaluar: evaluar, desarrollo: desarrollo, opcionesNivel: opcionesNivel,
+           opcionesNiveles: opcionesNiveles, opcionesTotal: opcionesTotal, pistaClase: pistaClase };
 })();
 
 if (typeof module !== "undefined") {
@@ -316,14 +398,9 @@ if (typeof module !== "undefined") {
             td.textContent = x;
             tr.appendChild(td);
           });
-          ["nodos", "trabajo", "costo"].forEach(function (campo) {
+          ["nodos", "trabajo", "costo"].forEach(function () {
             var td = document.createElement("td");
-            var inp = document.createElement("input");
-            inp.type = "number";
-            inp.id = "in-" + campo;
-            inp.className = "celda-num";
-            td.appendChild(inp);
-            if (campo !== "nodos") { td.appendChild(document.createTextNode(" c")); }
+            td.textContent = "?";
             tr.appendChild(td);
           });
           tr.className = "actual-fila";
@@ -332,6 +409,7 @@ if (typeof module !== "undefined") {
       });
       var faltan = fs.length - estado.hechos;
       el("zona-nivel").style.display = faltan > 0 ? "flex" : "none";
+      el("zona-opciones").style.display = faltan > 0 ? "block" : "none";
       el("btn-medio").style.display = estado.hechos >= 3 && faltan > 2 ? "inline-block" : "none";
       el("carta-total").style.display = faltan === 0 ? "block" : "none";
     }
@@ -342,29 +420,31 @@ if (typeof module !== "undefined") {
       pintarTabla();
     }
 
-    function comprobarNivel() {
-      var i = estado.hechos;
-      var v = el("veredicto-nivel");
-      var valores = {};
-      var pista = null;
-      ["nodos", "trabajo", "costo"].forEach(function (campo) {
-        valores[campo] = parseInt(el("in-" + campo).value, 10);
-        if (pista === null && isNaN(valores[campo])) {
-          pista = "Escriba los tres números del nivel.";
-        }
-        if (pista === null) {
-          pista = EJERCICIO.pistaNivel(estado.tipo, estado.n, i, campo, valores[campo]);
+    var CAMPOS = ["nodos", "trabajo", "costo"];
+    var acertadoNivel = {};
+    var opCampo = {};
+
+    function refrescarNivel() {
+      acertadoNivel = {};
+      CAMPOS.forEach(function (c) { if (opCampo[c]) { opCampo[c].refrescar(); } });
+    }
+
+    function conectarNivel(campo) {
+      el("opciones-" + campo).addEventListener("click", function (e) {
+        var b = e.target;
+        if (b && b.getAttribute && b.getAttribute("data-op") === "correcta") {
+          acertadoNivel[campo] = true;
+          if (CAMPOS.every(function (c) { return acertadoNivel[c]; })) {
+            var i = estado.hechos;
+            estado.hechos = estado.hechos + 1;
+            pintar();
+            refrescarNivel();
+            var v = el("veredicto-nivel");
+            v.className = "veredicto bien";
+            v.textContent = "Nivel " + i + " correcto.";
+          }
         }
       });
-      if (pista === null) {
-        v.className = "veredicto bien";
-        v.textContent = "Nivel " + i + " correcto.";
-        estado.hechos = estado.hechos + 1;
-        pintar();
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = pista;
-      }
     }
 
     function revelarNivel() {
@@ -376,6 +456,7 @@ if (typeof module !== "undefined") {
       estado.revelados[estado.hechos] = true;
       estado.hechos = estado.hechos + 1;
       pintar();
+      refrescarNivel();
     }
 
     function llenarMedio() {
@@ -386,27 +467,24 @@ if (typeof module !== "undefined") {
       }
       el("veredicto-nivel").className = "veredicto";
       pintar();
+      refrescarNivel();
     }
 
-    function comprobarTotal() {
-      var v = el("veredicto-total");
-      var L = parseInt(el("in-niveles").value, 10);
-      var t = parseInt(el("in-total").value, 10);
-      var pista = null;
-      if (isNaN(L) || isNaN(t)) {
-        pista = "Escriba los dos números.";
-      } else {
-        pista = EJERCICIO.pistaNiveles(estado.tipo, estado.n, L);
-        if (pista === null) { pista = EJERCICIO.pistaTotal(estado.tipo, estado.n, t); }
-      }
-      if (pista === null) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: " + L + " niveles y " + t + "c en total.";
-        mostrarDesarrollo();
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = pista;
-      }
+    var nivelesOK = false;
+    var totalOK = false;
+
+    function alAcertar() {
+      if (nivelesOK && totalOK) { mostrarDesarrollo(); }
+    }
+
+    function conectarAcierto(id, marcar) {
+      el(id).addEventListener("click", function (e) {
+        var b = e.target;
+        if (b && b.getAttribute && b.getAttribute("data-op") === "correcta") {
+          marcar();
+          alAcertar();
+        }
+      });
     }
 
     function revelarTotal() {
@@ -468,19 +546,37 @@ if (typeof module !== "undefined") {
       ["veredicto-nivel", "veredicto-total", "veredicto-clase"].forEach(function (id) {
         el(id).className = "veredicto";
       });
-      el("in-niveles").value = "";
-      el("in-total").value = "";
+      el("veredicto-niveles").className = "veredicto";
+      nivelesOK = false;
+      totalOK = false;
+      refrescarNivel();
+      if (opNiveles) { opNiveles.refrescar(); }
+      if (opTotal) { opTotal.refrescar(); }
       el("bloque-desarrollo").style.display = "none";
       el("carta-clase").style.display = "none";
       pintar();
     }
 
-    el("btn-nivel").addEventListener("click", comprobarNivel);
     el("btn-revelar-nivel").addEventListener("click", revelarNivel);
     el("btn-medio").addEventListener("click", llenarMedio);
-    el("btn-total").addEventListener("click", comprobarTotal);
     el("btn-revelar-total").addEventListener("click", revelarTotal);
     pintarClases();
+    var opNiveles = null;
+    var opTotal = null;
     cargar("mezcla", 8);
+    CAMPOS.forEach(function (campo) {
+      opCampo[campo] = Motor.opcionesNumericas("opciones-" + campo, "veredicto-" + campo,
+        function () {
+          var fs = filas();
+          return EJERCICIO.opcionesNivel(estado.tipo, estado.n, Math.min(estado.hechos, fs.length - 1), campo);
+        });
+      conectarNivel(campo);
+    });
+    opNiveles = Motor.opcionesNumericas("opciones-niveles", "veredicto-niveles",
+      function () { return EJERCICIO.opcionesNiveles(estado.tipo, estado.n); });
+    opTotal = Motor.opcionesNumericas("opciones-total", "veredicto-total",
+      function () { return EJERCICIO.opcionesTotal(estado.tipo, estado.n); });
+    conectarAcierto("opciones-niveles", function () { nivelesOK = true; });
+    conectarAcierto("opciones-total", function () { totalOK = true; });
   })();
 }

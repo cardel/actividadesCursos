@@ -44,27 +44,51 @@ if (typeof module !== "undefined") {
 } else {
   (function () {
     var PISTAS = {
-      reves: { bien: "anilina se lee igual al revés: la comparación con == da 1.", mal: "Escriba anilina de atrás hacia adelante y compare letra a letra." },
-      menor: { bien: "m = m, a = a, y en la tercera letra p > n: mapa no es menor que mano. Da 0.", mal: "string compara letra a letra desde la primera. Las dos primeras empatan; decide la tercera." },
-      prefijo: { bien: "cola es prefijo de colar y el prefijo va antes: da 1.", mal: "Cuando una cadena se acaba y la otra no, la corta va antes: como en el diccionario." },
-      size: { bien: "pila tiene 4, y  y cola tiene 7 contando el espacio inicial: 11.", mal: "Cuente también los espacios: \" y cola\" empieza con uno." }
+      reves: { bien: "anilina se lee igual al revés: la comparación con == da 1.", mal: "Escriba anilina de atrás hacia adelante y compare letra a letra: anilina. Es igual, no distinta." },
+      menor: { bien: "m = m, a = a, y en la tercera letra p > n: mapa no es menor que mano. Da 0.", mal: "string compara letra a letra desde la primera. Las dos primeras empatan y en la tercera p va después de n: mapa no va antes de mano." },
+      prefijo: { bien: "cola es prefijo de colar y el prefijo va antes: da 1.", mal: "Cuando una cadena se acaba y la otra no, la corta va antes: como en el diccionario. cola va antes de colar." },
+      size: { bien: "pila tiene 4, y  y cola tiene 7 contando el espacio inicial: 11." }
     };
     var logradas = {};
+    function sinRepetir(lista) {
+      var vistos = {};
+      return lista.filter(function (o) {
+        var nuevo = !vistos[String(o.valor)];
+        vistos[String(o.valor)] = true;
+        return nuevo;
+      });
+    }
+    function alAcertar(id, f) {
+      document.getElementById(id).addEventListener("click", function (e) {
+        if (e.target && e.target.getAttribute && e.target.getAttribute("data-op") === "correcta") { f(); }
+      });
+    }
+    function opcionesDe(id) {
+      var ok = EJERCICIO.respuesta(id);
+      var lista = [];
+      if (id === "size") {
+        lista = [
+          { valor: ok, clave: "correcta", razon: "Correcto. " + PISTAS.size.bien },
+          { valor: ok - 1, clave: "sinespacio", razon: "Cuente también los espacios: \" y cola\" empieza con uno, y son 7 caracteres, no 6." },
+          { valor: " y cola".length, clave: "soloCola", razon: "Eso es solo lo que se concatena. size() cuenta la cadena completa, también los 4 caracteres de pila." },
+          { valor: "pila".length, clave: "soloPila", razon: "Eso es solo pila. El + construye una cadena nueva con las dos partes, y size() cuenta todo." }
+        ];
+      } else {
+        var otro = 1 - ok;
+        lista = [
+          { valor: ok, clave: "correcta", razon: "Correcto. " + PISTAS[id].bien },
+          { valor: otro, clave: "contrario", razon: PISTAS[id].mal }
+        ];
+      }
+      return sinRepetir(lista);
+    }
     EJERCICIO.casos.forEach(function (c) {
       logradas[c.id] = false;
-      document.getElementById("btn-" + c.id).addEventListener("click", function () {
-        var v = document.getElementById("veredicto-" + c.id);
-        var dado = parseInt(document.getElementById("pred-" + c.id).value, 10);
-        if (dado === EJERCICIO.respuesta(c.id)) {
-          v.className = "veredicto bien";
-          v.textContent = "Correcto. " + PISTAS[c.id].bien;
-          logradas[c.id] = true;
-          if (EJERCICIO.casos.every(function (k) { return logradas[k.id]; })) {
-            document.getElementById("carta-cierre").style.display = "block";
-          }
-        } else {
-          v.className = "veredicto mal";
-          v.textContent = PISTAS[c.id].mal;
+      Motor.opcionesNumericas("opciones-" + c.id, "veredicto-" + c.id, function () { return opcionesDe(c.id); });
+      alAcertar("opciones-" + c.id, function () {
+        logradas[c.id] = true;
+        if (EJERCICIO.casos.every(function (k) { return logradas[k.id]; })) {
+          document.getElementById("carta-cierre").style.display = "block";
         }
       });
     });

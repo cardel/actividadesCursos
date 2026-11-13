@@ -138,9 +138,10 @@ if (typeof module !== "undefined") {
         caja.appendChild(linea);
       });
     }
-    var logradas = { roto: false, escrituras: false, total: false };
+    var logradas = { roto: false, uno: false, varios: false, total: false };
     function revisar() {
-      if (logradas.roto && logradas.escrituras && logradas.total) {
+      if (logradas.roto && logradas.uno && logradas.varios &&
+          logradas.total) {
         document.getElementById("carta-cierre").style.display = "block";
       }
     }
@@ -181,48 +182,60 @@ if (typeof module !== "undefined") {
       });
     });
 
-    document.getElementById("btn-escrituras").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-escrituras");
-      var esperadoUno = EJERCICIO.escriturasDesencolar(1);
-      var esperadoVarios = EJERCICIO.escriturasDesencolar(3);
-      var a = parseInt(document.getElementById("pred-uno").value, 10);
-      var b = parseInt(document.getElementById("pred-varios").value, 10);
-      if (a === esperadoUno && b === esperadoVarios) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: " + esperadoUno + " y " + esperadoVarios +
-          ". cabeza se escribe siempre. ultimo se escribe solo cuando la cabeza nueva es NULL, que es justo el caso del único elemento.";
-        logradas.escrituras = true; revisar();
-      } else if (a === 3 || b === 2) {
-        ver.className = "veredicto mal";
-        ver.textContent = "muerto es un puntero local, no uno de los dos de la clase: se muere al salir de la función. Los que sobreviven a la llamada son cabeza y ultimo.";
-      } else if (a === b) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Los dos casos no cuestan igual: el if de la mitad solo entra en uno de los dos.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "Cuente las asignaciones a cabeza y a ultimo que ejecuta la llamada en cada caso.";
-      }
-    });
+    // deja una sola opcion por valor: la correcta va primero y gana
+    function unicas(lista) {
+      var vistos = {};
+      return lista.filter(function (o) {
+        var nueva = !vistos[o.valor];
+        vistos[o.valor] = true;
+        return nueva;
+      });
+    }
+    // avisa cuando el estudiante pulsa la opcion correcta
+    function alAcertar(idOpciones, fn) {
+      document.getElementById(idOpciones).addEventListener("click", function (e) {
+        var b = e.target;
+        if (b && b.getAttribute && b.getAttribute("data-op") === "correcta") { fn(); }
+      });
+    }
 
-    document.getElementById("btn-total").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-total");
-      var esperado = EJERCICIO.escriturasAlVaciar(CUATRO);
-      var dado = parseInt(document.getElementById("pred-total").value, 10);
-      if (dado === esperado) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: " + esperado +
-          ". Los tres primeros desencolar dejan cadena y escriben solo cabeza; el cuarto la deja vacía y escribe los dos. Son 3 · 1 + 2 = " + esperado + ", así que vaciar una cola de m elementos cuesta m + 1 escrituras: Θ(m), una por elemento.";
-        logradas.total = true; revisar();
-      } else if (dado === CUATRO) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Una de las cuatro llamadas cuesta una escritura más: la que deja la cola vacía.";
-      } else if (dado === 2 * CUATRO) {
-        ver.className = "veredicto mal";
-        ver.textContent = "El if no entra en todas: tres de las cuatro llamadas dejan cadena y ahí ultimo no se toca.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "Sume lo que cuesta cada una de las cuatro llamadas con la cuenta de la tarjeta anterior.";
-      }
+    var UNO = EJERCICIO.escriturasDesencolar(1);
+    var VARIOS = EJERCICIO.escriturasDesencolar(3);
+    Motor.opcionesNumericas("opciones-uno", "veredicto-uno", function () {
+      return unicas([
+        { valor: UNO, clave: "correcta",
+          razon: "Correcto: " + UNO + ". cabeza se escribe siempre; con un solo elemento la cabeza nueva es NULL y entra el if que devuelve ultimo a NULL." },
+        { valor: UNO + 1, clave: "muerto",
+          razon: "muerto es un puntero local, no uno de los dos de la clase: se muere al salir de la función. Los que sobreviven a la llamada son cabeza y ultimo." },
+        { valor: VARIOS, clave: "solo-cabeza",
+          razon: "Eso es lo que cuesta con varios elementos. Con uno solo la cabeza nueva queda en NULL y ultimo también se escribe." }
+      ]);
     });
+    Motor.opcionesNumericas("opciones-varios", "veredicto-varios", function () {
+      return unicas([
+        { valor: VARIOS, clave: "correcta",
+          razon: "Correcto: " + VARIOS + ". Solo se escribe cabeza: la cabeza nueva no es NULL, el if no entra y ultimo no se toca." },
+        { valor: UNO, clave: "siempre-dos",
+          razon: "El if de la mitad solo entra cuando la cabeza nueva es NULL, que es el caso del único elemento. Con varios, ultimo se queda como estaba." },
+        { valor: VARIOS + 2, clave: "muerto",
+          razon: "Ese total suma cabeza, ultimo y el local muerto. muerto no es uno de los dos punteros de la clase, y con varios elementos ultimo no se toca." }
+      ]);
+    });
+    Motor.opcionesNumericas("opciones-total", "veredicto-total", function () {
+      var esperado = EJERCICIO.escriturasAlVaciar(CUATRO);
+      return unicas([
+        { valor: esperado, clave: "correcta",
+          razon: "Correcto: " + esperado + ". Los tres primeros desencolar dejan cadena y escriben solo cabeza; el cuarto la deja vacía y escribe los dos. Son 3 · 1 + 2 = " + esperado + ", así que vaciar una cola de m elementos cuesta m + 1 escrituras: Θ(m), una por elemento." },
+        { valor: CUATRO, clave: "una-por-llamada",
+          razon: "Una de las cuatro llamadas cuesta una escritura más: la que deja la cola vacía." },
+        { valor: 2 * CUATRO, clave: "dos-por-llamada",
+          razon: "El if no entra en todas: tres de las cuatro llamadas dejan cadena y ahí ultimo no se toca." },
+        { valor: 3 * (VARIOS + 1) + (UNO + 1), clave: "muerto",
+          razon: "Ese total cuenta también el local muerto, que no es uno de los dos punteros de la clase." }
+      ]);
+    });
+    alAcertar("opciones-uno", function () { logradas.uno = true; revisar(); });
+    alAcertar("opciones-varios", function () { logradas.varios = true; revisar(); });
+    alAcertar("opciones-total", function () { logradas.total = true; revisar(); });
   })();
 }

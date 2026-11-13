@@ -192,27 +192,10 @@ if (typeof document !== "undefined") (function () {
     pintarGantt();
     pintarChips();
     pintarTabla();
+    if (opsPred) { opsPred.refrescar(); }
   }
 
-  function comprobar() {
-    var caja = document.getElementById("veredicto");
-    var dicho = parseFloat(document.getElementById("prediccion").value
-                            .replace(",", "."));
-    var real = partible ? fragmentado(TAREAS, procesadores)
-                        : planificar(TAREAS, procesadores).duracion;
-    if (isNaN(dicho)) {
-      caja.className = "veredicto mal";
-      caja.textContent = "Escriba un número antes de comprobar.";
-      return;
-    }
-    var bien = Math.abs(dicho - real) < 0.05;
-    caja.className = "veredicto " + (bien ? "bien" : "mal");
-    caja.textContent = bien
-      ? "Sí: termina en " + num(real, 3) + "."
-      : "Termina en " + num(real, 3) + ". El trabajo total es " +
-        trabajoTotal(TAREAS) + " y la cadena más larga es A→C, que vale " +
-        caminoCritico(TAREAS) + ".";
-  }
+  var opsPred = null;
 
   var RAZONES = {
     correcta: "Eso es. B y C esperan a que A termine, y A dura 8. Con dos " +
@@ -247,7 +230,56 @@ if (typeof document !== "undefined") (function () {
     partible = e.target.checked;
     pintar();
   });
-  document.getElementById("btn-comprobar").addEventListener("click", comprobar);
+  opsPred = Motor.opcionesNumericas("opciones-prediccion", "veredicto", function () {
+    var real = partible ? fragmentado(TAREAS, procesadores)
+                        : planificar(TAREAS, procesadores).duracion;
+    var total = trabajoTotal(TAREAS);
+    var cadena = caminoCritico(TAREAS);
+    var lista = [{ valor: num(real, 3), clave: "correcta",
+      razon: partible
+        ? "Sí: con tareas partibles ningún procesador queda quieto y termina en " +
+          num(real, 3) + ", el trabajo total " + total + " entre " + procesadores + "."
+        : "Sí: termina en " + num(real, 3) + ". Ningún reparto baja de la cadena más " +
+          "larga, " + cadena + ", y el planificador deja procesadores esperando a que A termine." }];
+    var propuestas = [
+      { valor: num(total / procesadores, 3), clave: "reparto",
+        razon: "Eso es el trabajo total " + total + " repartido parejo entre " + procesadores +
+          ", como si no hubiera dependencias. B y C esperan a A, así que el reparto " +
+          "parejo no se logra: termina en " + num(real, 3) + "." },
+      { valor: num(cadena, 3), clave: "cadena",
+        razon: partible
+          ? "Esa es la cadena más larga, A→C, que vale " + cadena + ". Con tareas partibles " +
+            "no manda: cada tarea usa todos los procesadores y el tiempo es el trabajo " +
+            "total entre " + procesadores + ", " + num(real, 3) + "."
+          : "Esa es la cadena más larga, A→C, que vale " + cadena + ". Es una cota " +
+            "inferior, no el tiempo: con " + procesadores + " procesador" +
+            (procesadores === 1 ? "" : "es") + " termina en " + num(real, 3) + "." },
+      { valor: num(total, 3), clave: "total",
+        razon: "Eso sería con un solo procesador haciendo todo en fila: " + total +
+          ". Con " + procesadores + " termina en " + num(real, 3) + "." },
+      { valor: num(partible ? planificar(TAREAS, procesadores).duracion
+                            : fragmentado(TAREAS, procesadores), 3),
+        clave: "otro-modo",
+        razon: partible
+          ? "Ese es el tiempo con tareas que no se pueden partir. Aquí cada tarea se " +
+            "reparte entre los procesadores y solo cuenta el trabajo total."
+          : "Ese es el tiempo con tareas partibles. Con tareas enteras y dependencias " +
+            "el reparto parejo no se alcanza." },
+      { valor: num(total / (2 * procesadores), 3), clave: "doble",
+        razon: "Eso supone el doble de procesadores de los que hay y ninguna dependencia: " +
+          "el trabajo total " + total + " entre " + (2 * procesadores) + ". Con " + procesadores +
+          " termina en " + num(real, 3) + "." }
+    ];
+    var vistos = [num(real, 3)];
+    propuestas.forEach(function (o) {
+      if (lista.length < 4 && vistos.indexOf(String(o.valor)) < 0) {
+        vistos.push(String(o.valor));
+        lista.push(o);
+      }
+    });
+    return lista;
+  });
+
   conectar("opciones-tope", "veredicto-tope", RAZONES);
 
   pintarTareas();

@@ -97,16 +97,37 @@ var NOTAS = {
     "para quedarse con el total hay que combinarlas, por ejemplo con reduction."
 };
 
-function explicarPrediccion(bien, real, dicho) {
+/* Opciones de lo que imprime la linea 7 con private(x): la correcta sale de
+   ejecutar() y cada distractor es lo que daria creer otra clausula. */
+function opcionesX() {
   var num = Motor.num;
-  var s = bien ? "Sí: imprime " + num(real) + ". "
-    : "No: imprime " + num(real) + ", no " + num(dicho, 2) + ". ";
-  s += "private le da a cada hilo una copia propia de x; esa copia se descarta " +
-    "al cerrar la región y la variable de afuera no se toca, así que sigue en " +
-    num(INICIAL) + ". Lo de adentro es otra historia: la copia entra sin " +
-    "inicializar, no en " + num(INICIAL) + ", y leerla antes de asignarle algo " +
-    "devuelve basura. Para heredar el valor de afuera está firstprivate.";
-  return s;
+  var real = ejecutar("private", INICIAL, ESCRITURAS, HILOS).afuera;
+  var lista = [{ valor: real, clave: "correcta",
+    razon: "Sí: imprime " + num(real) + ". private le da a cada hilo una copia propia de x; " +
+      "esa copia se descarta al cerrar la región y la variable de afuera no se toca, así " +
+      "que sigue en " + num(INICIAL) + ". Lo de adentro es otra historia: la copia entra sin " +
+      "inicializar, no en " + num(INICIAL) + ", y leerla antes de asignarle algo " +
+      "devuelve basura. Para heredar el valor de afuera está firstprivate." }];
+  var ultimo = ESCRITURAS[HILOS - 1];
+  var candidatas = [
+    { v: ultimo, razon: "Eso es lo que quedaría con shared: una sola x y la escritura del " +
+      "último hilo encima. Con private cada hilo escribe en su copia y la x de afuera " +
+      "no se entera." },
+    { v: INICIAL + ultimo, razon: "Eso es sumar el identificador sobre el valor heredado, " +
+      "como firstprivate con +=. Aun así las copias se descartan al cerrar la región y " +
+      "la x de afuera sigue donde estaba." },
+    { v: 0, razon: "La copia privada entra sin inicializar, pero eso no la convierte en el " +
+      "valor de afuera: al cerrar la región se descarta, y x vuelve a valer lo que valía." }
+  ];
+  var vistos = {};
+  vistos[real] = true;
+  candidatas.forEach(function (c) {
+    if (lista.length < 4 && !vistos[c.v]) {
+      vistos[c.v] = true;
+      lista.push({ valor: c.v, clave: "d" + c.v, razon: c.razon });
+    }
+  });
+  return lista;
 }
 
 var CASOS = [
@@ -178,7 +199,7 @@ if (typeof module !== "undefined" && module.exports) {
     TABLA: TABLA, NOTAS: NOTAS, CASOS: CASOS,
     filaTabla: filaTabla, operador: operador, lineasPrograma: lineasPrograma,
     ejecutar: ejecutar, textoEntrada: textoEntrada, textoEscritura: textoEscritura,
-    textoAfuera: textoAfuera, explicarPrediccion: explicarPrediccion,
+    textoAfuera: textoAfuera, opcionesX: opcionesX,
     contarAciertos: contarAciertos
   };
 }
@@ -294,18 +315,12 @@ if (typeof document !== "undefined") (function () {
     });
   });
 
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-x", boton: "btn-comprobar-x", veredicto: "veredicto-x" },
-    function () { return ejecutar("private", INICIAL, ESCRITURAS, HILOS).afuera; },
-    explicarPrediccion);
-
-  document.getElementById("btn-comprobar-x").addEventListener("click", function () {
-    if (!isNaN(Motor.leerNumero("prediccion-x"))) {
-      document.getElementById("aviso-copia").hidden = false;
-      comprobada = true;
-      if (respuestas.length) { destapar(); }
-      pintarProgreso();
-    }
+  Motor.opcionesNumericas("opciones-x", "veredicto-x", opcionesX);
+  document.getElementById("opciones-x").addEventListener("click", function () {
+    document.getElementById("aviso-copia").hidden = false;
+    comprobada = true;
+    if (respuestas.length) { destapar(); }
+    pintarProgreso();
   });
 
   CASOS.forEach(function (c) {

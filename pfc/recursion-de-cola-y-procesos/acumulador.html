@@ -12,9 +12,6 @@
   table.traza td.que { text-align: left; font-family: inherit; font-size: 0.86rem; color: #5b636c; }
   table.traza td.dada { color: #6b737c; }
   table.traza tr.actual td { background: var(--verde-suave); }
-  table.traza input { width: 5rem; text-align: center; font-family: inherit; padding: 0.2rem; border: 1px solid var(--borde); border-radius: 4px; }
-  table.traza input.bien { border-color: var(--verde); background: var(--verde-suave); }
-  table.traza input.mal { border-color: var(--rojo, #c0392b); background: #fdecea; }
   table.traza .real { margin-left: 0.4rem; color: var(--verde); font-weight: 700; }
   #pie-tabla { margin-top: 0.6rem; font-size: 0.92rem; color: #5b636c; min-height: 2.4em; }
 </style>
@@ -26,10 +23,10 @@
   <p class="intro">En <code>factIter</code> nada queda esperando porque el
   resultado a medias no se guarda en la pila: <b>se pasa como argumento</b> a
   la siguiente llamada. Cada fila de esta tabla es una llamada, y la columna
-  <code>prod</code> es el resultado creciendo. Llénela antes de mirar.</p>
+  <code>prod</code> es el resultado creciendo. Escoja cada valor antes de mirar.</p>
 
   <div class="carta">
-    <h2>1. Llene la columna <code>prod</code></h2>
+    <h2>1. Escoja el <code>prod</code> de cada fila</h2>
     <div class="presets">
       <span class="nota" style="margin-top:0">Llamada:</span>
       <button data-preset="3">fact(3)</button>
@@ -40,9 +37,6 @@
       <thead><tr><th>cont</th><th>prod</th><th>n</th><th>qué pasa</th></tr></thead>
       <tbody id="cuerpo-tabla"></tbody>
     </table>
-    <div class="botones" style="margin-top:0.6rem">
-      <button id="btn-comprobar-tabla" class="primario">Comprobar la tabla</button>
-    </div>
     <div id="veredicto-tabla" class="veredicto"></div>
   </div>
 

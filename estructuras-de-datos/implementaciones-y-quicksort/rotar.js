@@ -119,12 +119,24 @@ if (typeof module !== "undefined") {
       ver.className = "veredicto " + (bien ? "bien" : "mal");
       ver.textContent = texto;
     }
-    function leer(texto) {
-      return texto.trim().split(/[\s,;]+/).filter(function (x) { return x !== ""; })
-                  .map(function (x) { return parseInt(x, 10); });
+    /* Anota el acierto: el boton de la correcta lleva data-op="correcta". */
+    function alAcertar(idOpciones, clave) {
+      document.getElementById(idOpciones).addEventListener("click", function (e) {
+        var t = e.target;
+        if (t && t.getAttribute && t.getAttribute("data-op") === "correcta") {
+          logradas[clave] = true; revisar();
+        }
+      });
     }
-    function iguales(a, b) {
-      return a.length === b.length && a.every(function (x, k) { return x === b[k]; });
+    /* Deja la correcta y los distractores con valores distintos, hasta cuatro. */
+    function sinRepetir(lista) {
+      var salida = [];
+      lista.forEach(function (o) {
+        var repetido = false;
+        salida.forEach(function (x) { if (x.valor === o.valor) { repetido = true; } });
+        if (!repetido && salida.length < 4) { salida.push(o); }
+      });
+      return salida;
     }
     var logradas = { tres: false, lista: false, orden: false, unico: false, escrituras: false };
     function revisar() {
@@ -133,19 +145,19 @@ if (typeof module !== "undefined") {
       }
     }
 
-    document.getElementById("btn-tres").addEventListener("click", function () {
-      var d = leer(document.getElementById("pred-tres").value);
-      if (iguales(d, tres.contenido)) {
-        decir("veredicto-tres", true, "Correcto: " + tres.contenido.join(" ") + ". Cada rotar pasa el frente al final: 8 sale primero, después 3 y después 6. Con cuatro elementos, tres rotaciones equivalen a una rotación hacia atrás.");
-        logradas.tres = true; revisar();
-      } else if (iguales(d, [3, 6, 1, 8])) {
-        decir("veredicto-tres", false, "Así queda después de una sola. Son tres seguidas.");
-      } else if (iguales(d, [6, 1, 8, 3])) {
-        decir("veredicto-tres", false, "Así queda después de dos. Falta una más.");
-      } else {
-        decir("veredicto-tres", false, "Rote a mano: el frente sale de adelante y entra por atrás, tres veces.");
-      }
+    Motor.opcionesNumericas("opciones-tres", "veredicto-tres", function () {
+      return sinRepetir([
+        { valor: tres.contenido.join(" "), clave: "correcta",
+          razon: "Correcto: " + tres.contenido.join(" ") + ". Cada rotar pasa el frente al final: 8 sale primero, después 3 y después 6. Con cuatro elementos, tres rotaciones equivalen a una rotación hacia atrás." },
+        { valor: X.varias(X.cola, 1, "uno", true).contenido.join(" "), clave: "una",
+          razon: "Así queda después de una sola. Son tres seguidas." },
+        { valor: X.varias(X.cola, 2, "uno", true).contenido.join(" "), clave: "dos",
+          razon: "Así queda después de dos. Falta una más." },
+        { valor: X.cola.join(" "), clave: "original",
+          razon: "Esa es la cola de partida. Con cuatro elementos hacen falta cuatro rotaciones para volver a ella, no tres." }
+      ]);
     });
+    alAcertar("opciones-tres", "tres");
 
     var MSJ_LISTA = {
       conultimo: "Correcto: la simple con cabeza y ultimo, la misma que ya lleva la cola. rotar toca la cabeza, que se quita, y el último, que recibe el nodo; los dos están a mano y ningún nodo intermedio cambia. Θ(1) en tiempo y Θ(1) en espacio aparte.",
@@ -189,18 +201,18 @@ if (typeof module !== "undefined") {
       });
     });
 
-    document.getElementById("btn-escrituras").addEventListener("click", function () {
-      var d = parseInt(document.getElementById("pred-escrituras").value, 10);
-      if (d === tres.escrituras) {
-        decir("veredicto-escrituras", true, "Correcto: " + tres.escrituras + ", cuatro por rotación: cabeza, primero->siguiente, ultimo->siguiente y ultimo. La cuenta no depende de cuántos elementos tenga la cola, así que rotar es Θ(1), y rotar k veces es Θ(k).");
-        logradas.escrituras = true; revisar();
-      } else if (d === 15) {
-        decir("veredicto-escrituras", false, "primero es una variable local, no un puntero de la cadena ni de la cola. Sin ella quedan cuatro por rotación.");
-      } else if (d === X.veces) {
-        decir("veredicto-escrituras", false, "Cada rotación escribe más de un puntero. Cuente las asignaciones de la versión 1 que no son la declaración de primero.");
-      } else {
-        decir("veredicto-escrituras", false, "Cuente las asignaciones a cabeza, ultimo y a campos siguiente en una rotación, y multiplique.");
-      }
+    Motor.opcionesNumericas("opciones-escrituras", "veredicto-escrituras", function () {
+      return sinRepetir([
+        { valor: tres.escrituras, clave: "correcta",
+          razon: "Correcto: " + tres.escrituras + ", cuatro por rotación: cabeza, primero->siguiente, ultimo->siguiente y ultimo. La cuenta no depende de cuántos elementos tenga la cola, así que rotar es Θ(1), y rotar k veces es Θ(k)." },
+        { valor: 15, clave: "con-primero",
+          razon: "primero es una variable local, no un puntero de la cadena ni de la cola. Sin ella quedan cuatro por rotación." },
+        { valor: X.veces, clave: "una-por-rotacion",
+          razon: "Cada rotación escribe más de un puntero. Cuente las asignaciones de la versión 1 que no son la declaración de primero." },
+        { valor: tres.escrituras / X.veces, clave: "una-rotacion",
+          razon: "Esas son las de una sola rotación. Son tres seguidas, y cada una repite las cuatro escrituras." }
+      ]);
     });
+    alAcertar("opciones-escrituras", "escrituras");
   })();
 }

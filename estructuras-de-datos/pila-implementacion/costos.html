@@ -63,16 +63,15 @@
     <p style="margin-top:0">Con <code>CAPACIDAD = 500</code> se intenta apilar
     20000 elementos en cada una. ¿Cuántos quedan dentro, y cuánta memoria
     ocupan los nodos de la enlazada?</p>
-    <div class="prediccion">
-      <span>caben en el arreglo:</span>
-      <input type="number" id="pred-arreglo" placeholder="?">
-      <span>caben en la enlazada:</span>
-      <input type="number" id="pred-enlazada" placeholder="?">
-      <span>KiB de los nodos:</span>
-      <input type="number" id="pred-memoria" placeholder="?">
-      <button id="btn-techo" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-cuentas" class="veredicto"></div>
+    <div style="margin-top:.8rem"><b>Caben en el arreglo</b></div>
+    <div class="opciones" id="opciones-c-arreglo"></div>
+    <div id="veredicto-c-arreglo" class="veredicto"></div>
+    <div style="margin-top:.8rem"><b>Caben en la enlazada</b></div>
+    <div class="opciones" id="opciones-c-enlazada"></div>
+    <div id="veredicto-c-enlazada" class="veredicto"></div>
+    <div style="margin-top:.8rem"><b>KiB de los nodos de la enlazada</b></div>
+    <div class="opciones" id="opciones-c-memoria"></div>
+    <div id="veredicto-c-memoria" class="veredicto"></div>
     <div id="nota-cuentas" class="nota" style="display:none"></div>
   </div>
 
@@ -89,6 +88,7 @@
     caber.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="costos.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

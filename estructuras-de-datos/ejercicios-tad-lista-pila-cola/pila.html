@@ -50,24 +50,18 @@
     <p style="margin-top:0">Con <code>evaluar</code> tal como quedó en la
     sesión, ¿cuánto vale <code>7 2 3 * - 4 +</code> y cuántos números llegó
     a tener la pila en su momento más lleno?</p>
-    <div class="prediccion">
-      <span>valor:</span>
-      <input type="number" id="pred-post-valor" placeholder="?">
-      <span>profundidad máxima:</span>
-      <input type="number" id="pred-post-prof" placeholder="?">
-      <button id="btn-post" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-post" class="veredicto"></div>
+    <p class="nota" style="margin-bottom:0.2rem">Valor:</p>
+    <div class="opciones" id="opciones-post-valor"></div>
+    <div id="veredicto-post-valor" class="veredicto"></div>
+    <p class="nota" style="margin-bottom:0.2rem">Profundidad máxima:</p>
+    <div class="opciones" id="opciones-post-prof"></div>
+    <div id="veredicto-post-prof" class="veredicto"></div>
   </div>
 
   <div class="carta" id="carta-trampa" style="display:none">
     <h2>3. El orden de la resta</h2>
     <p style="margin-top:0">¿Cuánto vale <code>4 8 2 / -</code>?</p>
-    <div class="prediccion">
-      <span>valor:</span>
-      <input type="number" id="pred-trampa" placeholder="?">
-      <button id="btn-trampa" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-trampa"></div>
     <div id="veredicto-trampa" class="veredicto"></div>
   </div>
 
@@ -80,6 +74,7 @@
     primero. La pila no lo sabe; lo pone el programador.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="pila.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

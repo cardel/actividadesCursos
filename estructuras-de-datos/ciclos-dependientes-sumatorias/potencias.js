@@ -152,23 +152,22 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto", function (params) {
       var n = params.n;
       var esperado = EJERCICIO.vueltas(n);
-      if (valor === esperado) {
-        return { ok: true, msg: "Correcto: la línea 4 corre " + esperado +
-          " veces. Mire la secuencia de valores que visita el índice; la fórmula general se pregunta al final." };
+      var lista = [];
+      function agregar(valor, clave, razon) {
+        var repetido = false;
+        lista.forEach(function (o) { if (o.valor === valor) { repetido = true; } });
+        if (!repetido && valor >= 0) { lista.push({ valor: valor, clave: clave, razon: razon }); }
       }
-      if (valor === esperado - 1) {
-        return { ok: false, msg: "Le faltó una vuelta: la de i = 1 también cuenta." };
-      }
-      if (valor === Math.floor(n / 2)) {
-        return { ok: false, msg: "El índice no sube de 2 en 2: se duplica. En cada vuelta el camino restante se parte por la mitad." };
-      }
-      if (valor === n) {
-        return { ok: false, msg: "Eso sería un ciclo que sube de uno en uno. Aquí el índice salta 1, 2, 4, 8, …" };
-      }
-      return { ok: false, msg: "No coincide. Pista: escriba los valores que toma i (1, 2, 4, …) y cuente cuántos caben sin pasarse de n." };
+      agregar(esperado, "correcta", "Correcto: la línea 4 corre " + esperado +
+        " veces. Mire la secuencia de valores que visita el índice; la fórmula general se pregunta al final.");
+      agregar(esperado - 1, "sinuno", "Le faltó una vuelta: la de i = 1 también cuenta.");
+      agregar(Math.floor(n / 2), "mitad", "El índice no sube de 2 en 2: se duplica. En cada vuelta el camino restante se parte por la mitad.");
+      agregar(n, "lineal", "Eso sería un ciclo que sube de uno en uno. Aquí el índice salta 1, 2, 4, 8, …");
+      agregar(esperado + 1, "condicion", "Contó también la vez que la condición da falso. Esa evaluación no ejecuta la línea 4: el cuerpo corre una vez menos que la condición.");
+      return lista;
     });
 
     Array.prototype.forEach.call(document.querySelectorAll("#opciones-analisis button"), function (b) {

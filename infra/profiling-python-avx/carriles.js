@@ -285,20 +285,24 @@ if (typeof document !== "undefined") (function () {
     alerta.hidden = n > 16;
   }
 
+  var opcInstrucciones = null;
+
   function cambio() {
     destapado = false;
     actualizarPregunta();
     document.getElementById("veredicto").className = "veredicto";
+    if (opcInstrucciones) { opcInstrucciones.refrescar(); }
     pintarRegistro();
   }
 
-  function explicar(bien, real, dicho) {
+  function razonCorrecta() {
     var c = carriles(reg, dato);
     var n = leerN();
     var q = cola(n, c);
+    var real = instrucciones(n, c);
     var otro = otroDato(dato);
     var otroC = carriles(reg, otro.bits);
-    var t = bien ? "Sí, " + num(real) + ". " : "No: son " + num(real) + ", no " + num(dicho) + ". ";
+    var t = "Sí, " + num(real) + ". ";
     t += "Un registro de " + reg + " bits carga " + c + " " + nombreDato(dato) + " de " + dato +
       " bits, así que una instrucción atiende " + c + " elementos y el bucle avanza de " + c +
       " en " + c + ": " + num(n) + " / " + c + " = ";
@@ -314,9 +318,40 @@ if (typeof document !== "undefined") (function () {
     t += " El escalar hace " + num(n) + (n === 1 ? " instrucción, una por elemento" : " instrucciones, una por elemento") +
       ": el cociente es " + c + ". Con " + otro.nombre + " serían " + otroC + " por registro y " +
       num(otras) + (otras === 1 ? " instrucción." : " instrucciones.");
-    destapado = true;
-    pintarRegistro();
     return t;
+  }
+
+  function armarInstrucciones() {
+    var c = carriles(reg, dato);
+    var n = leerN();
+    var real = instrucciones(n, c);
+    var otro = otroDato(dato);
+    var otroC = carriles(reg, otro.bits);
+    var lista = [{ valor: real, clave: "correcta", razon: razonCorrecta() }];
+    var candidatos = [
+      { valor: n, clave: "escalar",
+        razon: "Ese es el recorrido escalar: una instrucción por elemento, " + num(n) +
+          ". El registro de " + reg + " bits atiende " + c + " elementos por instrucción." },
+      { valor: Math.floor(n / c), clave: "sincola",
+        razon: "Esa cuenta olvida la cola: " + num(n) + " / " + c + " no es exacto y " +
+          (cola(n, c) === 1 ? "el elemento que sobra necesita" : "los " + num(cola(n, c)) + " elementos que sobran necesitan") +
+          " una pasada más." },
+      { valor: instrucciones(n, otroC), clave: "otrodato",
+        razon: "Esa cuenta usa " + otro.nombre + " (" + otroC + " carriles). Con " +
+          nombreDato(dato) + " caben " + c + " por registro." },
+      { valor: n * c, clave: "producto",
+        razon: "Aquí se multiplicó en vez de dividir: " + c + " carriles reparten el trabajo, " +
+          "no lo multiplican." },
+      { valor: c, clave: "carriles",
+        razon: "Ese es el número de carriles de un registro, no las instrucciones de todo el arreglo." }
+    ];
+    candidatos.forEach(function (o) {
+      var repetido = lista.some(function (x) { return x.valor === o.valor; });
+      if (!repetido && o.valor >= 0 && lista.length < 4) { lista.push(o); }
+    });
+    return lista.map(function (o) {
+      return { valor: num(o.valor), clave: o.clave, razon: o.razon };
+    });
   }
 
   document.querySelectorAll("[data-reg]").forEach(function (b) {
@@ -336,10 +371,11 @@ if (typeof document !== "undefined") (function () {
     });
   });
   document.getElementById("n").addEventListener("input", cambio);
-  Motor.conectarPrediccion(
-    { entrada: "prediccion", boton: "btn-comprobar", veredicto: "veredicto" },
-    function () { return instrucciones(leerN(), carriles(reg, dato)); },
-    explicar);
+  opcInstrucciones = Motor.opcionesNumericas("opciones-instrucciones", "veredicto", armarInstrucciones);
+  document.getElementById("opciones-instrucciones").addEventListener("click", function () {
+    destapado = true;
+    pintarRegistro();
+  });
 
   /* ---- Carta 3: los cinco patrones, uno a la vez ---- */
   var indice = 0;

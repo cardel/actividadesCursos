@@ -207,9 +207,24 @@ if (typeof module !== "undefined") {
     function iguales(a, b) {
       return a.length === b.length && a.every(function (x, i) { return x === b[i]; });
     }
-    var logradas = { a: false, b: false, unico: false, vacia: false };
+    function unicas(lista) {
+      var vistos = {};
+      return lista.filter(function (o) {
+        var ya = vistos[String(o.valor)] === true;
+        vistos[String(o.valor)] = true;
+        return !ya;
+      });
+    }
+    function alAcertar(idCaja, idVer, f) {
+      document.getElementById(idCaja).addEventListener("click", function () {
+        if (document.getElementById(idVer).className.indexOf("bien") >= 0) { f(); }
+      });
+    }
+    var logradas = { a: false, b: false, unico: false, vacia: false,
+                     cabezaA: false, cabezaB: false };
     function revisar() {
-      if (logradas.a && logradas.b && logradas.unico && logradas.vacia) {
+      if (logradas.a && logradas.b && logradas.unico && logradas.vacia &&
+          logradas.cabezaA && logradas.cabezaB) {
         document.getElementById("carta-cierre").style.display = "block";
       }
     }
@@ -217,15 +232,50 @@ if (typeof module !== "undefined") {
     var R = EJERCICIO.correr();
     var LINEAS_VISTA = pintarCodigo("codigo-insertar", EJERCICIO.lineas);
 
+    var ULTIMO = EJERCICIO.inicial[EJERCICIO.inicial.length - 1];
+    Motor.opcionesNumericas("opciones-cabeza-a", "veredicto-cabeza-a", function () {
+      return unicas([
+        { valor: R.a.cabeza, clave: "correcta",
+          razon: "Correcto: la cabeza sigue en el " + R.a.cabeza +
+            ". Con p = n la condición p < n es falsa, x se queda en la cabeza y el 8 se empalma " +
+            "justo antes de ella: en un círculo, antes del primero es después del último." },
+        { valor: 8, clave: "nuevo",
+          razon: "La cabeza no se mueve: el if que la cambia solo se ejecuta con p = 0. El 8 queda al final de la cadena." },
+        { valor: ULTIMO, clave: "ultimo",
+          razon: "El " + ULTIMO + " es el nodo que cierra el círculo, el anterior a la cabeza, no la cabeza." },
+        { valor: EJERCICIO.inicial[1], clave: "segundo",
+          razon: "El " + EJERCICIO.inicial[1] + " es el siguiente de la cabeza: nada lo convierte en primero." }
+      ]);
+    });
+    alAcertar("opciones-cabeza-a", "veredicto-cabeza-a", function () {
+      logradas.cabezaA = true; revisar();
+    });
+    Motor.opcionesNumericas("opciones-cabeza-b", "veredicto-cabeza-b", function () {
+      return unicas([
+        { valor: R.b.cabeza, clave: "correcta",
+          razon: "Correcto: la cabeza pasa al " + R.b.cabeza +
+            ". El empalme es el mismo de antes, con x en la cabeza; lo que cambia es que " +
+            "con p = 0 se ejecuta cabeza = nuevo. Son " + R.b.escrituras +
+            " escrituras de puntero contra las " + R.a.escrituras + " del caso anterior." },
+        { valor: R.a.cabeza, clave: "anterior",
+          razon: "La cabeza no se queda en el " + R.a.cabeza + ": la última línea del empalme la mueve al nodo nuevo." },
+        { valor: 8, clave: "ocho",
+          razon: "El 8 es el último nodo, el que quedó de la inserción anterior; con p = 0 la cabeza se lleva al nodo nuevo, que es el 5." },
+        { valor: ULTIMO, clave: "ultimo",
+          razon: "El " + ULTIMO + " es un nodo del interior; ninguna línea de este insertar lo señala con cabeza." }
+      ]);
+    });
+    alAcertar("opciones-cabeza-b", "veredicto-cabeza-b", function () {
+      logradas.cabezaB = true; revisar();
+    });
+
     document.getElementById("btn-a").addEventListener("click", function () {
       var ver = document.getElementById("veredicto-a");
       var c = leerLista(document.getElementById("pred-cadena-a").value);
-      var h = parseInt(document.getElementById("pred-cabeza-a").value, 10);
-      if (iguales(c, R.a.cadena) && h === R.a.cabeza) {
+      if (iguales(c, R.a.cadena)) {
         ver.className = "veredicto bien";
-        ver.textContent = "Correcto: " + R.a.cadena.join(" ") + " y la cabeza sigue en el " +
-          R.a.cabeza + ". Con p = n la condición p < n es falsa, así que x se queda en la cabeza " +
-          "y el 8 se empalma justo antes de ella: en un círculo, antes del primero es después del último.";
+        ver.textContent = "Correcto: " + R.a.cadena.join(" ") + ". Con p = n la condición p < n es falsa, " +
+          "así que x se queda en la cabeza y el 8 se empalma justo antes de ella.";
         logradas.a = true; revisar();
       } else if (iguales(c, [8, 4, 7, 2])) {
         ver.className = "veredicto mal";
@@ -242,20 +292,14 @@ if (typeof module !== "undefined") {
     document.getElementById("btn-b").addEventListener("click", function () {
       var ver = document.getElementById("veredicto-b");
       var c = leerLista(document.getElementById("pred-cadena-b").value);
-      var h = parseInt(document.getElementById("pred-cabeza-b").value, 10);
-      if (iguales(c, R.b.cadena) && h === R.b.cabeza) {
+      if (iguales(c, R.b.cadena)) {
         ver.className = "veredicto bien";
-        ver.textContent = "Correcto: " + R.b.cadena.join(" ") + " y la cabeza pasa al " +
-          R.b.cabeza + ". El empalme es el mismo de antes, con x en la cabeza; lo que cambia es que " +
-          "con p = 0 se ejecuta cabeza = nuevo. Son " + R.b.escrituras +
-          " escrituras de puntero contra las " + R.a.escrituras + " del caso anterior.";
+        ver.textContent = "Correcto: " + R.b.cadena.join(" ") + ". El empalme es el mismo de antes, " +
+          "con x en la cabeza; la cadena se lee empezando por el nodo nuevo.";
         logradas.b = true; revisar();
       } else if (iguales(c, [4, 7, 2, 8, 5]) || iguales(c, [4, 5, 7, 2, 8])) {
         ver.className = "veredicto mal";
         ver.textContent = "El 5 entra antes del nodo de la posición 0, que es la cabeza, y después la cabeza pasa a ser el 5: la cadena se lee empezando por él.";
-      } else if (iguales(c, [5, 4, 7, 2, 8])) {
-        ver.className = "veredicto mal";
-        ver.textContent = "La cadena está bien. La cabeza no se queda en el 4: la última línea del empalme la mueve al nodo nuevo.";
       } else {
         ver.className = "veredicto mal";
         ver.textContent = "Parta de 4 7 2 8 con la cabeza en el 4 y ejecute las mismas cuatro líneas con x igual a la cabeza, más el if de p = 0.";

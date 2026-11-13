@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Suma de prefijos en dos pasadas — los desplazamientos los escribe usted</title>
+<title>Suma de prefijos en dos pasadas — los desplazamientos los escoge usted</title>
 <link rel="stylesheet" href="../../comun/estilo.css">
 <style>
   .caja.b1 { border-color: var(--azul); background: var(--azul-suave); }
@@ -20,7 +20,7 @@
   <h1>Doce valores, tres bloques y dos pasadas</h1>
   <p class="intro">La suma de prefijos parece secuencial: cada posición necesita la anterior.
   Aquí se recorre en dos pasadas, como en <code>scan.cpp</code>; la primera la hace la
-  página, los desplazamientos los escribe usted, y la segunda arranca de lo que haya escrito.</p>
+  página, los desplazamientos los escoge usted, y la segunda arranca de lo que haya escogido.</p>
 
   <div class="carta">
     <h2>1. Los valores</h2>
@@ -49,13 +49,15 @@
     <h2>3. Los desplazamientos</h2>
     <p style="margin-top:0">Con qué acumulado arranca cada bloque en la segunda pasada, para la
     operación <b id="nombre-op">suma</b>.</p>
-    <div class="despl">
-      <label>bloque 1 <input type="number" id="despl-0" placeholder="su número"></label>
-      <label>bloque 2 <input type="number" id="despl-1" placeholder="su número"></label>
-      <label>bloque 3 <input type="number" id="despl-2" placeholder="su número"></label>
-      <button id="btn-despl" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-despl" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem"><b>Bloque 1</b></p>
+    <div class="opciones" id="opciones-despl-0"></div>
+    <div id="veredicto-despl-0" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem"><b>Bloque 2</b></p>
+    <div class="opciones" id="opciones-despl-1"></div>
+    <div id="veredicto-despl-1" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem"><b>Bloque 3</b></p>
+    <div class="opciones" id="opciones-despl-2"></div>
+    <div id="veredicto-despl-2" class="veredicto"></div>
   </div>
 
   <div class="carta">
@@ -64,7 +66,7 @@
     <div id="panel-segunda" style="margin-top:0.6rem"></div>
     <div id="veredicto-segunda" class="veredicto"></div>
     <div class="nota">La fila de abajo es el recorrido de corrido, con un solo hilo. Si
-    escribió algún desplazamiento, la segunda pasada usa los suyos; si no, los correctos.</div>
+    escogió algún desplazamiento, la segunda pasada usa los suyos; si no, los correctos.</div>
   </div>
 
   <div class="carta">

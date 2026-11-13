@@ -107,13 +107,37 @@ function estado(res, k) {
   return { c: k > 0 ? res.traza[k - 1].c : 0, perdidas: perdidas };
 }
 
-function explicarPrediccion(bien, real, dicho) {
+/* Opciones del valor de c cuando los dos hilos leen antes de que cualquiera
+   escriba: la correcta sale de la simulacion y cada distractor es un
+   razonamiento equivocado sobre quien escribe y cuando. */
+function opcionesC() {
   var num = Motor.num;
-  var s = bien ? "Sí: c queda en " + num(real) + ". "
-               : "c queda en " + num(real) + ", no en " + num(dicho, 2) + ". ";
-  s += "Los dos leen 0, el hilo 0 escribe 5 y el hilo 1 escribe 7 encima. El 5 desaparece, " +
-    "y el total correcto, " + num(correcto()) + ", no aparece en ninguna parte.";
-  return s;
+  var real = simular(INTERCALADOS.clase).resultado;
+  var lista = [{ valor: real, clave: "correcta",
+    razon: "Sí: c queda en " + num(real) + ". Los dos leen 0, el hilo 0 escribe " +
+      num(APORTE[0]) + " y el hilo 1 escribe " + num(APORTE[1]) + " encima. El " +
+      num(APORTE[0]) + " desaparece, y el total correcto, " + num(correcto()) +
+      ", no aparece en ninguna parte." }];
+  var candidatas = [
+    { v: correcto(), razon: "Eso es lo que daría si las sumas no se pisaran. Pero los dos " +
+      "hilos leyeron 0: cada uno calcula su resultado sobre esa copia y la escritura del " +
+      "segundo tapa a la del primero." },
+    { v: APORTE[0], razon: "Eso supone que la escritura del hilo 0 es la última. Aquí escribe " +
+      "primero el hilo 0 y después el hilo 1, y la última escritura es la que queda." },
+    { v: 0, razon: "c cambia: los dos hilos escriben, uno después del otro. Lo que no cambia " +
+      "es lo que cada uno leyó, que fue 0." },
+    { v: APORTE[0] * APORTE[1], razon: "Eso multiplica los aportes. La operación es una " +
+      "suma y cada hilo parte de la copia que leyó, 0." }
+  ];
+  var vistos = {};
+  vistos[real] = true;
+  candidatas.forEach(function (c) {
+    if (lista.length < 4 && !vistos[c.v]) {
+      vistos[c.v] = true;
+      lista.push({ valor: c.v, clave: "d" + c.v, razon: c.razon });
+    }
+  });
+  return lista;
 }
 
 var MECANISMOS = [
@@ -169,7 +193,7 @@ if (typeof module !== "undefined" && module.exports) {
     RAZONES_ACUMULAR: RAZONES_ACUMULAR, RAZONES_CASOS: RAZONES_CASOS,
     PREFERENCIA: PREFERENCIA, correcto: correcto, micro: micro, simular: simular,
     textoCelda: textoCelda, describirPaso: describirPaso, describirCierre: describirCierre,
-    estado: estado, explicarPrediccion: explicarPrediccion
+    estado: estado, opcionesC: opcionesC
   };
 }
 
@@ -257,10 +281,7 @@ if (typeof document !== "undefined") (function () {
     k = 0; pintarPaso();
   });
 
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-c", boton: "btn-comprobar-c", veredicto: "veredicto-c" },
-    function () { return simular(INTERCALADOS.clase).resultado; },
-    explicarPrediccion);
+  Motor.opcionesNumericas("opciones-c", "veredicto-c", opcionesC);
   Motor.conectarOpciones("opciones-acumular", "veredicto-acumular", RAZONES_ACUMULAR);
   Motor.conectarOpciones("opciones-casos", "veredicto-casos", RAZONES_CASOS);
 

@@ -462,14 +462,31 @@ if (typeof document !== "undefined") (function () {
   document.getElementById("btn-reiniciar").addEventListener("click", function () {
     k = 0; pintarPaso();
   });
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-put", boton: "btn-comprobar-put", veredicto: "veredicto-put" },
-    function () { return putsQueEntran(4, 6); },
-    function (bien, real, dicho) {
-      vistaLlenado = true;
-      pintarLlenado();
-      return textoPut(bien, real, dicho);
-    });
+  Motor.opcionesNumericas("opciones-put", "veredicto-put", function () {
+    var num = Motor.num;
+    var real = putsQueEntran(4, 6);
+    return [
+      { valor: real, clave: "correcta",
+        razon: "Sí, " + num(real) + ". Los cuatro primeros put entran y llenan la cola. El " +
+          "quinto no entra: deja al productor detenido en esa línea hasta que un consumidor " +
+          "saque un elemento, y el sexto ni siquiera se ejecuta, porque el proceso quedó " +
+          "parado en el quinto. Ese freno es lo que evita que el productor llene la memoria " +
+          "cuando corre más rápido que el consumidor." },
+      { valor: 6, clave: "todos",
+        razon: "Eso sería con una cola sin límite. Con maxsize=4 el put bloquea cuando la cola " +
+          "está llena, y el productor no pasa del quinto." },
+      { valor: real + 1, clave: "quinto",
+        razon: "El quinto put no se completa: llega con la cola llena y deja al productor " +
+          "detenido en esa línea. Entra a esperar, no a la cola." },
+      { valor: real - 1, clave: "menos",
+        razon: "maxsize=4 admite cuatro elementos, no tres: el cuarto put aún encuentra un " +
+          "lugar libre." }
+    ];
+  });
+  document.getElementById("opciones-put").addEventListener("click", function () {
+    vistaLlenado = true;
+    pintarLlenado();
+  });
   Motor.conectarOpciones("opciones-vacia", "veredicto-vacia", RAZONES_VACIA);
   Motor.conectarOpciones("opciones-centinela", "veredicto-centinela", RAZONES_CENTINELA);
 

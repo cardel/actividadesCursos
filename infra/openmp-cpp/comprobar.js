@@ -58,33 +58,72 @@ function diagnostico(t1, t12) {
   return relacion(t1, t12) < UMBRAL ? "sin paralelismo" : "paralelo";
 }
 
+/* Lista de opciones sin valores repetidos: la correcta primero, y de los
+   distractores entran los que dan un texto distinto, hasta cuatro en total. */
+function armarOpciones(correcta, distractores) {
+  var lista = [correcta], vistos = {};
+  vistos[correcta.valor] = true;
+  distractores.forEach(function (d) {
+    if (lista.length < 4 && !vistos[d.valor]) {
+      vistos[d.valor] = true;
+      lista.push(d);
+    }
+  });
+  return lista;
+}
+
 /* Carta 1: la relacion entre los dos tiempos del binario sin la bandera. */
-function explicarRelacion(bien, real, dicho) {
+function opcionesRelacion() {
   var r = SIN_BANDERA;
-  var t = bien
-    ? "Sí: " + dec2(real) + ", es decir lo mismo. "
-    : "No: " + dec2(real) + ", no " + dec2(dicho) + ". Las dos corridas " +
-      "tardan lo mismo. ";
-  t += "Pedir doce hilos no movió el reloj: " + Motor.num(r[1].ms, 1) +
+  var real = relacion(r[0].ms, r[1].ms);
+  var explicacion = "Pedir doce hilos no movió el reloj: " + Motor.num(r[1].ms, 1) +
     " ms contra " + Motor.num(r[0].ms, 1) + " ms es la diferencia que hay entre " +
     "dos corridas cualesquiera. Doce tiempos iguales señalan un binario " +
     "secuencial, y la causa está en la compilación: faltó -fopenmp, y sin esa " +
     "bandera el compilador descarta las pragmas.";
-  return t;
+  return armarOpciones(
+    { valor: dec2(real), clave: "correcta",
+      razon: "Sí: " + dec2(real) + ", es decir lo mismo. " + explicacion },
+    [
+      { valor: dec2(12), clave: "doce",
+        razon: "Eso sería un reparto perfecto entre doce hilos. Las dos corridas tardan " +
+          "lo mismo, 1.292,7 y 1.283,6 ms, y el cociente queda en " + dec2(real) + "." },
+      { valor: dec2(6), clave: "nucleos",
+        razon: "Eso supone un hilo por núcleo físico. El binario no abrió ningún equipo: " +
+          "con -fopenmp ausente el ciclo corre completo en un hilo, y el cociente queda en " +
+          dec2(real) + "." },
+      { valor: dec2(relacion(r[1].ms, r[0].ms)), clave: "invertida",
+        razon: "Eso es el cociente al revés: el de doce hilos sobre el de uno. La relación " +
+          "pedida es el tiempo de un hilo entre el de doce, y da " + dec2(real) + ". Doce " +
+          "hilos no fueron más lentos, fueron lo mismo." }
+    ]);
 }
 
 /* Carta 3: los nucleos que ocupo la corrida de doce hilos. */
-function explicarNucleos(bien, real, dicho) {
+function opcionesNucleos() {
+  var real = nucleos(7078, 0.850);
   var unoN = nucleos(3802, 3.803);
-  var t = bien
-    ? "Sí: " + dec2(real) + " núcleos. "
-    : "No: " + dec2(real) + " núcleos, no " + dec2(dicho) + ". ";
-  t += "7.078 / 850 = " + dec2(real) + " núcleos ocupados, de los 12 hilos de " +
+  var explicacion = "7.078 / 850 = " + dec2(real) + " núcleos ocupados, de los 12 hilos de " +
     "hardware de la máquina; con un hilo la misma cuenta da " + dec2(unoN) + ". " +
     "El tiempo transcurrido bajó de 3,80 a 0,85 s y el de CPU casi se duplicó, " +
     "de 3,8 a 7,1 s. En un servidor compartido esa segunda cifra es la que decide " +
     "si pedir doce hilos.";
-  return t;
+  return armarOpciones(
+    { valor: dec2(real), clave: "correcta",
+      razon: "Sí: " + dec2(real) + " núcleos. " + explicacion },
+    [
+      { valor: dec2(12), clave: "doce",
+        razon: "Esos son los hilos que se pidieron, no los núcleos ocupados. La CPU " +
+          "consumida dividida entre el reloj da " + dec2(real) + ": los hilos no estuvieron " +
+          "ocupados todo el tiempo." },
+      { valor: dec2(3.803 / 0.850), clave: "aceleracion",
+        razon: "Eso es el tiempo de un hilo entre el de doce, es decir la aceleración. Los " +
+          "núcleos ocupados salen de la CPU consumida entre el reloj de la misma corrida." },
+      { valor: dec2(7078 / 3802), clave: "cpu",
+        razon: "Eso compara la CPU de doce hilos con la de un hilo: cuánto creció el costo. " +
+          "Los núcleos ocupados dividen la CPU de la corrida de doce hilos entre su propio " +
+          "tiempo de reloj." }
+    ]);
 }
 
 var RAZONES_CICLOS = {
@@ -253,8 +292,8 @@ if (typeof module !== "undefined" && module.exports) {
     CLAVES: CLAVES, HERRAMIENTAS: HERRAMIENTAS, SITUACIONES: SITUACIONES,
     RAZONES_CICLOS: RAZONES_CICLOS,
     dec2: dec2, relacion: relacion, nucleos: nucleos, ipc: ipc,
-    diagnostico: diagnostico, explicarRelacion: explicarRelacion,
-    explicarNucleos: explicarNucleos, lcg: lcg, barajar: barajar,
+    diagnostico: diagnostico, opcionesRelacion: opcionesRelacion,
+    opcionesNucleos: opcionesNucleos, lcg: lcg, barajar: barajar,
     buscar: buscar, razonesPara: razonesPara, contarAciertos: contarAciertos,
     validar: validar
   };
@@ -299,26 +338,18 @@ if (typeof document !== "undefined") (function () {
     ]);
   }
 
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-relacion", boton: "btn-comprobar-relacion",
-      veredicto: "veredicto-relacion" },
-    function () { return relacion(SIN_BANDERA[0].ms, SIN_BANDERA[1].ms); },
-    explicarRelacion);
+  Motor.opcionesNumericas("opciones-relacion", "veredicto-relacion", opcionesRelacion);
 
-  document.getElementById("btn-comprobar-relacion").addEventListener("click",
+  document.getElementById("opciones-relacion").addEventListener("click",
     function () {
       vistaRelacion = true;
       pintarSinBandera();
       document.getElementById("nota-relacion").hidden = false;
     });
 
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-nucleos", boton: "btn-comprobar-nucleos",
-      veredicto: "veredicto-nucleos" },
-    function () { return nucleos(7078, 0.850); },
-    explicarNucleos);
+  Motor.opcionesNumericas("opciones-nucleos", "veredicto-nucleos", opcionesNucleos);
 
-  document.getElementById("btn-comprobar-nucleos").addEventListener("click",
+  document.getElementById("opciones-nucleos").addEventListener("click",
     function () {
       vistaPerf = true;
       pintarPerf();

@@ -18,10 +18,7 @@
     <p style="margin-top:0">Con <code>ultimo(7, 5)</code>: siete personas y la
     papa sale cada quinta. ¿Cuántos pases del frente al final hace la cola
     en total, sin contar las salidas?</p>
-    <div class="prediccion">
-      <input type="number" id="pred-papa" placeholder="?">
-      <button id="btn-papa" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-papa"></div>
     <div id="veredicto-papa" class="veredicto"></div>
   </div>
 
@@ -31,10 +28,7 @@
     <code>eliminar(p + 1)</code> corre las casillas que siguen.
     Para <code>⟨4 4 4 4 9⟩</code>, ¿cuántas casillas corre en total
     <code>quitarRepetidos</code>?</p>
-    <div class="prediccion">
-      <input type="number" id="pred-repetidos" placeholder="?">
-      <button id="btn-repetidos" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-repetidos"></div>
     <div id="veredicto-repetidos" class="veredicto"></div>
   </div>
 
@@ -44,10 +38,7 @@
     orden: encolar, encolar, encolar, frente, desencolar, desencolar,
     encolar, encolar, desencolar, frente. ¿Cuántas veces se llama a
     <code>trasvasar</code>?</p>
-    <div class="prediccion">
-      <input type="number" id="pred-dp" placeholder="?">
-      <button id="btn-dp" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-dp"></div>
     <div id="veredicto-dp" class="veredicto"></div>
   </div>
 
@@ -72,6 +63,7 @@
     solución pide aparte: una pila auxiliar, una lista nueva.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="costos.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

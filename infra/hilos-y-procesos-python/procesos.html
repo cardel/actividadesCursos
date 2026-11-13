@@ -15,7 +15,7 @@
   <a class="volver" href="#">← Volver a los ejercicios</a>
   <h1>Cuatro hilos ocupan un núcleo y cuatro procesos ocupan tres</h1>
   <p class="intro">El mismo cálculo corrido con cuatro hilos y con cuatro procesos, medido con
-  <code>perf stat</code> en un AMD Ryzen 5 3600 de 6 núcleos y 12 hilos de hardware. Escriba
+  <code>perf stat</code> en un AMD Ryzen 5 3600 de 6 núcleos y 12 hilos de hardware. Escoja
   cuántos núcleos ocupó cada versión antes de ver la tabla, y después mueva el costo de arranque
   y el trabajo por elemento para encontrar desde qué tamaño paga repartir.</p>
 
@@ -41,10 +41,9 @@
     </div>
     <div class="prediccion">
       <span>Con 4 hilos, el programa gastó 1.607,65 ms de CPU en 1,617 s de reloj. ¿Cuántos
-      núcleos estuvo ocupando en promedio? Dos decimales.</span>
-      <input type="number" id="prediccion-nucleos" min="0" step="0.01" placeholder="núcleos">
-      <button id="btn-comprobar-nucleos" class="primario">Comprobar</button>
+      núcleos estuvo ocupando en promedio?</span>
     </div>
+    <div class="opciones" id="opciones-nucleos"></div>
     <div id="veredicto-nucleos" class="veredicto"></div>
     <div class="nota"><code>task-clock</code> es el tiempo de CPU que acumulan todos los hilos y
     procesos del programa; dividido entre el tiempo transcurrido sale el número de núcleos que
@@ -79,10 +78,9 @@
     </div>
     <div class="prediccion">
       <span>Crear los cuatro procesos cuesta unos 17 ms. ¿Cuál es el primer tamaño de la tabla en
-      el que la versión con procesos gana? Escriba el número de elementos, por ejemplo 10000.</span>
-      <input type="number" id="prediccion-cruce" min="0" step="1" placeholder="elementos">
-      <button id="btn-comprobar-cruce" class="primario">Comprobar</button>
+      el que la versión con procesos gana?</span>
     </div>
+    <div class="opciones" id="opciones-cruce"></div>
     <div id="veredicto-cruce" class="veredicto"></div>
     <div class="alerta">Crear un proceso obliga a montar un intérprete aparte, entregarle los
     argumentos y abrir los canales por donde vuelve el resultado. Ese costo se paga completo, así

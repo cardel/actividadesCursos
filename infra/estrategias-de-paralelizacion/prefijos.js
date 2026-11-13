@@ -167,24 +167,19 @@ if (typeof document !== "undefined") (function () {
     return primeraPasada(valores, BLOQUES, opNombre);
   }
 
+  /* El desplazamiento que el estudiante escogio en cada bloque, como numero;
+     undefined mientras no haya escogido. */
+  var elegidos = [];
+  var mapaDespl = [];
+  var ctlDespl = [];
+
   function limpiarAbajo() {
     document.getElementById("panel-totales").innerHTML = "";
     document.getElementById("panel-segunda").innerHTML = "";
-    ["veredicto-despl", "veredicto-segunda"].forEach(function (id) {
-      document.getElementById(id).className = "veredicto";
-    });
+    document.getElementById("veredicto-segunda").className = "veredicto";
+    elegidos = [];
     for (var h = 0; h < BLOQUES; h++) {
-      var el = document.getElementById("despl-" + h);
-      el.value = "";
-      el.style.borderColor = "";
-      el.style.background = "";
-      el.disabled = false;
-      el.placeholder = "su número";
-    }
-    if (opNombre === "maximo") {
-      var primero = document.getElementById("despl-0");
-      primero.disabled = true;
-      primero.placeholder = "ninguno";
+      if (ctlDespl[h]) { ctlDespl[h].refrescar(); }
     }
   }
 
@@ -200,14 +195,13 @@ if (typeof document !== "undefined") (function () {
   }
 
   /* Los desplazamientos con los que corre la segunda pasada: los que
-     escribio el estudiante donde haya numero, los correctos en el resto. */
+     escogio el estudiante donde haya eleccion, los correctos en el resto. */
   function desplUsados() {
     var correctos = desplazamientos(totalesActuales(), opNombre);
     var usados = correctos.slice();
     var escribio = false;
-    for (var h = opNombre === "maximo" ? 1 : 0; h < BLOQUES; h++) {
-      var d = Motor.leerNumero("despl-" + h);
-      if (!isNaN(d)) { usados[h] = d; escribio = true; }
+    for (var h = 0; h < BLOQUES; h++) {
+      if (elegidos[h] !== undefined) { usados[h] = elegidos[h]; escribio = true; }
     }
     return { usados: usados, escribio: escribio };
   }
@@ -226,31 +220,75 @@ if (typeof document !== "undefined") (function () {
       mostrar(totales[1]) + ") = " + mostrar(esperados[2]) + ".";
   }
 
-  function comprobarDespl() {
+  /* Las opciones de un bloque: el desplazamiento correcto y los errores
+     tipicos al encadenar los totales. */
+  function opcionesDespl(h) {
     var totales = totalesActuales();
     var esperados = desplazamientos(totales, opNombre);
-    var caja = document.getElementById("veredicto-despl");
-    var bien = [], mal = [], vacias = [];
-    for (var h = opNombre === "maximo" ? 1 : 0; h < BLOQUES; h++) {
-      var el = document.getElementById("despl-" + h);
-      var dicho = Motor.leerNumero("despl-" + h);
-      var ok = dicho === esperados[h];
-      el.style.borderColor = ok ? "var(--verde)" : "var(--rojo)";
-      el.style.background = ok ? "var(--verde-suave)" : "var(--rojo-suave)";
-      if (isNaN(dicho)) { vacias.push(h + 1); }
-      (ok ? bien : mal).push(h + 1);
+    var o = OPERACIONES[opNombre];
+    var global = o.op(esperados[BLOQUES - 1], totales[BLOQUES - 1]);
+    var lista = [{ valor: mostrar(esperados[h]), clave: "correcta",
+      razon: "Eso es. " + explicarDespl(totales, esperados) }];
+    var cands = [];
+    if (h === 0) {
+      cands = [
+        { v: totales[0], r: "Ese es el total del propio bloque 1. Un bloque arranca " +
+          "con lo que acumularon los anteriores, y antes del primero no hay nada." },
+        { v: valores[0], r: "Es el primer valor del bloque, pero el desplazamiento es " +
+          "lo que ya hay acumulado antes de leerlo, y antes del bloque 1 no hay nada." },
+        { v: global, r: "Ese es el acumulado de los tres bloques. El bloque 1 no " +
+          "tiene bloques anteriores: arranca con el neutro de la operación." }
+      ];
+      if (opNombre === "maximo") {
+        cands.unshift({ v: 0, r: "0 es el neutro de la suma, no el del máximo. Antes " +
+          "del bloque 1 no hay ningún valor visto: ninguno." });
+      }
+    } else if (h === 1) {
+      var ultimo = valores[limites(valores.length, BLOQUES, 0).fin - 1];
+      cands = [
+        { v: totales[1], r: "Ese es el total del propio bloque 2. El bloque 2 arranca " +
+          "con lo que acumuló el bloque 1, no con lo suyo." },
+        { v: ultimo, r: "Es el último valor del bloque 1, no lo acumulado en él. El " +
+          "desplazamiento resume todo el bloque anterior, no solo su última posición." },
+        { v: esperados[2], r: "Ese es el desplazamiento del bloque 3, que ya incluye " +
+          "el total del bloque 2. El bloque 2 arranca antes, solo con el bloque 1." },
+        { v: global, r: "Ese es el acumulado de los tres bloques. El bloque 2 solo " +
+          "tiene detrás al bloque 1." }
+      ];
+    } else {
+      cands = [
+        { v: totales[1], r: "Ese es el total del bloque 2 solo. Falta lo que traen " +
+          "los bloques anteriores: el desplazamiento encadena todos." },
+        { v: totales[0], r: "Ese es el total del bloque 1 solo. Falta el bloque 2, " +
+          "que también queda antes del 3." },
+        { v: totales[2], r: "Ese es el total del propio bloque 3. Un bloque arranca " +
+          "con lo que acumularon los anteriores, no con lo suyo." },
+        { v: global, r: "Ese es el acumulado de los tres bloques, el propio incluido. " +
+          "El bloque 3 arranca antes de recorrer lo suyo." }
+      ];
     }
-    if (vacias.length === mal.length + bien.length) {
-      caja.className = "veredicto mal";
-      caja.textContent = "Escriba los desplazamientos antes de comprobar.";
-      return;
+    if (h > 0) {
+      var primero = valores[limites(valores.length, BLOQUES, h).ini];
+      cands.push({ v: primero, r: "Es el primer valor del propio bloque " + (h + 1) +
+        ", pero el desplazamiento es lo que se acumuló antes de leerlo, en los " +
+        "bloques anteriores." });
+      if (opNombre === "maximo") {
+        cands.push({ v: totales[0] + totales[1], r: "Eso suma los totales de los dos " +
+          "primeros bloques. Con el máximo no se suma: se queda el mayor de lo " +
+          "acumulado." });
+      }
     }
-    var cabeza = mal.length === 0
-      ? "Bien las " + bien.length + " casillas. "
-      : (bien.length ? "Bien: bloque " + listar(bien) + ". " : "") +
-        "Falla: bloque " + listar(mal) + ". ";
-    caja.className = "veredicto " + (mal.length ? "mal" : "bien");
-    caja.textContent = cabeza + explicarDespl(totales, esperados);
+    mapaDespl[h] = {};
+    mapaDespl[h][mostrar(esperados[h])] = esperados[h];
+    var vistos = [esperados[h]];
+    cands.forEach(function (x, i) {
+      if (lista.length < 4 && vistos.indexOf(x.v) < 0) {
+        vistos.push(x.v);
+        mapaDespl[h][mostrar(x.v)] = x.v;
+        lista.push({ valor: mostrar(x.v), clave: "d" + i, razon: x.r });
+      }
+    });
+    return lista;
   }
 
   function pintarSegunda() {
@@ -264,7 +302,7 @@ if (typeof document !== "undefined") (function () {
       "<span class=\"chip\">desplazamientos <b>" +
       d.usados.map(mostrar).join(", ") + "</b></span>" +
       "<span class=\"chip cuenta\">" +
-      (d.escribio ? "los que escribió" : "los correctos, no escribió ninguno") +
+      (d.escribio ? "los que escogió" : "los correctos, no escogió ninguno") +
       "</span></div>" +
       pintarFila("r, en dos pasadas", r, dif) +
       pintarFila("secuencial, de corrido", s, []);
@@ -312,7 +350,6 @@ if (typeof document !== "undefined") (function () {
     pintar();
   });
   document.getElementById("btn-totales").addEventListener("click", pintarTotales);
-  document.getElementById("btn-despl").addEventListener("click", comprobarDespl);
   document.getElementById("btn-segunda").addEventListener("click", pintarSegunda);
   Motor.conectarOpciones("opciones-medida", "veredicto-medida", RAZONES);
 
@@ -322,5 +359,14 @@ if (typeof document !== "undefined") (function () {
       valor: Motor.num(TIEMPOS.secuencial / TIEMPOS.dosPasadas / TIEMPOS.hilos, 2),
       cuenta: true }
   ]);
+  [0, 1, 2].forEach(function (h) {
+    ctlDespl[h] = Motor.opcionesNumericas("opciones-despl-" + h,
+      "veredicto-despl-" + h, function () { return opcionesDespl(h); });
+    document.getElementById("opciones-despl-" + h).addEventListener("click", function (ev) {
+      var texto = ev.target.textContent;
+      if (mapaDespl[h] && mapaDespl[h][texto] !== undefined) { elegidos[h] = mapaDespl[h][texto]; }
+    });
+  });
+
   pintar();
 })();

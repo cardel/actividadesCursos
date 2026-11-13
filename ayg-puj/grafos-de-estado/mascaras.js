@@ -105,14 +105,61 @@ var EJERCICIO = (function () {
     return { ok: ok, msg: msgs.join(" ") };
   }
 
-  return { R: R, escenarios: ESCENARIOS, resultado: resultado, evaluar: evaluar, expresion: expresion, enunciado: enunciado, bin: bin, bit: bit };
+  /* Opciones de un escenario: la correcta y los valores que da cada confusion
+     tipica, sin repetir ninguno. */
+  function opciones(e) {
+    var esperado = resultado(e), lista = [], cand = [], det;
+    if (e.op === "shift") { det = "Solo el bit " + (e.i - 1) + " vale 1: " + bin(esperado) + ", la luz " + e.i + " sola."; }
+    else if (e.op === "and") {
+      det = bin(e.luz) + " & " + bin(bit(e.i)) + " = " + bin(esperado) + ". " +
+            (esperado !== 0 ? "Distinto de cero: la luz " + e.i + " está prendida." : "Cero: la luz " + e.i + " está apagada.");
+    } else {
+      det = bin(e.luz) + " ^ " + bin(bit(e.i)) + " = " + bin(esperado) + ". La luz " + e.i + " " +
+            (esperado > e.luz ? "se prende" : "se apaga") + "; quedan " + conjunto(esperado) + ".";
+    }
+    lista.push({ valor: esperado, clave: "correcta", razon: "Correcto: " + esperado + " = " + bin(esperado) + " en binario. " + det });
+    if (e.op === "shift") {
+      cand.push({ valor: 1 << e.i, clave: "uno-mas",
+        razon: "Ese es el valor de 1 << " + e.i + ". La luz de la habitación " + e.i + " es el bit " + (e.i - 1) + ", así que el desplazamiento es " + (e.i - 1) + "." });
+      cand.push({ valor: e.i, clave: "numero-de-habitacion",
+        razon: "Ese es el número de la habitación, no la máscara. La máscara tiene un 1 en el bit " + (e.i - 1) + " y ceros en los demás." });
+      cand.push({ valor: bit(e.i) - 1, clave: "todas-las-anteriores",
+        razon: "Eso prende todos los bits por debajo del " + (e.i - 1) + ". La máscara pedida tiene prendida solo la luz " + e.i + "." });
+    } else if (e.op === "and") {
+      cand.push({ valor: e.luz ^ bit(e.i), clave: "xor",
+        razon: "Eso es lo que da ^, que cambia la luz. El & solo conserva el bit que se pregunta y apaga todos los demás." });
+      cand.push({ valor: 1, clave: "uno",
+        razon: esperado !== 0 ? "El & no da 1 sino el valor del bit que se preguntó: " + bit(e.i) + ". Solo es distinto de cero si la luz está prendida."
+                             : "La luz " + e.i + " está apagada, así que el & da 0. Un 1 solo sale cuando se pregunta por la habitación 1 y está prendida." });
+      cand.push({ valor: e.luz & (1 << e.i), clave: "bit-corrido",
+        razon: "Se preguntó por el bit " + e.i + " y no por el " + (e.i - 1) + ". La luz de la habitación " + e.i + " es el bit " + (e.i - 1) + "." });
+      cand.push({ valor: e.luz | bit(e.i), clave: "or",
+        razon: "Eso es lo que da |, que prende la luz sin preguntar. El & conserva solo el bit de la habitación " + e.i + "." });
+    } else {
+      cand.push({ valor: e.luz & bit(e.i), clave: "and",
+        razon: "Eso es lo que da &. El ^ deja intactos los demás bits y voltea solo el de la habitación " + e.i + "." });
+      cand.push({ valor: e.luz | bit(e.i), clave: "or",
+        razon: "Con ^ la luz cambia: si estaba prendida se apaga. Un OR la dejaría prendida." });
+      cand.push({ valor: e.luz ^ (1 << e.i), clave: "bit-corrido",
+        razon: "Se volteó el bit " + e.i + " y no el " + (e.i - 1) + ". La luz de la habitación " + e.i + " es el bit " + (e.i - 1) + "." });
+      cand.push({ valor: e.luz, clave: "sin-cambio",
+        razon: "Esa es la máscara de antes. El interruptor sí cambia la luz de la habitación " + e.i + ": el ^ voltea ese bit." });
+    }
+    cand.forEach(function (c) {
+      var repetida = lista.some(function (o) { return o.valor === c.valor; });
+      if (!repetida && lista.length < 4) { lista.push(c); }
+    });
+    return lista;
+  }
+
+  return { R: R, escenarios: ESCENARIOS, resultado: resultado, opciones: opciones, evaluar: evaluar, expresion: expresion, enunciado: enunciado, bin: bin, bit: bit };
 })();
 
 if (typeof module !== "undefined") {
   module.exports = EJERCICIO;
 } else {
   (function () {
-    var idx = 0, aciertos = 0, hechos = 0, resuelto = false;
+    var idx = 0, aciertos = 0, hechos = 0, resuelto = false, ctl = null;
     function el(id) { return document.getElementById(id); }
     function mostrar() {
       var e = EJERCICIO.escenarios[idx], html = "", i = 1;
@@ -127,19 +174,19 @@ if (typeof module !== "undefined") {
       el("bombillas").innerHTML = html;
       el("enunciado").textContent = EJERCICIO.enunciado(e);
       el("expresion").textContent = EJERCICIO.expresion(e);
-      el("dec").value = ""; el("bin").value = "";
-      el("veredicto").className = "veredicto"; el("veredicto").textContent = "";
       resuelto = false;
+      if (ctl) { ctl.refrescar(); }
       el("btn-sig").disabled = idx >= EJERCICIO.escenarios.length - 1;
     }
-    el("btn-comprobar").addEventListener("click", function () {
-      var dec = parseInt(el("dec").value, 10), v = el("veredicto"), r;
-      if (isNaN(dec)) { v.className = "veredicto mal"; v.textContent = "Escriba el decimal primero."; return; }
-      r = EJERCICIO.evaluar(EJERCICIO.escenarios[idx], dec, el("bin").value);
-      v.className = "veredicto " + (r.ok ? "bien" : "mal"); v.textContent = r.msg;
-      if (!resuelto) {
+    ctl = Motor.opcionesNumericas("opciones-mascara", "veredicto", function () {
+      return EJERCICIO.opciones(EJERCICIO.escenarios[idx]);
+    });
+    var caja = el("opciones-mascara");
+    caja.addEventListener("click", function (ev) {
+      var op = ev.target && ev.target.getAttribute ? ev.target.getAttribute("data-op") : null;
+      if (op !== null && !resuelto) {
         resuelto = true; hechos = hechos + 1;
-        if (r.ok) { aciertos = aciertos + 1; }
+        if (op === "correcta") { aciertos = aciertos + 1; }
         el("aciertos").textContent = aciertos; el("hechos").textContent = hechos;
       }
     });

@@ -20,18 +20,18 @@
     <code>frente</code> y cuántas veces se llama a
     <code>trasvasar</code> en total?</p>
     <div class="codigo" id="codigo-ops"></div>
-    <div class="prediccion">
-      <span>1.er frente:</span>
-      <input type="number" id="pred-dp-0" placeholder="?">
-      <span>2.º:</span>
-      <input type="number" id="pred-dp-1" placeholder="?">
-      <span>3.º:</span>
-      <input type="number" id="pred-dp-2" placeholder="?">
-      <span>trasvases:</span>
-      <input type="number" id="pred-dp-tras" placeholder="?">
-      <button id="btn-dp" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-dp" class="veredicto"></div>
+    <p class="nota" style="margin-bottom:0.2rem">1.er frente:</p>
+    <div class="opciones" id="opciones-dp-0"></div>
+    <div id="veredicto-dp-0" class="veredicto"></div>
+    <p class="nota" style="margin-bottom:0.2rem">2.º frente:</p>
+    <div class="opciones" id="opciones-dp-1"></div>
+    <div id="veredicto-dp-1" class="veredicto"></div>
+    <p class="nota" style="margin-bottom:0.2rem">3.er frente:</p>
+    <div class="opciones" id="opciones-dp-2"></div>
+    <div id="veredicto-dp-2" class="veredicto"></div>
+    <p class="nota" style="margin-bottom:0.2rem">Llamadas a <code>trasvasar</code>:</p>
+    <div class="opciones" id="opciones-dp-tras"></div>
+    <div id="veredicto-dp-tras" class="veredicto"></div>
     <div id="tabla-dp" style="display:none" class="envoltura-tabla">
       <table>
         <thead><tr><th>operación</th><th>entrada (tope a la derecha)</th><th>salida (tope a la derecha)</th></tr></thead>
@@ -43,6 +43,7 @@
     </div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="dospilas.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

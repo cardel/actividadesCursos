@@ -129,20 +129,59 @@ function iniciar() {
 
   pintar();
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-serie", boton: "btn-serie", veredicto: "ver-serie" },
-    function () { return horasCaidas(cadenaSimple()); },
-    explicarSerie);
-  document.getElementById("btn-serie").addEventListener("click", function () {
+  /* Las cifras salen ya formateadas: dos opciones que se vean igual no
+     pueden convivir, aunque difieran en la tercera cifra. */
+  function lista(correcta, candidatas) {
+    var vistos = {}, salida = [];
+    vistos[correcta.valor] = true;
+    salida.push(correcta);
+    candidatas.forEach(function (c) {
+      if (!vistos[c.valor]) { vistos[c.valor] = true; salida.push(c); }
+    });
+    return salida;
+  }
+
+  Motor.opcionesNumericas("op-serie", "ver-serie", function () {
+    var horas = horasCaidas(cadenaSimple());
+    var una = horasCaidas(fraccion(PIEZAS[0].uptime));
+    return lista(
+      { valor: fmt(horas, 1), clave: "correcta", razon: explicarSerie(true, horas) },
+      [
+        { valor: fmt(una, 1), clave: "una",
+          razon: "Esas son las horas de una pieza sola: 8760 × 0,001. La cadena tiene tres en " +
+            "serie y cada una puede caer por su cuenta, así que el servicio queda caído más." },
+        { valor: fmt(2 * una, 1), clave: "dos",
+          razon: "Eso cuenta dos de las tres piezas. El balanceador, la aplicación y la base " +
+            "tienen que responder las tres, y cada una resta sus 8,76 horas." },
+        { valor: fmt(horasCaidas(Math.pow(0.99, 3)), 1), clave: "dos-nueves",
+          razon: "Eso es leer 99,9 % como 99 %. Cada pieza deja 8,76 horas, no 87,6; con tres " +
+            "piezas en serie la cuenta es 0,999 × 0,999 × 0,999." }
+      ]);
+  });
+  document.getElementById("op-serie").addEventListener("click", function () {
     vistaSerie = true;
     pintar();
   });
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-copia", boton: "btn-copia", veredicto: "ver-copia" },
-    function () { return horasCaidas(cadenaConCopia(DUPLICADA)); },
-    explicarCopia);
-  document.getElementById("btn-copia").addEventListener("click", function () {
+  Motor.opcionesNumericas("op-copia", "ver-copia", function () {
+    var horas = horasCaidas(cadenaConCopia(DUPLICADA));
+    var una = horasCaidas(fraccion(PIEZAS[0].uptime));
+    return lista(
+      { valor: fmt(horas, 1), clave: "correcta", razon: explicarCopia(true, horas) },
+      [
+        { valor: fmt(horasCaidas(cadenaSimple()), 1), clave: "igual",
+          razon: "Eso sería sin la copia. La base duplicada cae una vez en un millón, y la cadena " +
+            "ya no pierde las 8,76 horas de esa pieza." },
+        { valor: fmt(una, 1), clave: "una",
+          razon: "Eso cuenta una sola de las dos piezas que quedan solas. El balanceador y la " +
+            "aplicación siguen sin copia, y cada una aporta sus 8,76 horas: son dos." },
+        { valor: fmt(horasCaidas(enParalelo(fraccion(PIEZAS[DUPLICADA].uptime), 2)), 1),
+          clave: "cero",
+          razon: "Eso es la caída de la base duplicada y nada más: seis nueves. El servicio " +
+            "completo sigue cayendo por las otras dos piezas." }
+      ]);
+  });
+  document.getElementById("op-copia").addEventListener("click", function () {
     vistaCopia = true;
     pintar();
   });

@@ -159,18 +159,65 @@ function hilosAnidados() {
   return HILOS_MAQUINA * HILOS_MAQUINA;
 }
 
-function explicarStatic(bien, real, dicho) {
-  return (bien ? "Así es. " : "Escribió " + Motor.num(dicho, 2) + ". ") +
-    "static parte las doce iteraciones en tres bloques contiguos de cuatro: el hilo 0 se " +
-    "lleva de la 0 a la 3, el hilo 1 de la 4 a la 7 y el hilo 2 arranca en la " +
-    Motor.num(real) + ". El panel de arriba quedó en ese reparto.";
+/* Lista sin valores repetidos: la correcta y hasta tres distractores. */
+function armarOpciones(correcta, distractores) {
+  var lista = [correcta], vistos = {};
+  vistos[correcta.valor] = true;
+  distractores.forEach(function (d) {
+    if (lista.length < 4 && !vistos[d.valor]) {
+      vistos[d.valor] = true;
+      lista.push(d);
+    }
+  });
+  return lista;
 }
 
-function explicarAnidado(bien, real, dicho) {
-  return (bien ? "Sí, son " : "Escribió " + Motor.num(dicho, 2) + "; la cuenta da ") +
-    "12 × 12 = " + Motor.num(real) + " hilos: cada uno de los doce hilos externos abre su " +
-    "propia región de doce. Por eso el anidamiento viene apagado y la región interna corre " +
-    "con un equipo de un solo hilo. Para repartir los dos ciclos de una vez está collapse.";
+/* Primera iteracion del hilo 2 con static: la correcta sale de
+   esperadoStatic() y cada distractor es una forma de contar mal el reparto. */
+function opcionesStatic() {
+  var real = esperadoStatic();
+  var bloque = N / HILOS;
+  return armarOpciones(
+    { valor: real, clave: "correcta",
+      razon: "Así es. static parte las doce iteraciones en tres bloques contiguos de cuatro: " +
+        "el hilo 0 se lleva de la 0 a la 3, el hilo 1 de la 4 a la 7 y el hilo 2 arranca en la " +
+        Motor.num(real) + ". El panel de arriba quedó en ese reparto." },
+    [
+      { valor: bloque, clave: "hiloUno",
+        razon: "Esa es la primera iteración del hilo 1, no la del hilo 2. Los hilos se numeran " +
+          "desde 0: el hilo 0 abre en la 0, el hilo 1 en la " + bloque + " y el hilo 2 en la " +
+          real + "." },
+      { valor: HILOS - 1, clave: "ciclico",
+        razon: "Eso es el reparto de static con bloque de 1, que va dando una iteración a cada " +
+          "hilo en vuelta. Sin tamaño de bloque, static corta tres bloques contiguos de " +
+          bloque + " iteraciones." },
+      { valor: real + 1, clave: "desdeUno",
+        razon: "Eso cuenta las iteraciones desde 1. El ciclo arranca en i = 0, así que el " +
+          "bloque del hilo 2 empieza en la " + real + "." }
+    ]);
+}
+
+/* Hilos que pediria el programa con el anidamiento activo. */
+function opcionesAnidado() {
+  var real = hilosAnidados();
+  return armarOpciones(
+    { valor: real, clave: "correcta",
+      razon: "Sí, son 12 × 12 = " + Motor.num(real) + " hilos: cada uno de los doce hilos " +
+        "externos abre su propia región de doce. Por eso el anidamiento viene apagado y la " +
+        "región interna corre con un equipo de un solo hilo. Para repartir los dos ciclos de " +
+        "una vez está collapse." },
+    [
+      { valor: HILOS_MAQUINA, clave: "externos",
+        razon: "Esos son los hilos de la región externa. Cada uno abre además su propia región " +
+          "de " + HILOS_MAQUINA + ", y la cuenta es " + HILOS_MAQUINA + " × " + HILOS_MAQUINA +
+          "." },
+      { valor: HILOS_MAQUINA + HILOS_MAQUINA, clave: "suma",
+        razon: "Eso suma los dos equipos. Las regiones no se suman, se multiplican: cada hilo " +
+          "externo tiene su equipo interno completo." },
+      { valor: HILOS_MAQUINA * (HILOS_MAQUINA / 2), clave: "nucleos",
+        razon: "Eso supone que cada hilo externo abre solo la mitad. La directiva pide " +
+          HILOS_MAQUINA + " hilos en cada región interna, sin mirar cuántos hay ya." }
+    ]);
 }
 
 var RAZONES_TIEMPOS = {
@@ -205,7 +252,7 @@ if (typeof module !== "undefined" && module.exports) {
     cargaPareja: cargaPareja,
     etiquetaRango: etiquetaRango, filasGantt: filasGantt, mejorMedido: mejorMedido,
     esperadoStatic: esperadoStatic, hilosAnidados: hilosAnidados,
-    explicarStatic: explicarStatic, explicarAnidado: explicarAnidado,
+    opcionesStatic: opcionesStatic, opcionesAnidado: opcionesAnidado,
     RAZONES_TIEMPOS: RAZONES_TIEMPOS, RAZONES_CICLOS: RAZONES_CICLOS
   };
 }
@@ -305,22 +352,16 @@ if (typeof document !== "undefined") (function () {
     });
   });
 
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-static", boton: "btn-comprobar-static", veredicto: "veredicto-static" },
-    esperadoStatic, explicarStatic);
-  document.getElementById("btn-comprobar-static").addEventListener("click", function () {
-    if (isNaN(Motor.leerNumero("prediccion-static"))) { return; }
+  Motor.opcionesNumericas("opciones-static", "veredicto-static", opcionesStatic);
+  document.getElementById("opciones-static").addEventListener("click", function () {
     abiertoStatic = true;
     politica = "static";
     patron = "uniforme";
     pintar();
   });
 
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-anidado", boton: "btn-comprobar-anidado", veredicto: "veredicto-anidado" },
-    hilosAnidados, explicarAnidado);
-  document.getElementById("btn-comprobar-anidado").addEventListener("click", function () {
-    if (isNaN(Motor.leerNumero("prediccion-anidado"))) { return; }
+  Motor.opcionesNumericas("opciones-anidado", "veredicto-anidado", opcionesAnidado);
+  document.getElementById("opciones-anidado").addEventListener("click", function () {
     document.getElementById("extra-anidado").style.display = "block";
   });
 

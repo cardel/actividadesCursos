@@ -13,8 +13,7 @@
   td.celda-a { cursor: pointer; }
   td.borde-cero { color: var(--gris); background: var(--codigo-fondo); font-weight: 400; }
   td.llena { color: var(--azul); }
-  input.entrada-s { width: 3.2rem; padding: 0.2rem; font: inherit; text-align: center; border: 1px dashed var(--borde); border-radius: 6px; }
-  input.entrada-s.errada { border: 2px solid var(--rojo); background: var(--rojo-suave); }
+  td.casilla-s { cursor: pointer; color: var(--gris); border-style: dashed; }
   td.marca-a { background: var(--resalte); }
   td.marca-rect { background: var(--azul-suave); }
   td.marca-esquina { outline: 3px solid var(--azul); }
@@ -57,9 +56,13 @@
       </div>
     </div>
     <div class="formula" id="formula-celda"></div>
-    <div class="nota">Escriba el valor y oprima Enter. Conviene ir por filas,
-    de izquierda a derecha: cada casilla usa la de arriba y la de la
-    izquierda.</div>
+    <div class="nota">Haga clic en una casilla vacía de S y escoja su valor.
+    Conviene ir por filas, de izquierda a derecha: cada casilla usa la de
+    arriba y la de la izquierda.</div>
+    <div class="prediccion" id="zona-celda" style="display:none">
+      <span id="pregunta-celda"></span>
+      <div class="opciones" id="opciones-celda"></div>
+    </div>
     <div class="botones" style="margin-top:0.6rem">
       <button id="btn-llenar">Llenar lo que falta</button>
     </div>
@@ -72,8 +75,7 @@
     <div class="formula" id="formula-rect"></div>
     <div class="prediccion" id="zona-consulta" style="display:none">
       <span>Con los cuatro valores resaltados en S, la suma es:</span>
-      <input type="number" id="pred-suma">
-      <button id="btn-consulta" class="primario">Comprobar</button>
+      <div class="opciones" id="opciones-suma"></div>
     </div>
     <div id="veredicto-consulta" class="veredicto"></div>
     <div class="nota">Verde suma, rojo resta. La esquina S[f1][c1] vuelve a
@@ -98,6 +100,7 @@
     Envío en <a href="https://vjudge.net/problem/UVA-108">https://vjudge.net/problem/UVA-108</a>.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="acumulados.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

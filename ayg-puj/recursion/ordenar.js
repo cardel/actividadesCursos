@@ -178,35 +178,26 @@ if (typeof module !== "undefined") {
         v.className = "veredicto";
         v.textContent = "";
         reiniciar();
+        opcionesNiveles.refrescar();
       });
     });
 
-    document.getElementById("btn-comprobar").addEventListener("click", function () {
-      var v = document.getElementById("veredicto");
-      var valor = parseInt(document.getElementById("prediccion").value, 10);
+    var opcionesNiveles = Motor.opcionesNumericas("opciones-prediccion", "veredicto", function () {
       var esperado = EJERCICIO.lg(n) + 1;
-      if (isNaN(valor)) {
-        v.className = "veredicto mal";
-        v.textContent = "Escriba un número primero.";
-      } else if (valor === esperado) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: con n = " + n + " hay " + esperado +
-          " niveles (lg " + n + " + 1 = " + esperado + "). Compruébelo abajo, " +
-          "partiendo nivel por nivel.";
-      } else if (valor === esperado - 1) {
-        v.className = "veredicto mal";
-        v.textContent = "Contó los cortes (lg n = " + (esperado - 1) + "), pero el " +
-          "nivel de arriba, la lista completa, también es una fila.";
-      } else if (valor === n / 2) {
-        v.className = "veredicto mal";
-        v.textContent = "n/2 es cuántas listas de dos elementos aparecen en el " +
-          "penúltimo nivel, no cuántos niveles hay. Partir a la mitad baja " +
-          "mucho más rápido.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "No coincide. Siga la cuenta: " + n + ", " + (n / 2) +
-          ", … ¿cuántas veces se puede partir a la mitad antes de llegar a 1?";
-      }
+      var lista = [{ valor: esperado, clave: "correcta", razon: "Correcto: con n = " + n + " hay " + esperado +
+        " niveles (lg " + n + " + 1 = " + esperado + "). Compruébelo abajo, partiendo nivel por nivel." }];
+      var cand = [
+        { valor: esperado - 1, clave: "cortes", razon: "Contó los cortes (lg n = " + (esperado - 1) + "), pero el nivel de arriba, la lista completa, también es una fila." },
+        { valor: n / 2, clave: "mitad", razon: "n/2 es cuántas listas de dos elementos aparecen en el penúltimo nivel, no cuántos niveles hay. Partir a la mitad baja mucho más rápido." },
+        { valor: n, clave: "n", razon: "Eso sería una fila por elemento, como si cada corte separara uno solo. Cada corte parte todas las listas a la mitad." },
+        { valor: esperado + 1, clave: "demas", razon: "Contó una fila de más: las listas de un elemento ya no se parten y cierran la última fila." }
+      ];
+      cand.forEach(function (o) {
+        var repetido = false;
+        lista.forEach(function (x) { if (x.valor === o.valor) { repetido = true; } });
+        if (!repetido && lista.length < 4) { lista.push(o); }
+      });
+      return lista;
     });
 
     /* ---- tarjeta 4: patrón ---- */

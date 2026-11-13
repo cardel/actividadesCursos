@@ -145,18 +145,54 @@ function iniciar() {
 
   pintar();
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-residuo", boton: "btn-residuo", veredicto: "ver-residuo" },
-    movidasResiduo, explicarResiduo);
-  document.getElementById("btn-residuo").addEventListener("click", function () {
+  /* Dos opciones que se vean igual no pueden convivir: se descartan las
+     que repitan el valor de otra antes de devolver la lista. */
+  function sinRepetidos(lista) {
+    var vistos = {};
+    return lista.filter(function (o) {
+      var ya = vistos[o.valor];
+      vistos[o.valor] = true;
+      return !ya;
+    });
+  }
+
+  Motor.opcionesNumericas("op-residuo", "ver-residuo", function () {
+    var real = movidasResiduo();
+    return sinRepetidos([
+      { valor: fmt(real), clave: "correcta", razon: explicarResiduo(true, real) },
+      { valor: fmt(CLAVES - real), clave: "quedan",
+        razon: "Esas son las que se quedan en su nodo, no las que se mueven: las que dejan el " +
+          "mismo residuo entre 4 y entre 5." },
+      { valor: fmt(minimoIdeal()), clave: "ideal",
+        razon: "Esa es la parte que le toca al nodo nuevo, la quinta parte, y es lo mínimo que " +
+          "tendría que moverse. El residuo no se detiene ahí: cambia el divisor de todas las " +
+          "claves." },
+      { valor: fmt(CLAVES / 2), clave: "mitad",
+        razon: "Eso supone que la mitad cambia de nodo. Con el residuo, una clave solo se " +
+          "queda si su residuo coincide entre 4 y entre 5, y eso pasa con 4 de cada 20." }
+    ]);
+  });
+  document.getElementById("op-residuo").addEventListener("click", function () {
     vistoResiduo = true;
     pintar();
   });
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-anillo", boton: "btn-anillo", veredicto: "ver-anillo" },
-    movidasAnillo, explicarAnillo);
-  document.getElementById("btn-anillo").addEventListener("click", function () {
+  Motor.opcionesNumericas("op-anillo", "ver-anillo", function () {
+    var real = movidasAnillo();
+    return sinRepetidos([
+      { valor: fmt(real), clave: "correcta", razon: explicarAnillo(true, real) },
+      { valor: fmt(minimoIdeal()), clave: "ideal",
+        razon: "Esa es la quinta parte, lo que tendría con un reparto parejo. E está en 874 y " +
+          "solo se queda con las claves de 750 a 874, no con una quinta parte." },
+      { valor: fmt(CLAVES / NODOS_ANTES), clave: "tramo",
+        razon: "Ese es el tramo completo de D, de 750 a 999. E quedó en 874, así que D conserva " +
+          "las claves de 875 a 999 y solo pierde las de 750 a 874." },
+      { valor: fmt(movidasResiduo()), clave: "residuo",
+        razon: "Eso es lo que mueve el residuo. En el anillo el nodo nuevo solo toma un " +
+          "pedazo del tramo de su vecino y nada más cambia de dueño." }
+    ]);
+  });
+  document.getElementById("op-anillo").addEventListener("click", function () {
     vistoAnillo = true;
     pintar();
   });

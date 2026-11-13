@@ -213,33 +213,10 @@
     pintarMatriz();
     pintarMedidas();
     pintarTabla();
+    if (opsPred) { opsPred.refrescar(); }
   }
 
-  function comprobar() {
-    var caja = document.getElementById("veredicto");
-    var v = parseInt(document.getElementById("prediccion").value, 10);
-    var r = contar(n, recorrido);
-    if (isNaN(v)) {
-      caja.className = "veredicto mal";
-      caja.textContent = "Escriba un número antes de comprobar.";
-      return;
-    }
-    if (v === r.fallo) {
-      caja.className = "veredicto bien";
-      caja.textContent = "Correcto: " + r.fallo + " fallos, " + r.espacial +
-        " aciertos espaciales y " + r.temporal + " temporales.";
-    } else {
-      caja.className = "veredicto mal";
-      caja.innerHTML = "Son <b>" + r.fallo + "</b>, no " + v + ". " +
-        (recorrido === "filas"
-          ? "Por filas los elementos llegan seguidos: una línea trae 8 y los 7 " +
-            "siguientes ya están, así que los fallos son uno por línea y por pasada, " +
-            "salvo que la caché alcance a guardarlas de una pasada a la otra."
-          : "Por columnas el salto entre un elemento y el siguiente es de n " +
-            "posiciones. Si la caché no guarda las n líneas de la columna hasta " +
-            "que empiece la siguiente, cada acceso vuelve a fallar.");
-    }
-  }
+  var opsPred = null;
 
   var FILAS = {
     espacial: [true, "Sí. Cada línea trae 8 elementos y el recorrido los usa a " +
@@ -327,7 +304,37 @@
       }
     }, 60);
   });
-  document.getElementById("btn-comprobar").addEventListener("click", comprobar);
+  opsPred = Motor.opcionesNumericas("opciones-prediccion", "veredicto", function () {
+    var r = contar(n, recorrido);
+    var total = r.fallo + r.espacial + r.temporal;
+    var lineas = Math.ceil(n * n / POR_LINEA);
+    var lista = [{ valor: r.fallo, clave: "correcta",
+      razon: "Correcto: " + r.fallo + " fallos, " + r.espacial + " aciertos espaciales y " +
+        r.temporal + " temporales." }];
+    var propuestas = [
+      { valor: total, clave: "todos",
+        razon: "Eso es el total de accesos, " + total + ", como si cada uno fallara. Por cada " +
+          "línea traída se aprovechan los vecinos o lo ya guardado, así que fallan " + r.fallo + "." },
+      { valor: lineas, clave: "una-vez",
+        razon: "Eso es cada línea traída una sola vez: " + n * n + " elementos entre " +
+          POR_LINEA + " por línea. Solo vale si la caché las guarda hasta la siguiente pasada; " +
+          "aquí los fallos son " + r.fallo + "." },
+      { valor: r.espacial, clave: "espaciales",
+        razon: "Ese es el número de aciertos espaciales, no de fallos. Los fallos son " +
+          r.fallo + "." },
+      { valor: r.temporal, clave: "temporales",
+        razon: "Ese es el número de aciertos temporales, no de fallos. Los fallos son " +
+          r.fallo + "." }
+    ];
+    var vistos = [String(r.fallo)];
+    propuestas.forEach(function (o) {
+      if (lista.length < 4 && vistos.indexOf(String(o.valor)) < 0) {
+        vistos.push(String(o.valor));
+        lista.push(o);
+      }
+    });
+    return lista;
+  });
   conectar("opciones-filas", "veredicto-filas", FILAS);
   conectar("opciones-columnas", "veredicto-columnas", COLUMNAS);
 

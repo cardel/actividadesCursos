@@ -163,7 +163,7 @@ if (typeof module !== "undefined") {
         caja.appendChild(linea);
       });
     }
-    var logradas = { orden: false, escrituras: false };
+    var logradas = { orden: false, escrituras: false, eapilar: false, edesapilar: false, etope: false };
     function revisar() {
       if (logradas.orden && logradas.escrituras) {
         document.getElementById("carta-cierre").style.display = "block";
@@ -195,31 +195,68 @@ if (typeof module !== "undefined") {
       });
     });
 
-    document.getElementById("btn-escrituras").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-escrituras");
+    function alAcertar(idCaja, clave) {
+      document.getElementById(idCaja).addEventListener("click", function (e) {
+        var b = e.target;
+        if (b && b.getAttribute && b.getAttribute("data-op") === "correcta") {
+          logradas[clave] = true;
+          if (logradas.eapilar && logradas.edesapilar && logradas.etope) {
+            logradas.escrituras = true;
+            var nota = document.getElementById("nota-escrituras");
+            nota.style.display = "block";
+            nota.textContent = "Un programa que apila un millón de veces y desapila un millón de veces escribe " + EJERCICIO.escriturasSecuencia(1000000, 1000000).toLocaleString("es") + " punteros, y esa cuenta no cambia con el tamaño de la pila. Sobre la lista de arreglo con el tope al frente, la misma secuencia correría del orden de un billón de elementos.";
+          }
+          revisar();
+        }
+      });
+    }
+    function sinRepetir(lista) {
+      var vistos = {};
+      return lista.filter(function (o) {
+        var nuevo = !vistos[o.valor];
+        vistos[o.valor] = true;
+        return nuevo;
+      });
+    }
+    alAcertar("opciones-e-apilar", "eapilar");
+    alAcertar("opciones-e-desapilar", "edesapilar");
+    alAcertar("opciones-e-tope", "etope");
+    Motor.opcionesNumericas("opciones-e-apilar", "veredicto-e-apilar", function () {
       var ea = EJERCICIO.escriturasDe("apilar");
+      return sinRepetir([
+        { valor: ea, clave: "correcta",
+          razon: "Correcto: " + ea + ". apilar escribe nuevo->siguiente y cima. Ninguna mira cuántos elementos hay: Θ(1)." },
+        { valor: 3, clave: "contó-dato",
+          razon: "nuevo->dato = e escribe un entero, no un puntero, y Nodo *nuevo = new Nodo es una variable local que desaparece al salir de la función: no es parte de la estructura." },
+        { valor: 1, clave: "solo-cima",
+          razon: "Con solo cima el nodo nuevo quedaría sin enlazar a la pila vieja: falta nuevo->siguiente = cima, que también es un puntero." },
+        { valor: 0, clave: "ninguna",
+          razon: "Apilar cambia la estructura, y eso exige escribir al menos cima." }
+      ]);
+    });
+    Motor.opcionesNumericas("opciones-e-desapilar", "veredicto-e-desapilar", function () {
       var ed = EJERCICIO.escriturasDe("desapilar");
+      return sinRepetir([
+        { valor: ed, clave: "correcta",
+          razon: "Correcto: " + ed + ". desapilar escribe cima y nada más, porque el nodo que sale se libera sin tocar su campo siguiente." },
+        { valor: 2, clave: "contó-muerto",
+          razon: "Nodo *muerto = cima es una variable local que desaparece al salir de la función: no es parte de la estructura, no cuenta." },
+        { valor: 0, clave: "ninguna",
+          razon: "Desapilar cambia la estructura: cima pasa al nodo siguiente, y esa es una escritura." },
+        { valor: 3, clave: "simétrica",
+          razon: "Desapilar no enlaza nada nuevo; no hay un nodo recién creado al que escribirle el siguiente." }
+      ]);
+    });
+    Motor.opcionesNumericas("opciones-e-tope", "veredicto-e-tope", function () {
       var et = EJERCICIO.escriturasDe("tope");
-      var a = parseInt(document.getElementById("pred-apilar").value, 10);
-      var d = parseInt(document.getElementById("pred-desapilar").value, 10);
-      var t = parseInt(document.getElementById("pred-tope").value, 10);
-      if (a === ea && d === ed && t === et) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: " + ea + ", " + ed + " y " + et + ". apilar escribe nuevo->siguiente y cima; desapilar escribe cima y nada más, porque el nodo que sale se libera sin tocar su campo siguiente; tope solo lee cima->dato. Ninguna de las tres mira cuántos elementos hay: Θ(1) las tres.";
-        logradas.escrituras = true; revisar();
-        var nota = document.getElementById("nota-escrituras");
-        nota.style.display = "block";
-        nota.textContent = "Un programa que apila un millón de veces y desapila un millón de veces escribe " + EJERCICIO.escriturasSecuencia(1000000, 1000000).toLocaleString("es") + " punteros, y esa cuenta no cambia con el tamaño de la pila. Sobre la lista de arreglo con el tope al frente, la misma secuencia correría del orden de un billón de elementos.";
-      } else if (a === 3 || d === 2) {
-        ver.className = "veredicto mal";
-        ver.textContent = "nuevo->dato = e escribe un entero, no un puntero, y Nodo *nuevo = new Nodo es una variable local que desaparece al salir de la función: no es parte de la estructura. Lo mismo con Nodo *muerto.";
-      } else if (t !== et) {
-        ver.className = "veredicto mal";
-        ver.textContent = "tope() no cambia nada: lee cima->dato y devuelve el entero. Una consulta que escribiera punteros no sería una consulta.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "Cuente las líneas que ponen algo a la izquierda del igual y son punteros de la estructura: cima o el campo siguiente de un nodo.";
-      }
+      return sinRepetir([
+        { valor: et, clave: "correcta",
+          razon: "Correcto: " + et + ". tope() solo lee cima->dato y devuelve el entero." },
+        { valor: 1, clave: "cima",
+          razon: "tope() no cambia nada: lee cima->dato y devuelve el entero. Una consulta que escribiera punteros no sería una consulta." },
+        { valor: 2, clave: "como-apilar",
+          razon: "Esas son las escrituras de apilar. tope() es una consulta y no mueve ningún puntero." }
+      ]);
     });
   })();
 }

@@ -57,14 +57,12 @@
     <p style="margin-top:0">Con <code>n = 20</code> inserciones al frente,
     ¿cuántas veces mueve un elemento el arreglo y cuántos punteros escribe la
     enlazada?</p>
-    <div class="prediccion">
-      <span>movidas del arreglo:</span>
-      <input type="number" id="pred-arreglo" placeholder="?">
-      <span>escrituras de la enlazada:</span>
-      <input type="number" id="pred-enlazada" placeholder="?">
-      <button id="btn-cuentas" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-cuentas" class="veredicto"></div>
+    <p><b>Movidas del arreglo:</b></p>
+    <div class="opciones" id="opciones-arreglo"></div>
+    <div id="veredicto-arreglo" class="veredicto"></div>
+    <p><b>Escrituras de la enlazada:</b></p>
+    <div class="opciones" id="opciones-enlazada"></div>
+    <div id="veredicto-enlazada" class="veredicto"></div>
     <div id="nota-cuentas" class="nota" style="display:none"></div>
   </div>
 
@@ -77,6 +75,7 @@
     elegante.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="costos.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

@@ -166,10 +166,29 @@ function iniciar() {
         f[3] + "</td></tr>";
     }).join("");
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-r", boton: "btn-r", veredicto: "ver-r" },
-    function () { return rMinimo(N, 2); },
-    explicarR);
+  Motor.opcionesNumericas("op-r", "ver-r", function () {
+    var w = 2;
+    var real = rMinimo(N, w);
+    var lista = [
+      { valor: real, clave: "correcta", razon: explicarR(true, real) },
+      { valor: rMinimo(N, W), clave: "mayoria",
+        razon: "Ese es el R que sirve con W = " + W + ", la mayoría. Al bajar W a " + w +
+          " la escritura llega a menos réplicas, y R tiene que crecer para seguir cruzándose " +
+          "con ella: " + rMinimo(N, W) + " + " + w + " no supera " + N + "." },
+      { valor: w, clave: "igual-w",
+        razon: "Eso deja R + W = " + (w + w) + ", muy por debajo de " + N + ". Una lectura de " +
+          w + " réplicas puede caer justo en las que no recibieron la escritura." },
+      { valor: N, clave: "todas",
+        razon: "Leer las " + N + " réplicas sí garantiza ver la última escritura, pero no es el " +
+          "más pequeño: con " + real + " ya se cruza con cualquier grupo de " + w + "." }
+    ];
+    var vistos = {};
+    return lista.filter(function (o) {
+      var ya = vistos[o.valor];
+      vistos[o.valor] = true;
+      return !ya;
+    });
+  });
 
   Motor.conectarOpciones("op-lectura", "ver-lectura", RAZONES_LECTURA);
   Motor.conectarOpciones("op-particion", "ver-particion", RAZONES_PARTICION);

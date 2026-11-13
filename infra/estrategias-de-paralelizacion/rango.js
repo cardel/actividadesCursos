@@ -120,11 +120,16 @@ if (typeof document !== "undefined") (function () {
       "tbb::blocked_range<int>(0, " + n + ", " + grano + ")";
     document.getElementById("pregunta-n").textContent = num(n);
     document.getElementById("pregunta-grano").textContent = num(grano);
-    document.getElementById("veredicto").className = "veredicto";
     pintarArbol();
+    if (ctlSubrangos) { ctlSubrangos.refrescar(); }
   }
 
-  function explicar(bien, real, dicho) {
+  var ctlSubrangos = null;
+
+  /* Las hojas del arbol, y lo que sale al dividir n entre el grano sin
+     partir por mitades, al partir un nivel de mas o de menos. */
+  function opcionesSubrangos() {
+    var real = hojas(n, grano);
     var c = cadena(n, grano);
     var ultimo = c[c.length - 1];
     var penultimo = c.length > 1 ? c[c.length - 2] : null;
@@ -135,8 +140,31 @@ if (typeof document !== "undefined") (function () {
           num(ultimo) + " no, y ahí queda la hoja. "
         : "El rango entero no supera el grano y no se parte. ") +
       "Cada nivel duplica los subrangos: 2^" + profundidad(n, grano) + " = " + num(real) + ".";
-    return (bien ? "Sí: " + num(real) + " subrangos. " : "Quedan " + num(real) +
-      " subrangos, no " + num(dicho) + ". ") + texto;
+    var lista = [{ valor: num(real), clave: "correcta",
+      razon: "Sí: " + num(real) + " subrangos. " + texto }];
+    var cands = [
+      { v: Math.ceil(n / grano), c: "cociente", r: num(Math.ceil(n / grano)) +
+        " es n dividido entre el grano. Pero el rango se parte siempre por la " +
+        "mitad, así que el número de subrangos es una potencia de dos. " + texto },
+      { v: real * 2, c: "uno-mas", r: num(real * 2) + " sería partir también las " +
+        "hojas, que ya no superan el grano. " + texto },
+      { v: Math.floor(real / 2), c: "uno-menos", r: num(Math.floor(real / 2)) +
+        " sería detenerse un nivel antes de lo que pide el grano. " + texto },
+      { v: profundidad(n, grano), c: "niveles", r: num(profundidad(n, grano)) +
+        " es el número de niveles del árbol, no el de hojas: cada nivel duplica " +
+        "los subrangos. " + texto },
+      { v: n, c: "elementos", r: num(n) + " es el número de elementos; solo hay " +
+        "una hoja por elemento cuando el grano es 1. " + texto },
+      { v: 2, c: "dos", r: "2 es lo que sale de partir una sola vez. Mientras el " +
+        "tamaño supere el grano se sigue partiendo. " + texto }
+    ];
+    cands.forEach(function (x) {
+      var repetido = lista.some(function (o) { return o.valor === num(x.v); });
+      if (x.v >= 1 && !repetido && lista.length < 4) {
+        lista.push({ valor: num(x.v), clave: x.c, razon: x.r });
+      }
+    });
+    return lista;
   }
 
   var RAZONES = {
@@ -161,10 +189,7 @@ if (typeof document !== "undefined") (function () {
   document.querySelectorAll("[data-grano]").forEach(function (b) {
     b.addEventListener("click", function () { grano = parseInt(b.dataset.grano, 10); pintar(); });
   });
-  Motor.conectarPrediccion(
-    { entrada: "prediccion", boton: "btn-comprobar", veredicto: "veredicto" },
-    function () { return hojas(n, grano); },
-    explicar);
+  ctlSubrangos = Motor.opcionesNumericas("opciones-subrangos", "veredicto", opcionesSubrangos);
   Motor.conectarOpciones("opciones-resultado", "veredicto-resultado", RAZONES);
 
   pintar();

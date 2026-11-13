@@ -160,20 +160,32 @@ if (typeof document !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor) {
+    Motor.opcionesNumericas("opciones-fuerza", "veredicto", function (params) {
       var r = E.respuesta(params.p);
-      if (valor === r) {
-        return { ok: true, msg: "Son " + r + ". Fíjese en qué saltos gastan fuerza: solo los que la igualan." };
-      }
       var saltos = E.saltosDe(E.PRESETS[params.p].alturas);
       var mx = Math.max.apply(null, saltos);
-      if (valor === mx) {
-        return { ok: false, msg: "Ese es el salto más grande, " + mx + ", que es la cota de abajo. No alcanza, porque los saltos que igualan la fuerza la van gastando. La respuesta es " + r + "." };
-      }
-      if (valor < mx) {
-        return { ok: false, msg: "Con menos de " + mx + " no se pasa el salto más grande. La respuesta es " + r + "." };
-      }
-      return { ok: false, msg: "Es " + r + ". Simule la subida con ese valor y mire en qué salto se queda corto." };
+      var total = 0, i = 0;
+      while (i < saltos.length) { total = total + saltos[i]; i = i + 1; }
+      var lista = [{ valor: r, clave: "correcta",
+        razon: "Son " + r + ". Fíjese en qué saltos gastan fuerza: solo los que la igualan." }];
+      var candidatas = [
+        { valor: mx, clave: "mayor",
+          razon: "Ese es el salto más grande, " + mx + ", que es la cota de abajo. No alcanza, porque los saltos que igualan la fuerza la van gastando. La respuesta es " + r + "." },
+        { valor: r - 1, clave: "unaMenos",
+          razon: r - 1 < mx
+            ? "Con menos de " + mx + " no se pasa el salto más grande. La respuesta es " + r + "."
+            : "Con " + (r - 1) + " se queda corto: algún salto que iguala la fuerza la gasta y un salto posterior ya no cabe. La respuesta es " + r + "." },
+        { valor: mx + saltos.length, clave: "cotaAlta",
+          razon: "Ese es hi, la cota de arriba. Siempre alcanza, pero la bisecta lo va bajando hasta el menor que alcanza, que es " + r + "." },
+        { valor: total, clave: "total",
+          razon: "Esa es la altura total, la suma de todos los saltos. Con esa fuerza se llega, pero no es la mínima: la respuesta es " + r + "." }
+      ];
+      candidatas.forEach(function (c) {
+        var repetida = false;
+        lista.forEach(function (o) { if (o.valor === c.valor) { repetida = true; } });
+        if (!repetida && c.valor > 0 && lista.length < 4) { lista.push(c); }
+      });
+      return lista;
     });
 
     el("presets").innerHTML = E.PRESETS.map(function (c, i) {

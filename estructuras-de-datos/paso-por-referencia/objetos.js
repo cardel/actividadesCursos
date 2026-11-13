@@ -126,33 +126,25 @@ if (typeof module !== "undefined") {
     ]);
 
     /* --- Tarjeta 1: el saldo -------------------------------------- */
-    document.getElementById("btn-saldo").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-saldo");
-      var valor = parseFloat(document.getElementById("pred-saldo").value);
-      if (isNaN(valor)) {
-        v.className = "veredicto mal";
-        v.textContent = "Escriba un número primero.";
-      } else if (Math.abs(valor - 50.0) < 0.005) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: 80 entra, 30 sale y la consignación de " +
-          "-20 no pasa la validación: monto > 0 falla y el método no toca " +
-          "el saldo. Queda 50.00.";
-      } else if (Math.abs(valor - 30.0) < 0.005) {
-        v.className = "veredicto mal";
-        v.textContent = "Restó la consignación negativa. Mire el if de " +
-          "consignar: con monto -20, la condición monto > 0 falla y el " +
-          "saldo no se toca.";
-      } else if (Math.abs(valor - 130.0) < 0.005) {
-        v.className = "veredicto mal";
-        v.textContent = "Sumó las tres operaciones. La segunda es un " +
-          "retiro: resta. Y la tercera ni entra: consignar valida el " +
-          "monto antes de sumar.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "No coincide. Pista: siga las tres llamadas en " +
-          "orden y pregúntese, en cada una, si el if del método deja " +
-          "pasar el monto.";
-      }
+    Motor.opcionesNumericas("opciones-saldo", "veredicto-saldo", function () {
+      var ok = EJERCICIO.saldoFinal([["consignar", 80], ["retirar", 30], ["consignar", -20]]);
+      return [
+        { valor: ok.toFixed(2), clave: "correcta",
+          razon: "Correcto: 80 entra, 30 sale y la consignación de " +
+            "-20 no pasa la validación: monto > 0 falla y el método no toca " +
+            "el saldo. Queda " + ok.toFixed(2) + "." },
+        { valor: "30.00", clave: "resta",
+          razon: "Restó la consignación negativa. Mire el if de " +
+            "consignar: con monto -20, la condición monto > 0 falla y el " +
+            "saldo no se toca." },
+        { valor: "130.00", clave: "suma",
+          razon: "Sumó las tres operaciones. La segunda es un " +
+            "retiro: resta. Y la tercera ni entra: consignar valida el " +
+            "monto antes de sumar." },
+        { valor: "80.00", clave: "sin-retiro",
+          razon: "Se quedó en la primera consignación. El retiro de 30 sí " +
+            "pasa la validación, monto <= saldo con 30 <= 80, y descuenta." }
+      ];
     });
 
     /* --- Tarjeta 2: cobrar por copia ------------------------------ */
@@ -181,33 +173,27 @@ if (typeof module !== "undefined") {
     });
 
     /* --- Tarjeta 3: cobrar por referencia ------------------------- */
-    document.getElementById("btn-referencia").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-referencia");
-      var valor = parseFloat(document.getElementById("pred-referencia").value);
-      if (isNaN(valor)) {
-        v.className = "veredicto mal";
-        v.textContent = "Escriba un número primero.";
-      } else if (Math.abs(valor - 25.0) < 0.005) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: Cuenta &c es un alias del original, así " +
-          "que el retiro cayó en la cuenta de main: 50 - 25 = 25.00. " +
-          "Copiar un objeto copia todos sus atributos; la referencia " +
-          "cuesta lo que una dirección. Por eso los objetos viajan por " +
-          "referencia.";
-      } else if (Math.abs(valor - 50.0) < 0.005) {
-        v.className = "veredicto mal";
-        v.textContent = "Esta vez la firma dice Cuenta &c: no hay copia, " +
-          "la función trabaja sobre la cuenta original.";
-      } else if (Math.abs(valor - 0.0) < 0.005) {
-        v.className = "veredicto mal";
-        v.textContent = "Contó también el retiro de cobrar_copia, pero ese " +
-          "le cayó a la copia y murió con su marco: la cuenta llega aquí " +
-          "con 50.00 y solo este retiro la toca.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "No coincide. Pista: ¿con cuánto llega la cuenta " +
-          "de main a esta llamada, y esta vez el retiro le cae a quién?";
-      }
+    Motor.opcionesNumericas("opciones-referencia", "veredicto-referencia", function () {
+      var antes = EJERCICIO.saldoFinal([["consignar", 80], ["retirar", 30], ["consignar", -20]]);
+      var ok = EJERCICIO.saldoFinal([["consignar", 80], ["retirar", 30], ["consignar", -20], ["retirar", 25]]);
+      return [
+        { valor: ok.toFixed(2), clave: "correcta",
+          razon: "Correcto: Cuenta &c es un alias del original, así " +
+            "que el retiro cayó en la cuenta de main: " + antes + " - 25 = " +
+            ok.toFixed(2) + ". Copiar un objeto copia todos sus atributos; " +
+            "la referencia cuesta lo que una dirección. Por eso los objetos " +
+            "viajan por referencia." },
+        { valor: antes.toFixed(2), clave: "sin-cambio",
+          razon: "Esta vez la firma dice Cuenta &c: no hay copia, " +
+            "la función trabaja sobre la cuenta original." },
+        { valor: "0.00", clave: "doble",
+          razon: "Contó también el retiro de cobrar_copia, pero ese " +
+            "le cayó a la copia y murió con su marco: la cuenta llega aquí " +
+            "con 50.00 y solo este retiro la toca." },
+        { valor: (antes + 25).toFixed(2), clave: "suma",
+          razon: "El retiro resta: retirar descuenta el monto del saldo, no " +
+            "lo suma." }
+      ];
     });
 
     /* --- Tarjeta 4: private --------------------------------------- */

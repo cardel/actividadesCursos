@@ -149,6 +149,7 @@ if (typeof module !== "undefined") {
       });
     }
     var logradas = { visitas: false, ultimo: false, vaciar: false };
+    var visitasParcial = { sin: false, con: false };
     function revisar() {
       if (logradas.visitas && logradas.ultimo && logradas.vaciar) {
         document.getElementById("carta-cierre").style.display = "block";
@@ -177,29 +178,50 @@ if (typeof module !== "undefined") {
       ["}", ""]
     ]);
 
-    document.getElementById("btn-visitas").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-visitas");
-      var esperadoSin = EJERCICIO.tocadosSinUltimo(EJERCICIO.lista);
-      var esperadoCon = EJERCICIO.tocadosConUltimo();
-      var sin = parseInt(document.getElementById("pred-sin").value, 10);
-      var con = parseInt(document.getElementById("pred-con").value, 10);
-      if (sin === esperadoSin && con === esperadoCon) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: 3 y 0. Sin el puntero al último, nodoEn(2) arranca en el nodo del 2 y avanza dos veces, así que pasa por los tres nodos; con mil elementos serían mil. Con ultimo guardado, la dirección del final ya está y agregar escribe dos punteros: Θ(1).";
-        logradas.visitas = true; revisar();
-      } else if (sin === esperadoSin) {
-        ver.className = "veredicto mal";
-        ver.textContent = "La primera está bien. La segunda versión no camina: ultimo->siguiente es la única escritura que necesita sobre la cadena vieja.";
-      } else if (sin === 2) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Cuente también el nodo donde arranca: nodoEn empieza en la cabeza y después avanza. Son dos avances y tres nodos tocados.";
-      } else if (sin === 4) {
-        ver.className = "veredicto mal";
-        ver.textContent = "El nodo nuevo no está en la cadena vieja: la pregunta es por los nodos que hay que recorrer para llegar al final.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "Siga nodoEn(n - 1) sobre los tres nodos y cuente por dónde pasa; después mire cuántos nodos toca la versión que ya sabe dónde termina la cadena.";
-      }
+
+    function alAcertar(idCaja, fn) {
+      document.getElementById(idCaja).addEventListener("click", function (ev) {
+        var b = ev.target;
+        if (b && b.getAttribute && b.getAttribute("data-op") === "correcta") { fn(); }
+      });
+    }
+    function unicas(lista) {
+      var vistos = {};
+      return lista.filter(function (o) {
+        var dup = vistos[o.valor] === true;
+        vistos[o.valor] = true;
+        return !dup;
+      });
+    }
+
+    Motor.opcionesNumericas("opciones-sin", "veredicto-sin", function () {
+      var n = EJERCICIO.lista.length;
+      var esperado = EJERCICIO.tocadosSinUltimo(EJERCICIO.lista);
+      return unicas([
+        { valor: esperado, clave: "correcta",
+          razon: "Correcto: " + esperado + ". Sin el puntero al último, nodoEn(" + (n - 1) + ") arranca en el nodo del 2 y avanza " + (n - 1) + " veces, así que pasa por los tres nodos; con mil elementos serían mil." },
+        { valor: n - 1, clave: "sinarranque",
+          razon: "Cuente también el nodo donde arranca: nodoEn empieza en la cabeza y después avanza. Son dos avances y tres nodos tocados." },
+        { valor: n + 1, clave: "cuentanuevo",
+          razon: "El nodo nuevo no está en la cadena vieja: la pregunta es por los nodos que hay que recorrer para llegar al final." },
+        { valor: 1, clave: "solocabeza",
+          razon: "Solo la cabeza se toca sin caminar. Para llegar al último nodo hay que seguir los siguiente uno por uno, y cada nodo del camino cuenta." }
+      ]);
+    });
+
+    alAcertar("opciones-sin", function () { visitasParcial.sin = true; if (visitasParcial.con) { logradas.visitas = true; revisar(); } });
+    alAcertar("opciones-con", function () { visitasParcial.con = true; if (visitasParcial.sin) { logradas.visitas = true; revisar(); } });
+
+    Motor.opcionesNumericas("opciones-con", "veredicto-con", function () {
+      var esperado = EJERCICIO.tocadosConUltimo();
+      return unicas([
+        { valor: esperado, clave: "correcta",
+          razon: "Correcto: " + esperado + ". Con ultimo guardado, la dirección del final ya está y agregar escribe dos punteros sin caminar: Θ(1)." },
+        { valor: 1, clave: "cuentaultimo",
+          razon: "Al nodo final se llega por el puntero ultimo, sin recorrer nada: ultimo->siguiente es una escritura, no un paso por la cadena." },
+        { valor: EJERCICIO.tocadosSinUltimo(EJERCICIO.lista), clave: "igualsin",
+          razon: "Esa es la cuenta de la versión sin ultimo. La segunda versión no camina: ultimo->siguiente es la única escritura que necesita sobre la cadena vieja." }
+      ]);
     });
 
     var MENSAJES_ULTIMO = {

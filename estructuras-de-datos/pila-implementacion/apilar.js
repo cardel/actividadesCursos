@@ -139,9 +139,9 @@ if (typeof module !== "undefined") {
     function iguales(a, b) {
       return a.length === b.length && a.every(function (x, i) { return x === b[i]; });
     }
-    var logradas = { cadena: false, camina: false };
+    var logradas = { cadena: false, tope: false, tamano: false, camina: false };
     function revisar() {
-      if (logradas.cadena && logradas.camina) {
+      if (logradas.cadena && logradas.tope && logradas.tamano && logradas.camina) {
         document.getElementById("carta-cierre").style.display = "block";
       }
     }
@@ -153,11 +153,9 @@ if (typeof module !== "undefined") {
     document.getElementById("btn-cadena").addEventListener("click", function () {
       var ver = document.getElementById("veredicto-cadena");
       var cadena = leerLista(document.getElementById("pred-cadena").value);
-      var tope = parseInt(document.getElementById("pred-tope").value, 10);
-      var tamano = parseInt(document.getElementById("pred-tamano").value, 10);
-      if (iguales(cadena, FINAL) && tope === EJERCICIO.topeFinal() && tamano === EJERCICIO.tamanoFinal()) {
+      if (iguales(cadena, FINAL)) {
         ver.className = "veredicto bien";
-        ver.textContent = "Correcto: la cadena es " + FINAL.join(" ") + ", el tope es " + EJERCICIO.topeFinal() + " y el tamaño " + EJERCICIO.tamanoFinal() + ". Los tres primeros dejan 2 9 4; el desapilar saca el 2, que es el que estaba en la cabeza, y queda 9 4; el 6 entra de primero.";
+        ver.textContent = "Correcto: la cadena es " + FINAL.join(" ") + ". Los tres primeros dejan 2 9 4; el desapilar saca el 2, que es el que estaba en la cabeza, y queda 9 4; el 6 entra de primero.";
         logradas.cadena = true; revisar();
       } else if (iguales(cadena, [4, 9, 6])) {
         ver.className = "veredicto mal";
@@ -174,6 +172,51 @@ if (typeof module !== "undefined") {
       }
     });
 
+    function tomar(lista, valorCorrecto) {
+      var vistos = {};
+      return lista.filter(function (o) {
+        var nuevo = !vistos[o.valor] && (o.clave === "correcta" || o.valor !== valorCorrecto);
+        vistos[o.valor] = true;
+        return nuevo;
+      });
+    }
+    function alAcertar(idCaja, clave) {
+      document.getElementById(idCaja).addEventListener("click", function (e) {
+        var b = e.target;
+        if (b && b.getAttribute && b.getAttribute("data-op") === "correcta") {
+          logradas[clave] = true; revisar();
+        }
+      });
+    }
+    alAcertar("opciones-tope", "tope");
+    alAcertar("opciones-tamano", "tamano");
+    Motor.opcionesNumericas("opciones-tope", "veredicto-tope", function () {
+      var t = EJERCICIO.topeFinal();
+      var r = tomar([
+        { valor: t, clave: "correcta",
+          razon: "Correcto: tope() lee la posición 0, y la cabeza quedó en el nodo del " + t + ", el último que entró." },
+        { valor: 2, clave: "desapilado",
+          razon: "El 2 era la cabeza antes del desapilar; ese nodo ya se liberó. Después entró el 6 de primero." },
+        { valor: 4, clave: "llegada",
+          razon: "El 4 fue el primero en llegar y está al final de la cadena. tope() mira la cabeza, no el fondo." },
+        { valor: 9, clave: "segundo",
+          razon: "El 9 es el segundo de la cadena. La cabeza es el nodo que entró último." }
+      ], t);
+      return r;
+    });
+    Motor.opcionesNumericas("opciones-tamano", "veredicto-tamano", function () {
+      var n = EJERCICIO.tamanoFinal();
+      return tomar([
+        { valor: n, clave: "correcta",
+          razon: "Correcto: entraron cuatro elementos, salió uno y quedan " + n + "." },
+        { valor: PASOS.length, clave: "operaciones",
+          razon: "Eso cuenta las operaciones, no los elementos: el desapilar resta uno en vez de sumar." },
+        { valor: PASOS.length - 1, clave: "sin-desapilar",
+          razon: "Se olvidó del desapilar: cuatro apilar dejarían " + (PASOS.length - 1) + ", pero uno salió." },
+        { valor: n - 1, clave: "doble",
+          razon: "Restó el desapilar dos veces o no contó el apilar(6): después de sacar el 2 todavía entró el 6." }
+      ], n);
+    });
     var vista = { i: 0 };
     function chip(padre, rotulo, valor, cuenta) {
       var d = document.createElement("div");

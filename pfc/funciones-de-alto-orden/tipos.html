@@ -32,9 +32,11 @@
   <div class="carta">
     <h2>6. La trampa del primer grupo</h2>
     <div class="codigo" style="margin-bottom:0.6rem"><div class="linea"><span class="num"></span><span class="txt">def restaC(a: Int)(b: Int): Int = a - b</span></div><div class="linea"><span class="num"></span><span class="txt">val menosCinco = restaC(5)</span></div><div class="linea"><span class="num"></span><span class="txt">val restarCinco = (b: Int) => restaC(b)(5)</span></div></div>
-    <div class="pregunta"><span>¿Cuánto vale <code>menosCinco(3)</code>?</span><input type="number" id="pred-menosCinco" placeholder="?"><button id="btn-menosCinco" class="primario">Comprobar</button></div>
+    <div class="pregunta"><span>¿Cuánto vale <code>menosCinco(3)</code>?</span></div>
+    <div class="opciones" id="opciones-menosCinco"></div>
     <div id="ver-menosCinco" class="veredicto"></div>
-    <div class="pregunta"><span>¿Y <code>restarCinco(3)</code>?</span><input type="number" id="pred-restarCinco" placeholder="?"><button id="btn-restarCinco" class="primario">Comprobar</button></div>
+    <div class="pregunta"><span>¿Y <code>restarCinco(3)</code>?</span></div>
+    <div class="opciones" id="opciones-restarCinco"></div>
     <div id="ver-restarCinco" class="veredicto"></div>
   </div>
 

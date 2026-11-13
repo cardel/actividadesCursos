@@ -236,19 +236,30 @@ if (typeof module !== "undefined") {
       paramsIniciales: paramsActuales(), alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
+    function sinRepetir(lista) {
+      var vistos = {}, res = [];
+      lista.forEach(function (o) {
+        if (!vistos[o.valor]) { vistos[o.valor] = true; res.push(o); }
+      });
+      return res.slice(0, 4);
+    }
+
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto", function (params) {
       var em = EJERCICIO.emitidos(params.G);
       var n = params.G.length;
       var ciclo = EJERCICIO.enCiclo(params.G);
-      if (valor === em.length) {
-        if (em.length === n) {
-          return { ok: true, msg: "Correcto: salen los " + n + ". Este grafo no tiene ciclos y la cola no se vacía hasta el final." };
-        }
-        return { ok: true, msg: "Correcto: salen " + em.length + " (" + em.join(", ") + ") y la cola se vacía con " + (n - em.length) + " vértices sin salir. Ejecute y mire qué contadores nunca llegan a 0." };
-      }
-      if (valor === n) { return { ok: false, msg: "Saldrían los " + n + " solo sin ciclos. Aquí los vértices " + ciclo.join(", ") + " están en algún ciclo, y ninguno de ellos puede llegar a contador 0: su predecesor en el ciclo nunca sale." }; }
-      if (valor === n - ciclo.length) { return { ok: false, msg: "Los del ciclo no salen, pero tampoco sale nadie que dependa de ellos: un vértice al que le llega una flecha desde el ciclo se queda con contador al menos 1 para siempre." }; }
-      return { ok: false, msg: "No coincide. Arranque por las fuentes y siga restando; en algún momento no queda ningún contador en 0 y la cola se vacía. Cuente los que alcanzaron a salir." };
+      var fuentes = EJERCICIO.gradosDeEntrada(params.G).filter(function (g) { return g === 0; }).length;
+      var buena = em.length === n
+        ? "Correcto: salen los " + n + ". Este grafo no tiene ciclos y la cola no se vacía hasta el final."
+        : "Correcto: salen " + em.length + " (" + em.join(", ") + ") y la cola se vacía con " + (n - em.length) + " vértices sin salir. Ejecute y mire qué contadores nunca llegan a 0.";
+      return sinRepetir([
+        { valor: em.length, clave: "correcta", razon: buena },
+        { valor: n, clave: "total", razon: "Saldrían los " + n + " solo sin ciclos. Aquí hay vértices en algún ciclo, y ninguno de ellos puede llegar a contador 0: su predecesor en el ciclo nunca sale." },
+        { valor: n - ciclo.length, clave: "fuera-del-ciclo", razon: "Los del ciclo no salen, pero tampoco sale nadie que dependa de ellos: un vértice al que le llega una flecha desde el ciclo se queda con contador al menos 1 para siempre." },
+        { valor: n - em.length, clave: "quedan", razon: "Ese es el número de vértices que se quedan sin salir, no los que salieron. Cuente los que alcanzaron a entrar al orden." },
+        { valor: n - 1, clave: "uno-menos", razon: "Un vértice de menos que el total. Si algo se queda por fuera es porque está en un ciclo o depende de uno, y entonces son varios; si no hay ciclos, no se queda ninguno." },
+        { valor: fuentes, clave: "fuentes", razon: "Esos son los que arrancan en la cola, los de contador 0. De ahí en adelante siguen saliendo los que van quedando libres, y son más." }
+      ].filter(function (o) { return o.valor > 0; }));
     });
 
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (btn) {

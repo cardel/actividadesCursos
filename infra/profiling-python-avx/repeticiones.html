@@ -22,7 +22,7 @@
   <a class="volver" href="#">← Volver a los ejercicios</a>
   <h1>Cien repeticiones en un solo número: qué suma timeit y qué deja fuera</h1>
   <p class="intro"><code>timeit</code> corre el fragmento <code>number</code> veces y entrega un
-  solo número. Antes de ver la cuenta, escriba cuánto tarda una llamada; después saque la
+  solo número. Antes de ver la cuenta, elija cuánto tarda una llamada; después saque la
   preparación del cronómetro, compare una medición suelta con veinte y decida dónde no
   conviene usarlo.</p>
 
@@ -47,9 +47,8 @@
     </div>
     <div class="prediccion">
       <span>¿Cuánto tarda una llamada a <code>fib(30)</code>, en ms?</span>
-      <input type="number" id="prediccion-a" min="0" step="1" placeholder="ms">
-      <button id="btn-comprobar-a" class="primario">Comprobar</button>
     </div>
+    <div class="opciones" id="opciones-fib"></div>
     <div id="veredicto-a" class="veredicto"></div>
     <div class="envoltura-tabla" style="margin-top:0.8rem">
       <table>
@@ -86,10 +85,9 @@
     </div>
     <div class="prediccion">
       <span>Si <code>generar_datos</code> va dentro de <code>stmt</code>, ¿qué promedio por
-      ejecución reporta timeit, en ms? Un decimal.</span>
-      <input type="number" id="prediccion-b" min="0" step="0.1" placeholder="ms">
-      <button id="btn-comprobar-b" class="primario">Comprobar</button>
+      ejecución reporta timeit, en ms?</span>
     </div>
+    <div class="opciones" id="opciones-setup"></div>
     <div id="veredicto-b" class="veredicto"></div>
     <div class="envoltura-tabla" style="margin-top:0.8rem">
       <table>

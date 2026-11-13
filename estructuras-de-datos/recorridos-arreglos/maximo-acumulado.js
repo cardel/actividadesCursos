@@ -122,7 +122,120 @@ if (typeof module !== "undefined") {
   module.exports = EJERCICIO;
 } else {
   (function () {
-    var estado = { a: [], res: null, k: 0, revelado: false };
+    var estado = { a: [], res: null, k: 0, revelado: false, okMaximo: false, okMejor: false };
+
+    /* Cada opcion: valor, clave y la razon que se muestra al pulsarla. Si dos
+       dan el mismo numero se queda la primera, y nunca pasan de cuatro. */
+    function sinRepetidos(lista) {
+      var vistos = [];
+      var salida = [];
+      lista.forEach(function (o) {
+        if (vistos.indexOf(o.valor) === -1 && salida.length < 4) {
+          vistos.push(o.valor);
+          salida.push(o);
+        }
+      });
+      return salida;
+    }
+
+    function opcionesMaximo(paso) {
+      var previos = estado.a.slice(0, paso.j);
+      var menor = Math.min.apply(null, previos);
+      return sinRepetidos([
+        { valor: paso.maximo, clave: "correcta",
+          razon: "Correcto: el mayor de A[0.." + (paso.j - 1) + "] es " + paso.maximo + "." },
+        { valor: paso.valor, clave: "casilla-j",
+          razon: "Ese es A[j]. La casilla j todavía no entra en el máximo: " +
+            "restarse a sí misma no vale." },
+        { valor: previos[paso.j - 1], clave: "anterior",
+          razon: "Ese es A[j-1], el último que se miró. El máximo es el mayor " +
+            "de todos los anteriores, no el más reciente." },
+        { valor: paso.candidato, clave: "candidata",
+          razon: "Esa es la candidata maximo - A[j]. Lo que se pregunta es el " +
+            "maximo mismo, antes de restar." },
+        { valor: menor, clave: "menor",
+          razon: "Ese es el menor de A[0.." + (paso.j - 1) + "]. Se busca el mayor." }
+      ]);
+    }
+
+    function opcionesMejor(paso) {
+      var antes = estado.k > 0 ? estado.res.pasos[estado.k - 1].mejor
+                               : estado.a[0] - estado.a[1];
+      return sinRepetidos([
+        { valor: paso.mejor, clave: "correcta",
+          razon: "Correcto: " + (paso.mejora
+            ? "la candidata " + paso.candidato + " mejora la respuesta."
+            : "la candidata " + paso.candidato + " no mejora la respuesta.") },
+        { valor: paso.candidato, clave: "candidata",
+          razon: "Esa es la candidata " + paso.maximo + " - " + paso.valor +
+            ". Hay que compararla con el mejor que traía, que es " + antes + "." },
+        { valor: antes, clave: "sin-actualizar",
+          razon: "Ese es el mejor que traía, " + antes + ". Si la candidata " +
+            paso.candidato + " lo supera, mejor cambia en esta vuelta." },
+        { valor: paso.valor - paso.maximo, clave: "al-reves",
+          razon: "Esa resta está al revés: la diferencia es el máximo menos A[j], " +
+            "no A[j] menos el máximo." },
+        { valor: paso.maximo, clave: "maximo",
+          razon: "Ese es el máximo, no la mejor diferencia. mejor guarda una resta." },
+        { valor: paso.valor, clave: "casilla-j",
+          razon: "Ese es A[j], un elemento del arreglo. mejor guarda una diferencia." }
+      ]);
+    }
+
+    function pintarGrupo(idOpciones, idVeredicto, lista, alAcertar) {
+      var caja = document.getElementById(idOpciones);
+      var v = document.getElementById(idVeredicto);
+      var buena = "";
+      lista.forEach(function (o) {
+        if (o.clave === "correcta") { buena = String(o.valor); }
+      });
+      var h = 0, i;
+      var semilla = idOpciones + ":" + buena;
+      for (i = 0; i < semilla.length; i = i + 1) {
+        h = (h * 31 + semilla.charCodeAt(i)) % 100003;
+      }
+      var giro = h % lista.length;
+      var ordenadas = lista.slice(giro).concat(lista.slice(0, giro));
+      caja.innerHTML = "";
+      v.className = "veredicto";
+      v.textContent = "";
+      ordenadas.forEach(function (o) {
+        var b = document.createElement("button");
+        b.setAttribute("data-op", o.clave);
+        b.textContent = o.valor;
+        b.addEventListener("click", function () {
+          v.className = "veredicto " + (o.clave === "correcta" ? "bien" : "mal");
+          v.textContent = o.razon;
+          if (o.clave === "correcta") { alAcertar(); }
+        });
+        caja.appendChild(b);
+      });
+    }
+
+    function pintarOpciones() {
+      var paso = pasoActual();
+      estado.okMaximo = false;
+      estado.okMejor = false;
+      if (paso !== null) {
+        pintarGrupo("opciones-maximo", "veredicto-maximo", opcionesMaximo(paso),
+          function () { estado.okMaximo = true; cerrarVuelta(); });
+        pintarGrupo("opciones-mejor", "veredicto-mejor", opcionesMejor(paso),
+          function () { estado.okMejor = true; cerrarVuelta(); });
+      }
+    }
+
+    function cerrarVuelta() {
+      var paso = pasoActual();
+      var v = document.getElementById("veredicto");
+      if (paso !== null && estado.okMaximo && estado.okMejor && !estado.revelado) {
+        v.className = "veredicto bien";
+        v.textContent = "Correcto. " + (paso.mejora
+          ? "La candidata " + paso.candidato + " mejora la respuesta."
+          : "La candidata " + paso.candidato + " no mejora la respuesta.");
+        estado.revelado = true;
+        pintar();
+      }
+    }
 
     function pintarCodigo(id, lineas) {
       var caja = document.getElementById(id);
@@ -217,7 +330,7 @@ if (typeof module !== "undefined") {
         pregunta.innerHTML = "j = <b>" + paso.j + "</b>, A[j] = <b>" + paso.valor +
           "</b>. ¿Cuál es el máximo de A[0.." + (paso.j - 1) + "] y cuánto vale " +
           "<code>mejor</code> al terminar esta vuelta?";
-        document.getElementById("zona-prediccion").style.display = "flex";
+        document.getElementById("zona-prediccion").style.display = "block";
         botonSig.disabled = !estado.revelado;
       } else {
         pregunta.innerHTML = "Recorrido terminado: la respuesta es <b>" +
@@ -236,37 +349,9 @@ if (typeof module !== "undefined") {
       estado.res = EJERCICIO.unRecorrido(estado.a);
       estado.k = 0;
       estado.revelado = false;
-      document.getElementById("pred-maximo").value = "";
-      document.getElementById("pred-mejor").value = "";
       document.getElementById("veredicto").className = "veredicto";
       pintar();
-    }
-
-    function comprobar() {
-      var paso = pasoActual();
-      var v = document.getElementById("veredicto");
-      var m = parseInt(document.getElementById("pred-maximo").value, 10);
-      var b = parseInt(document.getElementById("pred-mejor").value, 10);
-      if (paso === null) { return; }
-      if (isNaN(m) || isNaN(b)) {
-        v.className = "veredicto mal";
-        v.textContent = "Escriba los dos números.";
-      } else if (m !== paso.maximo) {
-        v.className = "veredicto mal";
-        v.textContent = "El máximo no es " + m + ". Es el mayor de A[0.." +
-          (paso.j - 1) + "]: la casilla j todavía no entra, porque restarse a sí misma no vale.";
-      } else if (b !== paso.mejor) {
-        v.className = "veredicto mal";
-        v.textContent = "El máximo está bien. La candidata es " + paso.maximo + " - " +
-          paso.valor + "; compárela con el mejor que traía, que puede ser negativo.";
-      } else {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto. " + (paso.mejora
-          ? "La candidata " + paso.candidato + " mejora la respuesta."
-          : "La candidata " + paso.candidato + " no mejora la respuesta.");
-        estado.revelado = true;
-        pintar();
-      }
+      pintarOpciones();
     }
 
     function revelar() {
@@ -284,10 +369,9 @@ if (typeof module !== "undefined") {
       if (estado.revelado && estado.k < estado.res.pasos.length) {
         estado.k = estado.k + 1;
         estado.revelado = false;
-        document.getElementById("pred-maximo").value = "";
-        document.getElementById("pred-mejor").value = "";
         document.getElementById("veredicto").className = "veredicto";
         pintar();
+        pintarOpciones();
       }
     }
 
@@ -316,7 +400,6 @@ if (typeof module !== "undefined") {
         cargar(r.valores);
       }
     });
-    document.getElementById("btn-comprobar").addEventListener("click", comprobar);
     document.getElementById("btn-revelar").addEventListener("click", revelar);
     document.getElementById("btn-siguiente").addEventListener("click", siguiente);
     document.getElementById("btn-reinicio").addEventListener("click", function () {

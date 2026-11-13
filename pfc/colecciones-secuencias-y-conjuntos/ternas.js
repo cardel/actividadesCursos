@@ -373,27 +373,30 @@
 
   /* La prediccion se hace sobre n = 5, que es el caso que la corrida mide:
      35 candidatas probadas. */
-  Motor.prediccionNumerica(function (valor) {
+  Motor.opcionesNumericas("opciones-candidatas", "veredicto", function () {
     var r = resumen(5);
-    if (valor === r.candidatas) {
-      return {
-        ok: true,
-        msg: "Correcto: " + r.candidatas + " candidatas con n = 5, y sobrevive "
-          + r.halladas.join(", ") + "."
-      };
-    }
-    if (valor === 125) {
-      return {
-        ok: false,
-        msg: "No. 125 es 5 por 5 por 5, las combinaciones que saldrían si los "
+    var n = 5;
+    var cuadrados = 0;
+    var c;
+    for (c = 1; c <= n; c = c + 1) { cuadrados = cuadrados + c * c; }
+    var lista = [
+      { valor: r.candidatas, clave: "correcta",
+        razon: "Correcto: " + r.candidatas + " candidatas con n = 5, y sobrevive "
+          + r.halladas.join(", ") + "." },
+      { valor: 125, clave: "cubo",
+        razon: "No. 125 es 5 por 5 por 5, las combinaciones que saldrían si los "
           + "tres generadores recorrieran 1 to 5 completo. Encadenados son "
-          + r.candidatas + "."
-      };
-    }
-    return {
-      ok: false,
-      msg: "No. Son " + r.candidatas + ". Cuente las parejas (b, c) con "
-        + "b <= c, y para cada una los valores de a hasta b."
-    };
+          + r.candidatas + "." },
+      { valor: n * (n + 1) / 2, clave: "parejas",
+        razon: "Eso son las parejas (b, c) con b <= c, y falta el tercer "
+          + "generador: cada pareja se prueba con todos los valores de a "
+          + "hasta b." },
+      { valor: cuadrados, clave: "a-hasta-c",
+        razon: "Eso sería si a recorriera 1 to c en vez de 1 to b. El tercer "
+          + "generador usa b como extremo, así que salen menos." }
+    ];
+    return lista.filter(function (o, i) {
+      return lista.findIndex(function (p) { return p.valor === o.valor; }) === i;
+    });
   });
 })();

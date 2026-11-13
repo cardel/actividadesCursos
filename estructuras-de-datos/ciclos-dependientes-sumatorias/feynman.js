@@ -138,7 +138,31 @@ var EJERCICIO = (function () {
     return texto;
   }
 
-  return { nMax: N_MAX, codigo: CODIGO, esquinas: esquinas, posiciones: posiciones,
+  /* Opciones para las posiciones de un lado m: la correcta y las cuentas
+     equivocadas con su razon. Un valor repetido se descarta. */
+  function opcionesPos(N, m) {
+    var lado = N - m + 1;
+    var lista = [];
+    function agregar(valor, clave, razon) {
+      var repetido = false;
+      lista.forEach(function (o) { if (o.valor === valor) { repetido = true; } });
+      if (!repetido && valor >= 0) { lista.push({ valor: valor, clave: clave, razon: razon }); }
+    }
+    agregar(lado * lado, "correcta", "Correcto: (N − m + 1)² = (" + N + " − " + m +
+      " + 1)² = " + (lado * lado) + ".");
+    agregar(lado, "fila", "Eso cuenta una sola fila de esquinas. Hay " + lado +
+      " filas posibles y en cada una " + lado + " columnas.");
+    agregar((N - m) * (N - m), "sinuno", "Un cuadrado de lado " + m +
+      " empieza en la columna 0, 1, …, " + (N - m) + ": son " + lado +
+      " columnas, no " + (N - m) + ".");
+    agregar(N * N, "todas", "No toda casilla sirve de esquina: un cuadrado de lado " + m +
+      " que empieza cerca del borde se sale de la cuadrícula.");
+    agregar((lado + 1) * (lado + 1), "demas", "Contó una fila y una columna de más: las " +
+      "esquinas llegan hasta la columna " + (N - m) + ", no hasta la " + (N - m + 1) + ".");
+    return lista;
+  }
+
+  return { nMax: N_MAX, opcionesPos: opcionesPos, codigo: CODIGO, esquinas: esquinas, posiciones: posiciones,
            sumaCuadrados: sumaCuadrados, tabla: tabla, conteoLineas: conteoLineas,
            total: total, formulas: FORMULAS, pistas: PISTAS, simular: simular,
            diagnostico: diagnostico };
@@ -200,7 +224,6 @@ if (typeof module !== "undefined") {
         b.addEventListener("click", function (ev) {
           estado.m = parseInt(ev.currentTarget.dataset.m, 10);
           estado.hover = null;
-          el("pred-pos").value = "";
           el("veredicto-pos").className = "veredicto";
           pintarParte1();
         });
@@ -262,22 +285,32 @@ if (typeof module !== "undefined") {
         "esquinas posibles hay, es decir, cuántos cuadrados de " + estado.m +
         " × " + estado.m + " caben?";
       pintarTabla();
+      pintarOpcionesPos();
     }
 
-    function comprobarPos() {
+    /* Las opciones se vuelven a pintar con cada lado y cada N; pulsar una
+       escribe su razon sin tocar el resto de la pagina. */
+    function pintarOpcionesPos() {
+      var caja = el("opciones-pos");
       var v = el("veredicto-pos");
-      var x = parseInt(el("pred-pos").value, 10);
-      var pista = isNaN(x) ? "Escriba un número." : EJERCICIO.diagnostico(estado.N, estado.m, x);
-      if (pista === null) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: (N − m + 1)² = (" + estado.N + " − " + estado.m +
-          " + 1)² = " + x + ".";
-        estado.respondidas[estado.m] = true;
-        pintarParte1();
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = pista;
-      }
+      var lista = EJERCICIO.opcionesPos(estado.N, estado.m);
+      var giro = (estado.N * 7 + estado.m * 3 + lista[0].valor) % lista.length;
+      var ordenadas = lista.slice(giro).concat(lista.slice(0, giro));
+      caja.innerHTML = "";
+      ordenadas.forEach(function (o) {
+        var b = document.createElement("button");
+        b.setAttribute("data-op", o.clave);
+        b.textContent = o.valor;
+        b.addEventListener("click", function () {
+          v.className = "veredicto " + (o.clave === "correcta" ? "bien" : "mal");
+          v.innerHTML = o.razon;
+          if (o.clave === "correcta") {
+            estado.respondidas[estado.m] = true;
+            pintarParte1();
+          }
+        });
+        caja.appendChild(b);
+      });
     }
 
     function revelarPos() {
@@ -446,7 +479,6 @@ if (typeof module !== "undefined") {
       estado.hover = null;
       estado.lineasBien = {};
       el("ver-n").textContent = N;
-      el("pred-pos").value = "";
       el("veredicto-pos").className = "veredicto";
       el("veredicto-conteo").className = "veredicto";
       pintarParte1();
@@ -459,11 +491,7 @@ if (typeof module !== "undefined") {
     el("rango-n").addEventListener("input", function (ev) {
       cambiarN(parseInt(ev.target.value, 10));
     });
-    el("btn-pos").addEventListener("click", comprobarPos);
     el("btn-revelar-pos").addEventListener("click", revelarPos);
-    el("pred-pos").addEventListener("keydown", function (ev) {
-      if (ev.key === "Enter") { comprobarPos(); }
-    });
     el("rejilla").addEventListener("mouseleave", function () {
       estado.hover = null;
       pintarRejilla1();

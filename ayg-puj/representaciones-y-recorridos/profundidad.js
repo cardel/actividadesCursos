@@ -240,39 +240,51 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
-      var p = EJERCICIO.profundidadesRef(params.G, params.s);
-      var maximo = 0;
-      var t = 0;
-      while (t < p.length) {
-        if (p[t] > maximo) { maximo = p[t]; }
-        t = t + 1;
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto",
+      function (params) {
+        var p = EJERCICIO.profundidadesRef(params.G, params.s);
+        var maximo = 0;
+        var t = 0;
+        while (t < p.length) {
+          if (p[t] > maximo) { maximo = p[t]; }
+          t = t + 1;
+        }
+        var d = EJERCICIO.distanciasRef(params.G, params.s);
+        var maxd = 0;
+        t = 0;
+        while (t < d.length) {
+          if (d[t] > maxd) { maxd = d[t]; }
+          t = t + 1;
+        }
+      function sinRepetir(lista) {
+        var vistos = {};
+        var salida = [];
+        lista.forEach(function (o) {
+          if (!vistos[o.valor] && o.valor >= 0) {
+            vistos[o.valor] = true;
+            salida.push(o);
+          }
+        });
+        return salida.slice(0, 4);
       }
-      var d = EJERCICIO.distanciasRef(params.G, params.s);
-      var maxd = 0;
-      t = 0;
-      while (t < d.length) {
-        if (d[t] > maxd) { maxd = d[t]; }
-        t = t + 1;
-      }
-      if (valor === maximo) {
-        return { ok: true, msg: "Correcto: la rama más larga llega al nivel " +
-          maximo + ". Ejecute y mire el número naranja que queda junto a cada " +
-          "vértice." };
-      }
-      if (valor === maxd) {
-        return { ok: false, msg: "Ese es el vértice más lejano contando aristas " +
-          "por el camino corto (" + maxd + "). La búsqueda en profundidad no " +
-          "va por el camino corto: baja por donde puede." };
-      }
-      if (valor === params.G.length - 1) {
-        return { ok: false, msg: "Ese sería el nivel si la rama pasara por " +
-          "todos los vértices en fila. Mire el dibujo: ¿la primera bajada " +
-          "alcanza a tocarlos todos?" };
-      }
-      return { ok: false, msg: "No coincide. Siga la primera bajada con el dedo: " +
-        "del arranque al primer vecino, de ahí a su primer vecino nuevo, y así." };
-    });
+        return sinRepetir([
+          { valor: maximo, clave: "correcta",
+            razon: "Correcto: la rama más larga llega al nivel " +
+              maximo + ". Ejecute y mire el número naranja que queda junto a cada " +
+              "vértice." },
+          { valor: maxd, clave: "distancia",
+            razon: "Ese es el vértice más lejano contando aristas " +
+              "por el camino corto (" + maxd + "). La búsqueda en profundidad no " +
+              "va por el camino corto: baja por donde puede." },
+          { valor: params.G.length - 1, clave: "fila",
+            razon: "Ese sería el nivel si la rama pasara por " +
+              "todos los vértices en fila. Mire el dibujo: ¿la primera bajada " +
+              "alcanza a tocarlos todos?" },
+          { valor: maximo + 1, clave: "vertices",
+            razon: "Contó los vértices de la rama, pero el arranque está en el " +
+              "nivel 0: la rama de k vértices llega al nivel k − 1." }
+        ]);
+      });
 
     Array.prototype.forEach.call(document.querySelectorAll(".presets button"), function (btn) {
       btn.addEventListener("click", function () {

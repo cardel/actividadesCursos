@@ -32,14 +32,11 @@
     otra.n = 0;
   }
 }</pre>
-    <div class="prediccion">
-      <span><code>c</code> =</span>
-      <input type="text" id="pred-c" placeholder="5 2 ..." style="width:9rem">
-      <span><code>d.tamano()</code> =</span>
-      <input type="number" id="pred-d" placeholder="?">
-      <button id="btn-resultado" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-resultado"></div>
     <div id="veredicto-resultado" class="veredicto"></div>
+    <div><b>¿Cuánto vale <code>d.tamano()</code>?</b></div>
+    <div class="opciones" id="opciones-d"></div>
+    <div id="veredicto-d" class="veredicto"></div>
   </div>
 
   <div class="carta">
@@ -64,14 +61,12 @@
 }</pre>
     <p>Sobre las mismas colas, ¿cuántos nodos se reservan con
     <code>new</code> y cuántos se liberan con <code>delete</code>?</p>
-    <div class="prediccion">
-      <span>reservados:</span>
-      <input type="number" id="pred-nuevos" placeholder="?">
-      <span>liberados:</span>
-      <input type="number" id="pred-liberados" placeholder="?">
-      <button id="btn-contrato" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-contrato" class="veredicto"></div>
+    <div><b>¿Cuántos nodos se reservan con <code>new</code>?</b></div>
+    <div class="opciones" id="opciones-nuevos"></div>
+    <div id="veredicto-nuevos" class="veredicto"></div>
+    <div><b>¿Cuántos se liberan con <code>delete</code>?</b></div>
+    <div class="opciones" id="opciones-liberados"></div>
+    <div id="veredicto-liberados" class="veredicto"></div>
   </div>
 
   <div class="carta">
@@ -111,6 +106,7 @@
     cola, la que lo va a liberar.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="concatenar.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

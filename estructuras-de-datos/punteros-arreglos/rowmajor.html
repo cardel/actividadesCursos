@@ -25,11 +25,7 @@
   <div class="carta">
     <h2>2. Ubique la casilla</h2>
     <p style="margin-top:0" id="enunciado-objetivo"></p>
-    <div class="prediccion">
-      <span>Dirección:</span>
-      <input type="number" id="prediccion-direccion" placeholder="p. ej. 4020">
-      <button id="btn-direccion" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-direccion"></div>
     <div id="veredicto-direccion" class="veredicto"></div>
     <div class="nota">Pista general: ¿cuántas casillas completas hay antes de
     la marcada? Cada una ocupa 4 bytes.</div>
@@ -49,6 +45,7 @@
   </div>
 
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="rowmajor.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

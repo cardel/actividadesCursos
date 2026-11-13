@@ -154,22 +154,33 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
-      var esperado = Math.ceil(Math.log((params.b - params.a) / params.eps) / Math.log(2));
-      if (valor === esperado) {
-        return { ok: true, msg: "Correcto: el ancho arranca en " +
-          (params.b - params.a) + " y se parte a la mitad cada vuelta, así que hay " +
-          "que resolver (b−a)/2^k ≤ ε. Da k = ⌈log₂(" + (params.b - params.a) +
-          "/" + params.eps + ")⌉ = " + esperado + "." };
-      }
-      if (valor > esperado && valor <= esperado + 3) {
-        return { ok: false, msg: "Cerca. La fórmula exacta es " +
-          "k = ⌈log₂((b−a)/ε)⌉; aquí da " + esperado + ". Ejecute y cuente las filas." };
-      }
-      return { ok: false, msg: "No coincide. Cada vuelta divide el ancho por 2: " +
-        "de " + (params.b - params.a) + " pasa a " + ((params.b - params.a) / 2) +
-        ", luego a " + ((params.b - params.a) / 4) + "… ¿cuántas veces hasta bajar de " +
-        params.eps + "?" };
+    Motor.opcionesNumericas("opciones-vueltas", "veredicto", function (params) {
+      var ancho = params.b - params.a;
+      var esperado = Math.ceil(Math.log(ancho / params.eps) / Math.log(2));
+      function redondo(x) { return Math.round(x * 1000) / 1000; }
+      var lista = [{ valor: esperado, clave: "correcta",
+        razon: "Correcto: el ancho arranca en " + ancho + " y se parte a la mitad cada vuelta, así que hay " +
+          "que resolver (b−a)/2^k ≤ ε. Da k = ⌈log₂(" + ancho + "/" + params.eps + ")⌉ = " + esperado + "." }];
+      var candidatas = [
+        { valor: esperado + 1, clave: "unaMas",
+          razon: "Una vuelta de más. La fórmula exacta es k = ⌈log₂((b−a)/ε)⌉; aquí da " +
+            esperado + ", y con " + esperado + " vueltas el ancho ya es menor que ε." },
+        { valor: esperado - 1, clave: "abajo",
+          razon: "Redondeó hacia abajo. Con " + (esperado - 1) + " vueltas el ancho todavía es " +
+            redondo(ancho / Math.pow(2, esperado - 1)) + ", mayor que " + params.eps + "." },
+        { valor: Math.round(ancho / params.eps), clave: "cociente",
+          razon: "Ese es el cociente (b−a)/ε sin el logaritmo. Cada vuelta divide el ancho por 2, " +
+            "no le resta ε: hay que contar cuántas divisiones hacen falta." },
+        { valor: Math.floor(ancho / 2), clave: "mitad",
+          razon: "Ese es el ancho partido una vez, no un número de vueltas. Cada vuelta divide " +
+            "el ancho por 2 y hay que repetirlo hasta bajar de " + params.eps + "." }
+      ];
+      candidatas.forEach(function (c) {
+        var repetida = false;
+        lista.forEach(function (o) { if (o.valor === c.valor) { repetida = true; } });
+        if (!repetida && c.valor > 0 && lista.length < 4) { lista.push(c); }
+      });
+      return lista;
     });
 
     Array.prototype.forEach.call(document.querySelectorAll(".presets button"), function (btn) {

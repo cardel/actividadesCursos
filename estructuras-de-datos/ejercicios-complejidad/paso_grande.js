@@ -135,23 +135,30 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto", function (params) {
       var n = params.n;
       var esperado = EJERCICIO.vueltas(n);
-      if (valor === esperado) {
-        return { ok: true, msg: "Correcto: con paso n/5 = " + Math.floor(n / 5) +
-          " salen " + esperado + " vueltas. Cambie n con los presets y compare." };
-      }
-      if (valor === Math.floor(n / 5)) {
-        return { ok: false, msg: "Ese es el tamaño del paso, no el número de vueltas. " +
-          "Divida el camino (0 hasta n) entre el paso." };
-      }
-      if (valor === n) {
-        return { ok: false, msg: "Eso sería un ciclo que sube de uno en uno. Aquí cada " +
-          "vuelta avanza la quinta parte del camino." };
-      }
-      return { ok: false, msg: "No coincide. Pista: el camino mide n y cada vuelta avanza " +
-        "n/5. ¿Cuántos saltos caben, contando el arranque en 0 y el posible tope en n?" };
+      var lista = [
+        { valor: esperado, clave: "correcta",
+          razon: "Correcto: con paso n/5 = " + Math.floor(n / 5) +
+            " salen " + esperado + " vueltas. Cambie n con los presets y compare." },
+        { valor: Math.floor(n / 5), clave: "paso",
+          razon: "Ese es el tamaño del paso, no el número de vueltas. " +
+            "Divida el camino (0 hasta n) entre el paso." },
+        { valor: n, clave: "lineal",
+          razon: "Eso sería un ciclo que sube de uno en uno. Aquí cada " +
+            "vuelta avanza la quinta parte del camino." },
+        { valor: esperado - 1, clave: "sinarranque",
+          razon: "Le faltó una vuelta: i arranca en 0 y esa primera vuelta cuenta, " +
+            "y la condición i <= n deja entrar también a i = n." }
+      ];
+      // una opcion que repite un valor ya presente se descarta
+      var vistos = {};
+      return lista.filter(function (o) {
+        var nuevo = !vistos[o.valor];
+        vistos[o.valor] = true;
+        return nuevo;
+      });
     });
 
     Array.prototype.forEach.call(document.querySelectorAll("#opciones-analisis button"), function (b) {

@@ -11,7 +11,7 @@ recurrencia, y al final se comparan los dos caminos.
 
 Elija entre $T(n) = T(n-1) + c$, $T(n) = T(n/2) + c$ y
 $T(n) = 2T(n/2) + cn$, con $T(1) = c$ y $n$ potencia de 2 hasta 64. Nivel
-por nivel escriba cuántos nodos hay, cuánto trabaja cada uno y cuánto cuesta
+por nivel elija cuántos nodos hay, cuánto trabaja cada uno y cuánto cuesta
 el nivel entero, en unidades de $c$; el dibujo crece con cada nivel
 aceptado.
 

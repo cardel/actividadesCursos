@@ -61,28 +61,41 @@ if (typeof module !== "undefined") {
       document.getElementById("tabla-experimento").style.display = "block";
     }
 
-    document.getElementById("btn-experimento").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-experimento");
-      var valor = parseInt(document.getElementById("prediccion-experimento").value, 10);
-      var esperado = EJERCICIO.primeraNCuadrado();
-      if (isNaN(valor)) {
-        v.className = "veredicto mal";
-        v.textContent = "Escriba un número primero.";
-      } else if (valor === esperado) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: desde n = " + esperado + " la parábola no vuelve a " +
-          "perder. Ese punto de arranque es la k de la definición; aquí funcionó " +
-          "sin ayuda de constante (c = 1). Mire la tabla.";
-        tablaExperimento();
-      } else if (valor < esperado) {
-        v.className = "veredicto mal";
-        v.textContent = "En n = " + valor + ": 3n + 4 = " + (3 * valor + 4) +
-          " y n² = " + (valor * valor) + ". Todavía gana la recta; siga probando.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "En n = " + valor + " sí se cumple, pero ya venía " +
-          "cumpliéndose desde antes. Se pide el primer n.";
-      }
+    Motor.opcionesNumericas("opciones-experimento", "veredicto-experimento",
+      function () {
+        var esperado = EJERCICIO.primeraNCuadrado();
+        var sinSuelto = 1;
+        while (3 * sinSuelto > sinSuelto * sinSuelto) { sinSuelto = sinSuelto + 1; }
+        var estricto = 1;
+        while (3 * estricto + 4 >= estricto * estricto) { estricto = estricto + 1; }
+        var soloSuelto = 1;
+        while (soloSuelto * soloSuelto < 4) { soloSuelto = soloSuelto + 1; }
+        var lista = [
+          { valor: esperado, clave: "correcta",
+            razon: "Correcto: en n = " + esperado + " se tiene 3n + 4 = " +
+              (3 * esperado + 4) + " = n², y de ahí en adelante la parábola no " +
+              "vuelve a perder. Ese punto de arranque es la k de la definición; " +
+              "aquí funcionó sin ayuda de constante (c = 1)." }
+        ];
+        function agrega(valor, clave, razon) {
+          var repetido = false;
+          lista.forEach(function (o) { if (o.valor === valor) { repetido = true; } });
+          if (!repetido) { lista.push({ valor: valor, clave: clave, razon: razon }); }
+        }
+        agrega(sinSuelto, "sinSuelto", "En n = " + sinSuelto + ": 3n + 4 = " +
+          (3 * sinSuelto + 4) + " y n² = " + (sinSuelto * sinSuelto) + ". Ese n " +
+          "serviría para 3n ≤ n², pero se olvidó el + 4: todavía gana la recta.");
+        agrega(estricto, "estricto", "En n = " + (estricto - 1) + " ya se cumple " +
+          "3n + 4 ≤ n² (con igualdad), y se pide el primer n. La desigualdad es " +
+          "≤, no <.");
+        agrega(soloSuelto, "soloSuelto", "En n = " + soloSuelto + ": 3n + 4 = " +
+          (3 * soloSuelto + 4) + " y n² = " + (soloSuelto * soloSuelto) + ". Solo " +
+          "se comparó n² con el término suelto 4; falta sumar el 3n.");
+        return lista;
+      });
+
+    document.getElementById("opciones-experimento").addEventListener("click", function (e) {
+      if (e.target && e.target.getAttribute("data-op") === "correcta") { tablaExperimento(); }
     });
 
     /* --- Tarjetas 2 y 3: cazar testigos --------------------------- */

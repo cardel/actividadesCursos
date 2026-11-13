@@ -289,8 +289,10 @@ if (typeof module !== "undefined") {
 
     /* Cambiar de programa exige volver a iniciar el motor, y eso exige soltar
        los escuchas viejos de los botones: se reemplazan por clones sin escuchas. */
+    var opciones = null;
+
     function arrancar() {
-      var ids = ["btn-paso", "btn-auto", "btn-fin", "btn-reiniciar", "btn-comprobar"];
+      var ids = ["btn-paso", "btn-auto", "btn-fin", "btn-reiniciar"];
       var t = 0;
       while (t < ids.length) {
         var b = document.getElementById(ids[t]);
@@ -303,20 +305,45 @@ if (typeof module !== "undefined") {
         chips: [{ campo: "u", rotulo: "u" }, { campo: "comp", rotulo: "componente" }, { campo: "cuenta", rotulo: "cuenta", clase: "cuenta" }],
         paramsIniciales: paramsActuales(), alPintar: alPintar
       });
-      Motor.prediccionNumerica(evaluarPrediccion);
+      if (opciones === null) {
+        opciones = Motor.opcionesNumericas("opciones-prediccion", "veredicto", armar);
+      }
       Motor.limpiarVeredicto();
     }
 
-    function evaluarPrediccion(valor, params) {
+    function sinRepetir(lista) {
+      var vistos = {}, sal = [];
+      lista.forEach(function (o) {
+        if (vistos[o.valor] !== true) { vistos[o.valor] = true; sal.push(o); }
+      });
+      return sal;
+    }
+
+    function armar(params) {
       var tam = EJERCICIO.tamanosRef(params.G);
       var n = params.G.length;
       var aristas = 0; var u = 0; while (u < n) { aristas = aristas + params.G[u].length; u = u + 1; } aristas = aristas / 2;
-      if (valor === tam.length) {
-        return { ok: true, msg: "Correcto: " + tam.length + " componentes, de tamaños [" + tam.join(", ") + "]. Ejecute y mire cuántas veces entra la línea 7." };
+      var mayor = 0, grandes = 0;
+      tam.forEach(function (t) { if (t > mayor) { mayor = t; } if (t > 1) { grandes = grandes + 1; } });
+      var lista = [
+        { valor: tam.length, clave: "correcta",
+          razon: "Correcto: " + tam.length + " componentes, de tamaños [" + tam.join(", ") + "]. Ejecute y mire cuántas veces entra la línea 7." },
+        { valor: n, clave: "vertices",
+          razon: "Ese es el número de vértices. Serían " + n + " componentes solo si no hubiera ninguna arista." },
+        { valor: aristas, clave: "aristas",
+          razon: "Ese es el número de aristas. Los componentes se cuentan por grupos de vértices que se alcanzan entre sí." },
+        { valor: mayor, clave: "mayor",
+          razon: "Ese es el tamaño del componente más grande, " + mayor + (mayor === 1 ? " vértice" : " vértices") + ". La pregunta es cuántos grupos hay, no qué tan grande es el mayor." },
+        { valor: grandes, clave: "sueltos",
+          razon: "Esa cuenta solo los grupos de más de un vértice. Un vértice suelto también es un componente." }
+      ];
+      lista = sinRepetir(lista);
+      if (lista.length < 3) {
+        lista.push({ valor: tam.length + 1, clave: "demas",
+          razon: "Un componente de más: la línea 7 solo arranca un recorrido nuevo desde un vértice que todavía no tiene color." });
+        lista = sinRepetir(lista);
       }
-      if (valor === n) { return { ok: false, msg: "Ese es el número de vértices. Serían " + n + " componentes solo si no hubiera ninguna arista." }; }
-      if (valor === aristas) { return { ok: false, msg: "Ese es el número de aristas. Los componentes se cuentan por grupos de vértices que se alcanzan entre sí." }; }
-      return { ok: false, msg: "No coincide. Agrupe en el dibujo los vértices que se alcanzan entre sí y cuente los grupos; un vértice suelto es un grupo." };
+      return lista.slice(0, 4);
     }
 
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (btn) {

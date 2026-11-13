@@ -294,23 +294,41 @@ if (typeof document !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor) {
-      var q = consulta(), r = E.respuesta(params.p), total = E.totalDe(params.p), alc = total - r;
-      var pares = E.REDES[q.red].pares, menor = E.conMenorIgual(pares, q.nodo, q.ttl).respuesta;
-      if (valor === r) {
-        return { ok: true, msg: "Son " + r + ": de los " + total + " nodos, el mensaje llega a " + alc + "." };
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto",
+      function () {
+        var q = consulta(), r = E.respuesta(params.p), total = E.totalDe(params.p), alc = total - r;
+        var pares = E.REDES[q.red].pares, menor = E.conMenorIgual(pares, q.nodo, q.ttl).respuesta;
+      function sinRepetir(lista) {
+        var vistos = {};
+        var salida = [];
+        lista.forEach(function (o) {
+          if (!vistos[o.valor] && o.valor >= 0) {
+            vistos[o.valor] = true;
+            salida.push(o);
+          }
+        });
+        return salida.slice(0, 4);
       }
-      if (valor === alc) {
-        return { ok: false, msg: "Esos son los alcanzados. La salida pide los que quedan por fuera." };
-      }
-      if (valor === menor) {
-        return { ok: false, msg: "Ese número sale al dar un salto de más desde los nodos a distancia TTL. Un mensaje que llega con TTL agotado ya no se reenvía." };
-      }
-      if (valor === r + 1) {
-        return { ok: false, msg: "Le sobra uno: el nodo de partida cuenta como alcanzado, incluso con TTL 0." };
-      }
-      return { ok: false, msg: "No es ese. Cuente los nodos a distancia menor o igual a " + q.ttl + " desde " + q.nodo + " y réstelos de " + total + "." };
-    });
+        var lista = [
+          { valor: r, clave: "correcta",
+            razon: "Son " + r + ": de los " + total + " nodos, el mensaje llega a " + alc + "." },
+          { valor: alc, clave: "alcanzados",
+            razon: "Esos son los alcanzados. La salida pide los que quedan por fuera." },
+          { valor: menor, clave: "salto",
+            razon: "Ese número sale al dar un salto de más desde los nodos a distancia TTL. Un mensaje que llega con TTL agotado ya no se reenvía." },
+        ];
+        if (r + 1 <= total) {
+          lista.push({ valor: r + 1, clave: "partida",
+            razon: "Le sobra uno: contó el nodo de partida como si quedara por fuera, " +
+              "pero él mismo es alcanzado, incluso con TTL 0." });
+        } else {
+          lista.push({ valor: r - 1, clave: "sinRed",
+            razon: "Le falta uno: dio por alcanzado el nodo " + q.nodo + ", pero no aparece " +
+              "en ninguna conexión. No hay recorrido y ninguno de los " + total +
+              " nodos se alcanza." });
+        }
+        return sinRepetir(lista);
+      });
 
     el("presets").innerHTML = E.PRESETS.map(function (x, i) {
       return "<button data-i='" + i + "'" + (i === 0 ? " class='primario'" : "") + ">" + x.nombre + "</button>";
@@ -320,7 +338,6 @@ if (typeof document !== "undefined") {
         params.p = parseInt(b.getAttribute("data-i"), 10);
         Array.prototype.forEach.call(el("presets").querySelectorAll("button"), function (x) { x.classList.remove("primario"); });
         b.classList.add("primario");
-        el("prediccion").value = "";
         Motor.limpiarVeredicto();
         Motor.reiniciar(params);
         pintarError();

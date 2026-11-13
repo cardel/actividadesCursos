@@ -139,10 +139,24 @@ var EJERCICIO = (function () {
     return { ok: ok, msg: msg };
   }
 
+  function noAlcanza(p, k, valor) {
+    return valor < mayor(p)
+      ? "El texto de " + mayor(p) + " páginas no cabe en un tope de " + valor + "."
+      : "Con t = " + valor + " hacen falta " + empleados(p, valor) + " empleados y hay " + k + ": no alcanza.";
+  }
+
   function juzgarCierre(p, k, valor) {
     var r = transcribir(p, k), ok = valor === r, msg;
     if (ok) {
       msg = "Es " + r + ": con ese tope hacen falta " + empleados(p, r) + " empleados, y con " + (r - 1) + " ya no alcanzan " + k + ".";
+    } else if (valor === r - 1) {
+      msg = noAlcanza(p, k, valor) + " Es una por debajo del menor tope: el error de quedarse corto en uno al terminar. La respuesta es " + r + ".";
+    } else if (valor === Math.ceil(suma(p) / k)) {
+      msg = "Esa es la suma repartida en " + k + " partes iguales, y solo serviría si los textos se pudieran partir. Cada texto va entero con un empleado. " + noAlcanza(p, k, valor) + " La respuesta es " + r + ".";
+    } else if (valor === mayor(p)) {
+      msg = "Ese es el texto más largo, " + valor + " páginas: la cota de abajo, donde arranca lo. " + noAlcanza(p, k, valor) + " La respuesta es " + r + ".";
+    } else if (valor === r + 1) {
+      msg = "Con t = " + valor + " alcanza, pero no es el menor: con " + r + " ya alcanzan los " + k + " empleados. Es el error de pasarse en uno.";
     } else if (valor < mayor(p)) {
       msg = "El texto de " + mayor(p) + " páginas no cabe en un tope de " + valor + ": mire de dónde arranca lo.";
     } else if (empleados(p, valor) > k) {
@@ -391,19 +405,35 @@ if (typeof document !== "undefined") {
 
     /* El ejemplo sin ayuda */
     var cierre = 0;
+    function pintarCierre() {
+      var x = E.CIERRES[cierre], p = x.paginas, k = x.k, caja = el("cierre-opciones");
+      var r = E.transcribir(p, k), lista = [r];
+      var candidatas = [r - 1, Math.ceil(E.suma(p) / k), E.mayor(p), r + 1];
+      candidatas.forEach(function (v) {
+        if (lista.indexOf(v) === -1 && v > 0 && lista.length < 4) { lista.push(v); }
+      });
+      var giro = (r + cierre) % lista.length;
+      lista = lista.slice(giro).concat(lista.slice(0, giro));
+      caja.innerHTML = "";
+      lista.forEach(function (v) {
+        var b = document.createElement("button");
+        b.setAttribute("data-op", v === r ? "correcta" : "distractor");
+        b.textContent = v;
+        b.addEventListener("click", function () {
+          var j = E.juzgarCierre(p, k, v);
+          PLANTEO.decir("cierre-veredicto", j.ok, j.msg);
+        });
+        caja.appendChild(b);
+      });
+    }
     PLANTEO.botones("cierres", E.CIERRES.map(function (x) { return x.nombre; }), function (n) {
       var x = E.CIERRES[n];
       cierre = n;
       el("cierre-datos").innerHTML = "<code>paginas = [" + x.paginas.join(", ") + "]</code>, <code>k = " + x.k + "</code>";
-      el("cierre-valor").value = "";
+      pintarCierre();
       PLANTEO.decir("cierre-veredicto", true, "");
       el("cierre-solucion-panel").innerHTML = "";
     })(0);
-    el("cierre-comprobar").addEventListener("click", function () {
-      var x = E.CIERRES[cierre], v = parseInt(el("cierre-valor").value, 10), r;
-      if (isNaN(v)) { PLANTEO.decir("cierre-veredicto", false, "Escriba un número primero."); }
-      else { r = E.juzgarCierre(x.paginas, x.k, v); PLANTEO.decir("cierre-veredicto", r.ok, r.msg); }
-    });
     el("cierre-solucion").addEventListener("click", function () {
       var x = E.CIERRES[cierre], r = E.transcribir(x.paginas, x.k), vs = E.vueltas(x.paginas, x.k), i = 0;
       var h = filaHTML(x.paginas, r, x.paginas.length, -1) + "<p class='lectura'>El menor tope es <b>" + r + "</b>.</p><div class='envoltura-tabla'><table class='corrida'><tr><th>lo</th><th>hi</th><th>medio</th><th>emp.</th><th>alcanza</th></tr>";

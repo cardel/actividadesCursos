@@ -77,8 +77,27 @@ if (typeof module !== "undefined") {
       ["}", ""]
     ]);
 
+    /* Una opcion cuyo valor ya salio antes se descarta: nunca dos botones iguales. */
+    function unicas(lista) {
+      var vistos = [];
+      return lista.filter(function (o) {
+        var nueva = vistos.indexOf(o.valor) < 0;
+        if (nueva) { vistos.push(o.valor); }
+        return nueva;
+      });
+    }
+    /* Avisa cada vez que el estudiante acierta en el contenedor de opciones. */
+    function alAcertar(idOpciones, f) {
+      document.getElementById(idOpciones).addEventListener("click", function (e) {
+        if (e.target && e.target.getAttribute("data-op") === "correcta") { f(); }
+      });
+    }
     var logradas = { cartas: false, papa: false, bucle: false };
+    var texto = { cartas: false, papa: false };
+    var numero = { cartas: false, papa: false };
     function revisar() {
+      logradas.cartas = texto.cartas && numero.cartas;
+      logradas.papa = texto.papa && numero.papa;
       if (logradas.cartas && logradas.papa && logradas.bucle) {
         document.getElementById("carta-cierre").style.display = "block";
       }
@@ -95,11 +114,10 @@ if (typeof module !== "undefined") {
       var v = document.getElementById("veredicto-cartas");
       var r = EJERCICIO.cartas(EJERCICIO.casos.cartas.n);
       var dadas = leerLista(document.getElementById("pred-cartas-desc").value);
-      var queda = parseInt(document.getElementById("pred-cartas-queda").value, 10);
-      if (iguales(dadas, r.descartadas) && queda === r.queda) {
+      if (iguales(dadas, r.descartadas)) {
         v.className = "veredicto bien";
-        v.textContent = "Correcto: 1 3 5 7 4 2 y queda la 6. En la segunda vuelta la cola ya no arranca en 1: arranca en 4, porque el 2 se fue al final.";
-        logradas.cartas = true;
+        v.textContent = "Correcto: 1 3 5 7 4 2. En la segunda vuelta la cola ya no arranca en 1: arranca en 4, porque el 2 se fue al final.";
+        texto.cartas = true;
         revisar();
       } else if (iguales(dadas, [1, 3, 5, 7]) || (dadas.length >= 4 && iguales(dadas.slice(0, 4), [1, 3, 5, 7]) && !iguales(dadas, r.descartadas))) {
         v.className = "veredicto mal";
@@ -119,11 +137,10 @@ if (typeof module !== "undefined") {
       var c = EJERCICIO.casos.papa;
       var r = EJERCICIO.papa(c.n, c.k);
       var dadas = leerLista(document.getElementById("pred-papa-salen").value);
-      var queda = parseInt(document.getElementById("pred-papa-queda").value, 10);
-      if (iguales(dadas, r.salen) && queda === r.queda) {
+      if (iguales(dadas, r.salen)) {
         v.className = "veredicto bien";
-        v.textContent = "Correcto: salen 4, 2, 1, 3, 6 y queda 5. Con k = 4 la papa pasa tres veces antes de cada salida; después de la primera, el conteo sigue desde el 5.";
-        logradas.papa = true;
+        v.textContent = "Correcto: salen 4, 2, 1, 3, 6. Con k = 4 la papa pasa tres veces antes de cada salida; después de la primera, el conteo sigue desde el 5.";
+        texto.papa = true;
         revisar();
       } else if (iguales(dadas, [4, 2, 6, 4]) || (dadas.length > 0 && dadas[0] === 4 && dadas[1] !== 2)) {
         v.className = "veredicto mal";
@@ -158,5 +175,37 @@ if (typeof module !== "undefined") {
         }
       });
     });
+
+    /* --- Opciones numericas --------------------------------------- */
+    Motor.opcionesNumericas("opciones-cartas", "veredicto-cartas-queda", function () {
+      var n = EJERCICIO.casos.cartas.n;
+      var r = EJERCICIO.cartas(n);
+      return unicas([
+        { valor: r.queda, clave: "correcta",
+          razon: "Correcto: queda la " + r.queda + ". Se descartan " + r.descartadas.join(", ") + " y la " + r.queda + " es la única que nunca se descarta." },
+        { valor: n, clave: "ultima",
+          razon: "La " + n + " empieza al fondo, pero se descarta en la primera vuelta. Ni el fondo ni el frente deciden quién queda: hay que trazar." },
+        { valor: r.descartadas[r.descartadas.length - 1], clave: "ultima-descartada",
+          razon: "Esa es la última que se descarta. Cuando quedan dos cartas se descarta la de arriba y la otra pasa al fondo: esa es la que queda." },
+        { valor: r.descartadas[0], clave: "primera",
+          razon: "La " + r.descartadas[0] + " es la primera que se descarta: está arriba al empezar." }
+      ]);
+    });
+    alAcertar("opciones-cartas", function () { numero.cartas = true; revisar(); });
+    Motor.opcionesNumericas("opciones-papa", "veredicto-papa-queda", function () {
+      var c = EJERCICIO.casos.papa;
+      var r = EJERCICIO.papa(c.n, c.k);
+      return unicas([
+        { valor: r.queda, clave: "correcta",
+          razon: "Correcto: queda el " + r.queda + ". Salen " + r.salen.join(", ") + " y es el único que nunca sale." },
+        { valor: r.salen[r.salen.length - 1], clave: "ultimo",
+          razon: "Ese es el último que sale, y sale: el que queda es otro, el único que nunca cae en la cuarta posición." },
+        { valor: r.salen[0], clave: "primero",
+          razon: "Ese es el primero en salir. Con k = " + c.k + " pasan " + (c.k - 1) + " personas y sale la cuarta; el " + r.salen[0] + " no queda." },
+        { valor: r.salen[r.salen.length - 2], clave: "penultimo",
+          razon: "Ese es el penúltimo en salir. Siga la cola hasta que quede una sola persona." }
+      ]);
+    });
+    alAcertar("opciones-papa", function () { numero.papa = true; revisar(); });
   })();
 }

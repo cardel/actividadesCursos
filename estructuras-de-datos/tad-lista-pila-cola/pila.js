@@ -48,12 +48,6 @@ if (typeof module !== "undefined") {
         caja.appendChild(linea);
       });
     }
-    function leerLista(texto) {
-      return texto.trim().split(/[\s,]+/).filter(function (x) { return x !== ""; }).map(Number);
-    }
-    function iguales(a, b) {
-      return a.length === b.length && a.every(function (x, i) { return x === b[i]; });
-    }
     pintarCodigo("codigo-ops", [
       ["Pila p;", ""],
       ["p.apilar(5);", "bloque-1"],
@@ -82,6 +76,21 @@ if (typeof module !== "undefined") {
       ["}", ""]
     ]);
 
+    function sinRepetidos(lista) {
+      var vistos = [];
+      return lista.filter(function (o) {
+        var nuevo = vistos.indexOf(o.valor) < 0;
+        if (nuevo) { vistos.push(o.valor); }
+        return nuevo;
+      });
+    }
+    /* Avisa cuando el estudiante acierta la opcion correcta de un bloque. */
+    function alAcertar(idOpciones, hacer) {
+      document.getElementById(idOpciones).addEventListener("click", function (e) {
+        if (e.target && e.target.getAttribute("data-op") === "correcta") { hacer(); }
+      });
+    }
+
     var logradas = { ops: false, contar: false, olvido: false };
     function revisar() {
       if (logradas.ops && logradas.contar && logradas.olvido) {
@@ -89,49 +98,96 @@ if (typeof module !== "undefined") {
       }
     }
 
-    document.getElementById("btn-ops").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-ops");
-      var r = EJERCICIO.simular(EJERCICIO.operaciones);
-      var t1 = parseInt(document.getElementById("pred-t1").value, 10);
-      var t2 = parseInt(document.getElementById("pred-t2").value, 10);
-      var n = parseInt(document.getElementById("pred-n").value, 10);
-      if (t1 === r.topes[0] && t2 === r.topes[1] && n === r.tamano) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: 2, y después 7 con tamaño 2. El 4 entró y salió; el 5 sigue abajo y nadie lo ha leído.";
-        logradas.ops = true;
-        revisar();
-      } else if (t2 === 4) {
-        v.className = "veredicto mal";
-        v.textContent = "El 4 fue lo último apilado, sí, pero el desapilar que sigue lo quita. Lea el tope después de ese desapilar.";
-      } else if (t2 === 5) {
-        v.className = "veredicto mal";
-        v.textContent = "El 5 está abajo de todo. Solo se lee el tope, que es lo último que quedó.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "Dibuje la pila tras cada línea: apilar pone arriba, desapilar quita lo de arriba, tope lee sin quitar.";
-      }
-    });
-
-    document.getElementById("btn-contar").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-contar");
-      var c = EJERCICIO.casoContar;
-      var r = EJERCICIO.contar(c.pila, c.x, true);
-      var cuenta = parseInt(document.getElementById("pred-cuenta").value, 10);
-      var tope = parseInt(document.getElementById("pred-tope").value, 10);
-      if (cuenta === r.cuenta && tope === r.pila[r.pila.length - 1]) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: hay tres 4 y el tope sigue siendo 1. El primer ciclo vacía p hacia aux invirtiendo el orden; el segundo lo invierte de nuevo y p queda igual.";
+    var opsOk = { t1: false, t2: false, n: false };
+    function revisarOps() {
+      if (opsOk.t1 && opsOk.t2 && opsOk.n) { logradas.ops = true; revisar(); }
+    }
+    var contarOk = { cuenta: false, tope: false };
+    function revisarContar() {
+      if (contarOk.cuenta && contarOk.tope) {
         logradas.contar = true;
         document.getElementById("carta-olvido").style.display = "block";
         revisar();
-      } else if (cuenta === r.cuenta) {
-        v.className = "veredicto mal";
-        v.textContent = "La cuenta va bien. Para el tope, siga el segundo ciclo: aux devuelve los elementos en el orden original.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "El primer ciclo mira cada elemento una vez, del tope hacia abajo, y cuenta los iguales a x.";
       }
+    }
+    function sinOps(nombre) {
+      return EJERCICIO.operaciones.filter(function (op) { return op[0] !== nombre; });
+    }
+    function opcionesOps(id, idver, armar) {
+      Motor.opcionesNumericas(id, idver, armar);
+      alAcertar(id, function () { opsOk[id.replace("opciones-", "")] = true; revisarOps(); });
+    }
+    opcionesOps("opciones-t1", "veredicto-t1", function () {
+      var r = EJERCICIO.simular(EJERCICIO.operaciones);
+      var abajo = EJERCICIO.operaciones[0][1];
+      var luego = EJERCICIO.operaciones[4][1];
+      return sinRepetidos([
+        { valor: r.topes[0], clave: "correcta",
+          razon: "Correcto: " + r.topes[0] + ". Es lo último que se apiló antes de esa línea, y tope lee sin quitar." },
+        { valor: abajo, clave: "abajo",
+          razon: "El " + abajo + " está abajo de todo. Eso sería el frente de una cola; el tope es lo último apilado." },
+        { valor: luego, clave: "luego",
+          razon: "El " + luego + " se apila más adelante en el programa: en esa línea todavía no existe." }
+      ]);
     });
+    opcionesOps("opciones-t2", "veredicto-t2", function () {
+      var r = EJERCICIO.simular(EJERCICIO.operaciones);
+      var abajo = EJERCICIO.operaciones[0][1];
+      var ultimo = EJERCICIO.operaciones[5][1];
+      return sinRepetidos([
+        { valor: r.topes[1], clave: "correcta",
+          razon: "Correcto: " + r.topes[1] + ". El " + ultimo + " entró y salió; el " + abajo + " sigue abajo y nadie lo ha leído." },
+        { valor: ultimo, clave: "ultimo",
+          razon: "El " + ultimo + " fue lo último apilado, sí, pero el desapilar que sigue lo quita. Lea el tope después de ese desapilar." },
+        { valor: abajo, clave: "abajo",
+          razon: "El " + abajo + " está abajo de todo. Solo se lee el tope, que es lo último que quedó." },
+        { valor: r.topes[0], clave: "primero",
+          razon: "El " + r.topes[0] + " ya salió con el primer desapilar; no vuelve a ser el tope." }
+      ]);
+    });
+    opcionesOps("opciones-n", "veredicto-n", function () {
+      var r = EJERCICIO.simular(EJERCICIO.operaciones);
+      var sinSegundo = EJERCICIO.simular(EJERCICIO.operaciones.slice(0, 6).concat(EJERCICIO.operaciones.slice(7))).tamano;
+      var ignora = EJERCICIO.simular(sinOps("desapilar")).tamano;
+      return sinRepetidos([
+        { valor: r.tamano, clave: "correcta",
+          razon: "Correcto: tamaño " + r.tamano + ". Se apilan cuatro y se desapilan dos." },
+        { valor: sinSegundo, clave: "sinsegundo",
+          razon: "Olvida el segundo desapilar: se apilaron " + ignora + " y salió solo uno." },
+        { valor: ignora, clave: "ignora",
+          razon: "Cuenta todos los apilar y ningún desapilar. Cada desapilar quita un elemento." }
+      ]);
+    });
+
+    Motor.opcionesNumericas("opciones-cuenta", "veredicto-cuenta", function () {
+      var c = EJERCICIO.casoContar;
+      var r = EJERCICIO.contar(c.pila, c.x, true);
+      return sinRepetidos([
+        { valor: r.cuenta, clave: "correcta",
+          razon: "Correcto: hay " + r.cuenta + " veces el " + c.x + ". El primer ciclo mira cada elemento una vez, del tope hacia abajo, y cuenta los iguales a x." },
+        { valor: c.pila.length, clave: "todos",
+          razon: "Esos son todos los elementos de la pila. El ciclo solo suma cuando el tope es igual a x." },
+        { valor: c.x, clave: "valor",
+          razon: "Ese es el valor x que se busca, no cuántas veces aparece." },
+        { valor: r.cuenta - 1, clave: "corto",
+          razon: "Se queda corto: el ciclo recorre toda la pila hasta el fondo, y el " + c.pila[0] + " del fondo también es igual a x y cuenta." }
+      ]);
+    });
+    alAcertar("opciones-cuenta", function () { contarOk.cuenta = true; revisarContar(); });
+    Motor.opcionesNumericas("opciones-tope", "veredicto-tope", function () {
+      var c = EJERCICIO.casoContar;
+      var r = EJERCICIO.contar(c.pila, c.x, true);
+      var tope = r.pila[r.pila.length - 1];
+      return sinRepetidos([
+        { valor: tope, clave: "correcta",
+          razon: "Correcto: el tope sigue siendo " + tope + ". El primer ciclo vacía p hacia aux invirtiendo el orden; el segundo lo invierte de nuevo y p queda igual." },
+        { valor: c.pila[0], clave: "invertida",
+          razon: "Ese sería el tope si p quedara invertida. El segundo ciclo devuelve los elementos de aux en el orden original." },
+        { valor: r.cuenta, clave: "cuenta",
+          razon: "Esa es la cuenta que devuelve la función, no el tope de p." }
+      ]);
+    });
+    alAcertar("opciones-tope", function () { contarOk.tope = true; revisarContar(); });
 
     var MENSAJES = {
       igual: "Sin el segundo ciclo nadie devuelve los elementos: se quedan en aux, que muere al terminar la función.",

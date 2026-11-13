@@ -182,33 +182,71 @@ if (typeof document !== "undefined") (function () {
     ], CPU_MS);
   }
 
-  function explicarA(bien, real, dicho) {
-    destapado.viaje = true;
-    pintarViaje();
-    pintarEncadenadas();
-    pintarBarras();
+  function razonViaje() {
+    var real = viajeMs(PRESETS[0].bytes, PCIE_GBS);
     var ida = viajeMs(PRESETS[0].bytes / 2, PCIE_GBS);
-    return (bien ? "Sí, " + num(real, 2) + " ms. " : "Son " + num(real, 2) + " ms, no " +
-      num(dicho, 2) + ". ") + "40 MB de ida y 40 MB de vuelta: 80 MB a 12 GB/s son " +
+    return "Sí, " + num(real, 2) + " ms. 40 MB de ida y 40 MB de vuelta: 80 MB a 12 GB/s son " +
       num(real, 2) + " ms, " + num(ida, 2) + " por trayecto. La CPU hizo la operación " +
       "completa en " + num(CPU_MS, 1) + " ms, así que el viaje solo ya se lleva el " +
       num(Math.round(real / CPU_MS * 100)) + " % de ese tiempo, y la GPU aún no ha " +
       "calculado nada.";
   }
 
-  function explicarB(bien, real, dicho) {
-    destapado.opbyte = true;
-    pintarViaje();
-    pintarTabla();
+  function razonOpByte() {
     var m = matmul(4000, 4);
+    var real = Math.round(m.opPorByte);
     var base = opPorByte(PRESETS[0].ops, PRESETS[0].bytes);
-    return (bien ? "Sí, " + num(real) + ". " : "Son " + num(real) + ", no " + num(dicho) +
-      ". ") + "Tres matrices de 4000 × 4000 en float32, 64 MB cada una: " +
+    return "Sí, " + num(real) + ". Tres matrices de 4000 × 4000 en float32, 64 MB cada una: " +
       rotuloBytes(m.bytes) + " en total. El producto hace 2·n³ = " + rotuloOps(m.ops) +
       ", y " + rotuloOps(m.ops) + " entre " + rotuloBytes(m.bytes) + " son " + num(real) +
       " op/byte, más de " + num(Math.floor(real / base / 1000) * 1000) + " veces los " +
       num(base, 3) + " de a * 2.5 + 1.0. Sí se mueve: cada byte que cruza paga cientos " +
       "de cuentas del otro lado.";
+  }
+
+  function armarViaje() {
+    var b = PRESETS[0].bytes;
+    var real = viajeMs(b, PCIE_GBS);
+    var lista = [{ valor: num(real, 2) + " ms", clave: "correcta", razon: razonViaje() }];
+    [
+      { x: viajeMs(b / 2, PCIE_GBS), clave: "soloIda",
+        razon: "Ese es un solo trayecto, 40 MB. El arreglo va a la GPU y el resultado vuelve, " +
+          "así que por el enlace cruzan 80 MB." },
+      { x: viajeMs(b * 2, PCIE_GBS), clave: "dobleConteo",
+        razon: "Ahí se contaron 160 MB. El arreglo son 40 MB y viaja dos veces, ida y " +
+          "vuelta: 80 MB." },
+      { x: viajeMs(b, PCIE_GBS / 8), clave: "bits",
+        razon: "Eso trata los 12 GB/s como 12 Gb/s, o sea 1,5 GB/s. El enlace da cerca de " +
+          "12 gigabytes por segundo, y el arreglo se mide en bytes." }
+    ].forEach(function (o) {
+      var texto = num(o.x, 2) + " ms";
+      var repetido = lista.some(function (y) { return y.valor === texto; });
+      if (!repetido) { lista.push({ valor: texto, clave: o.clave, razon: o.razon }); }
+    });
+    return lista;
+  }
+
+  function armarOpByte() {
+    var n = 4000;
+    var real = Math.round(matmul(n, 4).opPorByte);
+    var lista = [{ valor: real, clave: "correcta", razon: razonOpByte() }];
+    [
+      { x: Math.round(2 * n * n * n / (2 * n * n * 4)), clave: "dosMatrices",
+        razon: "Ahí solo se contaron las dos matrices de entrada. La tercera, el " +
+          "resultado, también cruza el enlace: son tres matrices y 192 MB." },
+      { x: Math.round(n * n * n / (3 * n * n * 4)), clave: "sinDos",
+        razon: "Eso olvida el 2 de 2·n³: cada elemento del resultado hace n productos y " +
+          "n sumas, no solo n productos." },
+      { x: Math.round(2 * n * n * n / (3 * n * n)), clave: "porDato",
+        razon: "Esas son operaciones por dato, no por byte. Cada float32 ocupa 4 bytes, " +
+          "y la razón se mide contra lo que cruza el enlace en bytes." }
+    ].forEach(function (o) {
+      var repetido = lista.some(function (y) { return y.valor === o.x; });
+      if (!repetido) { lista.push({ valor: o.x, clave: o.clave, razon: o.razon }); }
+    });
+    return lista.map(function (o) {
+      return { valor: num(o.valor), clave: o.clave, razon: o.razon };
+    });
   }
 
   var RAZONES = {
@@ -238,21 +276,19 @@ if (typeof document !== "undefined") (function () {
   });
   document.getElementById("k").addEventListener("input", pintarEncadenadas);
 
-  // La caja A admite decimales. El .value de un input numerico trae punto
-  // decimal y Motor.leerNumero lo quita como separador de miles (6.7 -> 67),
-  // asi que aqui se lee directo y se juzga con Motor.veredictoNumerico.
-  document.getElementById("btn-comprobar-a").addEventListener("click", function () {
-    var caja = document.getElementById("veredicto-a");
-    var dicho = parseFloat(String(document.getElementById("prediccion-a").value).replace(",", "."));
-    var real = viajeMs(PRESETS[0].bytes, PCIE_GBS);
-    var v = Motor.veredictoNumerico(dicho, real);
-    caja.className = "veredicto " + (v.bien ? "bien" : "mal");
-    caja.textContent = isNaN(dicho) ? v.motivo : explicarA(v.bien, real, dicho);
+  Motor.opcionesNumericas("opciones-viaje", "veredicto-a", armarViaje);
+  document.getElementById("opciones-viaje").addEventListener("click", function () {
+    destapado.viaje = true;
+    pintarViaje();
+    pintarEncadenadas();
+    pintarBarras();
   });
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-b", boton: "btn-comprobar-b", veredicto: "veredicto-b" },
-    function () { return Math.round(matmul(4000, 4).opPorByte); },
-    explicarB);
+  Motor.opcionesNumericas("opciones-opbyte", "veredicto-b", armarOpByte);
+  document.getElementById("opciones-opbyte").addEventListener("click", function () {
+    destapado.opbyte = true;
+    pintarViaje();
+    pintarTabla();
+  });
   Motor.conectarOpciones("opciones-medir", "veredicto-medir", RAZONES);
 
   pintarViaje();

@@ -168,49 +168,70 @@ if (typeof module !== "undefined") {
     });
 
     /* --- Carta 2: postfija ---------------------------------------- */
-    document.getElementById("btn-post").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-post");
-      var valor = parseInt(document.getElementById("pred-post-valor").value, 10);
-      var prof = parseInt(document.getElementById("pred-post-prof").value, 10);
-      var r = EJERCICIO.evaluar(EJERCICIO.expresiones.principal);
-      if (valor === r.valor && prof === r.profundidad) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: 2 3 * da 6, 7 6 - da 1 y 1 4 + da 5. La pila llegó a tener tres números (7, 2 y 3) justo antes del *.";
+    /* Una opcion cuyo valor ya salio antes se descarta: nunca dos botones iguales. */
+    function unicas(lista) {
+      var vistos = [];
+      return lista.filter(function (o) {
+        var nueva = vistos.indexOf(o.valor) < 0;
+        if (nueva) { vistos.push(o.valor); }
+        return nueva;
+      });
+    }
+    /* Avisa cada vez que el estudiante acierta en el contenedor de opciones. */
+    function alAcertar(idOpciones, f) {
+      document.getElementById(idOpciones).addEventListener("click", function (e) {
+        if (e.target && e.target.getAttribute("data-op") === "correcta") { f(); }
+      });
+    }
+    var postHecho = { valor: false, prof: false };
+    function revelarTrampa() {
+      if (postHecho.valor && postHecho.prof) {
         document.getElementById("carta-trampa").style.display = "block";
-      } else if (valor === r.valor) {
-        v.className = "veredicto mal";
-        v.textContent = "El valor está bien; la profundidad no. Cuente cuántos números hay apilados justo antes de leer el *.";
-      } else if (valor === 19) {
-        v.className = "veredicto mal";
-        v.textContent = "19 sale de leerla como (7 - 2) * 3 + 4. En postfija el operador actúa sobre los dos últimos apilados: cuando llega el *, arriba están 2 y 3.";
-      } else if (valor === -1 + 4 || valor === 3) {
-        v.className = "veredicto mal";
-        v.textContent = "Revise el orden del -: el segundo que sale de la pila es el primer operando. Es 7 - 6, no 6 - 7.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "Trace la pila operador por operador: 2 3 * primero, después el -, después el +.";
       }
+    }
+    var simbolos = EJERCICIO.expresiones.principal.split(" ").length;
+    Motor.opcionesNumericas("opciones-post-valor", "veredicto-post-valor", function () {
+      var r = EJERCICIO.evaluar(EJERCICIO.expresiones.principal);
+      return unicas([
+        { valor: r.valor, clave: "correcta",
+          razon: "Correcto: 2 3 * da 6, 7 6 - da 1 y 1 4 + da " + r.valor + "." },
+        { valor: 19, clave: "izquierda",
+          razon: "19 sale de leerla como (7 - 2) * 3 + 4. En postfija el operador actúa sobre los dos últimos apilados: cuando llega el *, arriba están 2 y 3." },
+        { valor: 3, clave: "resta-invertida",
+          razon: "Revise el orden del -: el segundo que sale de la pila es el primer operando. Es 7 - 6, no 6 - 7." },
+        { valor: 1, clave: "sin-suma",
+          razon: "Ese es el resultado de 7 6 -, pero la expresión sigue: falta apilar el 4 y aplicar el +." }
+      ]);
     });
+    alAcertar("opciones-post-valor", function () { postHecho.valor = true; revelarTrampa(); });
+    Motor.opcionesNumericas("opciones-post-prof", "veredicto-post-prof", function () {
+      var r = EJERCICIO.evaluar(EJERCICIO.expresiones.principal);
+      return unicas([
+        { valor: r.profundidad, clave: "correcta",
+          razon: "Correcto: " + r.profundidad + ". La pila llegó a tener tres números (7, 2 y 3) justo antes del *." },
+        { valor: r.profundidad - 1, clave: "sin-el-7",
+          razon: "Falta uno: justo antes de leer el * la pila guarda el 7, el 2 y el 3. El 7 sigue ahí esperando a la resta." },
+        { valor: r.profundidad + 1, clave: "todos-los-numeros",
+          razon: "Esos son los cuatro números de la expresión. El 4 se apila cuando ya no queda el 2 ni el 3: la pila nunca tiene todos a la vez." },
+        { valor: simbolos, clave: "simbolos",
+          razon: "Ese es el número de símbolos de la expresión, no de la pila. Los operadores sacan elementos: el * deja uno donde había dos." }
+      ]);
+    });
+    alAcertar("opciones-post-prof", function () { postHecho.prof = true; revelarTrampa(); });
 
-    document.getElementById("btn-trampa").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-trampa");
-      var valor = parseInt(document.getElementById("pred-trampa").value, 10);
+    Motor.opcionesNumericas("opciones-trampa", "veredicto-trampa", function () {
       var r = EJERCICIO.evaluar(EJERCICIO.expresiones.trampa);
-      if (valor === r.valor) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: 8 2 / da 4 y 4 4 - da 0. El 4 que quedó abajo es el primer operando del -.";
-        logradas.postfija = true;
-        revisar();
-      } else if (valor === -4 || valor === 4) {
-        v.className = "veredicto mal";
-        v.textContent = "Cuidado con la resta: al leer el -, el tope es el resultado de 8 / 2 y debajo está el 4. Es 4 - 4.";
-      } else if (valor === 1) {
-        v.className = "veredicto mal";
-        v.textContent = "Ese es 4 / 4 o 8 / 2 - 3: el operador que llega es -, no /. Vuelva a leer la expresión de izquierda a derecha.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "Apile 4, apile 8, apile 2; con el / salen 2 y 8; con el - salen el resultado y el 4.";
-      }
+      return unicas([
+        { valor: r.valor, clave: "correcta",
+          razon: "Correcto: 8 2 / da 4 y 4 4 - da " + r.valor + ". El 4 que quedó abajo es el primer operando del -." },
+        { valor: 4, clave: "sin-resta",
+          razon: "Ese es el resultado de 8 2 /. Falta el -: al leerlo, el tope es ese 4 y debajo está el otro 4." },
+        { valor: -4, clave: "antes",
+          razon: "Cuidado con la resta: -4 sale de restar 4 - 8, antes de dividir. Al leer el -, el tope es el resultado de 8 / 2 y debajo está el 4. Es 4 - 4." },
+        { valor: 1, clave: "otro-operador",
+          razon: "Ese es 4 / 4: dividir en lugar de restar. El operador que llega es -, no /; vuelva a leer la expresión de izquierda a derecha." }
+      ]);
     });
+    alAcertar("opciones-trampa", function () { logradas.postfija = true; revisar(); });
   })();
 }

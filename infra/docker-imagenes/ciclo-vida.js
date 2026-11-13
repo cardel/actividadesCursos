@@ -107,6 +107,51 @@ var RAZONES_FORZAR = {
     "<code>docker volume rm</code>. Es justamente lo que los hace servir para una base de datos."
 };
 
+/* Quita las opciones que repiten el valor de otra, la correcta primero. */
+function sinRepetidas(lista) {
+  var vistas = {};
+  return lista.filter(function (o) {
+    var k = String(o.valor);
+    var nueva = !vistas[k];
+    vistas[k] = true;
+    return nueva;
+  });
+}
+
+/* Las opciones del tiempo del contenedor que ignora SIGTERM. */
+function opcionesSordo() {
+  var real = parada("sordo");
+  return sinRepetidas([
+    { valor: fmt(real, 3) + " s", clave: "correcta", razon: explicarSordo(true, real) },
+    { valor: fmt(PLAZO) + " s", clave: "plazo",
+      razon: "Es el plazo, y falta lo que viene después de él: al agotarse, Docker manda " +
+        "SIGKILL y recoge el proceso, y eso suma " + fmt(sobrepasoDelPlazo(), 3) + " s más." },
+    { valor: fmt(parada("web"), 3) + " s", clave: "rapido",
+      razon: "Esa es la parada de nginx, que sí atiende SIGTERM. <code>sleep</code> no " +
+        "responde a la señal, así que <code>docker stop</code> espera el plazo entero." },
+    { valor: "300 s", clave: "sleep",
+      razon: "Docker no espera a que el <code>sleep 300</code> termine: tras el plazo de " +
+        PLAZO + " s manda SIGKILL, y el contenedor cae ahí." }
+  ]);
+}
+
+/* Las opciones del tiempo de nginx, que atiende SIGTERM. */
+function opcionesWeb() {
+  var real = parada("web");
+  return sinRepetidas([
+    { valor: fmt(real, 3) + " s", clave: "correcta", razon: explicarWeb(true, real) },
+    { valor: fmt(PLAZO) + " s", clave: "plazo",
+      razon: "Eso lo tarda un proceso que ignora la señal. El plazo es un techo: nginx " +
+        "atiende SIGTERM, cierra y termina antes de llegar a él." },
+    { valor: fmt(parada("sordo2"), 3) + " s", clave: "t3",
+      razon: "Es el tiempo del tercer contenedor, que se paró con <code>-t 3</code> y ignora " +
+        "la señal: esperó sus tres segundos. nginx no necesita ese plazo." },
+    { valor: "0 s", clave: "cero",
+      razon: "Parar no es instantáneo: nginx recibe SIGTERM, cierra sus conexiones y recién " +
+        "ahí termina. Son milésimas, no cero." }
+  ]);
+}
+
 /* ---------- pintado y conexiones ---------- */
 
 function filasCiclo(hasta) {
@@ -167,13 +212,9 @@ function iniciar() {
     pintarCiclo();
   });
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-sordo", boton: "btn-sordo", veredicto: "ver-sordo" },
-    function () { return parada("sordo"); }, explicarSordo);
-  Motor.conectarPrediccion(
-    { entrada: "pred-web", boton: "btn-web", veredicto: "ver-web" },
-    function () { return parada("web"); }, explicarWeb);
-  [["btn-sordo"], ["btn-web"]].forEach(function (par) {
+  Motor.opcionesNumericas("op-sordo", "ver-sordo", opcionesSordo);
+  Motor.opcionesNumericas("op-web", "ver-web", opcionesWeb);
+  [["op-sordo"], ["op-web"]].forEach(function (par) {
     document.getElementById(par[0]).addEventListener("click", function () {
       destapado = true;
       pintarParadas();

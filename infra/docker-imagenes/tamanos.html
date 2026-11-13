@@ -18,11 +18,8 @@
     <h2>1. Reparta los 197 MB</h2>
     <p style="margin-top:0">La imagen del ejemplo mide 197 MB. Se construyó sobre
     <code>python:3.12-slim</code>, que sola mide 179 MB.</p>
-    <div class="prediccion">
-      <span>¿Qué porcentaje de la imagen es la base?</span>
-      <input type="number" id="pred-base" min="0" max="100" step="1" placeholder="%">
-      <button id="btn-base" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">¿Qué porcentaje de la imagen es la base?</p>
+    <div class="opciones" id="op-base"></div>
     <div id="ver-base" class="veredicto"></div>
     <p style="margin-bottom:0.3rem;margin-top:1rem">Lo que agrega cada instrucción propia, según
     <code>docker history</code>:</p>
@@ -59,12 +56,8 @@
     <h2>3. El mismo programa en Go, cuatro veces</h2>
     <p style="margin-top:0">Un programa que imprime una línea, empacado en cuatro imágenes
     distintas. Las cuatro imprimen exactamente lo mismo.</p>
-    <div class="prediccion">
-      <span>La más grande mide 1,27 GB y la más pequeña 2,06 MB. ¿Cuántas veces cabe la pequeña
-      en la grande?</span>
-      <input type="number" id="pred-factor" min="1" step="1" placeholder="veces">
-      <button id="btn-factor" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">La más grande mide 1,27 GB y la más pequeña 2,06 MB. ¿Cuántas veces cabe la pequeña en la grande?</p>
+    <div class="opciones" id="op-factor"></div>
     <div id="ver-factor" class="veredicto"></div>
     <div class="envoltura-tabla" style="margin-top:0.6rem">
       <table>
@@ -90,11 +83,8 @@
     <h2>4. La misma versión de Python, dos tamaños</h2>
     <p style="margin-top:0">Medidas en la máquina del curso: <code>python:3.12</code> pesa
     1,62 GB y <code>python:3.12-slim</code>, 179 MB.</p>
-    <div class="prediccion">
-      <span>¿Cuántas veces más grande es la completa?</span>
-      <input type="number" id="pred-slim" min="1" step="1" placeholder="veces">
-      <button id="btn-slim" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">¿Cuántas veces más grande es la completa?</p>
+    <div class="opciones" id="op-slim"></div>
     <div id="ver-slim" class="veredicto"></div>
     <div class="envoltura-tabla" style="margin-top:0.6rem">
       <table>

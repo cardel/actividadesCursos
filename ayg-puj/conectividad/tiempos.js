@@ -291,19 +291,27 @@ if (typeof module !== "undefined") {
       paramsIniciales: paramsActuales(), alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
+    Motor.opcionesNumericas("opciones-arboles", "veredicto", function (params) {
       var raices = EJERCICIO.raicesDelBosque(params.G);
       var n = params.G.length;
-      if (valor === raices.length) {
-        return { ok: true, msg: "Correcto: " + raices.length + ". La línea 14 se ejecuta " + raices.length + " " + (raices.length === 1 ? "vez" : "veces") + ", con " + (raices.length === 1 ? "la raíz " : "las raíces ") + raices.join(", ") + ". Cada arranque nuevo es un árbol del bosque." };
-      }
-      if (valor === n) {
-        return { ok: false, msg: "Ese es el número de vértices. El ciclo de la línea 12 los recorre todos, pero solo llama a visit cuando el vértice sigue blanco: los que ya alcanzó un arranque anterior no abren árbol." };
-      }
-      if (valor === 1) {
-        return { ok: false, msg: "Un solo árbol exige que desde el vértice 0 se alcance todo el grafo siguiendo las flechas. Mire en el dibujo si hay algún vértice al que no se llegue desde el 0." };
-      }
-      return { ok: false, msg: "No coincide. Cuente los arranques: el 0 abre el primero; después, cada vértice que quede blanco cuando el ciclo de la línea 12 llegue a él abre uno nuevo." };
+      var cand = [
+        { valor: raices.length, clave: "correcta",
+          razon: "Correcto: " + raices.length + ". La línea 14 se ejecuta " + raices.length + " " + (raices.length === 1 ? "vez" : "veces") + ", con " + (raices.length === 1 ? "la raíz " : "las raíces ") + raices.join(", ") + ". Cada arranque nuevo es un árbol del bosque." },
+        { valor: n, clave: "vertices",
+          razon: "Ese es el número de vértices. El ciclo de la línea 12 los recorre todos, pero solo llama a visit cuando el vértice sigue blanco: los que ya alcanzó un arranque anterior no abren árbol." },
+        { valor: 1, clave: "uno",
+          razon: "Un solo árbol exige que desde el vértice 0 se alcance todo el grafo siguiendo las flechas. Mire en el dibujo si hay algún vértice al que no se llegue desde el 0." },
+        { valor: raices.length + 1, clave: "demas",
+          razon: "Cuenta uno de más. Cada arranque nuevo es un árbol, y el 0 abre el primero: cuente solo los vértices que siguen blancos cuando el ciclo de la línea 12 llega a ellos." },
+        { valor: raices.length - 1, clave: "menos",
+          razon: "Cuenta uno de menos. El arranque desde el 0 también abre un árbol, el primero del bosque." }
+      ];
+      cand = cand.filter(function (o) { return o.valor >= 1; });
+      var vistos = {}, res = [];
+      cand.forEach(function (o) {
+        if (!vistos[o.valor]) { vistos[o.valor] = true; res.push(o); }
+      });
+      return res.slice(0, 4);
     });
 
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (btn) {
@@ -312,36 +320,40 @@ if (typeof module !== "undefined") {
         btn.classList.add("primario");
         presetActual = parseInt(btn.getAttribute("data-preset"), 10);
         Motor.limpiarVeredicto();
-        var v2 = document.getElementById("veredicto-ultimo");
-        v2.className = "veredicto"; v2.textContent = "";
         Motor.reiniciar(paramsActuales());
       });
     });
 
-    document.getElementById("btn-ultimo").addEventListener("click", function () {
+    Motor.opcionesNumericas("opciones-ultimo", "veredicto-ultimo", function () {
       var G = PRESETS[presetActual].G;
       var t = EJERCICIO.tiemposRef(G);
       var orden = EJERCICIO.ordenPorFinalizacion(G);
       var raices = EJERCICIO.raicesDelBosque(G);
-      var campo = document.getElementById("ultimo");
-      var v = document.getElementById("veredicto-ultimo");
-      var valor = parseInt(campo.value, 10);
       var correcto = orden[0];
-      if (isNaN(valor)) {
-        v.className = "veredicto mal"; v.textContent = "Escriba un vértice primero.";
-      } else if (valor === correcto) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: el " + correcto + ", con f = " + t.f[correcto] + ". Es la raíz del último árbol que abrió el ciclo de la línea 12, y por eso su llamada es la última en cerrar.";
-      } else if (valor < 0 || valor >= G.length) {
-        v.className = "veredicto mal"; v.textContent = "Ese vértice no está en el grafo.";
-      } else {
-        var esRaiz = false, i = 0;
-        while (i < raices.length) { if (raices[i] === valor) { esRaiz = true; } i = i + 1; }
-        v.className = "veredicto mal";
-        v.textContent = esRaiz
-          ? "El " + valor + " sí es raíz de un árbol, pero no del último: su f es " + t.f[valor] + " y el máximo es " + t.f[correcto] + ". La raíz que cierra de última es la del árbol que se abre de último."
-          : "El " + valor + " tiene f = " + t.f[valor] + ". Un vértice que no es raíz cierra dentro de la llamada que lo descubrió, y esa llamada todavía tiene que cerrar después de él.";
+      var esRaiz = function (x) { return raices.indexOf(x) >= 0; };
+      var cand = [
+        { valor: correcto, clave: "correcta",
+          razon: "Correcto: el " + correcto + ", con f = " + t.f[correcto] + ". Es la raíz del último árbol que abrió el ciclo de la línea 12, y por eso su llamada es la última en cerrar." }
+      ];
+      var otraRaiz = raices.filter(function (x) { return x !== correcto; })[0];
+      if (otraRaiz !== undefined) {
+        cand.push({ valor: otraRaiz, clave: "raiz",
+          razon: "El " + otraRaiz + " sí es raíz de un árbol, pero no del último: su f es " + t.f[otraRaiz] + " y el máximo es " + t.f[correcto] + ". La raíz que cierra de última es la del árbol que se abre de último." });
       }
+      var interior = orden.filter(function (x) { return !esRaiz(x); })[0];
+      if (interior !== undefined) {
+        cand.push({ valor: interior, clave: "interior",
+          razon: "El " + interior + " tiene f = " + t.f[interior] + ". Un vértice que no es raíz cierra dentro de la llamada que lo descubrió, y esa llamada todavía tiene que cerrar después de él." });
+      }
+      cand.push({ valor: G.length - 1, clave: "mayor",
+        razon: "El " + (G.length - 1) + " es el de número más alto, pero el número no dice nada del reloj: su f es " + t.f[G.length - 1] + " y el máximo es " + t.f[correcto] + "." });
+      cand.push({ valor: 0, clave: "cero",
+        razon: "El 0 es el primero que se descubre (d = " + t.d[0] + "), no necesariamente el último que cierra: su f es " + t.f[0] + " y el máximo es " + t.f[correcto] + "." });
+      var vistos = {}, res = [];
+      cand.forEach(function (o) {
+        if (!vistos[o.valor]) { vistos[o.valor] = true; res.push(o); }
+      });
+      return res.slice(0, 4);
     });
 
     function veredicto(id, ok, texto) {

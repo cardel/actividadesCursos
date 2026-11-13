@@ -82,54 +82,80 @@ if (typeof module !== "undefined") {
       ["}", ""]
     ]);
 
-    var logradas = { ops: false, at: false, corchetes: false, paso: false };
+    var logradas = { ops: false, opsN: false, at: false, corchetes: false, paso: false };
     function revisar() {
-      if (logradas.ops && logradas.at && logradas.corchetes && logradas.paso) {
+      if (logradas.ops && logradas.opsN && logradas.at && logradas.corchetes && logradas.paso) {
         document.getElementById("carta-cierre").style.display = "block";
       }
     }
-    function leerLista(texto) {
-      return texto.trim().split(/[\s,]+/).filter(function (x) { return x !== ""; }).map(Number);
+    function sinRepetir(lista) {
+      var vistos = {};
+      return lista.filter(function (o) {
+        var nuevo = !vistos[String(o.valor)];
+        vistos[String(o.valor)] = true;
+        return nuevo;
+      });
     }
-    function iguales(a, b) {
-      return a.length === b.length && a.every(function (x, i) { return x === b[i]; });
+    function alAcertar(id, f) {
+      document.getElementById(id).addEventListener("click", function (e) {
+        if (e.target && e.target.getAttribute && e.target.getAttribute("data-op") === "correcta") { f(); }
+      });
     }
-
     /* --- Carta 1: operaciones ------------------------------------- */
-    document.getElementById("btn-ops").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-ops");
+    function llenarTabla() {
       var r = EJERCICIO.simular(EJERCICIO.operaciones);
-      var dada = leerLista(document.getElementById("pred-ops").value);
-      var n = parseInt(document.getElementById("pred-ops-n").value, 10);
-      if (iguales(dada, r.final) && n === r.final.length) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: < 6 9 1 > con tamaño 3. El insert en la posición 1 corrió al 9; el erase de la posición 0 corrió todo a la izquierda, y v[2] ya era el 4.";
-        logradas.ops = true;
-        document.getElementById("tabla-ops").style.display = "block";
-        var cuerpo = document.getElementById("cuerpo-ops");
-        r.estados.forEach(function (e, i) {
-          var fila = document.createElement("tr");
-          var op = EJERCICIO.operaciones[i];
-          var texto = op[0] === "set" ? "v[" + op[1] + "] = " + op[2] : op[0] + "(" + op.slice(1).join(", ") + ")";
-          [texto, "< " + e.join(" ") + " >"].forEach(function (c) {
-            var td = document.createElement("td");
-            td.textContent = c;
-            fila.appendChild(td);
-          });
-          cuerpo.appendChild(fila);
+      document.getElementById("tabla-ops").style.display = "block";
+      var cuerpo = document.getElementById("cuerpo-ops");
+      cuerpo.innerHTML = "";
+      r.estados.forEach(function (e, i) {
+        var fila = document.createElement("tr");
+        var op = EJERCICIO.operaciones[i];
+        var texto = op[0] === "set" ? "v[" + op[1] + "] = " + op[2] : op[0] + "(" + op.slice(1).join(", ") + ")";
+        [texto, "< " + e.join(" ") + " >"].forEach(function (c) {
+          var td = document.createElement("td");
+          td.textContent = c;
+          fila.appendChild(td);
         });
-        revisar();
-      } else if (iguales(dada, [6, 9, 4]) || iguales(dada, [3, 6, 9, 1])) {
-        v.className = "veredicto mal";
-        v.textContent = "Revise qué posición ocupa cada elemento después del erase: al quitar la posición 0, el 4 que estaba en la 3 pasa a la 2, y v[2] = 1 lo reemplaza.";
-      } else if (iguales(dada, [3, 6, 9, 4]) || (dada.length === 4)) {
-        v.className = "veredicto mal";
-        v.textContent = "Falta aplicar el erase: erase(v.begin() + 0) quita el primer elemento, como eliminar(0).";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "Es la traza del TAD Lista con otros nombres: push_back es agregar, insert(begin + p, e) es insertar(p, e), erase(begin + p) es eliminar(p).";
-      }
+        cuerpo.appendChild(fila);
+      });
+    }
+    function formato(lista) { return "< " + lista.join(" ") + " >"; }
+    Motor.opcionesNumericas("opciones-ops", "veredicto-ops", function () {
+      var r = EJERCICIO.simular(EJERCICIO.operaciones);
+      var f = r.final;
+      return sinRepetir([
+        { valor: formato(f), clave: "correcta",
+          razon: "Correcto: " + formato(f) + ". El insert en la posición 1 corrió al 9; el erase de la posición 0 corrió todo a la izquierda, y v[2] ya era el 4." },
+        { valor: formato(r.estados[3]), clave: "sinerase",
+          razon: "Falta aplicar el erase: erase(v.begin() + 0) quita el primer elemento, como eliminar(0). Tampoco se aplicó v[2] = 1." },
+        { valor: formato(r.estados[4]), clave: "sinasignar",
+          razon: "Falta v[2] = 1. Tras el erase el 4 quedó en la posición 2, y la asignación lo reemplaza." },
+        { valor: formato(r.estados[4].concat([1])), clave: "asignaragrega",
+          razon: "v[2] = 1 no agrega un elemento: reemplaza el que ya estaba en la posición 2." }
+      ]);
     });
+    var tablaLista = false;
+    alAcertar("opciones-ops", function () {
+      logradas.ops = true;
+      if (!tablaLista) { tablaLista = true; llenarTabla(); }
+      revisar();
+    });
+
+    Motor.opcionesNumericas("opciones-ops-n", "veredicto-ops-n", function () {
+      var r = EJERCICIO.simular(EJERCICIO.operaciones);
+      var n = r.final.length;
+      return sinRepetir([
+        { valor: n, clave: "correcta",
+          razon: "Correcto: " + n + ". Cuatro altas y una baja dejan tres; la asignación v[2] = 1 cambia un valor y no el tamaño." },
+        { valor: n + 1, clave: "sinerase",
+          razon: "Falta aplicar el erase: quita un elemento y el tamaño baja en uno." },
+        { valor: EJERCICIO.operaciones.length, clave: "operaciones",
+          razon: "Esa es la cantidad de operaciones. El tamaño cuenta los elementos que quedan: solo push_back e insert suman, y erase resta." },
+        { valor: n + 2, clave: "asignacion",
+          razon: "v[2] = 1 no agrega nada: reemplaza el valor de una posición que ya existe." }
+      ]);
+    });
+    alAcertar("opciones-ops-n", function () { logradas.opsN = true; revisar(); });
 
     /* --- Cartas 2 y 3: at y corchetes ----------------------------- */
     var MENSAJES_AT = {
@@ -174,21 +200,17 @@ if (typeof module !== "undefined") {
     });
 
     /* --- Carta 4: paso por valor ---------------------------------- */
-    document.getElementById("btn-paso").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-paso");
-      var n = parseInt(document.getElementById("pred-paso").value, 10);
-      if (n === EJERCICIO.paso.tamanoTrasCopia) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: 3. Sin &, agregarCero recibió una copia completa de {2, 4, 6}, le agregó el 0 a la copia, y la copia murió al volver. Con vector<int> &v imprimiría 4.";
-        logradas.paso = true;
-        revisar();
-      } else if (n === EJERCICIO.paso.tamanoTrasReferencia) {
-        v.className = "veredicto mal";
-        v.textContent = "Sería 4 si el parámetro fuera vector<int> &v. Sin el &, la función trabaja sobre una copia.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "El vector de main tenía 3 elementos. Decida si agregarCero lo tocó o tocó una copia.";
-      }
+    Motor.opcionesNumericas("opciones-paso", "veredicto-paso", function () {
+      var p = EJERCICIO.paso;
+      return sinRepetir([
+        { valor: p.tamanoTrasCopia, clave: "correcta",
+          razon: "Correcto: 3. Sin &, agregarCero recibió una copia completa de {2, 4, 6}, le agregó el 0 a la copia, y la copia murió al volver. Con vector<int> &v imprimiría 4." },
+        { valor: p.tamanoTrasReferencia, clave: "referencia",
+          razon: "Sería 4 si el parámetro fuera vector<int> &v. Sin el &, la función trabaja sobre una copia." },
+        { valor: 1, clave: "soloCero",
+          razon: "Eso sería un vector que solo tuviera el 0 agregado. La función recibe una copia de {2, 4, 6}, y el de main no se toca." }
+      ]);
     });
+    alAcertar("opciones-paso", function () { logradas.paso = true; revisar(); });
   })();
 }

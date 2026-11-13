@@ -140,6 +140,36 @@ var RAZONES_FORMA = {
     "el <code>CMD</code>. El problema es la señal."
 };
 
+/* Quita las opciones que repiten el valor de otra, la correcta primero. */
+function sinRepetidas(lista) {
+  var vistas = {};
+  return lista.filter(function (o) {
+    var k = String(o.valor);
+    var nueva = !vistas[k];
+    vistas[k] = true;
+    return nueva;
+  });
+}
+
+/* Las opciones de capas del build: cada distractor es una cuenta que alguien hace. */
+function opcionesPasos() {
+  var real = capasDelBuild();
+  return sinRepetidas([
+    { valor: real, clave: "correcta", razon: explicarPasos(true, real, real) },
+    { valor: real - 1, clave: "ultima",
+      razon: "Casi: falta la última. El identificador que sigue a <code>---&gt;</code> en el " +
+        "paso " + real + " es la capa del <code>CMD</code>, que también cuenta, y es la de " +
+        "la imagen final: <code>Successfully built</code> repite ese identificador." },
+    { valor: real + 1, clave: "built",
+      razon: "<code>Successfully built</code> no agrega una capa: repite el identificador " +
+        "de la última. Son " + real + ", una por instrucción." },
+    { valor: real * 2, clave: "contenedores",
+      razon: "Los identificadores de <code>Running in</code> son de contenedores temporales, " +
+        "que se descartan con el <code>Removed</code>. Dejan capa solo los que quedan tras " +
+        "<code>---&gt;</code>: una por instrucción." }
+  ]);
+}
+
 /* ---------- pintado y conexiones ---------- */
 
 function filasArranque() {
@@ -189,9 +219,7 @@ function iniciar() {
   pintarOrden();
   pintarArranque();
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-pasos", boton: "btn-pasos", veredicto: "ver-pasos" },
-    capasDelBuild, explicarPasos);
+  Motor.opcionesNumericas("op-pasos", "ver-pasos", opcionesPasos);
 
   Motor.conectarOpciones("op-intermedio", "ver-intermedio", RAZONES_INTERMEDIO);
   Motor.conectarOpciones("op-expose", "ver-expose", RAZONES_EXPOSE);

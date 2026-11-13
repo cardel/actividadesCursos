@@ -48,15 +48,26 @@ if (typeof module !== "undefined") {
         caja.appendChild(linea);
       });
     }
-    function leerLista(texto) {
-      return texto.trim().split(/[\s,]+/).filter(function (x) { return x !== ""; }).map(Number);
+    /* Opciones numericas con el motor comun; avisa cuando se pulsa la correcta. */
+    function opcionesLogro(idOpciones, idVeredicto, armar, alAcertar) {
+      Motor.opcionesNumericas(idOpciones, idVeredicto, armar);
+      document.getElementById(idOpciones).addEventListener("click", function (e) {
+        var b = e.target;
+        if (b && b.getAttribute && b.getAttribute("data-op") === "correcta") { alAcertar(); }
+      });
     }
-    function iguales(a, b) {
-      return a.length === b.length && a.every(function (x, i) { return x === b[i]; });
+    /* Descarta las opciones cuyo valor ya salio: nunca dos botones iguales. */
+    function unicas(lista) {
+      var vistos = [];
+      return lista.filter(function (o) {
+        var nuevo = vistos.indexOf(o.valor) === -1;
+        if (nuevo) { vistos.push(o.valor); }
+        return nuevo;
+      });
     }
-    var logradas = { pos: false, pares: false, end: false };
+    var logradas = { posValor: false, posIndice: false, paresTxt: false, paresN: false, end: false };
     function revisar() {
-      if (logradas.pos && logradas.pares && logradas.end) {
+      if (logradas.posValor && logradas.posIndice && logradas.paresTxt && logradas.paresN && logradas.end) {
         document.getElementById("carta-cierre").style.display = "block";
       }
     }
@@ -66,26 +77,32 @@ if (typeof module !== "undefined") {
       ["vector<int>::iterator it = v.begin() + 3;", "bloque-1"],
       ["printf(\"%d %d\\n\", *it, (int) (it - v.begin()));", "bloque-2"]
     ]);
-    document.getElementById("btn-pos").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-pos");
+    opcionesLogro("opciones-pos-valor", "veredicto-pos-valor", function () {
       var r = EJERCICIO.posicion(EJERCICIO.v, 3);
-      var valor = parseInt(document.getElementById("pred-pos-valor").value, 10);
-      var indice = parseInt(document.getElementById("pred-pos-indice").value, 10);
-      if (valor === r.valor && indice === r.indice) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: 6 3. v.begin() + 3 señala la casilla 3, *it lee lo que hay ahí (6) e it - v.begin() devuelve cuántas casillas hay desde el principio (3).";
-        logradas.pos = true; revisar();
-      } else if (valor === 3 && indice === 3) {
-        ver.className = "veredicto mal";
-        ver.textContent = "*it no es el índice: es el contenido de la casilla 3. Cuente desde 0.";
-      } else if (valor === 1) {
-        ver.className = "veredicto mal";
-        ver.textContent = "begin() + 3 avanza tres casillas desde la 0: la 0 es el 4, la 1 el 8, la 2 el 1 y la 3 el 6.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "Dibuje las cinco casillas con sus índices 0 a 4 y ponga la flecha de it sobre la casilla 3.";
-      }
-    });
+      return unicas([
+        { valor: r.valor, clave: "correcta",
+          razon: "Correcto: " + r.valor + ". v.begin() + 3 señala la casilla 3 y *it lee lo que hay ahí." },
+        { valor: 3, clave: "indice",
+          razon: "*it no es el índice: es el contenido de la casilla 3. Cuente desde 0." },
+        { valor: EJERCICIO.v[2], clave: "tercero",
+          razon: "begin() + 3 avanza tres casillas desde la 0: la 0 es el " + EJERCICIO.v[0] + ", la 1 el " + EJERCICIO.v[1] + ", la 2 el " + EJERCICIO.v[2] + " y la 3 el " + EJERCICIO.v[3] + "." },
+        { valor: EJERCICIO.v[0], clave: "begin",
+          razon: "Ese es *v.begin(), sin avanzar. Aquí it ya se desplazó tres casillas." }
+      ]);
+    }, function () { logradas.posValor = true; revisar(); });
+    opcionesLogro("opciones-pos-indice", "veredicto-pos-indice", function () {
+      var r = EJERCICIO.posicion(EJERCICIO.v, 3);
+      return unicas([
+        { valor: r.indice, clave: "correcta",
+          razon: "Correcto: " + r.indice + ". it - v.begin() devuelve cuántas casillas hay desde el principio hasta it." },
+        { valor: r.indice + 1, clave: "desde-uno",
+          razon: "Esa cuenta empieza en 1. Las casillas se numeran desde 0, y begin() + 3 es la casilla 3." },
+        { valor: r.valor, clave: "contenido",
+          razon: "Eso es lo que hay en la casilla, *it. La resta de iteradores da una distancia, no un contenido." },
+        { valor: EJERCICIO.v.length, clave: "tamano",
+          razon: "Ese es el tamaño del vector, que sería it - v.begin() solo si it estuviera en end()." }
+      ]);
+    }, function () { logradas.posIndice = true; revisar(); });
 
     pintarCodigo("codigo-pares", [
       ["vector<int> v = {4, 8, 1, 6, 3};", ""],
@@ -97,26 +114,36 @@ if (typeof module !== "undefined") {
       ["  ++it;", "bloque-3"],
       ["}", ""]
     ]);
-    document.getElementById("btn-pares").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-pares");
+    opcionesLogro("opciones-pares", "veredicto-pares", function () {
+      var v = EJERCICIO.v;
+      var r = EJERCICIO.pares(v);
+      var impares = v.filter(function (x) { return x % 2 !== 0; });
+      var indicesPares = v.filter(function (x, i) { return i % 2 === 0; });
+      return unicas([
+        { valor: r.salida.join(" "), clave: "correcta",
+          razon: "Correcto: " + r.salida.join(" ") + ". El recorrido con iterador es el de índice con otros nombres: it != v.end() es p < size(), *it es v[p], ++it es p = p + 1." },
+        { valor: v.join(" "), clave: "todos",
+          razon: "Solo se imprimen los que pasan el if: los pares." },
+        { valor: impares.join(" "), clave: "impares",
+          razon: "Esos son los que el if rechaza. Se imprimen los que cumplen *it % 2 == 0, los pares." },
+        { valor: indicesPares.join(" "), clave: "posicion",
+          razon: "Esos son los elementos en posiciones pares. El if mira el valor *it, no la posición." }
+      ]);
+    }, function () { logradas.paresTxt = true; revisar(); });
+    opcionesLogro("opciones-pares-n", "veredicto-pares-n", function () {
       var r = EJERCICIO.pares(EJERCICIO.v);
-      var dada = leerLista(document.getElementById("pred-pares").value);
-      var lecturas = parseInt(document.getElementById("pred-pares-n").value, 10);
-      if (iguales(dada, r.salida) && lecturas === r.lecturas) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: 4 8 6, y *it se leyó 5 veces, una por casilla. El recorrido con iterador es el de índice con otros nombres: it != v.end() es p < size(), *it es v[p], ++it es p = p + 1.";
-        logradas.pares = true; revisar();
-      } else if (iguales(dada, r.salida)) {
-        ver.className = "veredicto mal";
-        ver.textContent = "La salida está bien. Cuente las lecturas de *it: el if lo lee en cada vuelta, sea par o no, y hay una vuelta por elemento.";
-      } else if (iguales(dada, [4, 8, 1, 6, 3])) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Solo se imprimen los que pasan el if: los pares.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "Siga el iterador casilla por casilla, del begin() al end(), y anote cuáles son pares.";
-      }
-    });
+      var n = EJERCICIO.v.length;
+      return unicas([
+        { valor: r.lecturas, clave: "correcta",
+          razon: "Correcto: " + r.lecturas + ", una por casilla. El if lee *it en cada vuelta, sea par o no, y hay una vuelta por elemento." },
+        { valor: r.salida.length, clave: "impresos",
+          razon: "Esas son las veces que se imprime, no las que se lee. El if lee *it en cada vuelta, también cuando el elemento es impar." },
+        { valor: n - r.salida.length, clave: "impares",
+          razon: "Esos son los que el if rechaza. Pero para rechazarlos hay que leerlos: se lee *it en cada casilla." },
+        { valor: n + 1, clave: "end",
+          razon: "*it nunca se lee en end(): el while se detiene antes. Se lee solo en las " + n + " casillas del vector." }
+      ]);
+    }, function () { logradas.paresN = true; revisar(); });
 
     var MENSAJES_END = {
       si: null,

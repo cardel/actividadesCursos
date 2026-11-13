@@ -47,18 +47,11 @@
       <div class="linea bloque-2"><span class="num">$</span><span class="txt">docker run -d --name sordo alpine:3.20 sleep 300 ; time docker stop sordo</span></div>
       <div class="linea bloque-3"><span class="num">$</span><span class="txt">docker run -d --name sordo2 alpine:3.20 sleep 300 ; time docker stop -t 3 sordo2</span></div>
     </div>
-    <div class="prediccion">
-      <span>El proceso <code>sleep 300</code> no atiende SIGTERM. ¿Cuántos segundos tarda su
-      <code>docker stop</code>?</span>
-      <input type="number" id="pred-sordo" min="0" step="0.1" placeholder="segundos">
-      <button id="btn-sordo" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">El proceso <code>sleep 300</code> no atiende SIGTERM. ¿Cuántos segundos tarda su <code>docker stop</code>?</p>
+    <div class="opciones" id="op-sordo"></div>
     <div id="ver-sordo" class="veredicto"></div>
-    <div class="prediccion">
-      <span>Y <code>nginx</code>, que sí la atiende, ¿cuánto tarda?</span>
-      <input type="number" id="pred-web" min="0" step="0.01" placeholder="segundos">
-      <button id="btn-web" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">Y <code>nginx</code>, que sí la atiende, ¿cuánto tarda?</p>
+    <div class="opciones" id="op-web"></div>
     <div id="ver-web" class="veredicto"></div>
     <div class="envoltura-tabla" style="margin-top:0.6rem">
       <table>

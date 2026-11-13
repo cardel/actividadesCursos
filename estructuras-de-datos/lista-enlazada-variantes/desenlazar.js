@@ -159,9 +159,24 @@ if (typeof module !== "undefined") {
     function iguales(a, b) {
       return a.length === b.length && a.every(function (x, i) { return x === b[i]; });
     }
-    var logradas = { uno: false, cabeza: false, primerif: false, simple: false };
+    function unicas(lista) {
+      var vistos = {};
+      return lista.filter(function (o) {
+        var ya = vistos[String(o.valor)] === true;
+        vistos[String(o.valor)] = true;
+        return !ya;
+      });
+    }
+    function alAcertar(idCaja, idVer, f) {
+      document.getElementById(idCaja).addEventListener("click", function () {
+        if (document.getElementById(idVer).className.indexOf("bien") >= 0) { f(); }
+      });
+    }
+    var logradas = { uno: false, cabeza: false, primerif: false, simple: false,
+                     escUno: false, escTres: false };
     function revisar() {
-      if (logradas.uno && logradas.cabeza && logradas.primerif && logradas.simple) {
+      if (logradas.uno && logradas.cabeza && logradas.primerif && logradas.simple &&
+          logradas.escUno && logradas.escTres) {
         document.getElementById("carta-cierre").style.display = "block";
       }
     }
@@ -170,22 +185,51 @@ if (typeof module !== "undefined") {
     var TRES = EJERCICIO.traza(EJERCICIO.lista, 3);
     var LINEAS_VISTA = pintarCodigo("codigo-desenlazar", EJERCICIO.lineas);
 
+    Motor.opcionesNumericas("opciones-escrituras-uno", "veredicto-escrituras-uno",
+      function () {
+        var E = UNO.escrituras;
+        return unicas([
+          { valor: E, clave: "correcta",
+            razon: "Correcto: " + E + ". El nodo del 1 tiene vecinos por los dos lados, así que " +
+              "se ejecutan las dos ramas else: " + UNO.escritos.join(" y ") + "." },
+          { valor: 4, clave: "cuatro",
+            razon: "El código tiene cuatro líneas de asignación, pero cada if ejecuta una sola de sus dos ramas: son dos escrituras, no cuatro." },
+          { valor: 1, clave: "una",
+            razon: "Con una sola escritura la cadena queda mal por un lado: el 9 llegaría al 6 hacia adelante, y el 6 seguiría apuntando al 1 hacia atrás." },
+          { valor: 3, clave: "tres",
+            razon: "Hay dos if y cada uno ejecuta una sola rama: no hay una tercera escritura que contar." }
+        ]);
+      });
+    alAcertar("opciones-escrituras-uno", "veredicto-escrituras-uno", function () {
+      logradas.escUno = true; revisar();
+    });
+    Motor.opcionesNumericas("opciones-escrituras-tres", "veredicto-escrituras-tres",
+      function () {
+        var E = TRES.escrituras;
+        return unicas([
+          { valor: E, clave: "correcta",
+            razon: "Correcto: " + E + ". Se escriben " + TRES.escritos.join(" y ") +
+              ": el 3 no tiene anterior, así que la lista entera cambia de principio." },
+          { valor: 1, clave: "una",
+            razon: "Siguen siendo dos: el primer if mueve cabeza y el segundo deja el anterior del 9 en NULL, que es lo que lo convierte en primero." },
+          { valor: 4, clave: "cuatro",
+            razon: "Cada if ejecuta una sola de sus dos ramas: aunque el código tenga cuatro asignaciones, se ejecutan dos." },
+          { valor: 0, clave: "ninguna",
+            razon: "Sacar el primer nodo sí escribe punteros: cabeza deja de señalar al 3, y el 9 deja de apuntar hacia atrás a un nodo que ya no está." }
+        ]);
+      });
+    alAcertar("opciones-escrituras-tres", "veredicto-escrituras-tres", function () {
+      logradas.escTres = true; revisar();
+    });
+
     document.getElementById("btn-uno").addEventListener("click", function () {
       var ver = document.getElementById("veredicto-uno");
-      var e = parseInt(document.getElementById("pred-escrituras").value, 10);
       var c = leerLista(document.getElementById("pred-cadena").value);
-      if (e === UNO.escrituras && iguales(c, UNO.cadena)) {
+      if (iguales(c, UNO.cadena)) {
         ver.className = "veredicto bien";
-        ver.textContent = "Correcto: " + UNO.escrituras + " escrituras y la cadena " +
-          UNO.cadena.join(" ") + ". El nodo del 1 tiene vecinos por los dos lados, así que " +
-          "se ejecutan las dos ramas else: " + UNO.escritos.join(" y ") + ".";
+        ver.textContent = "Correcto: la cadena " +
+          UNO.cadena.join(" ") + ". El nodo del 1 sale de la cadena: las dos escrituras dejan al 9 y al 6 apuntándose entre sí.";
         logradas.uno = true; revisar();
-      } else if (e === 4) {
-        ver.className = "veredicto mal";
-        ver.textContent = "El código tiene cuatro líneas de asignación, pero cada if ejecuta una sola de sus dos ramas: son dos escrituras, no cuatro.";
-      } else if (e === 1) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Con una sola escritura la cadena queda mal por un lado: el 9 llegaría al 6 hacia adelante, y el 6 seguiría apuntando al 1 hacia atrás.";
       } else if (iguales(c, [3, 9, 1, 6])) {
         ver.className = "veredicto mal";
         ver.textContent = "El nodo del 1 sale de la cadena: nadie lo apunta después de las dos escrituras. Siga la traza de abajo.";
@@ -267,17 +311,12 @@ if (typeof module !== "undefined") {
 
     document.getElementById("btn-cabeza").addEventListener("click", function () {
       var ver = document.getElementById("veredicto-cabeza");
-      var e = parseInt(document.getElementById("pred-escrituras-3").value, 10);
       var c = leerLista(document.getElementById("pred-cadena-3").value);
-      if (e === TRES.escrituras && iguales(c, TRES.cadena)) {
+      if (iguales(c, TRES.cadena)) {
         ver.className = "veredicto bien";
-        ver.textContent = "Correcto: " + TRES.escrituras + " escrituras y la cadena " +
-          TRES.cadena.join(" ") + ". Se escriben " + TRES.escritos.join(" y ") +
-          ": el 3 no tiene anterior, así que la lista entera cambia de principio.";
+        ver.textContent = "Correcto: la cadena " +
+          TRES.cadena.join(" ") + ". La lista entera cambia de principio: cabeza señala al 9.";
         logradas.cabeza = true; revisar();
-      } else if (e === 1) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Siguen siendo dos: el primer if mueve cabeza y el segundo deja el anterior del 9 en NULL, que es lo que lo convierte en primero.";
       } else if (iguales(c, [3, 9, 1, 6])) {
         ver.className = "veredicto mal";
         ver.textContent = "El 3 sale de la cadena y cabeza pasa a señalar el 9: la cadena desde cabeza ya no empieza en 3.";

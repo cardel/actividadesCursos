@@ -399,18 +399,37 @@ if (typeof document !== "undefined") (function () {
     k = 0; pintarEtapas();
   });
 
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-factor", boton: "btn-comprobar-factor",
-      veredicto: "veredicto-factor" },
-    function () { return factor("queue"); },
-    function (bien, real, dicho) {
-      destapado = true;
-      pintarTiempos();
-      pintarColumnas();
-      pintarSegundos();
-      pintarEtapas();
-      return explicarFactor(bien, real, dicho);
-    });
+  Motor.opcionesNumericas("opciones-factor", "veredicto-factor", function () {
+    var num = Motor.num;
+    var q = mecanismo("queue"), p = mecanismo("pipe");
+    var real = factor("queue");
+    return [
+      { valor: num(real, 1), clave: "correcta",
+        razon: "Sí: " + num(real, 1) + " veces. La Queue costó " + seg(q.s) + " y la memoria " +
+          "compartida " + seg(BASE) + ", así que el cociente es " + num(real, 1) + ", que " +
+          "redondeado son 17 veces. Cada dato se empaqueta con pickle en el productor y se " +
+          "desempaqueta en el consumidor, y ese trabajo desaparece cuando los dos procesos " +
+          "escriben y leen el mismo bloque de memoria. El Pipe costó " + seg(p.s) + ", " +
+          num(factor("pipe"), 1) + " veces: los dos mecanismos que serializan quedan entre 14 " +
+          "y 17 veces por encima del Array." },
+      { valor: num(factor("pipe"), 1), clave: "pipe",
+        razon: "Ese es el cociente del Pipe, " + seg(p.s) + " contra " + seg(BASE) + ". La " +
+          "pregunta es por la Queue, que costó " + seg(q.s) + "." },
+      { valor: num(q.s, 1), clave: "segundos",
+        razon: "Eso es lo que tardó la Queue en segundos. Las veces son el cociente contra los " +
+          seg(BASE) + " de la memoria compartida: " + seg(q.s) + " / " + seg(BASE) + "." },
+      { valor: num(BASE / q.s, 1), clave: "alreves",
+        razon: "Ese es el cociente al revés. La Queue es la que tarda más, así que lo que " +
+          "pasa de uno es " + seg(q.s) + " entre " + seg(BASE) + "." }
+    ];
+  });
+  document.getElementById("opciones-factor").addEventListener("click", function () {
+    destapado = true;
+    pintarTiempos();
+    pintarColumnas();
+    pintarSegundos();
+    pintarEtapas();
+  });
 
   SITUACIONES.forEach(function (s) {
     document.getElementById("sit-" + s.n).textContent = s.texto;

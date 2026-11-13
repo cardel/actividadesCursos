@@ -296,7 +296,7 @@ if (typeof module !== "undefined") {
 
     function arrancar(reiniciarSolo) {
       if (reiniciarSolo) { Motor.reiniciar(paramsActuales()); return; }
-      var ids = ["btn-paso", "btn-auto", "btn-fin", "btn-reiniciar", "btn-comprobar"];
+      var ids = ["btn-paso", "btn-auto", "btn-fin", "btn-reiniciar"];
       var t = 0;
       while (t < ids.length) {
         var b = document.getElementById(ids[t]);
@@ -309,19 +309,26 @@ if (typeof module !== "undefined") {
         chips: [{ campo: "u", rotulo: "u" }, { campo: "v", rotulo: "v" }, { campo: "reloj", rotulo: "reloj" }],
         paramsIniciales: paramsActuales(), alPintar: alPintar
       });
-      Motor.prediccionNumerica(evaluar);
       Motor.limpiarVeredicto();
     }
 
-    function evaluar(valor, params) {
+    function sinRepetir(lista) {
+      var vistos = {}, res = [];
+      lista.forEach(function (o) {
+        if (!vistos[o.valor]) { vistos[o.valor] = true; res.push(o); }
+      });
+      return res.slice(0, 4);
+    }
+
+    function armarOpciones(params) {
       var alc = EJERCICIO.alcanzables(params.G, params.inicio);
       var m = EJERCICIO.marcas(params.G, params.inicio);
-      if (valor === m.reloj) {
-        return { ok: true, msg: "Correcto: el reloj termina en " + m.reloj + ". Se alcanzan " + alc + " vértices desde el " + params.inicio + " y cada uno recibe dos marcas, la de entrada y la de salida: el reloj avanza exactamente dos veces por vértice visitado." };
-      }
-      if (valor === alc) { return { ok: false, msg: "Ese es el número de vértices que se visitan. Cada uno hace avanzar el reloj dos veces, no una: una al pintarse de gris y otra al pintarse de negro." }; }
-      if (valor === params.G.length * 2) { return { ok: false, msg: "Esa sería la cuenta si se visitaran los " + params.G.length + " vértices, pero desde el " + params.inicio + " solo se alcanzan " + alc + ". El resto se queda blanco y sin marcas." }; }
-      return { ok: false, msg: "No coincide. Cuente cuántos vértices se alcanzan desde el " + params.inicio + " y multiplique por dos: cada visita gasta un instante al abrir y otro al cerrar." };
+      return sinRepetir([
+        { valor: m.reloj, clave: "correcta", razon: "Correcto: el reloj termina en " + m.reloj + ". Se alcanzan " + alc + " vértices desde el " + params.inicio + " y cada uno recibe dos marcas, la de entrada y la de salida: el reloj avanza exactamente dos veces por vértice visitado." },
+        { valor: alc, clave: "visitados", razon: "Ese es el número de vértices que se visitan. Cada uno hace avanzar el reloj dos veces, no una: una al pintarse de gris y otra al pintarse de negro." },
+        { valor: params.G.length * 2, clave: "todos", razon: "Esa sería la cuenta si se visitaran los " + params.G.length + " vértices, pero desde el " + params.inicio + " solo se alcanzan " + alc + ". El resto se queda blanco y sin marcas." },
+        { valor: alc * 2 - 1, clave: "uno-menos", razon: "Un instante de menos: el último vértice en cerrarse también gasta su instante de salida, y esa marca cuenta." }
+      ]);
     }
 
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (btn) {
@@ -376,5 +383,6 @@ if (typeof module !== "undefined") {
 
     document.getElementById("nota-grafo").textContent = PRESETS[0].nota;
     arrancar(false);
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto", armarOpciones);
   })();
 }

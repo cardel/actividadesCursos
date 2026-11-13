@@ -118,14 +118,13 @@
     <p class="aviso-espera">Se abre al terminar las preguntas.</p>
     <div class="cuerpo">
       <p style="margin-top:0">Otro tablero y otras criaturas. Las casillas se pueden tocar para ir marcando, y esas marcas
-      son solo suyas: el tablero no las corrige. Escriba la menor cantidad de pasos de E a S, o −1 si no se puede.</p>
+      son solo suyas: el tablero no las corrige. Escoja la menor cantidad de pasos de E a S, o −1 si no se puede.</p>
       <div class="presets" id="cierres"></div>
       <div class="lectura" id="cierre-datos" style="margin-top:0.6rem"></div>
       <div id="cierre-tablero"></div>
+      <div><b>¿Cuántos pasos hay de E a S? (−1 si no se puede)</b></div>
+      <div class="opciones" id="opciones-cierre"></div>
       <div class="prediccion">
-        <label for="cierre-valor">Pasos:</label>
-        <input type="number" id="cierre-valor" placeholder="su número">
-        <button type="button" id="cierre-comprobar" class="primario">Comprobar</button>
         <button type="button" id="cierre-solucion">Ver la solución</button>
       </div>
       <div class="veredicto" id="cierre-veredicto"></div>
@@ -133,6 +132,7 @@
   </div>
 </div>
 <script src="../comun/planteo.js"></script>
+<script src="../../comun/motor.js"></script>
 <script src="zonas.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

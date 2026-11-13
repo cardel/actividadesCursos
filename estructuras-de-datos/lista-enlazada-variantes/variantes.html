@@ -77,18 +77,18 @@
     número de asignaciones de puntero. Cuente las que ejecuta cada una, contando
     la que mueve <code>cabeza</code> y la que deja un campo en
     <code>NULL</code>.</p>
-    <div class="prediccion">
-      <span>simple:</span>
-      <input type="number" id="pred-simple" placeholder="?">
-      <span>doble:</span>
-      <input type="number" id="pred-doble" placeholder="?">
-      <span>circular:</span>
-      <input type="number" id="pred-circular" placeholder="?">
-      <span>lado corto:</span>
-      <input type="number" id="pred-corto" placeholder="?">
-      <button id="btn-escrituras" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-escrituras" class="veredicto"></div>
+    <div><b>Enlazada simple</b></div>
+    <div class="opciones" id="opciones-esc-simple"></div>
+    <div id="veredicto-esc-simple" class="veredicto"></div>
+    <div><b>Doblemente enlazada</b></div>
+    <div class="opciones" id="opciones-esc-doble"></div>
+    <div id="veredicto-esc-doble" class="veredicto"></div>
+    <div><b>Circular doble</b></div>
+    <div class="opciones" id="opciones-esc-circular"></div>
+    <div id="veredicto-esc-circular" class="veredicto"></div>
+    <div><b>Circular, por el lado corto</b></div>
+    <div class="opciones" id="opciones-esc-corto"></div>
+    <div id="veredicto-esc-corto" class="veredicto"></div>
     <div id="detalle-escrituras" style="display:none">
       <div class="envoltura-tabla">
         <table>
@@ -110,6 +110,7 @@
     se escoge por las operaciones que el programa repite.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="variantes.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

@@ -70,81 +70,109 @@ if (typeof module !== "undefined") {
       ver.className = "veredicto " + (bien ? "bien" : "mal");
       ver.textContent = texto;
     }
-    function valor(id) {
-      return parseInt(document.getElementById(id).value, 10);
-    }
-    var logradas = { ordenado: false, reves: false, balanceado: false, profundidad: false };
+    var logradas = { ordenado: false, reves: false, balanceado: false, profundidad: false,
+                     profOrdenado: false, profBalanceado: false };
     function revisar() {
+      logradas.profundidad = logradas.profOrdenado && logradas.profBalanceado;
       if (logradas.ordenado && logradas.reves && logradas.balanceado && logradas.profundidad) {
         document.getElementById("carta-cierre").style.display = "block";
       }
     }
 
-    document.getElementById("btn-ordenado").addEventListener("click", function () {
-      var d = valor("pred-ordenado");
+    /* Anota el acierto: el boton de la correcta lleva data-op="correcta". */
+    function alAcertar(idOpciones, clave) {
+      document.getElementById(idOpciones).addEventListener("click", function (e) {
+        var t = e.target;
+        if (t && t.getAttribute && t.getAttribute("data-op") === "correcta") {
+          logradas[clave] = true; revisar();
+        }
+      });
+    }
+    /* Deja la correcta y los distractores con valores distintos, hasta cuatro. */
+    function sinRepetir(lista) {
+      var salida = [];
+      lista.forEach(function (o) {
+        var repetido = false;
+        salida.forEach(function (x) { if (x.valor === o.valor) { repetido = true; } });
+        if (!repetido && salida.length < 4) { salida.push(o); }
+      });
+      return salida;
+    }
+
+    Motor.opcionesNumericas("opciones-ordenado", "veredicto-ordenado", function () {
       var c = R.ordenado.comparaciones;
-      if (d === c) {
-        decir("veredicto-ordenado", true, "Correcto: " + c + " = 5 + 4 + 3 + 2 + 1. El pivote es siempre el mayor de su rango, la izquierda pierde un solo elemento por llamada y cada partición compara todos los demás: 6 · 5 / 2.");
-        logradas.ordenado = true; revisar();
-      } else if (d === 5) {
-        decir("veredicto-ordenado", false, "Esas son las de la primera partición. Después queda a[0..4], todavía ordenado, y se vuelve a partir.");
-      } else if (d === 36 || d === 30) {
-        decir("veredicto-ordenado", false, "Es cuadrático, pero no n² ni n(n − 1): las particiones van encogiendo, con 5, 4, 3, 2 y 1 comparaciones.");
-      } else if (d === 6 * 5 / 2 - 5 || d === 21) {
-        decir("veredicto-ordenado", false, "Cuente una comparación por vuelta: un rango de m elementos da m − 1 vueltas.");
-      } else {
-        decir("veredicto-ordenado", false, "Siga la primera partición: ¿dónde queda el 17 y qué rango le queda a la llamada siguiente?");
-      }
+      return sinRepetir([
+        { valor: c, clave: "correcta",
+          razon: "Correcto: " + c + " = 5 + 4 + 3 + 2 + 1. El pivote es siempre el mayor de su rango, la izquierda pierde un solo elemento por llamada y cada partición compara todos los demás: 6 · 5 / 2." },
+        { valor: 5, clave: "primera",
+          razon: "Esas son las de la primera partición. Después queda a[0..4], todavía ordenado, y se vuelve a partir." },
+        { valor: 36, clave: "cuadrado",
+          razon: "Es cuadrático, pero no n²: las particiones van encogiendo, con 5, 4, 3, 2 y 1 comparaciones." },
+        { valor: 30, clave: "ene-menos-uno",
+          razon: "Es cuadrático, pero no n(n − 1): las particiones van encogiendo, con 5, 4, 3, 2 y 1 comparaciones." }
+      ]);
     });
+    alAcertar("opciones-ordenado", "ordenado");
 
-    document.getElementById("btn-reves").addEventListener("click", function () {
-      var d = valor("pred-reves");
+    Motor.opcionesNumericas("opciones-reves", "veredicto-reves", function () {
       var c = R.reves.comparaciones;
-      if (d === c) {
-        decir("veredicto-reves", true, "Correcto: " + c + ", las mismas del ordenado. El primer pivote es el 2, el mínimo: queda en la casilla 0 y la derecha se lleva cinco elementos. Esos cinco ya no vienen al revés, pero en cada llamada el último vuelve a ser el menor o el mayor de su rango, y cada partición quita uno solo.");
-        logradas.reves = true; revisar();
-      } else if (d === 5) {
-        decir("veredicto-reves", false, "Esa es solo la primera partición, que deja el 2 en la casilla 0. La derecha tiene cinco elementos y hay que seguirla.");
-      } else if (d < c) {
-        decir("veredicto-reves", false, "Al revés no ayuda: el primer pivote es el mínimo y la partición sale igual de desbalanceada que con el máximo. Siga la llamada sobre a[1..5].");
-      } else {
-        decir("veredicto-reves", false, "Use el paso a paso de abajo con la entrada al revés y mire dónde queda cada q.");
-      }
+      return sinRepetir([
+        { valor: c, clave: "correcta",
+          razon: "Correcto: " + c + ", las mismas del ordenado. El primer pivote es el 2, el mínimo: queda en la casilla 0 y la derecha se lleva cinco elementos. Esos cinco ya no vienen al revés, pero en cada llamada el último vuelve a ser el menor o el mayor de su rango, y cada partición quita uno solo." },
+        { valor: 5, clave: "primera",
+          razon: "Esa es solo la primera partición, que deja el 2 en la casilla 0. La derecha tiene cinco elementos y hay que seguirla." },
+        { valor: 36, clave: "cuadrado",
+          razon: "Es cuadrático, pero no n²: el primer pivote es el mínimo, queda en la casilla 0 y la partición siguiente ya tiene un elemento menos." },
+        { valor: 30, clave: "ene-menos-uno",
+          razon: "Eso sería n(n − 1), seis particiones de cinco comparaciones. Al revés no ayuda ni estorba más: cada partición ve un elemento menos, con 5, 4, 3, 2 y 1 comparaciones." }
+      ]);
     });
+    alAcertar("opciones-reves", "reves");
 
-    document.getElementById("btn-balanceado").addEventListener("click", function () {
-      var d = valor("pred-balanceado");
+    Motor.opcionesNumericas("opciones-balanceado", "veredicto-balanceado", function () {
       var c = R.balanceado.comparaciones;
-      if (d === c) {
-        decir("veredicto-balanceado", true, "Correcto: " + c + ". El 11 es la mediana y deja tres de cada lado: 6 comparaciones. Cada lado vuelve a tener la mediana al final, el 5 a la izquierda y el 17 a la derecha, con 2 comparaciones cada uno. Los rangos de un elemento no comparan.");
-        logradas.balanceado = true; revisar();
-      } else if (d === 21) {
-        decir("veredicto-balanceado", false, "21 es lo que costaría con siete elementos si cada pivote fuera un extremo. Mire dónde queda el 11.");
-      } else if (d === 6) {
-        decir("veredicto-balanceado", false, "Esa es la primera partición. Quedan dos rangos de tres elementos, y cada uno se parte.");
-      } else if (d === 12 || d === 14) {
-        decir("veredicto-balanceado", false, "Un rango de tres elementos da dos vueltas, no tres ni cuatro: compara todos menos el pivote.");
-      } else {
-        decir("veredicto-balanceado", false, "Primera partición: 6 comparaciones. ¿Qué queda a cada lado del 11 y quién es el último de cada lado?");
-      }
+      return sinRepetir([
+        { valor: c, clave: "correcta",
+          razon: "Correcto: " + c + ". El 11 es la mediana y deja tres de cada lado: 6 comparaciones. Cada lado vuelve a tener la mediana al final, el 5 a la izquierda y el 17 a la derecha, con 2 comparaciones cada uno. Los rangos de un elemento no comparan." },
+        { valor: 21, clave: "extremos",
+          razon: "21 es lo que costaría con siete elementos si cada pivote fuera un extremo. Mire dónde queda el 11." },
+        { valor: 6, clave: "primera",
+          razon: "Esa es la primera partición. Quedan dos rangos de tres elementos, y cada uno se parte." },
+        { valor: 12, clave: "tres-vueltas",
+          razon: "Un rango de tres elementos da dos vueltas, no tres: compara todos menos el pivote." }
+      ]);
     });
+    alAcertar("opciones-balanceado", "balanceado");
 
-    document.getElementById("btn-profundidad").addEventListener("click", function () {
-      var po = valor("pred-prof-ordenado");
-      var pb = valor("pred-prof-balanceado");
-      var eo = R.ordenado.profundidad;
-      var eb = R.balanceado.profundidad;
-      if (po === eo && pb === eb) {
-        decir("veredicto-profundidad", true, "Correcto: " + eo + " y " + eb + ". Con el ordenado cada llamada abre otra con un elemento menos, de a[0..5] hasta a[0..0]: seis registros en la pila a la vez, uno por elemento. Con el balanceado, 7 → 3 → 1: tres niveles, ⌈log₂(7 + 1)⌉. Es el espacio aparte de quicksort, Θ(n) en el peor caso y Θ(log n) en el balanceado.");
-        logradas.profundidad = true; revisar();
-      } else if (po === eo - 1 || pb === eb - 1) {
-        decir("veredicto-profundidad", false, "Cuente también la llamada del último nivel, la de rango vacío o de un elemento: abre su registro aunque no entre al if.");
-      } else if (po === R.ordenado.llamadas.length + 1 && pb === R.balanceado.llamadas.length + 1) {
-        decir("veredicto-profundidad", false, "Eso cuenta llamadas en total, no las que están abiertas al mismo tiempo. Cuando una llamada termina, su registro sale de la pila.");
-      } else {
-        decir("veredicto-profundidad", false, "Siga la cadena más larga de llamadas anidadas: cada una espera a que termine la que abrió.");
-      }
+    Motor.opcionesNumericas("opciones-prof-ordenado", "veredicto-prof-ordenado", function () {
+      var e = R.ordenado.profundidad;
+      return sinRepetir([
+        { valor: e, clave: "correcta",
+          razon: "Correcto: " + e + ". Con el ordenado cada llamada abre otra con un elemento menos, de a[0..5] hasta a[0..0]: seis registros en la pila a la vez, uno por elemento. Es el espacio aparte de quicksort, Θ(n) en el peor caso." },
+        { valor: e - 1, clave: "sin-ultimo",
+          razon: "Cuente también la llamada del último nivel, la de rango vacío o de un elemento: abre su registro aunque no entre al if." },
+        { valor: 2 * R.ordenado.llamadas.length + 1, clave: "total",
+          razon: "Eso cuenta llamadas en total, no las que están abiertas al mismo tiempo. Cuando una llamada termina, su registro sale de la pila." },
+        { valor: e + 1, clave: "de-mas",
+          razon: "Sobra una: la cadena más larga llega al nivel 6, con a[0..0]; la llamada de rango vacío a[2..1] está en ese mismo nivel, no un nivel más abajo." }
+      ]);
     });
+    alAcertar("opciones-prof-ordenado", "profOrdenado");
+
+    Motor.opcionesNumericas("opciones-prof-balanceado", "veredicto-prof-balanceado", function () {
+      var e = R.balanceado.profundidad;
+      return sinRepetir([
+        { valor: e, clave: "correcta",
+          razon: "Correcto: " + e + ". Con el balanceado, 7 → 3 → 1: tres niveles, ⌈log₂(7 + 1)⌉. Es el espacio aparte de quicksort, Θ(log n) en el caso balanceado." },
+        { valor: e - 1, clave: "sin-ultimo",
+          razon: "Cuente también la llamada del último nivel, la de rango vacío o de un elemento: abre su registro aunque no entre al if." },
+        { valor: 2 * R.balanceado.llamadas.length + 1, clave: "total",
+          razon: "Eso cuenta llamadas en total, no las que están abiertas al mismo tiempo. Cuando una llamada termina, su registro sale de la pila." },
+        { valor: E.balanceado.length, clave: "elementos",
+          razon: "Ese es el número de elementos. Aquí cada llamada parte el rango por la mitad, así que la cadena de llamadas anidadas es mucho más corta que n." }
+      ]);
+    });
+    alAcertar("opciones-prof-balanceado", "profBalanceado");
 
     var vista = { entrada: "balanceado", k: 0 };
     function pintarTabla() {

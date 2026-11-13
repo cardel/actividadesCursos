@@ -240,17 +240,31 @@ if (typeof module !== "undefined") {
       paramsIniciales: paramsActuales(), alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
+    function sinRepetir(lista) {
+      var vistos = {}, res = [];
+      lista.forEach(function (o) {
+        if (!vistos[o.valor]) { vistos[o.valor] = true; res.push(o); }
+      });
+      return res.slice(0, 4);
+    }
+
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto", function (params) {
       var o = EJERCICIO.orden(params.G);
       var n = params.G.length;
-      if (valor === o.length) {
-        if (o.length === n) {
-          return { ok: true, msg: "Correcto: salen los " + n + ". El proyecto no tiene dependencias circulares, así que hay un orden de compilación; de hecho hay 1710 órdenes distintos, y el algoritmo devuelve uno de ellos." };
-        }
-        return { ok: true, msg: "Correcto: solo " + o.length + " (" + o.map(function (w) { return EJERCICIO.NOMBRES[w]; }).join(", ") + "). La flecha de más cierra el ciclo config → datos → modelo → api → ui → app → config, y ningún módulo del ciclo llega a contador 0; tampoco los que dependen de ellos." };
-      }
-      if (valor === n) { return { ok: false, msg: "Saldrían los " + n + " solo si no hubiera ciclos. Siga la flecha roja de app hacia config y verá que config espera por algo que espera por config." }; }
-      return { ok: false, msg: "No coincide. Arranque por los módulos con contador 0 y vaya restando; cuando ningún contador quede en 0, la cola se vacía. Cuente los que alcanzaron a salir." };
+      var entrada = [], i, j, fuentes = 0;
+      for (i = 0; i < n; i = i + 1) { entrada.push(0); }
+      for (i = 0; i < n; i = i + 1) { for (j = 0; j < params.G[i].length; j = j + 1) { entrada[params.G[i][j]] = entrada[params.G[i][j]] + 1; } }
+      for (i = 0; i < n; i = i + 1) { if (entrada[i] === 0) { fuentes = fuentes + 1; } }
+      var buena = o.length === n
+        ? "Correcto: salen los " + n + ". El proyecto no tiene dependencias circulares, así que hay un orden de compilación; de hecho hay 1710 órdenes distintos, y el algoritmo devuelve uno de ellos."
+        : "Correcto: solo " + o.length + " (" + o.map(function (w) { return EJERCICIO.NOMBRES[w]; }).join(", ") + "). La flecha de más cierra el ciclo config → datos → modelo → api → ui → app → config, y ningún módulo del ciclo llega a contador 0; tampoco los que dependen de ellos.";
+      return sinRepetir([
+        { valor: o.length, clave: "correcta", razon: buena },
+        { valor: n, clave: "total", razon: "Saldrían los " + n + " solo si no hubiera ciclos. Siga la flecha roja de app hacia config y verá que config espera por algo que espera por config." },
+        { valor: n - o.length, clave: "quedan", razon: "Ese es el número de módulos que se quedan sin salir, no los que salieron. Cuente los que alcanzaron a entrar al orden." },
+        { valor: n - 1, clave: "uno-menos", razon: "Un módulo de menos que el total. Cuando algo se queda por fuera es porque está en un ciclo o depende de uno, y entonces son varios; si no hay ciclos, no se queda ninguno." },
+        { valor: fuentes, clave: "fuentes", razon: "Esos son los módulos que arrancan en la cola, los de contador 0. De ahí en adelante siguen saliendo todos los que van quedando libres, y son más." }
+      ].filter(function (o) { return o.valor > 0; }));
     });
 
     function veredicto(id, ok, texto) {

@@ -63,14 +63,12 @@
     <h2>4. Los nodos que se piden y se devuelven</h2>
     <p style="margin-top:0">En las seis llamadas, ¿cuántas veces se ejecuta
     <code>new Nodo</code> y cuántas <code>delete</code>?</p>
-    <div class="prediccion">
-      <span><code>new</code>:</span>
-      <input type="number" id="pred-new" placeholder="?">
-      <span><code>delete</code>:</span>
-      <input type="number" id="pred-delete" placeholder="?">
-      <button id="btn-nodos" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-nodos" class="veredicto"></div>
+    <p><code>new Nodo</code>:</p>
+    <div class="opciones" id="opciones-new"></div>
+    <div id="veredicto-new" class="veredicto"></div>
+    <p><code>delete</code>:</p>
+    <div class="opciones" id="opciones-delete"></div>
+    <div id="veredicto-delete" class="veredicto"></div>
   </div>
 
   <div class="carta" id="carta-cierre" style="display:none">
@@ -82,6 +80,7 @@
     abajo, y el único caso que pide cuidado es el que la deja vacía.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="encolar.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

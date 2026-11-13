@@ -31,11 +31,7 @@ void rotar() {
 }</pre>
     <p>Después de llamar tres veces a <code>rotar()</code>, ¿cómo queda la cola
     del frente al final?</p>
-    <div class="prediccion">
-      <span>cola:</span>
-      <input type="text" id="pred-tres" placeholder="8 3 6 1" style="width:9rem">
-      <button id="btn-tres" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-tres"></div>
     <div id="veredicto-tres" class="veredicto"></div>
   </div>
 
@@ -97,11 +93,7 @@ ultimo-&gt;siguiente = NULL;</pre></button>
     escrituras de puntero se hacen en total? Cuentan las asignaciones a
     <code>cabeza</code>, a <code>ultimo</code> y a los campos
     <code>siguiente</code>.</p>
-    <div class="prediccion">
-      <span>escrituras:</span>
-      <input type="number" id="pred-escrituras" placeholder="?">
-      <button id="btn-escrituras" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-escrituras"></div>
     <div id="veredicto-escrituras" class="veredicto"></div>
   </div>
 
@@ -117,6 +109,7 @@ ultimo-&gt;siguiente = NULL;</pre></button>
     mismo nodo, se revisa aparte.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="rotar.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

@@ -98,86 +98,62 @@ if (typeof module !== "undefined") {
     }
 
     /* --- Carta 1: la ecuacion decide ------------------------------ */
-    function diagnosticoNormal(h, m) {
-      var c = EJERCICIO.casos.normal;
-      if (isNaN(h) || isNaN(m)) {
-        return "Complete los dos valores primero.";
-      }
-      if (h === c.h && m === c.m) {
-        return "Esa es la pareja que llegó, no una que la caja pueda " +
-          "responder: 130 no cumple 0 <= minuto(r) < 60.";
-      }
-      if (m < 0 || m >= 60) {
-        return "El minuto que responde la caja debe cumplir " +
-          "0 <= minuto(r) < 60; a " + m + " todavía le sobran sesentas.";
-      }
-      if (h * 60 + m !== c.total) {
-        return "La primera ecuación conserva el total: hora(r) * 60 + " +
-          "minuto(r) debe valer 9 * 60 + 130 = 670.";
-      }
-      return null;
+    function par(h, m) { return "hora " + h + ", minuto " + m; }
+
+    /* Cuando se pulsa la correcta de una carta, se marca lograda. */
+    function alAcertar(idOpciones, clave) {
+      document.getElementById(idOpciones).addEventListener("click", function (e) {
+        var b = e.target;
+        if (b && b.getAttribute("data-op") === "correcta") {
+          logradas[clave] = true;
+          revisar();
+        }
+      });
     }
 
-    document.getElementById("btn-normal").addEventListener("click", function () {
-      var h = parseInt(document.getElementById("pred-normal-h").value, 10);
-      var m = parseInt(document.getElementById("pred-normal-m").value, 10);
-      var v = document.getElementById("veredicto-normal");
-      var mensaje = diagnosticoNormal(h, m);
-      if (mensaje === null) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: 11 y 10 son la única pareja que conserva " +
-          "el total 670 con el minuto en rango. La ecuación no dice cómo se " +
-          "guarda (9, 130): dice qué debe responder la caja.";
-        logradas.normal = true;
-        revisar();
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = mensaje;
-      }
+    /* --- Carta 1: la ecuacion decide ------------------------------ */
+    Motor.opcionesNumericas("opciones-normal", "veredicto-normal", function () {
+      var c = EJERCICIO.casos.normal;
+      var r = EJERCICIO.normaliza(c.h, c.m);
+      return [
+        { valor: par(r.hora, r.minuto), clave: "correcta",
+          razon: "Correcto: 11 y 10 son la única pareja que conserva " +
+            "el total 670 con el minuto en rango. La ecuación no dice cómo se " +
+            "guarda (9, 130): dice qué debe responder la caja." },
+        { valor: par(c.h, c.m), clave: "llegada",
+          razon: "Esa es la pareja que llegó, no una que la caja pueda " +
+            "responder: 130 no cumple 0 <= minuto(r) < 60." },
+        { valor: par(r.hora - 1, r.minuto + 60), clave: "sinllevar",
+          razon: "Conserva el total 670, pero el minuto 70 no cumple " +
+            "0 <= minuto(r) < 60: a 70 todavía le sobra una hora." },
+        { valor: par(c.h, c.m % 60), clave: "pierdehoras",
+          razon: "Esa pareja descarta las dos horas que había dentro de los " +
+            "130 minutos. La primera ecuación exige que hora(r) * 60 + " +
+            "minuto(r) valga 9 * 60 + 130 = 670, y esta suma 550." }
+      ];
     });
+    alAcertar("opciones-normal", "normal");
 
     /* --- Carta 2: quinientos minutos ------------------------------ */
-    function diagnosticoTotal(h, m) {
+    Motor.opcionesNumericas("opciones-total", "veredicto-total", function () {
       var c = EJERCICIO.casos.total;
-      if (isNaN(h) || isNaN(m)) {
-        return "Complete los dos valores primero.";
-      }
-      if (h === 5 && m === 0) {
-        return "500 son quinientos minutos desde la medianoche, no un reloj " +
-          "que marca 5:00: la división entera 500 / 60 da las horas completas.";
-      }
-      if (h === 8 && m === 33) {
-        return "El resto no es la parte decimal de 8,33: 500 % 60 cuenta los " +
-          "minutos que sobran después de las 8 horas completas.";
-      }
-      if (m < 0 || m >= 60) {
-        return "El operador % con divisor 60 nunca responde " + m + ": el " +
-          "resto queda entre 0 y 59.";
-      }
-      if (h * 60 + m !== c.total) {
-        return "Compruebe con la ecuación del contrato: hora(t) * 60 + " +
-          "minuto(t) debe valer 500.";
-      }
-      return null;
-    }
-
-    document.getElementById("btn-total").addEventListener("click", function () {
-      var h = parseInt(document.getElementById("pred-total-h").value, 10);
-      var m = parseInt(document.getElementById("pred-total-m").value, 10);
-      var v = document.getElementById("veredicto-total");
-      var mensaje = diagnosticoTotal(h, m);
-      if (mensaje === null) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: 500 / 60 = 8 y 500 % 60 = 20. Esta clase " +
-          "no guarda pareja alguna: la fabrica al responder, y la división " +
-          "la entrega ya normalizada.";
-        logradas.total = true;
-        revisar();
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = mensaje;
-      }
+      return [
+        { valor: par(c.hora, c.minuto), clave: "correcta",
+          razon: "Correcto: 500 / 60 = 8 y 500 % 60 = 20. Esta clase " +
+            "no guarda pareja alguna: la fabrica al responder, y la división " +
+            "la entrega ya normalizada." },
+        { valor: par(5, 0), clave: "reloj",
+          razon: "500 son quinientos minutos desde la medianoche, no un reloj " +
+            "que marca 5:00: la división entera 500 / 60 da las horas completas." },
+        { valor: par(8, 33), clave: "decimal",
+          razon: "El resto no es la parte decimal de 8,33: 500 % 60 cuenta los " +
+            "minutos que sobran después de las 8 horas completas." },
+        { valor: par(c.minuto, c.hora), clave: "cruzado",
+          razon: "Esos valores están intercambiados: hora() es el cociente " +
+            "500 / 60 y minuto() es el resto 500 % 60, y 20 * 60 + 8 no da 500." }
+      ];
     });
+    alAcertar("opciones-total", "total");
 
     /* --- Carta 3: la barrera -------------------------------------- */
     var PISTA_BARRERA = [

@@ -206,15 +206,25 @@ if (typeof module !== "undefined") {
       paramsIniciales: paramsActuales(), alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
+    function sinRepetir(lista) {
+      var vistos = {}, res = [];
+      lista.forEach(function (o) {
+        if (!vistos[o.valor]) { vistos[o.valor] = true; res.push(o); }
+      });
+      return res.slice(0, 4);
+    }
+
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto", function (params) {
       var f = EJERCICIO.fuentes(params.G);
       var n = params.G.length;
-      if (valor === f.length) {
-        return { ok: true, msg: "Correcto: " + f.length + " fuentes, " + (f.length === 1 ? "el vértice " : "los vértices ") + f.join(", ") + ". Son los que tienen contador 0 antes de restar nada. Ejecute y mire cuántas veces entra la línea 7 en el primer ciclo." };
-      }
-      if (valor === n) { return { ok: false, msg: "Ese es el número de vértices. A la cola entran al arrancar solo los que no tienen ninguna flecha llegando." }; }
-      if (valor === 0) { return { ok: false, msg: "Un grafo sin ciclos siempre tiene al menos una fuente. Busque en el dibujo un vértice al que no llegue ninguna flecha." }; }
-      return { ok: false, msg: "No coincide. Cuente los vértices a los que no llega ninguna flecha: esos, y solo esos, tienen contador 0 al arrancar." };
+      var sumideros = 0, i;
+      for (i = 0; i < n; i = i + 1) { if (params.G[i].length === 0) { sumideros = sumideros + 1; } }
+      return sinRepetir([
+        { valor: f.length, clave: "correcta", razon: "Correcto: " + f.length + (f.length === 1 ? " fuente, " : " fuentes, ") + (f.length === 1 ? "el vértice " : "los vértices ") + f.join(", ") + ". Son los que tienen contador 0 antes de restar nada. Ejecute y mire cuántas veces entra la línea 7 en el primer ciclo." },
+        { valor: n, clave: "total", razon: "Ese es el número de vértices. A la cola entran al arrancar solo los que no tienen ninguna flecha llegando." },
+        { valor: sumideros, clave: "sumideros", razon: "Esos son los vértices sin flechas de salida, los sumideros. Para entrar a la cola cuentan las flechas que llegan, no las que salen." },
+        { valor: 0, clave: "cero", razon: "Un grafo sin ciclos siempre tiene al menos una fuente. Busque en el dibujo un vértice al que no llegue ninguna flecha." }
+      ]);
     });
 
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (btn) {

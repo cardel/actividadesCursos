@@ -76,18 +76,39 @@ function filasCurva() {
   });
 }
 
-function explicarPrediccion(bien, real, dicho) {
+/* Opciones de "con cuantos hilos sale el mejor tiempo": la correcta sale de
+   los tiempos medidos y cada distractor es una creencia que alguien tendria. */
+function opcionesMejor() {
   var m = mejorTiempo();
-  var t = bien
-    ? "Sí: nueve hilos, " + Motor.num(m.ms, 1) + " ms."
-    : "No: el mejor tiempo sale con nueve hilos, " + Motor.num(m.ms, 1) +
-      " ms, y no con " + num2(dicho) + ".";
-  t += " Con doce hilos el programa tarda " + Motor.num(tiempo(12), 1) + " ms, " +
-    Motor.num(tiempo(12) - m.ms, 1) + " ms más que con nueve. Pasados los seis " +
+  var detalle = " Con doce hilos el programa tarda " + Motor.num(tiempo(12), 1) + " ms, " +
+    Motor.num(tiempo(12) - m.ms, 1) + " ms más que con " + m.p + ". Pasados los seis " +
     "núcleos físicos la curva se aplana y los tiempos empiezan a subir y bajar " +
     "sin mejorar: " + Motor.num(tiempo(7), 1) + " ms con siete hilos, " +
     Motor.num(tiempo(8), 1) + " con ocho, " + Motor.num(tiempo(10), 1) + " con diez.";
-  return t;
+  var lista = [{ valor: m.p, clave: "correcta",
+    razon: "Correcto: " + m.p + " hilos, " + Motor.num(m.ms, 1) + " ms." + detalle }];
+  var candidatas = [
+    { p: HILOS_HW, razon: "Con " + HILOS_HW + " hilos, todos los de hardware, el programa tarda " +
+      Motor.num(tiempo(HILOS_HW), 1) + " ms, más que con " + m.p + " (" +
+      Motor.num(m.ms, 1) + " ms). Más hilos no es más rápido cuando se turnan los núcleos." },
+    { p: NUCLEOS, razon: "Con " + NUCLEOS + " hilos, uno por núcleo físico, tarda " +
+      Motor.num(tiempo(NUCLEOS), 1) + " ms. Los hilos de hardware extra aún ayudan un poco " +
+      "y el mínimo está más allá: " + Motor.num(m.ms, 1) + " ms con " + m.p + "." },
+    { p: m.p - 1, razon: "Con " + (m.p - 1) + " hilos tarda " + Motor.num(tiempo(m.p - 1), 1) +
+      " ms, todavía por encima de los " + Motor.num(m.ms, 1) + " ms de " + m.p + " hilos." },
+    { p: NUCLEOS + 1, razon: "Con " + (NUCLEOS + 1) + " hilos tarda " +
+      Motor.num(tiempo(NUCLEOS + 1), 1) + " ms: pasar de los núcleos físicos empeora el " +
+      "tiempo antes de mejorarlo de nuevo." }
+  ];
+  var vistos = {};
+  vistos[m.p] = true;
+  candidatas.forEach(function (c) {
+    if (lista.length < 4 && !vistos[c.p]) {
+      vistos[c.p] = true;
+      lista.push({ valor: c.p, clave: "p" + c.p, razon: c.razon });
+    }
+  });
+  return lista;
 }
 
 /* Lo que dicen los cinco valores de Karp-Flatt juntos. */
@@ -138,7 +159,7 @@ if (typeof module !== "undefined" && module.exports) {
     AVISO_CODO: AVISO_CODO, num2: num2, pct: pct, tiempo: tiempo,
     speedup: speedup, eficiencia: eficiencia, mejorTiempo: mejorTiempo,
     karpFlatt: karpFlatt, amdahl: amdahl, techo: techo, filasCurva: filasCurva,
-    explicarPrediccion: explicarPrediccion, lecturaCodo: lecturaCodo,
+    opcionesMejor: opcionesMejor, lecturaCodo: lecturaCodo,
     resumenAmdahl: resumenAmdahl
   };
 }
@@ -222,12 +243,8 @@ if (typeof document !== "undefined") (function () {
   document.getElementById("f-amdahl").addEventListener("input", pintarAmdahl);
   document.getElementById("p-amdahl").addEventListener("input", pintarAmdahl);
 
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-mejor", boton: "btn-comprobar-mejor",
-      veredicto: "veredicto-mejor" },
-    function () { return mejorTiempo().p; },
-    explicarPrediccion);
-  document.getElementById("btn-comprobar-mejor").addEventListener("click", function () {
+  Motor.opcionesNumericas("opciones-mejor", "veredicto-mejor", opcionesMejor);
+  document.getElementById("opciones-mejor").addEventListener("click", function () {
     vistoTiempos = true; pintarEscalado();
   });
 

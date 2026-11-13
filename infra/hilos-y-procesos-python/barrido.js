@@ -203,18 +203,54 @@ if (typeof document !== "undefined") (function () {
     Motor.pintarChips("chips-barrido", chipsResumen(vistaPuro, vistaNumpy));
   }
 
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-puro", boton: "btn-comprobar-puro", veredicto: "veredicto-puro" },
-    function () { return fila(PURO, 4).ms; },
-    function (bien, real, dicho) {
-      vistaPuro = true; pintar(); return explicarPuro(bien, real, dicho);
+  Motor.opcionesNumericas("opciones-puro", "veredicto-puro", function () {
+    var real = fila(PURO, 4).ms;
+    var seq = PURO[0].ms;
+    var m = mejor(PURO);
+    var f2 = function (x) { return Motor.num(x, 2); };
+    return [
+      { valor: f2(real), clave: "correcta",
+        razon: "Sí: " + segundos(real) + ". Con cuatro hilos tarda más que con uno, 7,04 contra " +
+          "5,05, porque al mismo trabajo se le suma el vaivén del GIL: los cuatro hilos se " +
+          "turnan un intérprete que deja correr a uno por vez, y cada cambio de turno cuesta. " +
+          "La ganancia queda en " + veces(ganancia(PURO, 4)) + " el secuencial, y ninguna de " +
+          "las nueve corridas baja de 5,05 s: la más rápida, con " + m.hilos + " hilos, llega a " +
+          segundos(m.ms) + "." },
+      { valor: f2(seq / 4), clave: "ideal",
+        razon: "Eso sería repartir el trabajo sin pérdida entre cuatro núcleos. Con la lista " +
+          "de Python el GIL deja correr a un hilo por vez, así que no hay reparto." },
+      { valor: f2(seq), clave: "igual",
+        razon: "Eso es lo que tarda un hilo. Con cuatro hilos el trabajo es el mismo, pero se " +
+          "le suman los cambios de turno del GIL, y el tiempo sube." },
+      { valor: f2(fila(PURO, 2).ms), clave: "dos",
+        razon: "Esa es la medida con 2 hilos. Con 4 el vaivén del GIL es mayor y el tiempo " +
+          "sube todavía más." }
+    ];
+  });
+  Motor.opcionesNumericas("opciones-numpy", "veredicto-numpy", function () {
+    var real = Math.round(NUMPY[0].ms * 1000);
+    return [
+      { valor: Motor.num(real), clave: "correcta",
+        razon: "Sí: " + Motor.num(real) + " ms. 0,045 s, unas " +
+          Motor.num(Math.round(factorSecuencial())) + " veces más rápido que los 5,05 s de la " +
+          "lista, sin usar un solo hilo: el cambio no fue paralelizar sino dejar de ejecutar " +
+          "bytecode por elemento. Desde ahí los hilos todavía bajan el tiempo hasta " +
+          segundos(mejor(NUMPY).ms, 3) + ", y ahí se quedan." },
+      { valor: Motor.num(Math.round(PURO[0].ms * 1000)), clave: "lista",
+        razon: "Eso es lo que tarda la lista de Python, 5,05 s. NumPy suma en una rutina " +
+          "compilada y no ejecuta bytecode por elemento." },
+      { valor: Motor.num(Math.round(PURO[0].ms * 100)), clave: "diez",
+        razon: "Eso sería solo diez veces más rápido. La suma en C sobre memoria contigua " +
+          "ahorra mucho más que eso: unas " + Motor.num(Math.round(factorSecuencial())) +
+          " veces." }
+    ];
+  });
+  [["opciones-puro", "puro"], ["opciones-numpy", "numpy"]].forEach(function (p) {
+    document.getElementById(p[0]).addEventListener("click", function () {
+      if (p[1] === "puro") { vistaPuro = true; } else { vistaNumpy = true; }
+      pintar();
     });
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-numpy", boton: "btn-comprobar-numpy", veredicto: "veredicto-numpy" },
-    function () { return Math.round(NUMPY[0].ms * 1000); },
-    function (bien, real, dicho) {
-      vistaNumpy = true; pintar(); return explicarNumpy(bien, real, dicho);
-    });
+  });
   Motor.conectarOpciones("opciones-escala", "veredicto-escala", RAZONES_ESCALA);
   Motor.conectarOpciones("opciones-techo", "veredicto-techo", RAZONES_TECHO);
 

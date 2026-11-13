@@ -113,8 +113,24 @@ if (typeof module !== "undefined") {
         caja.appendChild(linea);
       });
     }
-    var logradas = { diez: false, totales: false, cota: false };
+    function unicas(lista) {
+      var vistos = {};
+      return lista.filter(function (o) {
+        var ya = vistos[String(o.valor)] === true;
+        vistos[String(o.valor)] = true;
+        return !ya;
+      });
+    }
+    function alAcertar(idCaja, idVer, f) {
+      document.getElementById(idCaja).addEventListener("click", function () {
+        if (document.getElementById(idVer).className.indexOf("bien") >= 0) { f(); }
+      });
+    }
+    var logradas = { diez: false, totales: false, cota: false,
+                     diezF: false, diezC: false, totF: false, totC: false };
     function revisar() {
+      logradas.diez = logradas.diezF && logradas.diezC;
+      logradas.totales = logradas.totF && logradas.totC;
       if (logradas.diez && logradas.totales && logradas.cota) {
         document.getElementById("carta-cierre").style.display = "block";
       }
@@ -126,28 +142,38 @@ if (typeof module !== "undefined") {
     var PEOR = EJERCICIO.peorCaso(N);
     pintarCodigo("codigo-nodoen", EJERCICIO.lineas);
 
-    document.getElementById("btn-diez").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-diez");
-      var f = parseInt(document.getElementById("pred-frente").value, 10);
-      var c = parseInt(document.getElementById("pred-corto").value, 10);
-      var ef = EJERCICIO.deFrente(EJERCICIO.p);
-      var ec = EJERCICIO.porElLadoCorto(N, EJERCICIO.p);
-      if (f === ef && c === ec) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: " + ef + " de frente y " + ec + " por el lado corto. " +
-          "Con p = 10 y n = 12 la condición p <= n / 2 es falsa, así que el contador arranca en " +
-          "12 y baja hasta 10: cabeza->anterior es la posición 11 y un paso más es la 10.";
-        logradas.diez = true; revisar();
-      } else if (f === ef && c === 6) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Seis es el tope, el peor caso. Para una posición concreta los pasos hacia atrás son n - p, y aquí eso da menos.";
-      } else if (f === 10 && c === 10) {
-        ver.className = "veredicto mal";
-        ver.textContent = "El camino hacia atrás no da los mismos pasos: la posición 11 está a un paso de la cabeza por detrás, y la 10 a dos.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "De frente son p pasos. Hacia atrás, el ciclo arranca en i = n y baja hasta p: cuente cuántas veces resta uno.";
-      }
+    var EF = EJERCICIO.deFrente(EJERCICIO.p);
+    var EC = EJERCICIO.porElLadoCorto(N, EJERCICIO.p);
+    Motor.opcionesNumericas("opciones-frente", "veredicto-frente", function () {
+      return unicas([
+        { valor: EF, clave: "correcta",
+          razon: "Correcto: " + EF + ". De frente son p pasos, uno por cada siguiente desde la cabeza." },
+        { valor: EF - 1, clave: "menos",
+          razon: "Esa es la posición anterior a la que se pide: el ciclo da p vueltas, y con p = " + EJERCICIO.p + " son " + EF + "." },
+        { valor: EF + 1, clave: "mas",
+          razon: "Eso cuenta el nodo de partida como un paso. La cabeza es la posición 0 y no cuesta ninguno: la posición p queda a p pasos." },
+        { valor: N, clave: "toda",
+          razon: "Eso es dar toda la vuelta a la lista. La posición " + EJERCICIO.p + " se alcanza antes de cerrar el círculo." }
+      ]);
+    });
+    alAcertar("opciones-frente", "veredicto-frente", function () {
+      logradas.diezF = true; revisar();
+    });
+    Motor.opcionesNumericas("opciones-corto", "veredicto-corto", function () {
+      return unicas([
+        { valor: EC, clave: "correcta",
+          razon: "Correcto: " + EC + ". Con p = " + EJERCICIO.p + " y n = " + N + " la condición p <= n / 2 es falsa, así que el contador arranca en " +
+            N + " y baja hasta " + EJERCICIO.p + ": cabeza->anterior es la posición " + (N - 1) + " y un paso más es la " + EJERCICIO.p + "." },
+        { valor: PEOR.corto, clave: "tope",
+          razon: "Seis es el tope, el peor caso. Para una posición concreta los pasos hacia atrás son n - p, y aquí eso da menos." },
+        { valor: EF, clave: "igual",
+          razon: "El camino hacia atrás no da los mismos pasos: la posición " + (N - 1) + " está a un paso de la cabeza por detrás, y la " + EJERCICIO.p + " a dos." },
+        { valor: EC - 1, clave: "corto",
+          razon: "Un solo paso llega a la posición " + (N - 1) + ", no a la " + EJERCICIO.p + ". El ciclo arranca en i = n y baja hasta p: resta uno " + EC + " veces." }
+      ]);
+    });
+    alAcertar("opciones-corto", "veredicto-corto", function () {
+      logradas.diezC = true; revisar();
     });
 
     var vista = { i: 0 };
@@ -193,26 +219,37 @@ if (typeof module !== "undefined") {
     });
     pintarTabla();
 
-    document.getElementById("btn-totales").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-totales");
-      var f = parseInt(document.getElementById("pred-total-frente").value, 10);
-      var c = parseInt(document.getElementById("pred-total-corto").value, 10);
-      if (f === TOTALES.frente && c === TOTALES.corto) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: " + TOTALES.frente + " y " + TOTALES.corto +
-          ". De frente la suma es 0 + 1 + ... + 11 = 12·11/2. Por el lado corto la columna " +
-          "sube hasta 6 y vuelve a bajar: ningún recorrido pasa de ⌈n/2⌉ = " + PEOR.corto + " pasos.";
-        logradas.totales = true; revisar();
-      } else if (f === TOTALES.frente) {
-        ver.className = "veredicto mal";
-        ver.textContent = "El total de frente está bien. Para el otro sume la columna del lado corto, que sube 0, 1, ..., 6 y después baja 5, 4, ..., 1.";
-      } else if (f === 78) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Los sumandos van de 0 a 11, no de 1 a 12: la posición 0 es la cabeza y no cuesta ningún paso.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "Sume las dos columnas de la tabla de arriba. El botón de mostrar todas las deja a la vista.";
-      }
+    Motor.opcionesNumericas("opciones-total-frente", "veredicto-total-frente", function () {
+      return unicas([
+        { valor: TOTALES.frente, clave: "correcta",
+          razon: "Correcto: " + TOTALES.frente + ". De frente la suma es 0 + 1 + ... + " + (N - 1) + " = " + N + "·" + (N - 1) + "/2." },
+        { valor: (N * (N + 1)) / 2, clave: "uno-a-n",
+          razon: "Los sumandos van de 0 a " + (N - 1) + ", no de 1 a " + N + ": la posición 0 es la cabeza y no cuesta ningún paso." },
+        { valor: N * (N - 1), clave: "doble",
+          razon: "Eso es el doble: la suma 0 + 1 + ... + " + (N - 1) + " vale n(n-1)/2, no n(n-1)." },
+        { valor: N * N, clave: "cuadrado",
+          razon: "Eso sería si cada una de las " + N + " consultas costara " + N + " pasos. La posición p cuesta p, y las primeras cuestan casi nada." }
+      ]);
+    });
+    alAcertar("opciones-total-frente", "veredicto-total-frente", function () {
+      logradas.totF = true; revisar();
+    });
+    Motor.opcionesNumericas("opciones-total-corto", "veredicto-total-corto", function () {
+      var tope = PEOR.corto;
+      return unicas([
+        { valor: TOTALES.corto, clave: "correcta",
+          razon: "Correcto: " + TOTALES.corto + ". La columna sube hasta " + tope +
+            " y vuelve a bajar: ningún recorrido pasa de ⌈n/2⌉ = " + PEOR.corto + " pasos." },
+        { valor: tope * N, clave: "tope",
+          razon: "Eso cobra el peor caso, " + tope + " pasos, a cada una de las " + N + " posiciones. Casi todas cuestan menos: sume la columna." },
+        { valor: TOTALES.frente / 2, clave: "mitad",
+          razon: "Ahorrar la mitad del camino no es ahorrar la mitad del total: la columna del lado corto sube 0, 1, ..., " + tope + " y baja " + (tope - 1) + ", ..., 1, y esa suma no es " + TOTALES.frente + "/2." },
+        { valor: 2 * ((tope * (tope + 1)) / 2), clave: "simetrica",
+          razon: "Eso repite el " + tope + ": la columna sube hasta " + tope + " y baja desde " + (tope - 1) + ", no desde " + tope + "." }
+      ]);
+    });
+    alAcertar("opciones-total-corto", "veredicto-total-corto", function () {
+      logradas.totC = true; revisar();
     });
 
     var MENSAJES_COTA = {

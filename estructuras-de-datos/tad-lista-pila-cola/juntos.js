@@ -54,31 +54,53 @@ if (typeof module !== "undefined") {
       ["meter(3);", "bloque-1"],
       ["printf(\"%d\\n\", ver());", "bloque-3"]
     ]);
+    function sinRepetidos(lista) {
+      var vistos = [];
+      return lista.filter(function (o) {
+        var nuevo = vistos.indexOf(o.valor) < 0;
+        if (nuevo) { vistos.push(o.valor); }
+        return nuevo;
+      });
+    }
+    /* Avisa cuando el estudiante acierta la opcion correcta de un bloque. */
+    function alAcertar(idOpciones, hacer) {
+      document.getElementById(idOpciones).addEventListener("click", function (e) {
+        if (e.target && e.target.getAttribute("data-op") === "correcta") { hacer(); }
+      });
+    }
+
     var logradas = { programa: false, funciones: false };
     function revisar() {
       if (logradas.programa && logradas.funciones) {
         document.getElementById("carta-cierre").style.display = "block";
       }
     }
-    document.getElementById("btn-programa").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-programa");
-      var p = EJERCICIO.correr(EJERCICIO.programa, "pila");
-      var c = EJERCICIO.correr(EJERCICIO.programa, "cola");
-      var dp = parseInt(document.getElementById("pred-pila").value, 10);
-      var dc = parseInt(document.getElementById("pred-cola").value, 10);
-      if (dp === p.ve && dc === c.ve) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: como pila ve 3 y como cola ve 8. Las mismas cinco líneas, dos respuestas: quitar sacó al 8 en la pila y al 5 en la cola.";
-        logradas.programa = true;
-        revisar();
-      } else if (dp === 8 || dc === 3) {
-        v.className = "veredicto mal";
-        v.textContent = "Parece cruzado: en la pila quitar saca lo último que entró (el 8) y ver lee lo último que quedó; en la cola quitar saca lo primero (el 5) y ver lee lo que lleva más tiempo.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "Corra el programa dos veces, una con apilar/desapilar/tope y otra con encolar/desencolar/frente.";
-      }
-    });
+    var progOk = { pila: false, cola: false };
+    function revisarPrograma() {
+      if (progOk.pila && progOk.cola) { logradas.programa = true; revisar(); }
+    }
+    function opcionesPrograma(disciplina, otra) {
+      var id = "opciones-" + disciplina;
+      Motor.opcionesNumericas(id, "veredicto-" + disciplina, function () {
+        var propio = EJERCICIO.correr(EJERCICIO.programa, disciplina).ve;
+        var ajeno = EJERCICIO.correr(EJERCICIO.programa, otra).ve;
+        var fondo = EJERCICIO.programa[0][1];
+        var accion = disciplina === "pila"
+          ? "quitar sacó al 8 y ver lee lo último que quedó"
+          : "quitar sacó al 5 y ver lee lo que lleva más tiempo";
+        return sinRepetidos([
+          { valor: propio, clave: "correcta",
+            razon: "Correcto: como " + disciplina + " ve " + propio + ". " + accion + "." },
+          { valor: ajeno, clave: "cruzado",
+            razon: "Ese es el resultado de la otra disciplina. En la pila quitar saca lo último que entró y ver lee lo último que quedó; en la cola quitar saca lo primero y ver lee lo que lleva más tiempo." },
+          { valor: fondo, clave: "sinquitar",
+            razon: "Ese es lo primero que entró. " + (disciplina === "pila" ? "En la pila ver lee el tope, no el fondo." : "En la cola quitar ya lo sacó: el frente es el siguiente.") }
+        ]);
+      });
+      alAcertar(id, function () { progOk[disciplina] = true; revisarPrograma(); });
+    }
+    opcionesPrograma("pila", "cola");
+    opcionesPrograma("cola", "pila");
     /* --- Carta 3: cuanto cuesta ----------------------------------- */
     var costosOk = { insertar: false, revertir: false, mc: false };
     function revisarCostos() {
@@ -86,26 +108,37 @@ if (typeof module !== "undefined") {
         document.getElementById("cierre-costos").style.display = "block";
       }
     }
-    document.getElementById("btn-c-insertar").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-c-insertar");
-      var dado = parseInt(document.getElementById("pred-c-insertar").value, 10);
-      if (dado === EJERCICIO.corridasInsertar(8, 2)) {
-        v.className = "veredicto bien"; v.textContent = "Correcto: 6. Se corren las casillas de la posición 2 a la 7 para abrir campo; las posiciones 0 y 1 no se tocan. Por eso insertar en medio es O(n) y agregar al final O(1).";
-        costosOk.insertar = true; revisarCostos();
-      } else if (dado === 8) { v.className = "veredicto mal"; v.textContent = "No se corre todo el arreglo: lo que está antes de la posición 2 se queda quieto."; }
-      else if (dado === 2) { v.className = "veredicto mal"; v.textContent = "Se corre lo que está desde la posición 2 hasta el final, no lo de antes."; }
-      else { v.className = "veredicto mal"; v.textContent = "Dibuje ocho casillas e inserte en la 2: cuente cuántas cambian de lugar."; }
+    Motor.opcionesNumericas("opciones-c-insertar", "veredicto-c-insertar", function () {
+      var n = 8;
+      var p = 2;
+      var buena = EJERCICIO.corridasInsertar(n, p);
+      return sinRepetidos([
+        { valor: buena, clave: "correcta",
+          razon: "Correcto: " + buena + ". Se corren las casillas de la posición " + p + " a la " + (n - 1) + " para abrir campo; las anteriores no se tocan. Por eso insertar en medio es O(n) y agregar al final O(1)." },
+        { valor: n, clave: "todo",
+          razon: "No se corre todo el arreglo: lo que está antes de la posición " + p + " se queda quieto." },
+        { valor: p, clave: "antes",
+          razon: "Se corre lo que está desde la posición " + p + " hasta el final, no lo de antes." },
+        { valor: buena + 1, clave: "nueva",
+          razon: "La casilla nueva no se corre: se abre en la posición " + p + " y recibe el valor. Se corren solo las " + buena + " que ya estaban." }
+      ]);
     });
-    document.getElementById("btn-c-revertir").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-c-revertir");
-      var dado = parseInt(document.getElementById("pred-c-revertir").value, 10);
-      if (dado === EJERCICIO.corridasRevertir(6)) {
-        v.className = "veredicto bien"; v.textContent = "Correcto: 0 + 1 + 2 + 3 + 4 + 5 = 15. Cada insertar al frente corre todo lo ya escrito: n(n − 1)/2 corridas, Θ(n²). Con agregar desde el final no se corre nada: Θ(n).";
-        costosOk.revertir = true; revisarCostos();
-      } else if (dado === 6) { v.className = "veredicto mal"; v.textContent = "Seis son las inserciones. La pregunta es cuántas casillas se corren en total: la primera corre 0, la segunda 1, la tercera 2..."; }
-      else if (dado === 21) { v.className = "veredicto mal"; v.textContent = "Casi: la primera inserción corre 0 casillas, no 1, porque la lista está vacía."; }
-      else { v.className = "veredicto mal"; v.textContent = "Sume lo que corre cada inserción: al insertar el k-ésimo al frente ya hay k − 1 elementos."; }
+    alAcertar("opciones-c-insertar", function () { costosOk.insertar = true; revisarCostos(); });
+    Motor.opcionesNumericas("opciones-c-revertir", "veredicto-c-revertir", function () {
+      var n = 6;
+      var buena = EJERCICIO.corridasRevertir(n);
+      return sinRepetidos([
+        { valor: buena, clave: "correcta",
+          razon: "Correcto: 0 + 1 + 2 + 3 + 4 + 5 = " + buena + ". Cada insertar al frente corre todo lo ya escrito: n(n − 1)/2 corridas, Θ(n²). Con agregar desde el final no se corre nada: Θ(n)." },
+        { valor: n, clave: "inserciones",
+          razon: "Seis son las inserciones. La pregunta es cuántas casillas se corren en total: la primera corre 0, la segunda 1, la tercera 2..." },
+        { valor: buena + n, clave: "desde1",
+          razon: "Casi: la primera inserción corre 0 casillas, no 1, porque la lista está vacía." },
+        { valor: n * (n - 1), clave: "sinmitad",
+          razon: "Falta dividir entre 2: la suma 0 + 1 + ... + (n − 1) es n(n − 1)/2, no n(n − 1)." }
+      ]);
     });
+    alAcertar("opciones-c-revertir", function () { costosOk.revertir = true; revisarCostos(); });
     var MENSAJES_MC = {
       lineal: "La pila auxiliar recibe los n elementos antes de devolverlos: el espacio aparte de la pila es Θ(n), no constante.",
       constante: null,

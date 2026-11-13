@@ -25,7 +25,7 @@ tarda lo mismo, y la conclusión apresurada que suele salir de ahí.
 
 El reparto exacto de `con_hilos`: `paso = n / k`, cada hilo recibe
 `[i·paso, (i+1)·paso)` y el último se lleva además el residuo. Antes de ver la
-barra, escriba cuántos elementos recibe el último hilo con diez elementos y
+barra, escoja cuántos elementos recibe el último hilo con diez elementos y
 cuatro hilos. El reparto que parecía parejo no lo es, y el hilo que más recibe
 es el que marca cuándo termina todo.
 
@@ -61,7 +61,7 @@ hilos todavía ganan sobre cuatro, si núcleos hay los mismos.
 ### [El costo fijo de repartir](granularidad.html){ target=_blank rel=noopener }
 
 Las 400 tareas en tandas de cuatro hilos, con la columna de la relación
-tapada. Escriba en qué fila cruza el uno y después destápela: al lado aparece
+tapada. Escoja en qué fila cruza el uno y después destápela: al lado aparece
 lo que da un modelo de dos perillas, el costo de crear y unir un hilo y el
 costo de cada iteración. Con 16 µs por hilo el modelo reproduce la tabla;
 suba el costo a 160 µs y el cruce se corre una fila. El cruce no es del
@@ -72,7 +72,7 @@ algoritmo; es de la máquina donde se midió, y en otra se mide otra vez.
 ### [Sesenta y cuatro tareas que no cuestan lo mismo](balanceo.html){ target=_blank rel=noopener }
 
 Las 64 tareas de `balanceo.cpp`, donde la tarea `i` cuesta `i²`, y los cuatro
-hilos. Antes de correr nada, escriba qué porcentaje del trabajo carga el hilo
+hilos. Antes de correr nada, escoja qué porcentaje del trabajo carga el hilo
 que termina último con bloques contiguos. Después el reparto se ve tarea por
 tarea en un Gantt por hilo, en tres versiones: bloques contiguos, por turnos y
 por demanda con `fetch_add`. Las tareas que hizo cada hilo y el tiempo que
@@ -100,8 +100,8 @@ secuencia. Cuál de los dos está bien, y qué se hace antes de mirar el reloj.
 ### [La suma de prefijos en dos pasadas](prefijos.html){ target=_blank rel=noopener }
 
 Doce valores en tres bloques y las dos pasadas de `scan.cpp`. La primera
-pasada reporta el total de cada bloque; los tres desplazamientos los escribe
-usted, y la segunda pasada arranca de lo que haya escrito. Si un
+pasada reporta el total de cada bloque; los tres desplazamientos los escoge
+usted, y la segunda pasada arranca de lo que haya escogido. Si un
 desplazamiento quedó mal, la fila sale con números plausibles y la
 comparación elemento a elemento contra la versión secuencial marca en rojo
 dónde se rompió. El selector de máximo es el ejercicio del saldo máximo
@@ -114,7 +114,7 @@ pregunta: qué pasa si la operación por elemento fuera una suma pelada.
 
 ### [Tres etapas y una cola entre cada par](pipeline.html){ target=_blank rel=noopener }
 
-Leer 10 ms, calcular 20, escribir 10, y 24 lotes. Escriba en cuántos
+Leer 10 ms, calcular 20, escribir 10, y 24 lotes. Escoja en cuántos
 milisegundos terminan antes de verlo; la tabla de quién trabaja en cada
 intervalo es la de la clase, con los huecos de la etapa de escribir. Dos
 encargos en la misma pantalla: bajar leer a 5 ms y ver que el total casi no

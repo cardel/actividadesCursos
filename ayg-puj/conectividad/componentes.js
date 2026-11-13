@@ -391,22 +391,33 @@ if (typeof module !== "undefined") {
 
     arrancar();
 
-    Motor.prediccionNumerica(function (valor, params) {
+    Motor.opcionesNumericas("opciones-cuantos", "veredicto", function (params) {
       var lista = EJERCICIO.componentesDe(params.G, "recursiva");
       var n = params.G.length;
       var pintados = lista.map(function (c) {
         return "{" + c.slice().sort(function (x, y) { return x - y; }).join(", ") + "}";
       }).join(", ");
-      if (valor === lista.length) {
-        return { ok: true, msg: "Correcto: " + lista.length + ". " + pintados + ". Es el número de veces que se ejecuta la línea que abre un componente nuevo." };
-      }
-      if (valor === n) {
-        return { ok: false, msg: "Ese es el número de vértices. Solo abriría un componente por vértice si el grafo no tuviera ninguna arista." };
-      }
-      if (valor === 1) {
-        return { ok: false, msg: "Con un solo componente, el recorrido que arranca en el 0 tendría que tocar los " + n + " vértices. Cuente cuántos alcanza de verdad y siga con el primero que quede." };
-      }
-      return { ok: false, msg: "No coincide. Arranque en el 0, marque todo lo que alcanza, y repita desde el vértice de número más bajo que quedó sin marcar; cada arranque es un componente." };
+      var aristas = 0, i = 0;
+      while (i < n) { aristas = aristas + params.G[i].length; i = i + 1; }
+      aristas = aristas / 2;
+      var sinSolos = lista.filter(function (c) { return c.length > 1; }).length;
+      var cand = [
+        { valor: lista.length, clave: "correcta",
+          razon: "Correcto: " + lista.length + ". " + pintados + ". Es el número de veces que se ejecuta la línea que abre un componente nuevo." },
+        { valor: n, clave: "vertices",
+          razon: "Ese es el número de vértices. Solo abriría un componente por vértice si el grafo no tuviera ninguna arista." },
+        { valor: 1, clave: "uno",
+          razon: "Con un solo componente, el recorrido que arranca en el 0 tendría que tocar los " + n + " vértices. Cuente cuántos alcanza de verdad y siga con el primero que quede." },
+        { valor: sinSolos, clave: "sinsolos",
+          razon: "Ese deja fuera los vértices que quedan solos. Un vértice sin aristas también abre un componente cuando el ciclo llega a él: los componentes son " + pintados + "." },
+        { valor: aristas, clave: "aristas",
+          razon: "Ese es el número de aristas. Cada arista une dos vértices dentro de un mismo componente; lo que se cuenta son los arranques del recorrido, no las aristas." }
+      ];
+      var vistos = {}, res = [];
+      cand.forEach(function (o) {
+        if (!vistos[o.valor]) { vistos[o.valor] = true; res.push(o); }
+      });
+      return res.slice(0, 4);
     });
 
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (btn) {

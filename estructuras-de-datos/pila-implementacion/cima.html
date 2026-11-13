@@ -37,16 +37,15 @@
     <p style="margin-top:0">Contando solo las escrituras de puntero de la
     estructura, las que cambian <code>cima</code> o el campo
     <code>siguiente</code> de un nodo, ¿cuántas hace cada operación?</p>
-    <div class="prediccion">
-      <span><code>apilar</code>:</span>
-      <input type="number" id="pred-apilar" placeholder="?">
-      <span><code>desapilar</code>:</span>
-      <input type="number" id="pred-desapilar" placeholder="?">
-      <span><code>tope</code>:</span>
-      <input type="number" id="pred-tope" placeholder="?">
-      <button id="btn-escrituras" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-escrituras" class="veredicto"></div>
+    <div style="margin-top:.8rem"><b><code>apilar</code></b></div>
+    <div class="opciones" id="opciones-e-apilar"></div>
+    <div id="veredicto-e-apilar" class="veredicto"></div>
+    <div style="margin-top:.8rem"><b><code>desapilar</code></b></div>
+    <div class="opciones" id="opciones-e-desapilar"></div>
+    <div id="veredicto-e-desapilar" class="veredicto"></div>
+    <div style="margin-top:.8rem"><b><code>tope</code></b></div>
+    <div class="opciones" id="opciones-e-tope"></div>
+    <div id="veredicto-e-tope" class="veredicto"></div>
     <div id="nota-escrituras" class="nota" style="display:none"></div>
   </div>
 
@@ -62,6 +61,7 @@
     leer.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="cima.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

@@ -25,21 +25,17 @@
   <div class="carta">
     <h2>2. Escoja la raíz y prediga</h2>
     <div class="presets" id="presets"></div>
-    <div class="fila-par">
-      <span class="rotulo" id="rot-altura">Altura del árbol colgado de esa raíz</span>
-      <input type="number" id="in-altura" class="corto" placeholder="0">
-      <span class="fb" id="fb-altura"></span>
-    </div>
-    <div class="fila-par">
-      <span class="rotulo" id="rot-prof">Profundidad del vértice</span>
-      <input type="number" id="in-prof" class="corto" placeholder="0">
-      <span class="fb" id="fb-prof"></span>
-    </div>
+    <div class="pregunta" id="rot-altura">Altura del árbol colgado de esa raíz</div>
+    <div class="opciones" id="opciones-altura"></div>
+    <div id="veredicto-altura" class="veredicto"></div>
+    <div class="pregunta" id="rot-prof">Profundidad del vértice</div>
+    <div class="opciones" id="opciones-prof"></div>
+    <div id="veredicto-prof" class="veredicto"></div>
     <div class="pregunta">¿Cuáles vértices son hojas con esa raíz? Marque todos los que lo sean.</div>
     <div class="estrato" id="hojas"></div>
     <div id="fb-hojas" class="fb"></div>
     <div class="botones" style="margin-top:0.7rem">
-      <button id="btn-comprobar" class="primario">Comprobar las tres</button>
+      <button id="btn-comprobar" class="primario">Comprobar las hojas</button>
       <button id="btn-ver">Ver el árbol colgado</button>
     </div>
   </div>
@@ -64,6 +60,7 @@
     cambia de altura; repítalo colgándolo de <i>u</i> y explique por qué los dos casos no se parecen.</p>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="../comun/arbol.js"></script>
 <script src="../comun/grafo-svg.js"></script>
 <script src="raices.js"></script>

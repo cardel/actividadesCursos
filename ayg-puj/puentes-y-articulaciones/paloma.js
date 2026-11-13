@@ -183,7 +183,7 @@ if (typeof module !== "undefined") {
   module.exports = EJERCICIO;
 } else {
   (function () {
-    var presetActual = 0, A = null, comprobado = false, quitado = -1;
+    var opcionesPrediccion = null, presetActual = 0, A = null, comprobado = false, quitado = -1;
 
     function g() { return EJERCICIO.grafos[presetActual]; }
 
@@ -273,14 +273,11 @@ if (typeof module !== "undefined") {
       var v = document.getElementById("veredicto");
       v.className = "veredicto";
       v.textContent = "";
-      var vp = document.getElementById("veredicto-prediccion");
-      vp.className = "veredicto";
-      vp.textContent = "";
-      document.getElementById("prediccion").value = "";
       document.getElementById("cuerpo-salida").innerHTML = "";
       document.getElementById("ver-m").textContent = p.m;
       armarQuitar();
       dibujar();
+      if (opcionesPrediccion) { opcionesPrediccion.refrescar(); }
     }
 
     function armarQuitar() {
@@ -364,28 +361,6 @@ if (typeof module !== "undefined") {
     }
 
     document.getElementById("btn-comprobar").addEventListener("click", comprobar);
-    document.getElementById("btn-prediccion").addEventListener("click", function () {
-      var valor = parseInt(document.getElementById("prediccion").value, 10);
-      var v = document.getElementById("veredicto-prediccion");
-      var maximo = A.valor[0], i = 1;
-      while (i < A.valor.length) { if (A.valor[i] > maximo) { maximo = A.valor[i]; } i = i + 1; }
-      var cuales = [];
-      i = 0;
-      while (i < A.valor.length) { if (A.valor[i] === maximo) { cuales.push(i); } i = i + 1; }
-      if (isNaN(valor)) {
-        v.className = "veredicto mal";
-        v.textContent = "Escriba un número primero.";
-      } else if (valor === maximo) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: " + maximo + ", en " + (cuales.length === 1 ? "la estación " : "las estaciones ") +
-          cuales.join(", ") + ". Un valor de " + maximo + " quiere decir que al bombardearla hacen falta " + maximo +
-          " palomas para que el mensaje llegue a todo lo que sigue en pie.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "No coincide. El valor más alto es " + maximo +
-          ". Busque el vértice del que salen más ramas que no vuelven a juntarse por otro lado, y acuérdese de contar el pedazo que se queda con el padre.";
-      }
-    });
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (btn) {
       btn.addEventListener("click", function () {
         Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (b) { b.classList.remove("primario"); });
@@ -395,5 +370,33 @@ if (typeof module !== "undefined") {
       });
     });
     armar();
+
+    opcionesPrediccion = Motor.opcionesNumericas("opciones-prediccion", "veredicto-prediccion", function () {
+      var maximo = A.valor[0], i = 1, cuales = [], lista = [], usados = {}, puntos = 0;
+      while (i < A.valor.length) { if (A.valor[i] > maximo) { maximo = A.valor[i]; } i = i + 1; }
+      i = 0;
+      while (i < A.valor.length) {
+        if (A.valor[i] === maximo) { cuales.push(i); }
+        if (A.valor[i] > 1) { puntos = puntos + 1; }
+        i = i + 1;
+      }
+      var u = cuales[0], esRaiz = A.raiz[u];
+      function agregar(valor, clave, razon) {
+        if (valor >= 1 && !usados[valor]) { usados[valor] = true; lista.push({ valor: valor, clave: clave, razon: razon }); }
+      }
+      agregar(maximo, "correcta", "Correcto: " + maximo + ", en " + (cuales.length === 1 ? "la estación " : "las estaciones ") +
+        cuales.join(", ") + ". Un valor de " + maximo + " quiere decir que al bombardearla hacen falta " + maximo +
+        " palomas para que el mensaje llegue a todo lo que sigue en pie.");
+      if (esRaiz) {
+        agregar(maximo + 1, "mas-padre", "Le sumó el 1 del padre, y la raíz no tiene padre: su valor es el número de hijos, " + maximo + ".");
+      } else {
+        agregar(maximo - 1, "sin-padre", "Contó solo las ramas que se desprenden y olvidó el pedazo que se queda con el padre: valor = " + maximo + ".");
+      }
+      agregar(A.G[u].length, "vecinos", "Ese es el número de vecinos de la estación " + u + ". Dos vecinos que quedan en el mismo pedazo al quitarla cuentan una sola vez.");
+      agregar(puntos, "articulaciones", "Ese es cuántas estaciones valen más de 1, " + puntos + ". La pregunta es por el valor más alto, no por cuántas estaciones parten la red.");
+      agregar(A.n, "todas", "Ese es el número de estaciones. Quitar una deja a lo sumo tantos pedazos como ramas salgan de ella, no uno por estación.");
+      agregar(maximo + 1, "mas-uno", "Contó un pedazo de más: quitando la estación " + u + " quedan " + maximo + " pedazos.");
+      return lista.slice(0, 4);
+    });
   })();
 }

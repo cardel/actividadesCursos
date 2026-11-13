@@ -163,26 +163,32 @@
     }
   }
 
+  function opcionesHojas() {
+    var c = contar(INICIAL.n, INICIAL.umbral);
+    var lista = [
+      { valor: OBJETIVO, clave: "correcta",
+        razon: "Correcto: " + OBJETIVO + " sumas secuenciales, de 5000 elementos cada una. " +
+          "Los segmentos de 10000 no se quedan quietos: 10000 < 10000 es falso y se parten una vez más." },
+      { valor: OBJETIVO / 2, clave: "igual",
+        razon: "La cuenta sería esa si un segmento de 10000 elementos se calculara de una vez. Mire la condición: es estricta." },
+      { valor: c.parciones, clave: "parciones",
+        razon: "Esas son las llamadas a parallel, no las sumas. Cada partición lanza dos llamadas y las hojas son las que no se parten." },
+      { valor: c.parciones + OBJETIVO, clave: "todas",
+        razon: "Esas son todas las llamadas a segmentRec, las que parten y las que suman. La pregunta es solo por las que llaman a sumSegment." }
+    ];
+    var vistos = {};
+    return lista.filter(function (o) {
+      var nuevo = !vistos[o.valor];
+      vistos[o.valor] = true;
+      return nuevo;
+    });
+  }
+
   function cablearPrediccion() {
-    document.getElementById("btn-comprobar").addEventListener("click", function () {
-      var v = document.getElementById("veredicto");
-      var valor = parseInt(document.getElementById("prediccion").value, 10);
-      if (isNaN(valor)) {
-        v.className = "veredicto mal";
-        v.textContent = "Escriba un número primero.";
-        return;
-      }
-      if (valor === OBJETIVO) {
-        v.className = "veredicto bien";
-        v.textContent = OBJETIVO + " sumas secuenciales, de 5000 elementos cada una. " +
-          "Los segmentos de 10000 no se quedan quietos: 10000 < 10000 es falso y se parten una vez más.";
+    document.getElementById("opciones-hojas").addEventListener("click", function () {
+      if (document.getElementById("veredicto").className.indexOf("bien") >= 0) {
         acerto = true;
         marcar();
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = valor === OBJETIVO / 2
-          ? "La cuenta sería esa si un segmento de 10000 elementos se calculara de una vez. Mire la condición: es estricta."
-          : "Siga la partición desde 40000 y pare cuando el tamaño sea menor que el umbral, no cuando lo iguale.";
       }
     });
   }
@@ -271,7 +277,6 @@
     }
   }
 
-  cablearPrediccion();
   construirPresets();
   construirDecisiones();
   Motor.iniciar({
@@ -286,5 +291,7 @@
     paramsIniciales: { n: INICIAL.n, umbral: INICIAL.umbral },
     alPintar: pintarCuentas
   });
+  Motor.opcionesNumericas("opciones-hojas", "veredicto", opcionesHojas);
+  cablearPrediccion();
   marcar();
 })();

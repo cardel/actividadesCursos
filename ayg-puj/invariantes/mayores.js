@@ -170,23 +170,54 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
-      var A = params.A;
-      var d = EJERCICIO.dosDe(A, A.length);
-      if (valor === d.segundo) {
-        return { ok: true, msg: "Correcto: el segundo mayor es " + d.segundo +
-          ". Ahora ejecute y siga la terna (i, mayor, segundo) chequeo a chequeo." };
-      }
-      if (valor === d.mayor) {
-        return { ok: false, msg: "Ese es el mayor. Se pide el que queda en la " +
-          "segunda casilla al ordenar de mayor a menor." };
-      }
-      if (valor === A.length) {
-        return { ok: false, msg: "Ese es el número de elementos, no un elemento." };
-      }
-      return { ok: false, msg: "No coincide. Ordene el arreglo de mayor a menor " +
-        "en el papel y mire la segunda casilla; las repeticiones cuentan." };
-    });
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto",
+      function (params) {
+        function sinRepetir(lista, maximo) {
+          var vistos = [];
+          var salida = [];
+          var t = 0;
+          while (t < lista.length && salida.length < maximo) {
+            if (vistos.indexOf(lista[t].valor) < 0) {
+              vistos.push(lista[t].valor);
+              salida.push(lista[t]);
+            }
+            t = t + 1;
+          }
+          return salida;
+        }
+        var A = params.A;
+        var d = EJERCICIO.dosDe(A, A.length);
+        var distinto = null;
+        var t = 0;
+        while (t < A.length) {
+          if (A[t] < d.mayor && (distinto === null || A[t] > distinto)) {
+            distinto = A[t];
+          }
+          t = t + 1;
+        }
+        var lista = [
+          { valor: d.segundo, clave: "correcta",
+            razon: "Correcto: el segundo mayor es " + d.segundo + ". Ahora " +
+              "ejecute y siga la terna (i, mayor, segundo) chequeo a chequeo." },
+          { valor: d.mayor, clave: "mayor",
+            razon: "Ese es el mayor. Se pide el que queda en la segunda casilla " +
+              "al ordenar de mayor a menor." },
+          { valor: d.mayor + d.segundo, clave: "suma",
+            razon: "Esa es la suma de los dos mayores. Se pide solo el segundo." }
+        ];
+        if (distinto !== null) {
+          lista.push({ valor: distinto, clave: "distinto",
+            razon: "Ese es el mayor entre los que son menores que el mayor. " +
+              "Las repeticiones cuentan: si el mayor aparece dos veces, el " +
+              "segundo es el mismo valor." });
+        }
+        lista.push({ valor: A[A.length - 2], clave: "penultimo",
+          razon: "Ese es el penúltimo elemento del arreglo. El orden de " +
+            "aparición no dice cuál es el segundo mayor." });
+        lista.push({ valor: A.length, clave: "N",
+          razon: "Ese es el número de elementos, no un elemento." });
+        return sinRepetir(lista, 4);
+      });
 
     Array.prototype.forEach.call(document.querySelectorAll(".presets button"), function (btn) {
       btn.addEventListener("click", function () {

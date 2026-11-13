@@ -238,43 +238,52 @@
     alPintar: pintar
   });
 
+  function sinRepetidos(lista) {
+    var vistos = {};
+    return lista.filter(function (o) {
+      var nuevo = !vistos[o.valor];
+      vistos[o.valor] = true;
+      return nuevo;
+    });
+  }
+
   /* Predicción principal: el máximo de marcos abiertos al tiempo. */
-  Motor.prediccionNumerica(function (valor, preset) {
+  Motor.opcionesNumericas("opciones-marcos", "veredicto", function (preset) {
     var p = PRESETS[preset];
     var r = eventos(p.i, p.j);
     var maxH = Math.max.apply(null, r.nodos.map(function (n) { return n.hondura; }));
-    var total = r.nodos.length;
-    if (valor === maxH) {
-      return { ok: true, msg: "Correcto: nunca hay más de " + maxH + " marcos abiertos al tiempo, uno por nivel del árbol. "
-        + "Las " + total + " llamadas no están abiertas todas a la vez: cada rama se cierra antes de abrir la siguiente." };
-    }
-    if (valor === total) {
-      return { ok: false, msg: "No. " + total + " es el total de llamadas, pero no están abiertas todas a la vez. "
-        + "Cuando la rama izquierda termina, sus marcos ya se cerraron antes de abrir la derecha. El máximo es " + maxH + "." };
-    }
-    return { ok: false, msg: "No. Es " + maxH + ": la hondura del árbol. Avance y mire la pila: sube por una rama, "
-      + "vuelve a bajar, y solo entonces sube por la otra." };
+    var total = r.nodos.length, n = p.j - p.i;
+    return sinRepetidos([
+      { valor: maxH, clave: "correcta",
+        razon: "Correcto: nunca hay más de " + maxH + " marcos abiertos al tiempo, uno por nivel del árbol. "
+          + "Las " + total + " llamadas no están abiertas todas a la vez: cada rama se cierra antes de abrir la siguiente." },
+      { valor: total, clave: "total",
+        razon: total + " es el total de llamadas, pero no están abiertas todas a la vez. "
+          + "Cuando la rama izquierda termina, sus marcos ya se cerraron antes de abrir la derecha." },
+      { valor: n, clave: "hojas",
+        razon: n + " es el número de hojas. Las hojas se abren y se cierran de a una; "
+          + "lo que se acumula en la pila es el camino desde la raíz, no las hojas." },
+      { valor: maxH - 1, clave: "sinraiz",
+        razon: "Se queda corto por uno: la raíz también es un marco abierto durante toda la ejecución." }
+    ]);
   });
 
   /* Segunda predicción: el total de llamadas. */
-  document.getElementById("btn-comprobar-llamadas").addEventListener("click", function () {
-    var campo = document.getElementById("prediccion-llamadas");
-    var v = document.getElementById("veredicto-llamadas");
-    var valor = parseInt(campo.value, 10);
-    var preset = parseInt(document.querySelector("[data-preset].primario").getAttribute("data-preset"), 10);
+  Motor.opcionesNumericas("opciones-llamadas", "veredicto-llamadas", function (preset) {
     var p = PRESETS[preset];
     var total = llamadas(p.i, p.j).length, n = p.j - p.i;
-    if (isNaN(valor)) { v.className = "veredicto mal"; v.textContent = "Escriba un número primero."; return; }
-    if (valor === total) {
-      v.className = "veredicto bien";
-      v.textContent = "Correcto: " + total + " llamadas. " + n + " hojas y " + (n - 1) + " nodos que parten, 2n − 1.";
-    } else if (valor === n) {
-      v.className = "veredicto mal";
-      v.textContent = "No. " + n + " son solo las hojas. Los nodos que parten también son llamadas: 2n − 1 = " + total + ".";
-    } else {
-      v.className = "veredicto mal";
-      v.textContent = "No. Son " + total + ". El contador de la línea del * cuenta los que parten; el de las hojas, los que devuelven un número.";
-    }
+    return sinRepetidos([
+      { valor: total, clave: "correcta",
+        razon: "Correcto: " + total + " llamadas. " + n + " hojas y " + (n - 1) + " nodos que parten, 2n − 1." },
+      { valor: n, clave: "hojas",
+        razon: n + " son solo las hojas. Los nodos que parten también son llamadas: 2n − 1 = " + total + "." },
+      { valor: 2 * n, clave: "doble",
+        razon: "Eso sería 2n. Un árbol con n hojas tiene n − 1 nodos que parten, no n: "
+          + "el contador de la línea del * lo muestra." },
+      { valor: n - 1, clave: "partes",
+        razon: "Esos son solo los nodos que parten, " + (n - 1) + ". Faltan las " + n
+          + " hojas, que también son llamadas." }
+    ]);
   });
 
   document.querySelectorAll("[data-preset]").forEach(function (b) {
@@ -282,9 +291,6 @@
       document.querySelectorAll("[data-preset]").forEach(function (o) { o.className = ""; });
       b.className = "primario";
       Motor.limpiarVeredicto();
-      document.getElementById("prediccion").value = "";
-      document.getElementById("prediccion-llamadas").value = "";
-      var vl = document.getElementById("veredicto-llamadas"); vl.className = "veredicto"; vl.textContent = "";
       Motor.reiniciar(parseInt(b.getAttribute("data-preset"), 10));
     });
   });

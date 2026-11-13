@@ -40,26 +40,34 @@ var EJERCICIO = (function () {
 
   /* El caso base corre una vez por subarbol vacio, y un arbol binario
      de n nodos tiene n + 1 huecos de hijo sin llenar. */
-  function evaluar(valor, p) {
+  function opciones(p) {
     var a = ARBOLES[p.t], F = FUNCIONES[p.f], n = a.n;
-    if (valor === n + 1) {
-      return { ok: true, msg: "Correcto: " + (n + 1) + " veces. Los " + n + " nodos dejan " + (2 * n) +
-        " huecos de hijo y " + (n - 1) + " están ocupados por otro nodo, así que quedan " + (n + 1) +
-        " subárboles vacíos, y " + F.linea + " corre una vez por cada uno." };
-    }
-    if (valor === n) {
-      return { ok: false, msg: "Son " + (n + 1) + ", una más que los " + n +
-        " nodos. Cada nodo llama a sus dos subárboles, incluidos los vacíos, y los huecos vacíos son siempre uno más que los nodos." };
-    }
-    if (valor === 2 * n + 1) {
-      return { ok: false, msg: "Ese es el total de llamados, " + (2 * n + 1) + ": " + n +
-        " sobre subárboles con nodo y " + (n + 1) + " sobre subárboles vacíos. " + F.linea +
-        " solo corre en los segundos, " + (n + 1) + " veces." };
-    }
-    if (valor === a.h || valor === a.h + 1) {
-      return { ok: false, msg: "Esa es la altura del árbol, que es hasta dónde llega la pila, no cuántas veces corre la línea. El caso base corre " + (n + 1) + " veces." };
-    }
-    return { ok: false, msg: "Son " + (n + 1) + ". Cuente los subárboles vacíos del dibujo: cada nodo sin hijo izquierdo aporta uno y cada nodo sin hijo derecho aporta otro." };
+    var lista = [
+      { valor: n + 1, clave: "correcta",
+        razon: "Correcto: " + (n + 1) + " veces. Los " + n + " nodos dejan " + (2 * n) +
+          " huecos de hijo y " + (n - 1) + " están ocupados por otro nodo, así que quedan " + (n + 1) +
+          " subárboles vacíos, y " + F.linea + " corre una vez por cada uno." },
+      { valor: n, clave: "nodos",
+        razon: "Son " + (n + 1) + ", una más que los " + n +
+          " nodos. Cada nodo llama a sus dos subárboles, incluidos los vacíos, y los huecos vacíos son siempre uno más que los nodos." },
+      { valor: 2 * n + 1, clave: "llamados",
+        razon: "Ese es el total de llamados, " + (2 * n + 1) + ": " + n +
+          " sobre subárboles con nodo y " + (n + 1) + " sobre subárboles vacíos. " + F.linea +
+          " solo corre en los segundos, " + (n + 1) + " veces." },
+      { valor: a.h, clave: "altura",
+        razon: "Esa es la altura del árbol, que es hasta dónde llega la pila, no cuántas veces corre la línea. El caso base corre " + (n + 1) + " veces." }
+    ];
+    return unicas(lista);
+  }
+
+  /* Nunca dos botones con el mismo valor: gana la primera de la lista. */
+  function unicas(lista) {
+    var vistos = {};
+    return lista.filter(function (o) {
+      var nuevo = !vistos[o.valor];
+      vistos[o.valor] = true;
+      return nuevo;
+    });
   }
 
   function cuentas(p) {
@@ -73,7 +81,7 @@ var EJERCICIO = (function () {
   }
 
   return { ARBOLES: ARBOLES, FUNCIONES: FUNCIONES, CODIGO: CODIGO,
-           pasos: pasos, evaluar: evaluar, cuentas: cuentas };
+           pasos: pasos, opciones: opciones, cuentas: cuentas };
 })();
 
 if (typeof module !== "undefined") {
@@ -145,7 +153,6 @@ if (typeof module !== "undefined") {
       el("ver-texto").textContent = A.texto + " Tiene " + A.n + " nodos y altura " + A.h + ".";
       el("rot-prediccion").textContent = "¿Cuántas veces se ejecuta " + F.linea +
         ", el caso base de " + F.nombre + ", en toda la corrida?";
-      el("prediccion").value = "";
       Motor.limpiarVeredicto();
     }
 
@@ -169,7 +176,7 @@ if (typeof module !== "undefined") {
               { campo: "ans", rotulo: "ans", clase: "cuenta" }],
       paramsIniciales: p, alPintar: alPintar
     });
-    Motor.prediccionNumerica(function (valor, q) { return E.evaluar(valor, q); });
+    Motor.opcionesNumericas("opciones-caso-base", "veredicto", function (q) { return E.opciones(q); });
 
     barra("presets-arbol", {
       html: "<span class='nota' style='margin-top:0'>Árbol:</span>" + E.ARBOLES.map(function (a, i) {

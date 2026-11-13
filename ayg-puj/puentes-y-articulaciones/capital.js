@@ -187,7 +187,7 @@ if (typeof module !== "undefined") {
   module.exports = EJERCICIO;
 } else {
   (function () {
-    var presetActual = 0, R = null, agrupado = false, marcado = {}, mirada = -1;
+    var presetActual = 0, R = null, agrupado = false, marcado = {}, mirada = -1, opcionesPrediccion = null;
 
     function g() { return EJERCICIO.grafos[presetActual]; }
 
@@ -493,38 +493,18 @@ if (typeof module !== "undefined") {
       document.getElementById("explicaciones").innerHTML = "";
       document.getElementById("detalle-marcas").innerHTML = "";
       document.getElementById("salida").value = "";
-      ["veredicto", "veredicto-prediccion", "veredicto-marcas", "veredicto-salida", "veredicto-mirar"].forEach(function (id) {
+      ["veredicto", "veredicto-marcas", "veredicto-salida", "veredicto-mirar"].forEach(function (id) {
         var v = document.getElementById(id);
         v.className = "veredicto";
         v.textContent = "";
       });
-      document.getElementById("prediccion").value = "";
       dibujar();
       dibujarCondensacion();
+      if (opcionesPrediccion) { opcionesPrediccion.refrescar(); }
     }
 
     document.getElementById("btn-comprobar").addEventListener("click", comprobarRep);
     document.getElementById("btn-salida").addEventListener("click", comprobarSalida);
-    document.getElementById("btn-prediccion").addEventListener("click", function () {
-      var valor = parseInt(document.getElementById("prediccion").value, 10);
-      var v = document.getElementById("veredicto-prediccion"), p = g();
-      var total = R.lista.length;
-      if (isNaN(valor)) {
-        v.className = "veredicto mal";
-        v.textContent = "Escriba un número primero.";
-      } else if (valor === total) {
-        v.className = "veredicto bien";
-        v.textContent = total === 0
-          ? "Correcto: ninguna. Esta red tiene " + R.K.sumideros.length + " componentes sin salida, y las ciudades de uno no se alcanzan desde las del otro."
-          : "Correcto: " + total + ". Son las ciudades del único componente sin carreteras de salida.";
-      } else if (total === 0 && valor > 0) {
-        v.className = "veredicto mal";
-        v.textContent = "No coincide. Busque los componentes de los que no sale ninguna carretera: aquí hay más de uno, y eso deja la red sin capital.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "No coincide: son " + total + ". Cuente las ciudades del componente del que no sale ninguna carretera hacia otro.";
-      }
-    });
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (btn) {
       btn.addEventListener("click", function () {
         Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (b) { b.classList.remove("primario"); });
@@ -534,5 +514,22 @@ if (typeof module !== "undefined") {
       });
     });
     armar();
+
+    opcionesPrediccion = Motor.opcionesNumericas("opciones-prediccion", "veredicto-prediccion", function () {
+      var p = g(), total = R.lista.length, lista = [], usados = {};
+      var sumideros = R.K.sumideros.length, mayor = 0;
+      R.C.listas.forEach(function (l) { if (l.length > mayor) { mayor = l.length; } });
+      function agregar(valor, clave, razon) {
+        if (!usados[valor]) { usados[valor] = true; lista.push({ valor: valor, clave: clave, razon: razon }); }
+      }
+      agregar(total, "correcta", total === 0
+        ? "Correcto: ninguna. Esta red tiene " + sumideros + " componentes sin salida, y las ciudades de uno no se alcanzan desde las del otro."
+        : "Correcto: " + total + ". Son las ciudades del único componente sin carreteras de salida.");
+      agregar(p.n, "todas", "Eso sería si desde cualquier ciudad se llegara a todas. Una capital se alcanza desde todas las demás, y aquí hay ciudades de las que no se vuelve.");
+      agregar(R.C.listas.length, "componentes", "Ese es el número de componentes fuertemente conexos. La pregunta es por las ciudades, y solo cuentan las del componente sin carreteras de salida.");
+      agregar(sumideros, "sumideros", "Ese es el número de componentes sin carretera de salida. Cada uno trae sus ciudades, y con más de uno la red no tiene capital.");
+      agregar(mayor, "mayor", "Ese es el tamaño del componente más grande, que no tiene por qué ser el que no tiene salida.");
+      return lista.slice(0, 4);
+    });
   })();
 }

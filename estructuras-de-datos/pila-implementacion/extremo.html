@@ -23,20 +23,18 @@
     <p style="margin-top:0">Se apila y se desapila <code>n = 50</code> veces,
     contando los elementos que se corren en el arreglo y los nodos que se
     visitan en la enlazada. ¿Cuántos sale en cada combinación?</p>
-    <div class="prediccion">
-      <span>arreglo, tope al frente:</span>
-      <input type="number" id="pred-af" placeholder="?">
-      <span>arreglo, tope al final:</span>
-      <input type="number" id="pred-aa" placeholder="?">
-    </div>
-    <div class="prediccion">
-      <span>enlazada, tope al frente:</span>
-      <input type="number" id="pred-ef" placeholder="?">
-      <span>enlazada, tope al final:</span>
-      <input type="number" id="pred-ea" placeholder="?">
-      <button id="btn-cuatro" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-cuatro" class="veredicto"></div>
+    <div style="margin-top:.8rem"><b>Arreglo, tope al frente</b></div>
+    <div class="opciones" id="opciones-af"></div>
+    <div id="veredicto-af" class="veredicto"></div>
+    <div style="margin-top:.8rem"><b>Arreglo, tope al final</b></div>
+    <div class="opciones" id="opciones-aa"></div>
+    <div id="veredicto-aa" class="veredicto"></div>
+    <div style="margin-top:.8rem"><b>Enlazada, tope al frente</b></div>
+    <div class="opciones" id="opciones-ef"></div>
+    <div id="veredicto-ef" class="veredicto"></div>
+    <div style="margin-top:.8rem"><b>Enlazada, tope al final</b></div>
+    <div class="opciones" id="opciones-ea"></div>
+    <div id="veredicto-ea" class="veredicto"></div>
   </div>
 
   <div class="carta">
@@ -84,6 +82,7 @@
     es afirmar algo que puede ser falso.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="extremo.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

@@ -45,11 +45,8 @@
     <h2>2. El total que deja la fusión</h2>
     <p style="margin-top:0;margin-bottom:0.3rem">Con los dos vectores de arriba a la vista, antes
     de fusionar: ¿en qué total queda el contador cuando las dos réplicas se junten?</p>
-    <div class="prediccion">
-      <span>Total después de la fusión</span>
-      <input type="number" id="pred-total" min="0" step="1" placeholder="total">
-      <button id="btn-total" class="primario">Comprobar</button>
-    </div>
+    <div><b>Total después de la fusión</b></div>
+    <div class="opciones" id="op-total"></div>
     <div id="ver-total" class="veredicto"></div>
     <div class="botones" style="margin-top:0.7rem">
       <button id="btn-fusionar">Fusionar las dos</button>
@@ -73,11 +70,8 @@
         <tbody id="cuerpo-corrida"></tbody>
       </table>
     </div>
-    <div class="prediccion">
-      <span>¿Cuántos incrementos pierde la versión del entero suelto?</span>
-      <input type="number" id="pred-perdidos" min="0" step="1" placeholder="incrementos">
-      <button id="btn-perdidos" class="primario">Comprobar y destapar</button>
-    </div>
+    <div><b>¿Cuántos incrementos pierde la versión del entero suelto?</b></div>
+    <div class="opciones" id="op-perdidos"></div>
     <div id="ver-perdidos" class="veredicto"></div>
     <div class="chips" id="marcador-corrida" style="margin-top:0.7rem"></div>
     <div class="alerta" id="nota-corrida" hidden>Con un entero por réplica, el número de A y el

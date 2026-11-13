@@ -27,17 +27,11 @@
     </div>
     <p style="margin:0.8rem 0 0">El IPC sale de dos filas de esa tabla: instrucciones
     retiradas sobre ciclos consumidos.</p>
-    <div class="prediccion">
-      <span>IPC de <code>./bueno</code>. Dos decimales.</span>
-      <input type="number" id="pred-ipc-bueno" min="0" step="0.01" placeholder="IPC">
-      <button id="btn-ipc-bueno" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0.3rem">IPC de <code>./bueno</code>.</p>
+    <div class="opciones" id="op-ipc-bueno"></div>
     <div id="ver-ipc-bueno" class="veredicto"></div>
-    <div class="prediccion">
-      <span>IPC de <code>./malo</code>. Dos decimales.</span>
-      <input type="number" id="pred-ipc-malo" min="0" step="0.01" placeholder="IPC">
-      <button id="btn-ipc-malo" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0.3rem">IPC de <code>./malo</code>.</p>
+    <div class="opciones" id="op-ipc-malo"></div>
     <div id="ver-ipc-malo" class="veredicto"></div>
     <div class="botones" style="margin-top:0.6rem">
       <button id="btn-destapar-tanda1">Destapar las cuentas de la tabla</button>
@@ -74,17 +68,11 @@
         <tbody id="cuerpo-tanda2"></tbody>
       </table>
     </div>
-    <div class="prediccion">
-      <span>¿Cuántas veces más <code>cache-misses</code> tiene <code>./malo</code>?</span>
-      <input type="number" id="pred-fallos" min="0" step="1" placeholder="veces">
-      <button id="btn-fallos" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0.3rem">¿Cuántas veces más <code>cache-misses</code> tiene <code>./malo</code>?</p>
+    <div class="opciones" id="op-fallos"></div>
     <div id="ver-fallos" class="veredicto"></div>
-    <div class="prediccion">
-      <span>¿Y cuántas veces más tiempo transcurrido? Dos decimales.</span>
-      <input type="number" id="pred-tiempo" min="0" step="0.01" placeholder="veces">
-      <button id="btn-tiempo" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0.3rem">¿Y cuántas veces más tiempo transcurrido?</p>
+    <div class="opciones" id="op-tiempo"></div>
     <div id="ver-tiempo" class="veredicto"></div>
     <div class="chips" id="chips-tanda2" style="margin-top:0.7rem"></div>
     <div class="alerta" id="nota-brecha" hidden>Las dos cifras salen de la misma corrida y no

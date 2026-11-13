@@ -34,11 +34,32 @@
       ] }
   ];
 
-  var API = { CASOS: CASOS };
+  /* Cada distractor es un valor que alguien daría al confundir qué guarda cada función. */
+  var MALAS = [
+    [[15, "Eso es 5 * 3. sumador suma: x + n, no multiplica."],
+     [5, "Eso es solo n. La función fabricada todavía suma su x = 3."],
+     [3, "Eso es solo x. La función fabricada también suma su n = 5."]],
+    [[15, "Eso es 10 + 5: aplicó s a 10. t se fabricó con s(1) = 6, no con 5."],
+     [11, "Eso es 10 + 1: usó s(1) = 1 como n, pero s(1) vale 1 + 5 = 6 antes de llamar a sumador."],
+     [21, "Eso es 10 + 5 + 6: sumó los n de las dos funciones. t(10) solo usa el n que t guardó."]],
+    [[7, "Eso es aplicar la función una sola vez: 4 + 3. aplicaDos la aplica dos veces."],
+     [6, "Eso es 3 + 3: se olvidó del x = 4. Aplicar dos veces parte de ese 4."],
+     [13, "Eso son tres aplicaciones: 4 + 3 + 3 + 3. aplicaDos aplica f dos veces, f(f(x))."]]
+  ];
+
+  var API = { CASOS: CASOS, MALAS: MALAS };
   if (typeof module !== "undefined") { module.exports = API; }
   if (typeof document === "undefined") { return; }
 
   var actual = 0, k = 0, resueltos = {};
+
+  function sinRepetidos(lista) {
+    var vistos = {}, salida = [];
+    lista.forEach(function (o) {
+      if (!vistos[o.valor]) { vistos[o.valor] = true; salida.push(o); }
+    });
+    return salida;
+  }
 
   function pintar() {
     var c = CASOS[actual];
@@ -68,23 +89,26 @@
   document.querySelectorAll("[data-caso]").forEach(function (b) {
     b.addEventListener("click", function () {
       actual = parseInt(b.getAttribute("data-caso"), 10); k = 0;
-      document.getElementById("prediccion").value = "";
-      document.getElementById("veredicto").className = "veredicto";
-      document.getElementById("veredicto").textContent = "";
       document.getElementById("panel-ejecucion").classList.add("bloqueado");
+      opciones.refrescar();
       pintar();
     });
   });
-  document.getElementById("btn-comprobar").addEventListener("click", function () {
-    var c = CASOS[actual], v = document.getElementById("veredicto");
-    var valor = parseInt(document.getElementById("prediccion").value, 10);
-    if (isNaN(valor)) { v.className = "veredicto mal"; v.textContent = "Escriba un número primero."; return; }
-    if (valor === c.valor) {
-      v.className = "veredicto bien"; v.textContent = "Correcto: " + c.valor + ". Siga la sustitución para ver qué n guarda cada función.";
+  var opciones = Motor.opcionesNumericas("opciones-prediccion", "veredicto", function () {
+    var c = CASOS[actual];
+    var lista = [{ valor: c.valor, clave: "correcta",
+      razon: "Correcto: " + c.valor + ". Siga la sustitución para ver qué n guarda cada función." }];
+    MALAS[actual].forEach(function (m, n) {
+      lista.push({ valor: m[0], clave: "mala" + n, razon: m[1] });
+    });
+    return sinRepetidos(lista);
+  });
+  document.getElementById("opciones-prediccion").addEventListener("click", function (ev) {
+    var clave = ev.target.getAttribute ? ev.target.getAttribute("data-op") : null;
+    if (!clave) { return; }
+    if (clave === "correcta") {
       resueltos[actual] = true;
       if (Object.keys(resueltos).length === CASOS.length) { document.getElementById("carta-cierre").classList.remove("bloqueado"); }
-    } else {
-      v.className = "veredicto mal"; v.textContent = "No es " + valor + ". Reduzca por valor: cada sumador(…) produce una función que recuerda su n, y los argumentos se reducen antes de entrar.";
     }
     document.getElementById("panel-ejecucion").classList.remove("bloqueado");
     pintar();

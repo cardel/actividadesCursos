@@ -28,56 +28,96 @@ var EJERCICIO = (function () {
              radio: real.radio, diametro: real.diametro };
   }
 
-  function fbVueltas(c, valor) {
-    var m = medidas(c);
-    if (valor === m.vueltas) {
-      return { ok: true, txt: "Son " + m.vueltas + ", que es el piso de " + m.diametro + " sobre dos." };
+  /* Nunca dos botones con el mismo valor: queda la primera que lo trae.
+     Se devuelven a lo sumo cuatro. */
+  function unicas(lista) {
+    var vistos = [], r = [], i = 0;
+    while (i < lista.length) {
+      if (lista[i].valor >= 0 && vistos.indexOf(lista[i].valor) < 0) {
+        vistos.push(lista[i].valor);
+        r.push(lista[i]);
+      }
+      i = i + 1;
     }
-    if (valor === m.radio) {
-      return { ok: false, txt: "Ese es el radio, " + m.radio + ". Las vueltas son " + m.vueltas +
-        ": el pelado para apenas quedan dos vértices, y con " + m.centro.length +
-        (m.centro.length === 1 ? " centro se queda justo en el radio." : " centros se queda uno corto.") };
-    }
-    if (valor === m.diametro) {
-      return { ok: false, txt: "Ese es el diámetro. Cada vuelta acerca el borde un paso por los dos lados, así que son " + m.vueltas + "." };
-    }
-    return { ok: false, txt: "Son " + m.vueltas + ", el piso de " + m.diametro + " sobre dos." };
+    return r.slice(0, 4);
   }
 
-  function fbCentro(c, valor) {
+  function opcionesVueltas(c) {
     var m = medidas(c);
-    if (valor === m.centro.length) {
-      return { ok: true, txt: "Quedan " + m.centro.length + ": " + m.centro.join(" y ") +
-        ". Con diámetro " + m.diametro + (m.diametro % 2 === 0 ? ", que es par, la mitad del camino más largo cae en un vértice." : ", que es impar, la mitad cae entre dos.") };
-    }
-    if (valor > 2) {
-      return { ok: false, txt: "Nunca quedan más de dos. El pelado para en cuanto hay dos o menos, y aquí quedan " + m.centro.length + "." };
-    }
-    return { ok: false, txt: "Quedan " + m.centro.length + ", porque el diámetro " + m.diametro + " es " +
-      (m.diametro % 2 === 0 ? "par" : "impar") + "." };
+    return unicas([
+      { valor: m.vueltas, clave: "correcta",
+        razon: "Son " + m.vueltas + ", que es el piso de " + m.diametro + " sobre dos." },
+      { valor: m.radio, clave: "radio",
+        razon: "Ese es el radio, " + m.radio + ". Las vueltas son " + m.vueltas +
+          ": el pelado para apenas quedan dos vértices, y con " + m.centro.length +
+          (m.centro.length === 1 ? " centro se queda justo en el radio." : " centros se queda uno corto.") },
+      { valor: m.diametro, clave: "diametro",
+        razon: "Ese es el diámetro. Cada vuelta acerca el borde un paso por los dos lados, así que son " + m.vueltas + "." },
+      { valor: m.capas.length, clave: "capas",
+        razon: "Esa es la cantidad de capas que se listan, contando la que queda al final. Vueltas del ciclo hay " + m.vueltas + "." },
+      { valor: m.capas[0].length, clave: "hojas",
+        razon: "Esas son las hojas que se van en la primera vuelta. Se pregunta cuántas vueltas hay, y son " + m.vueltas + "." },
+      { valor: c.n - 1, clave: "aristas",
+        razon: "Esa es la cantidad de aristas del árbol. Cada vuelta quita una capa entera, no una arista: son " + m.vueltas + " vueltas." }
+    ]);
   }
 
-  function fbRadio(c, valor) {
-    var m = medidas(c);
-    if (valor === m.radio) { return { ok: true, txt: "Radio " + m.radio + "." }; }
-    if (valor === m.vueltas && m.centro.length === 2) {
-      return { ok: false, txt: "Esas son las vueltas. Con dos centros hay que sumarle uno: el radio es " + m.radio + "." };
-    }
-    return { ok: false, txt: "Es " + m.radio + ": " + m.vueltas + " vueltas y " + m.centro.length +
-      (m.centro.length === 1 ? " centro, así que el radio son las vueltas." : " centros, así que el radio es una más.") };
+  function opcionesCentro(c) {
+    var m = medidas(c), par = (m.diametro % 2 === 0);
+    var otro = (m.centro.length === 1) ? 2 : 1;
+    return unicas([
+      { valor: m.centro.length, clave: "correcta",
+        razon: "Quedan " + m.centro.length + ": " + m.centro.join(" y ") +
+          ". Con diámetro " + m.diametro + (par ? ", que es par, la mitad del camino más largo cae en un vértice." : ", que es impar, la mitad cae entre dos.") },
+      { valor: otro, clave: "paridad",
+        razon: "Quedan " + m.centro.length + ", porque el diámetro " + m.diametro + " es " +
+          (par ? "par" : "impar") + "." },
+      { valor: 3, clave: "tres",
+        razon: "Nunca quedan más de dos. El pelado para en cuanto hay dos o menos, y aquí quedan " + m.centro.length + "." },
+      { valor: 0, clave: "ninguno",
+        razon: "Siempre queda al menos uno: el ciclo para cuando hay dos vértices o menos, no cuando se acaban. Aquí quedan " + m.centro.length + "." }
+    ]);
   }
 
-  function fbDiam(c, valor) {
-    var m = medidas(c);
-    if (valor === m.diametro) { return { ok: true, txt: "Diámetro " + m.diametro + "." }; }
-    if (valor === 2 * m.vueltas && m.centro.length === 2) {
-      return { ok: false, txt: "Con dos centros el diámetro es impar: " + (2 * m.vueltas) + " más uno, o sea " + m.diametro + "." };
-    }
-    if (valor === 2 * m.radio && m.centro.length === 2) {
-      return { ok: false, txt: "Esa cuenta vale con un solo centro. Aquí quedan dos, y el diámetro es " + m.diametro + "." };
-    }
-    return { ok: false, txt: "Es " + m.diametro + ", que son " + (2 * m.vueltas) +
-      (m.centro.length === 1 ? "." : " más uno.") };
+  function opcionesRadio(c) {
+    var m = medidas(c), uno = (m.centro.length === 1);
+    return unicas([
+      { valor: m.radio, clave: "correcta", razon: "Radio " + m.radio + "." },
+      { valor: m.vueltas, clave: "vueltas",
+        razon: "Esas son las vueltas. Con dos centros hay que sumarle uno: el radio es " + m.radio + "." },
+      { valor: m.vueltas + 1, clave: "sumauno",
+        razon: "Sumar uno vale con dos centros. Aquí queda uno solo y el radio son las vueltas, " + m.radio + "." },
+      { valor: m.diametro, clave: "diametro",
+        razon: "Ese es el diámetro. El radio es la excentricidad del centro: " + m.vueltas + " vueltas y " + m.centro.length +
+          (uno ? " centro, así que son las vueltas." : " centros, así que es una más.") },
+      { valor: m.radio + 1, clave: "demas",
+        razon: "Se pasó por uno: son " + m.vueltas + " vueltas y " + m.centro.length +
+          (uno ? " centro, así que el radio son las vueltas." : " centros, así que el radio es una más.") },
+      { valor: m.radio - 1, clave: "menos",
+        razon: "Se quedó corto por uno: son " + m.vueltas + " vueltas y " + m.centro.length +
+          (uno ? " centro, así que el radio son las vueltas." : " centros, así que el radio es una más.") }
+    ]);
+  }
+
+  function opcionesDiam(c) {
+    var m = medidas(c), uno = (m.centro.length === 1);
+    return unicas([
+      { valor: m.diametro, clave: "correcta", razon: "Diámetro " + m.diametro + "." },
+      { valor: 2 * m.vueltas, clave: "dosvueltas",
+        razon: "Con dos centros el diámetro es impar: " + (2 * m.vueltas) + " más uno, o sea " + m.diametro + "." },
+      { valor: 2 * m.radio, clave: "dosradio",
+        razon: "Esa cuenta vale con un solo centro. Aquí quedan dos, y el diámetro es " + m.diametro + "." },
+      { valor: 2 * m.vueltas + 1, clave: "masuno",
+        razon: "Sumar uno vale con dos centros. Aquí queda uno solo y el diámetro es el doble de las vueltas, " + m.diametro + "." },
+      { valor: m.radio, clave: "radio",
+        razon: "Ese es el radio. El diámetro es el camino más largo, que pasa por el centro y llega a ambos lados: " +
+          m.diametro + ", que son " + (2 * m.vueltas) + (uno ? "." : " más uno.") },
+      { valor: m.vueltas, clave: "vueltas",
+        razon: "Esas son las vueltas, la mitad del camino. El diámetro son " + (2 * m.vueltas) + (uno ? "" : " más uno") +
+          ", o sea " + m.diametro + "." },
+      { valor: c.n - 1, clave: "aristas",
+        razon: "Esa es la cantidad de aristas del árbol, que solo coincide con el diámetro si el árbol es un camino. Aquí es " + m.diametro + "." }
+    ]);
   }
 
   function filaTabla(i) {
@@ -87,15 +127,16 @@ var EJERCICIO = (function () {
            (m.vueltas === m.radio ? "sí" : "no") + "</td></tr>";
   }
 
-  return { CASOS: CASOS, medidas: medidas, fbVueltas: fbVueltas, fbCentro: fbCentro,
-           fbRadio: fbRadio, fbDiam: fbDiam, filaTabla: filaTabla };
+  return { CASOS: CASOS, medidas: medidas, opcionesVueltas: opcionesVueltas,
+           opcionesCentro: opcionesCentro, opcionesRadio: opcionesRadio,
+           opcionesDiam: opcionesDiam, filaTabla: filaTabla };
 })();
 
 if (typeof module !== "undefined") { module.exports = EJERCICIO; }
 
 if (typeof document !== "undefined") {
   (function () {
-    var E = EJERCICIO, actual = 0, resueltos = [];
+    var E = EJERCICIO, actual = 0, resueltos = [], refrescos = [];
 
     function pintar() {
       var c = E.CASOS[actual], m = E.medidas(c);
@@ -107,11 +148,7 @@ if (typeof document !== "undefined") {
       });
       document.getElementById("pie").textContent = c.nombre + ", " + c.n + " vértices y " + c.aristas.length + " aristas.";
       document.getElementById("capas").innerHTML = "";
-      ["vueltas", "cent", "radio", "diam"].forEach(function (k) {
-        document.getElementById("in-" + k).value = "";
-        var f = document.getElementById("fb-" + k);
-        f.textContent = ""; f.className = "fb";
-      });
+      refrescos.forEach(function (o) { o.refrescar(); });
     }
 
     function presets() {
@@ -138,18 +175,22 @@ if (typeof document !== "undefined") {
 
     presets(); pintar(); tabla();
 
-    document.getElementById("btn-comprobar").addEventListener("click", function () {
-      var c = E.CASOS[actual], todas = true;
-      [["vueltas", E.fbVueltas], ["cent", E.fbCentro], ["radio", E.fbRadio], ["diam", E.fbDiam]]
-        .forEach(function (par) {
-          var val = parseInt(document.getElementById("in-" + par[0]).value, 10);
-          var r = par[1](c, val), d = document.getElementById("fb-" + par[0]);
-          d.textContent = r.txt;
-          d.className = "fb " + (r.ok ? "bien" : "mal");
-          if (!r.ok) { todas = false; }
+    var PREGUNTAS = [["vueltas", E.opcionesVueltas], ["cent", E.opcionesCentro],
+                     ["radio", E.opcionesRadio], ["diam", E.opcionesDiam]];
+
+    PREGUNTAS.forEach(function (par) {
+      refrescos.push(Motor.opcionesNumericas("opciones-" + par[0], "veredicto-" + par[0],
+        function () { return par[1](E.CASOS[actual]); }));
+      /* el clic llega aqui despues de que el boton pinto su veredicto */
+      document.getElementById("opciones-" + par[0]).addEventListener("click", function () {
+        var todas = true;
+        PREGUNTAS.forEach(function (q) {
+          if (document.getElementById("veredicto-" + q[0]).className.indexOf("bien") < 0) { todas = false; }
         });
-      if (todas && resueltos.indexOf(actual) < 0) { resueltos.push(actual); tabla(); }
+        if (todas && resueltos.indexOf(actual) < 0) { resueltos.push(actual); tabla(); }
+      });
     });
+
     document.getElementById("btn-capas").addEventListener("click", function () {
       var m = E.medidas(E.CASOS[actual]), h = "<p>Capas que se van:</p><ol>";
       m.capas.forEach(function (capa, i) {

@@ -143,6 +143,17 @@ var EJERCICIO = (function () {
   var PREGUNTAS = [
     { campo: "aristas", rotulo: "¿Cuántas aristas tiene?",
       valor: function (g) { return g.m; },
+      opciones: function (g) {
+        return [
+          { valor: g.m, clave: "correcta", razon: "Correcto. " + this.fb(g, g.m) },
+          { valor: 2 * g.m, clave: "grados",
+            razon: "Son " + g.m + ". El " + (2 * g.m) + " es la suma de los grados, que cuenta cada arista dos veces, una por cada punta." },
+          { valor: g.n, clave: "vertices",
+            razon: "Son " + g.m + ". El " + g.n + " es la cantidad de vértices, no de aristas: se cuentan las líneas del dibujo y no los puntos." },
+          { valor: g.m - 1, clave: "falta",
+            razon: "Son " + g.m + ". Con " + (g.m - 1) + " se deja una arista sin contar; cada línea del dibujo es una." }
+        ];
+      },
       fb: function (g, v) {
         return v > g.m
           ? "Son " + g.m + ". Cada línea del dibujo es una sola arista, y una arista que toca un vértice de grado 3 no cuenta tres veces."
@@ -150,6 +161,22 @@ var EJERCICIO = (function () {
       } },
     { campo: "hojas", rotulo: "¿Cuántas hojas, es decir vértices de grado 1?",
       valor: function (g) { return g.hojas.length; },
+      opciones: function (g) {
+        var h = g.hojas.length, ram = 0;
+        g.grado.forEach(function (d) { if (d >= 3) { ram = ram + 1; } });
+        return [
+          { valor: h, clave: "correcta", razon: "Correcto. " + this.fb(g) },
+          { valor: g.n - h, clave: "internos",
+            razon: "Son " + h + ". El " + (g.n - h) + " cuenta los vértices que no son hoja, los de grado distinto de 1." },
+          { valor: h + 1, clave: "mas",
+            razon: "Son " + h + ". Con " + (h + 1) + " se cuenta además un vértice de grado " +
+              (g.grado.indexOf(2) >= 0 ? 2 : 3) + " como si fuera hoja; hoja es solo el de grado 1." },
+          { valor: ram, clave: "ramas",
+            razon: "Son " + h + ". El " + ram + " cuenta los vértices de grado 3 o más, donde el árbol se ramifica, y no los de grado 1." },
+          { valor: h - 1, clave: "menos",
+            razon: "Son " + h + ". Con " + (h - 1) + " se deja una hoja sin contar: " + g.hojas.join(", ") + "." }
+        ].slice(0, 5);
+      },
       fb: function (g) {
         return "Son " + g.hojas.length + ": " + g.hojas.join(", ") + ". Los grados son " +
           g.grado.map(function (d, v) { return NOM[v] + ":" + d; }).join(", ") +
@@ -157,6 +184,23 @@ var EJERCICIO = (function () {
       } },
     { campo: "ciclos", rotulo: "¿Cuántos ciclos independientes tiene?",
       valor: function (g) { return g.ciclos; },
+      opciones: function (g) {
+        var ram = 0;
+        g.grado.forEach(function (d) { if (d >= 3) { ram = ram + 1; } });
+        return [
+          { valor: g.ciclos, clave: "correcta", razon: "Correcto. " + this.fb(g) },
+          { valor: g.ciclos + 1, clave: "mas",
+            razon: "Son " + g.ciclos + ". Con " + (g.ciclos + 1) + " se cuenta una arista que no cierra ningún ciclo: " +
+              "|E| − n + c = " + g.m + " − " + g.n + " + " + g.comp + "." },
+          { valor: g.m - g.n + 1, clave: "conexo",
+            razon: "Son " + g.ciclos + ". La cuenta |E| − n + 1 supone un grafo conexo; aquí hay " + g.comp +
+              " componente" + (g.comp === 1 ? "" : "s") + " y la fórmula es |E| − n + c." },
+          { valor: g.comp, clave: "componentes",
+            razon: "Son " + g.ciclos + ". El " + g.comp + " es la cantidad de componentes, no de ciclos." },
+          { valor: ram, clave: "ramas",
+            razon: "Son " + g.ciclos + ". El " + ram + " cuenta los vértices de grado 3 o más, donde el grafo se ramifica; ramificar no cierra ciclos." }
+        ];
+      },
       fb: function (g) {
         return "Son " + g.ciclos + ". La cuenta es |E| − n + c con c componentes: " + g.m + " − " + g.n +
           " + " + g.comp + " = " + g.ciclos + ". Este grafo tiene " + g.comp + " componente" + (g.comp === 1 ? "" : "s") +
@@ -164,7 +208,22 @@ var EJERCICIO = (function () {
       } }
   ];
 
-  return { OPCIONES: OPCIONES, CASOS: CASOS, GRAFOS: GRAFOS, PREGUNTAS: PREGUNTAS, NOM: NOM,
+  /* Nunca dos botones con el mismo valor: gana la primera de la lista. */
+  function unicas(lista) {
+    var vistos = {};
+    return lista.filter(function (o) {
+      var nuevo = !vistos[o.valor] && o.valor >= 0;
+      vistos[o.valor] = true;
+      return nuevo;
+    });
+  }
+
+  function opcionesCuenta(campo, g) {
+    var q = PREGUNTAS.filter(function (x) { return x.campo === campo; })[0];
+    return unicas(q.opciones(g)).slice(0, 4);
+  }
+
+  return { OPCIONES: OPCIONES, opcionesCuenta: opcionesCuenta, CASOS: CASOS, GRAFOS: GRAFOS, PREGUNTAS: PREGUNTAS, NOM: NOM,
            clasificar: clasificar, datos: datos, fb: fb,
            ciclosIndep: ciclosIndep, componentes: componentes };
 })();
@@ -212,34 +271,6 @@ if (typeof module !== "undefined") {
         nombre: function (u) { return E.NOM[u]; },
         nodo: function (u) { return g.grado[u] === 1 ? { relleno: "#e7f2e8", borde: "#2e7d32" } : {}; }
       });
-      el("cuentas").innerHTML = E.PREGUNTAS.map(function (p) {
-        return "<div class='fila-par'><span class='rotulo'>" + p.rotulo +
-          "</span><input type='number' class='corto' id='in-" + p.campo + "' placeholder='0'>" +
-          "<span class='fb' id='fb-" + p.campo + "'></span></div>";
-      }).join("");
-      el("fb-cuentas").className = "";
-      el("fb-cuentas").textContent = "";
-    }
-
-    function comprobar() {
-      var g = E.GRAFOS[idx], buenas = 0;
-      E.PREGUNTAS.forEach(function (p) {
-        var v = parseInt(el("in-" + p.campo).value, 10), caja = el("fb-" + p.campo), esperado = p.valor(g);
-        if (isNaN(v)) { caja.className = "fb mal"; caja.textContent = "Falta el número."; return; }
-        if (v === esperado) {
-          caja.className = "fb bien";
-          caja.textContent = "Correcto. " + p.fb(g, v);
-          buenas = buenas + 1;
-        } else {
-          caja.className = "fb mal";
-          caja.textContent = p.fb(g, v);
-        }
-      });
-      el("fb-cuentas").className = buenas === E.PREGUNTAS.length ? "fb bien" : "fb mal";
-      el("fb-cuentas").textContent = buenas === E.PREGUNTAS.length
-        ? "Las tres cuentas salen. Con " + g.m + " aristas frente a n − 1 = " + (g.n - 1) + ", este grafo " +
-          (g.ciclos === 0 && g.comp === 1 ? "es un árbol." : (g.comp > 1 ? "es un bosque de " + g.comp + " árboles." : "tiene " + g.ciclos + " ciclo" + (g.ciclos === 1 ? "" : "s") + " y no es árbol."))
-        : buenas + " de " + E.PREGUNTAS.length + " cuentas correctas.";
     }
 
     var caja = el("casos");
@@ -256,9 +287,14 @@ if (typeof module !== "undefined") {
         Array.prototype.forEach.call(el("presets").querySelectorAll("button"), function (x) { x.classList.remove("primario"); });
         b.classList.add("primario");
         dibujar();
+        cajas.forEach(function (c) { c.refrescar(); });
       });
     });
-    el("btn-cuentas").addEventListener("click", comprobar);
+    var cajas = E.PREGUNTAS.map(function (q) {
+      return Motor.opcionesNumericas("opciones-" + q.campo, "veredicto-" + q.campo, function () {
+        return E.opcionesCuenta(q.campo, E.GRAFOS[idx]);
+      });
+    });
     dibujar();
   })();
 }

@@ -354,19 +354,16 @@
     alPintar: alPintar
   });
 
-  Motor.prediccionNumerica(function (valor) {
-    if (valor === 6) {
-      return { ok: true, msg: "Son seis. El generador de adentro produce un valor con i = 1, dos con i = 2 y tres con i = 3." };
-    }
-    if (valor === 9) {
-      return { ok: false, msg: "9 es el largo cuando el segundo generador no depende del primero, con j <- 1 to 3. Aquí el extremo de arriba es i y con i = 1 solo sale una pareja." };
-    }
-    if (valor === 3) {
-      return { ok: false, msg: "3 es cuántos valores toma i. Cada i aporta tantas parejas como valores produzca 1 to i, y esa cantidad crece con i." };
-    }
-    if (valor === 2) {
-      return { ok: false, msg: "2 es cuántas parejas aporta i = 2. Las de i = 1 e i = 3 también entran al resultado." };
-    }
-    return { ok: false, msg: "No es ese número. Cuente aparte cuántas parejas aporta cada valor de i: con i = 1, con i = 2 y con i = 3." };
+  Motor.opcionesNumericas("opciones-parejas", "veredicto", function () {
+    return [
+      { valor: 6, clave: "correcta",
+        razon: "Son seis. El generador de adentro produce un valor con i = 1, dos con i = 2 y tres con i = 3." },
+      { valor: 9, clave: "independiente",
+        razon: "9 es el largo cuando el segundo generador no depende del primero, con j <- 1 to 3. Aquí el extremo de arriba es i y con i = 1 solo sale una pareja." },
+      { valor: 3, clave: "valores-i",
+        razon: "3 es cuántos valores toma i. Cada i aporta tantas parejas como valores produzca 1 to i, y esa cantidad crece con i." },
+      { valor: 2, clave: "solo-i2",
+        razon: "2 es cuántas parejas aporta i = 2. Las de i = 1 e i = 3 también entran al resultado." }
+    ];
   });
 })();

@@ -15,7 +15,7 @@
   <a class="volver" href="#">← Volver a los ejercicios</a>
   <h1>Dos cálculos y un enlace de 12 GB/s: cuál paga el viaje a la GPU</h1>
   <p class="intro">El enlace PCIe del computador de la clase mueve cerca de 12 GB/s y no calcula
-  nada: cada byte que cruza tiene que pagarse con operaciones del otro lado. Escriba cuánto dura
+  nada: cada byte que cruza tiene que pagarse con operaciones del otro lado. Elija cuánto dura
   el viaje de un arreglo y cuántas operaciones por byte tiene un producto de matrices antes de
   verlos, y al final decida qué le pasó a un cronómetro que marcó 40 µs.</p>
 
@@ -33,24 +33,21 @@
     <div class="chips" id="chips-viaje"></div>
     <div class="nota">La máquina de la clase: un Ryzen 5 3600 de un lado, una RTX 3060 Ti con
     8 GiB propios del otro y, entre los dos, PCIe 3.0 ×16, cerca de 12 GB/s en la práctica.
-    Las dos cuentas con ? se destapan al comprobar las predicciones de abajo.</div>
+    Las dos cuentas con ? se destapan al responder las preguntas de abajo.</div>
   </div>
 
   <div class="carta">
     <h2>2. Antes de mirar</h2>
     <div class="prediccion">
-      <span>¿Cuántos ms tarda en ir y volver el arreglo de 5 M float64 por PCIe a 12 GB/s?
-      Un decimal.</span>
-      <input type="number" id="prediccion-a" min="0" step="0.1" placeholder="ms">
-      <button id="btn-comprobar-a" class="primario">Comprobar</button>
+      <span>¿Cuántos ms tarda en ir y volver el arreglo de 5 M float64 por PCIe a 12 GB/s?</span>
     </div>
+    <div class="opciones" id="opciones-viaje"></div>
     <div id="veredicto-a" class="veredicto"></div>
     <div id="panel-viaje" hidden style="margin-top:0.8rem"></div>
     <div class="prediccion" style="margin-top:1rem">
-      <span>¿Cuántas operaciones por byte tiene el producto 4000 × 4000 en float32? Entero.</span>
-      <input type="number" id="prediccion-b" min="0" step="1" placeholder="op/byte">
-      <button id="btn-comprobar-b" class="primario">Comprobar</button>
+      <span>¿Cuántas operaciones por byte tiene el producto 4000 × 4000 en float32?</span>
     </div>
+    <div class="opciones" id="opciones-opbyte"></div>
     <div id="veredicto-b" class="veredicto"></div>
   </div>
 

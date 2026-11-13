@@ -107,23 +107,25 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
+    Motor.opcionesNumericas("opciones-suma", "veredicto", function (params) {
       var A = params.A;
       var esperado = EJERCICIO.sumaPrefijo(A, A.length);
-      var mayor = A[0];
-      A.forEach(function (v) { if (v > mayor) { mayor = v; } });
-      if (valor === esperado) {
-        return { ok: true, msg: "Correcto: la suma es " + esperado +
-          ". Ahora ejecute y fíjese en la pareja (i, ans) de cada chequeo." };
-      }
-      if (valor === mayor) {
-        return { ok: false, msg: "Ese es el mayor elemento; ans acumula la suma " +
-          "de todos." };
-      }
-      if (valor === A.length) {
-        return { ok: false, msg: "Ese es el número de elementos, no su suma." };
-      }
-      return { ok: false, msg: "No coincide. Sume a mano los elementos del arreglo." };
+      var mayor = A[0], abs = 0;
+      A.forEach(function (v) { if (v > mayor) { mayor = v; } abs = abs + Math.abs(v); });
+      var lista = [{ valor: esperado, clave: "correcta", razon: "Correcto: la suma es " + esperado +
+        ". Ahora ejecute y fíjese en la pareja (i, ans) de cada chequeo." }];
+      var cand = [
+        { valor: esperado - A[A.length - 1], clave: "sinultimo", razon: "Eso deja por fuera el último elemento: el ciclo llega hasta i = N, y A[N−1] también se suma." },
+        { valor: mayor, clave: "mayor", razon: "Ese es el mayor elemento; ans acumula la suma de todos." },
+        { valor: A.length, clave: "cuenta", razon: "Ese es el número de elementos, no su suma." },
+        { valor: abs, clave: "abs", razon: "Eso suma los valores sin su signo; los negativos restan." }
+      ];
+      cand.forEach(function (o) {
+        var repetido = false;
+        lista.forEach(function (x) { if (x.valor === o.valor) { repetido = true; } });
+        if (!repetido && lista.length < 4) { lista.push(o); }
+      });
+      return lista;
     });
 
     Array.prototype.forEach.call(document.querySelectorAll(".presets button"), function (btn) {

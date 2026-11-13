@@ -9,7 +9,7 @@ equivocada dice por qué no.
 
 ### [Quién tiene el GIL](gil.html){ target=_blank rel=noopener }
 
-Ocho tareas repartidas entre hilos, y un solo permiso para ejecutar. Escriba
+Ocho tareas repartidas entre hilos, y un solo permiso para ejecutar. Escoja
 cuánto tarda el programa de esperas con cuatro hilos, que sale de la tabla, y
 compárelo con lo que hace el de cálculo puro: ahí la cuenta da más que con un
 solo hilo, y eso fue lo que midió la clase. El paso a paso muestra el turno
@@ -30,7 +30,7 @@ lo anuncie.
 ### [El barrido de 2 a 16 hilos](barrido.html){ target=_blank rel=noopener }
 
 Sumar cien millones de números, primero con una lista de Python y después con
-NumPy. Escriba los dos tiempos antes de verlos: con cuatro hilos el programa
+NumPy. Escoja los dos tiempos antes de verlos: con cuatro hilos el programa
 tarda más que con uno, y el cambio a NumPy divide el tiempo secuencial por
 ciento doce sin usar un solo hilo. Las dos últimas preguntas son por qué NumPy
 sí escala y por qué se detiene en 24 milisegundos.

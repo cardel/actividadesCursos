@@ -27,13 +27,46 @@
       reglas: ["Se sustituye x = 5.", "1 * 2 se hace antes que la resta: 2. No es (5 - 1) * 2.", "5 - 2 = 3."] }
   ];
 
-  var API = { CASOS: CASOS };
+  /* Cada distractor es un valor que alguien daría al leer mal la precedencia. */
+  var MALAS = [
+    [[6, "Ese es el promedio de verdad, (4 + 8) / 2. Aquí el literal no tiene paréntesis: la división va antes que la suma."],
+     [12, "Eso es 4 + 8: se olvidó de la división. El cuerpo es x + y / 2 y el 2 divide solo a y."],
+     [4, "Eso es solo 8 / 2. Falta sumar el x = 4 que queda fuera de la división."]],
+    [[8, "Eso saldría de 4 + 8 / 2, sin paréntesis. Aquí sí están: la suma va primero y da 12."],
+     [12, "Eso es 4 + 8: falta dividir el resultado entre 2."],
+     [4, "Eso es solo 8 / 2: el paréntesis obliga a sumar x antes de dividir."]],
+    [[8, "Eso es el promedio (7 + 9) / 2. El literal no tiene paréntesis: la división va antes y es solo 9 / 2."],
+     [12, "Dividió 9 entre 2 como si fuera 4,5 y redondeó. La división entre enteros descarta el resto: 9 / 2 = 4."],
+     [16, "Eso es 7 + 9: se olvidó de la división."]],
+    [[11, "Eso saldría de 7 + 9 / 2, sin paréntesis. Aquí el paréntesis obliga a sumar primero: 16."],
+     [16, "Eso es 7 + 9: falta dividir el resultado entre 2."],
+     [4, "Eso es solo 9 / 2: el paréntesis obliga a sumar x antes de dividir."]],
+    [[9, "Eso es x * (2 + 1). Aquí no hay paréntesis: el * va antes que el +."],
+     [8, "Eso es (3 + 1) * 2: hizo la suma primero. El * tiene precedencia sobre el +."],
+     [6, "Eso es 3 * 2: se olvidó del + 1 del final."]],
+    [[7, "Eso es x * 2 + 1, sin paréntesis. Aquí el paréntesis obliga a sumar 2 + 1 antes de multiplicar."],
+     [6, "Eso es 3 * 2: el paréntesis agrupa 2 + 1, no solo el 2."],
+     [3, "Eso es solo 2 + 1: falta multiplicar por x = 3."]],
+    [[8, "Eso es (5 - 1) * 2: restó primero. El * va antes que la resta, y 1 * 2 se hace solo."],
+     [4, "Eso es 5 - 1: restó solo el 1 y se olvidó de multiplicarlo por 2."],
+     [2, "Eso es solo 1 * 2: falta restárselo a x = 5."]]
+  ];
+
+  var API = { CASOS: CASOS, MALAS: MALAS };
   if (typeof module !== "undefined") { module.exports = API; }
   if (typeof document === "undefined") { return; }
 
   var actual = 0;
   var k = 0;
   var resueltos = {};
+
+  function sinRepetidos(lista) {
+    var vistos = {}, salida = [];
+    lista.forEach(function (o) {
+      if (!vistos[o.valor]) { vistos[o.valor] = true; salida.push(o); }
+    });
+    return salida;
+  }
 
   function pintar() {
     var c = CASOS[actual];
@@ -64,26 +97,26 @@
     b.addEventListener("click", function () {
       actual = parseInt(b.getAttribute("data-caso"), 10);
       k = 0;
-      document.getElementById("prediccion").value = "";
-      document.getElementById("veredicto").className = "veredicto";
-      document.getElementById("veredicto").textContent = "";
       document.getElementById("panel-ejecucion").classList.add("bloqueado");
+      opciones.refrescar();
       pintar();
     });
   });
-  document.getElementById("btn-comprobar").addEventListener("click", function () {
+  var opciones = Motor.opcionesNumericas("opciones-prediccion", "veredicto", function () {
     var c = CASOS[actual];
-    var v = document.getElementById("veredicto");
-    var valor = parseInt(document.getElementById("prediccion").value, 10);
-    if (isNaN(valor)) { v.className = "veredicto mal"; v.textContent = "Escriba un número primero."; return; }
-    if (valor === c.valor) {
-      v.className = "veredicto bien";
-      v.textContent = "Correcto: " + c.valor + ". Ahora recórralo paso a paso.";
+    var lista = [{ valor: c.valor, clave: "correcta",
+      razon: "Correcto: " + c.valor + ". Ahora recórralo paso a paso." }];
+    MALAS[actual].forEach(function (m, n) {
+      lista.push({ valor: m[0], clave: "mala" + n, razon: m[1] });
+    });
+    return sinRepetidos(lista);
+  });
+  document.getElementById("opciones-prediccion").addEventListener("click", function (ev) {
+    var clave = ev.target.getAttribute ? ev.target.getAttribute("data-op") : null;
+    if (!clave) { return; }
+    if (clave === "correcta") {
       resueltos[actual] = true;
       if (Object.keys(resueltos).length === CASOS.length) { document.getElementById("carta-cierre").classList.remove("bloqueado"); }
-    } else {
-      v.className = "veredicto mal";
-      v.textContent = "No es " + valor + ". Escriba el cuerpo con los valores puestos y pregúntese qué operación va primero; el paso a paso lo muestra.";
     }
     document.getElementById("panel-ejecucion").classList.remove("bloqueado");
     pintar();

@@ -18,10 +18,7 @@
     <p style="margin-top:0">Un vector con 6 elementos recibe
     <code>v.insert(v.begin() + 2, x)</code>. ¿Cuántos elementos se corren
     de lugar?</p>
-    <div class="prediccion">
-      <input type="number" id="pred-insert" placeholder="?">
-      <button id="btn-insert" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-insert"></div>
     <div id="veredicto-insert" class="veredicto"></div>
   </div>
 
@@ -31,10 +28,7 @@
     elementos y hace <code>r.insert(r.begin(), l[p])</code> con cada uno.
     Sumando todas las inserciones, ¿cuántos elementos se corren en
     total?</p>
-    <div class="prediccion">
-      <input type="number" id="pred-revertir" placeholder="?">
-      <button id="btn-revertir" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-revertir"></div>
     <div id="veredicto-revertir" class="veredicto"></div>
   </div>
 
@@ -71,6 +65,7 @@
     demostrar cuando el vector se construya a mano.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="costos.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

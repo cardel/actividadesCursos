@@ -69,20 +69,30 @@ var EJERCICIO = (function () {
 
   function T(d) { return 4 * d.length + 1 + k(d); }
 
-  function evaluar(valor, d) {
-    var esperado = k(d);
+  /* Una opción cuyo valor repite el de otra ya puesta se descarta. */
+  function sinRepetidos(lista, tope) {
+    var vistos = {};
+    var sal = [];
+    lista.forEach(function (o) {
+      if (!vistos[o.valor] && o.valor >= 0 && sal.length < tope) { vistos[o.valor] = true; sal.push(o); }
+    });
+    return sal;
+  }
+
+  /* Opciones de la predicción: asignaciones de las líneas 6 y 8. */
+  function opciones(params) {
+    var d = params.datos;
+    var n = d.length;
     var c = conteos(d);
-    var res;
-    if (valor === esperado) {
-      res = { ok: true, msg: "Correcto: " + esperado + " asignaciones, " + (c[6] || 0) + " en la línea 6 y " + (c[8] || 0) + " en la 8. Con " + d.length + " datos, el total es T = 4n + 1 + k = " + T(d) + "." };
-    } else if (valor === d.length - 1) {
-      res = { ok: false, msg: "Eso sería entrar en algún if en todas las vueltas. Revise cada dato: entra en la línea 6 solo si supera al mayor visto, y en la 8 solo si queda por debajo del menor." };
-    } else if (valor === 2 * (d.length - 1)) {
-      res = { ok: false, msg: "Los dos if no pueden ser ciertos en la misma vuelta: un dato no puede ser mayor que el mayor y menor que el menor a la vez." };
-    } else {
-      res = { ok: false, msg: "No coincide. Recorra los datos desde datos[1] llevando mayor y menor, y cuente cuántas veces cambia alguno." };
-    }
-    return res;
+    var kk = k(d);
+    return sinRepetidos([
+      { valor: kk, clave: "correcta", razon: "Correcto: " + kk + " asignaciones, " + (c[6] || 0) + " en la línea 6 y " + (c[8] || 0) + " en la 8. Con " + n + " datos, el total es T = 4n + 1 + k = " + T(d) + "." },
+      { valor: n - 1, clave: "todasLasVueltas", razon: "Eso sería entrar en algún if en todas las vueltas. Revise cada dato: entra en la línea 6 solo si supera al mayor visto, y en la 8 solo si queda por debajo del menor." },
+      { valor: 2 * (n - 1), clave: "ambosIf", razon: "Los dos if no pueden ser ciertos en la misma vuelta: un dato no puede ser mayor que el mayor y menor que el menor a la vez." },
+      { valor: kk + 2, clave: "inicializaciones", razon: "Las líneas 1 y 2 también asignan, pero la pregunta es solo por las de los if, las líneas 6 y 8: sin esas dos, la cuenta queda en " + kk + "." },
+      { valor: c[6] || 0, clave: "soloMayor", razon: "Esa es solo la línea 6. Falta sumar las veces que un dato queda por debajo del menor visto, en la línea 8." },
+      { valor: c[8] || 0, clave: "soloMenor", razon: "Esa es solo la línea 8. Falta sumar las veces que un dato supera al mayor visto, en la línea 6." }
+    ], 4);
   }
 
   var RAZONES = {
@@ -100,7 +110,7 @@ var EJERCICIO = (function () {
   };
 
   return { codigo: CODIGO, ENTRADAS: ENTRADAS, simular: simular, conteos: conteos, k: k, T: T,
-    evaluar: evaluar, RAZONES: RAZONES, RAZONES_MEJOR: RAZONES_MEJOR };
+    opciones: opciones, RAZONES: RAZONES, RAZONES_MEJOR: RAZONES_MEJOR };
 })();
 
 if (typeof module !== "undefined") {
@@ -133,7 +143,7 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor) { return EJERCICIO.evaluar(valor, EJERCICIO.ENTRADAS[actual]); });
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto", EJERCICIO.opciones);
 
     Array.prototype.forEach.call(document.querySelectorAll(".presets button"), function (b) {
       b.addEventListener("click", function () {

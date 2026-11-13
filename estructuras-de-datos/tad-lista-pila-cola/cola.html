@@ -16,16 +16,15 @@
   <div class="carta">
     <h2>1. Encolar, desencolar, frente</h2>
     <div class="codigo" id="codigo-ops"></div>
-    <div class="prediccion">
-      <span>primer frente:</span>
-      <input type="number" id="pred-f1" placeholder="?">
-      <span>segundo:</span>
-      <input type="number" id="pred-f2" placeholder="?">
-      <span>tamaño:</span>
-      <input type="number" id="pred-n" placeholder="?">
-      <button id="btn-ops" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-ops" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem">¿Qué imprime la primera línea con <code>frente</code>?</p>
+    <div class="opciones" id="opciones-f1"></div>
+    <div id="veredicto-f1" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem">¿Qué frente imprime la última línea?</p>
+    <div class="opciones" id="opciones-f2"></div>
+    <div id="veredicto-f2" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem">¿Y qué tamaño imprime esa misma línea?</p>
+    <div class="opciones" id="opciones-n"></div>
+    <div id="veredicto-n" class="veredicto"></div>
   </div>
 
   <div class="carta">
@@ -33,11 +32,7 @@
     <p style="margin-top:0">Con <code>c = ⟨4 7 1 9⟩</code> (el 4 es el
     frente), ¿cómo queda la cola después de <code>rotar(c, 3)</code>?</p>
     <div class="codigo" id="codigo-rotar"></div>
-    <div class="prediccion">
-      <span>queda:</span>
-      <input type="text" id="pred-rotar" placeholder="a b c d" style="width:8rem">
-      <button id="btn-rotar" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-rotar"></div>
     <div id="veredicto-rotar" class="veredicto"></div>
   </div>
 
@@ -61,6 +56,7 @@
     exigen lo mismo: n &gt; 0.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="cola.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

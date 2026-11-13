@@ -24,13 +24,15 @@
     <div class="prediccion">
       <span>cadena:</span>
       <input type="text" id="pred-cadena" placeholder="a b c" style="width:8rem">
-      <span>tope():</span>
-      <input type="number" id="pred-tope" placeholder="?">
-      <span>tamano():</span>
-      <input type="number" id="pred-tamano" placeholder="?">
       <button id="btn-cadena" class="primario">Comprobar</button>
     </div>
     <div id="veredicto-cadena" class="veredicto"></div>
+    <div style="margin-top:.8rem"><b>¿Qué devuelve <code>tope()</code>?</b></div>
+    <div class="opciones" id="opciones-tope"></div>
+    <div id="veredicto-tope" class="veredicto"></div>
+    <div style="margin-top:.8rem"><b>¿Qué devuelve <code>tamano()</code>?</b></div>
+    <div class="opciones" id="opciones-tamano"></div>
+    <div id="veredicto-tamano" class="veredicto"></div>
   </div>
 
   <div class="carta">
@@ -74,6 +76,7 @@
     los nodos cuando la pila sale de alcance.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="apilar.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

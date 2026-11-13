@@ -24,18 +24,11 @@
       <div class="linea bloque-2"><span class="num">malo</span><span class="txt">suma += matriz[j][i];</span></div>
     </div>
     <p>La línea de caché de esta máquina trae 64 bytes y un <code>int</code> ocupa 4.</p>
-    <div class="prediccion">
-      <span>¿Cuántos enteros caben en una línea?</span>
-      <input type="number" id="pred-enteros" min="1" step="1" placeholder="enteros">
-      <button id="btn-enteros" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0.3rem">¿Cuántos enteros caben en una línea?</p>
+    <div class="opciones" id="op-enteros"></div>
     <div id="ver-enteros" class="veredicto"></div>
-    <div class="prediccion">
-      <span>Entonces, recorriendo por filas, ¿cuántas lecturas de <code>./bueno</code>
-      aciertan por cada fallo?</span>
-      <input type="number" id="pred-aciertos" min="0" step="1" placeholder="aciertos">
-      <button id="btn-aciertos" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0.3rem">Entonces, recorriendo por filas, ¿cuántas lecturas de <code>./bueno</code> aciertan por cada fallo?</p>
+    <div class="opciones" id="op-aciertos"></div>
     <div id="ver-aciertos" class="veredicto"></div>
     <p style="margin:1rem 0 0.3rem">Los dos binarios se midieron con
     <code>valgrind --tool=callgrind --cache-sim=yes ./bueno</code> y lo mismo con
@@ -62,11 +55,8 @@
     <p style="margin-top:0;margin-bottom:0.3rem">Compare los dos contadores de fallos de
     lectura de la tabla: 112.622.262 en <code>./malo</code> contra 6.366.206 en
     <code>./bueno</code>.</p>
-    <div class="prediccion">
-      <span>¿Cuántas veces más fallos de lectura tiene <code>./malo</code>? Un decimal.</span>
-      <input type="number" id="pred-razon" min="0" step="0.1" placeholder="veces">
-      <button id="btn-razon" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0.3rem">¿Cuántas veces más fallos de lectura tiene <code>./malo</code>?</p>
+    <div class="opciones" id="op-razon"></div>
     <div id="ver-razon" class="veredicto"></div>
     <div class="chips" id="chips-razon" style="margin-top:0.7rem"></div>
     <div class="alerta" id="nota-razon" hidden>La L3 de esta máquina tiene 32 MB y el

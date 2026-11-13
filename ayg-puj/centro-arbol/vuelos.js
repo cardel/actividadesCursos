@@ -64,15 +64,46 @@ var EJERCICIO = (function () {
     return m;
   }
 
+  /* Opciones para el menor diametro posible: la correcta y los valores de
+     quien se equivoca de una manera concreta. */
+  function opcionesMejor(caso) {
+    var m = mejor(caso), t = todas(caso);
+    var original = medidas(caso.n, caso.aristas).diametro;
+    var peor = 0, ip = 0, i = 0;
+    while (i < t.length) { if (t[i].nuevo > peor) { peor = t[i].nuevo; ip = i; } i = i + 1; }
+    var lista = [
+      { valor: m, clave: "correcta",
+        razon: "Sí: el mejor es " + m + ", contra " + original + " del árbol original." },
+      { valor: original, clave: "original",
+        razon: "Ese es el diámetro de ahora, " + original + ". Cambiando un vuelo se baja a " + m + "." },
+      { valor: peor, clave: "peor",
+        razon: "Ese es lo que queda al quitar el vuelo " + caso.aristas[ip][0] + "–" + caso.aristas[ip][1] +
+          ", un mal corte. Quitando otro, pegado a la mitad del camino más largo, se llega a " + m + "." },
+      { valor: Math.ceil(original / 2), clave: "mitad",
+        razon: "Esa es la mitad del diámetro, pero al volver a unir se suman los radios de los dos pedazos y el vuelo nuevo. Lo mejor es " + m + "." },
+      { valor: m - 1, clave: "sinvuelo",
+        razon: "Olvidó contar el vuelo nuevo entre los dos centros. Con una sola arista cambiada, lo mejor es " + m + "." }
+    ];
+    var vistos = [], r = [], k = 0;
+    while (k < lista.length) {
+      if (lista[k].valor >= 0 && vistos.indexOf(lista[k].valor) < 0) {
+        vistos.push(lista[k].valor);
+        r.push(lista[k]);
+      }
+      k = k + 1;
+    }
+    return r.slice(0, 4);
+  }
+
   return { CASOS: CASOS, medidas: medidas, pedazos: pedazos, alQuitar: alQuitar,
-           todas: todas, mejor: mejor };
+           todas: todas, mejor: mejor, opcionesMejor: opcionesMejor };
 })();
 
 if (typeof module !== "undefined") { module.exports = EJERCICIO; }
 
 if (typeof document !== "undefined") {
   (function () {
-    var E = EJERCICIO, actual = 0, quitada = -1, resueltos = [];
+    var E = EJERCICIO, actual = 0, quitada = -1, resueltos = [], opciones = null;
     function el(id) { return document.getElementById(id); }
 
     function pintar() {
@@ -130,7 +161,7 @@ if (typeof document !== "undefined") {
           actual = parseInt(b.getAttribute("data-i"), 10);
           quitada = -1;
           presets(); botonesAristas(); pintar();
-          el("fb-mejor").textContent = ""; el("fb-mejor").className = "fb";
+          opciones.refrescar();
           el("tabla").innerHTML = "";
           var m = E.medidas(E.CASOS[actual].n, E.CASOS[actual].aristas);
           el("ver-diametro").textContent = m.diametro;
@@ -141,24 +172,12 @@ if (typeof document !== "undefined") {
     presets(); botonesAristas(); pintar();
     el("ver-diametro").textContent = E.medidas(E.CASOS[0].n, E.CASOS[0].aristas).diametro;
 
-    el("btn-mejor").addEventListener("click", function () {
-      var caso = E.CASOS[actual], valor = parseInt(el("in-mejor").value, 10);
-      var m = E.mejor(caso), d = el("fb-mejor");
-      var original = E.medidas(caso.n, caso.aristas).diametro;
-      if (valor === m) {
-        d.textContent = "Sí: el mejor es " + m + ", contra " + original + " del árbol original.";
-        d.className = "fb bien";
+    opciones = Motor.opcionesNumericas("opciones-mejor", "veredicto-mejor",
+      function () { return E.opcionesMejor(E.CASOS[actual]); });
+    el("opciones-mejor").addEventListener("click", function () {
+      if (el("veredicto-mejor").className.indexOf("bien") >= 0) {
         if (resueltos.indexOf(actual) < 0) { resueltos.push(actual); }
         tabla();
-      } else if (valor === original) {
-        d.textContent = "Ese es el diámetro de ahora, " + original + ". Cambiando un vuelo se baja a " + m + ".";
-        d.className = "fb mal";
-      } else if (valor < m) {
-        d.textContent = "No se puede bajar tanto. Con una sola arista cambiada, lo mejor es " + m + ".";
-        d.className = "fb mal";
-      } else {
-        d.textContent = "Se puede mejor: " + m + ". Pruebe a quitar aristas cerca de la mitad del camino más largo.";
-        d.className = "fb mal";
       }
     });
 

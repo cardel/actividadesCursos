@@ -230,18 +230,28 @@
     alPintar: pintar
   });
 
-  Motor.prediccionNumerica(function (valor, preset) {
+  Motor.opcionesNumericas("opciones-marcos", "veredicto", function (preset) {
     var tope = PRESETS[preset].tope;
-    if (valor === tope) {
-      return { ok: true, msg: "Correcto: en el punto más hondo la izquierda tiene " + tope
-        + " marcos abiertos al tiempo, uno por llamada incluido el caso base. La derecha nunca pasa de 1." };
-    }
-    if (valor === tope - 1) {
-      return { ok: false, msg: "Casi. Son " + tope + ": las " + (tope - 1) + " que dejan algo esperando, más el marco "
-        + "del caso base, que está abierto mientras devuelve. Es lo que midió la sesión: n + 1." };
-    }
-    return { ok: false, msg: "No. Son " + tope + " a la izquierda: cada llamada abre un marco y ninguno se cierra "
-      + "hasta que el de abajo devuelve. A la derecha siempre 1, porque cada llamada reemplaza a la anterior." };
+    var lista = [
+      { valor: tope, clave: "correcta",
+        razon: "Correcto: en el punto más hondo la izquierda tiene " + tope
+          + " marcos abiertos al tiempo, uno por llamada incluido el caso base. La derecha nunca pasa de 1." },
+      { valor: tope - 1, clave: "sinbase",
+        razon: "Son " + tope + ": las " + (tope - 1) + " que dejan algo esperando, más el marco "
+          + "del caso base, que está abierto mientras devuelve." },
+      { valor: 1, clave: "uno",
+        razon: "Eso es lo que pasa en la columna derecha, donde cada llamada reemplaza a la anterior. "
+          + "A la izquierda ninguna se cierra hasta que la de abajo devuelve." },
+      { valor: tope + 1, clave: "demas",
+        razon: "Es un marco de más: la subida no abre marcos nuevos, solo cierra los que hay, "
+          + "y la llamada inicial ya está contada." }
+    ];
+    var vistos = {};
+    return lista.filter(function (o) {
+      var nuevo = !vistos[o.valor];
+      vistos[o.valor] = true;
+      return nuevo;
+    });
   });
 
   document.querySelectorAll("[data-preset]").forEach(function (b) {
@@ -249,7 +259,6 @@
       document.querySelectorAll("[data-preset]").forEach(function (o) { o.className = ""; });
       b.className = "primario";
       Motor.limpiarVeredicto();
-      document.getElementById("prediccion").value = "";
       Motor.reiniciar(parseInt(b.getAttribute("data-preset"), 10));
     });
   });

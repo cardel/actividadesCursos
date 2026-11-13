@@ -71,28 +71,7 @@
     }
   }
 
-  function comprobar() {
-    var caja = document.getElementById("veredicto");
-    var v = parseFloat(document.getElementById("prediccion").value);
-    var real = speedup(p, n);
-    if (isNaN(v)) {
-      caja.className = "veredicto mal";
-      caja.textContent = "Escriba un número antes de comprobar.";
-      return;
-    }
-    if (Math.abs(v - real) <= 0.05) {
-      caja.className = "veredicto bien";
-      caja.textContent = "Correcto: " + num(real, 2) + " veces más rápido. " +
-        "El tiempo pasa de 1 a " + num(tiempo(p, n), 3) + ".";
-    } else {
-      caja.className = "veredicto mal";
-      caja.innerHTML = "No es " + num(v, 2) + " sino <b>" + num(real, 2) +
-        "</b>. El tiempo queda en (1 − " + num(p, 2) + ") + " + num(p, 2) +
-        "/" + n + " = " + num(tiempo(p, n), 3) + ", y el speedup es 1 dividido " +
-        "por eso." + (v > real ? " Cuidado: repartir la parte paralela no " +
-        "toca la serial, que sigue costando " + num(1 - p, 2) + "." : "");
-    }
-  }
+  var opsPred = null;
 
   var RAZONES = {
     correcta: [true, "El término p/n tiende a cero, así que el tiempo tiende a " +
@@ -130,6 +109,7 @@
     document.getElementById("ver-n").textContent = n;
     pintarBarras();
     pintarTabla();
+    if (opsPred) { opsPred.refrescar(); }
   }
 
   document.getElementById("rango-p").addEventListener("input", function (e) {
@@ -154,7 +134,43 @@
       pintar();
     });
   });
-  document.getElementById("btn-comprobar").addEventListener("click", comprobar);
+  opsPred = Motor.opcionesNumericas("opciones-prediccion", "veredicto", function () {
+    var real = speedup(p, n);
+    var t = techo(p);
+    var lista = [{ valor: num(real, 2), clave: "correcta",
+      razon: "Correcto: " + num(real, 2) + " veces más rápido. El tiempo pasa de 1 a " +
+        num(tiempo(p, n), 3) + ": (1 − " + num(p, 2) + ") + " + num(p, 2) + "/" + n + "." }];
+    var propuestas = [];
+    propuestas.push({ valor: num(n, 2), clave: "lineal",
+      razon: "Eso sería con la parte serial en cero: " + n + " núcleos darían " + n +
+        " veces. Con p = " + num(p, 2) + " quedan " + num(1 - p, 2) +
+        " del trabajo sin repartir, y el speedup real es " + num(real, 2) + "." });
+    if (isFinite(t)) {
+      propuestas.push({ valor: num(t, 2), clave: "techo",
+        razon: "Ese es el techo con infinitos núcleos, 1/(1 − p). Con " + n +
+          " núcleos todavía queda p/n = " + num(p / n, 3) + " por repartir, y el speedup es " +
+          num(real, 2) + "." });
+    }
+    propuestas.push({ valor: num(tiempo(p, n), 2), clave: "tiempo",
+      razon: "Ese es el tiempo que queda, " + num(tiempo(p, n), 3) +
+        ", no el speedup. El speedup es 1 dividido por ese tiempo: " + num(real, 2) + "." });
+    propuestas.push({ valor: num(p * n, 2), clave: "pn",
+      razon: "Multiplicar p por n supone que cada núcleo rinde completo y se olvida de la " +
+        "parte serial, " + num(1 - p, 2) + ". El speedup es 1 / ((1 − p) + p/n) = " +
+        num(real, 2) + "." });
+    propuestas.push({ valor: num(n + 1, 2), clave: "de-mas",
+      razon: "Eso es más núcleos de los que hay. El speedup nunca pasa de n = " + n +
+        ", y aquí es " + num(real, 2) + "." });
+    var vistos = [num(real, 2)];
+    propuestas.forEach(function (o) {
+      if (lista.length < 4 && vistos.indexOf(String(o.valor)) < 0) {
+        vistos.push(String(o.valor));
+        lista.push(o);
+      }
+    });
+    return lista;
+  });
+
   conectarOpciones("opciones-techo", "veredicto-techo", RAZONES);
   conectarOpciones("opciones-inversa", "veredicto-inversa", INVERSA);
 

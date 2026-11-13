@@ -192,6 +192,18 @@ var RAZONES_CIERRE = {
     "que se saca de ahí es la función culpable, que no aparece en un cronómetro."
 };
 
+
+/* Una pregunta numerica se contesta escogiendo: la correcta y los errores que
+   alguien comete de verdad, cada uno con su razon. Un valor repetido se descarta. */
+function opcionesDe(buena, razonBuena, malas) {
+  var lista = [{ valor: buena, clave: "correcta", razon: razonBuena }];
+  malas.forEach(function (m) {
+    var repetido = lista.some(function (o) { return o.valor === m.valor; });
+    if (!repetido) { lista.push({ valor: m.valor, clave: m.clave, razon: m.razon }); }
+  });
+  return lista;
+}
+
 function iniciar() {
   var vista = false;   /* la tabla de contadores se destapa al pedirlo */
 
@@ -224,15 +236,32 @@ function iniciar() {
     }).join("");
   }
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-enteros", boton: "btn-enteros", veredicto: "ver-enteros" },
-    function () { return enterosPorLinea(LINEA, ENTERO); },
-    explicarEnteros);
+  Motor.opcionesNumericas("op-enteros", "ver-enteros", function () {
+    var real = enterosPorLinea(LINEA, ENTERO);
+    return opcionesDe(fmt(real), explicarEnteros(true, real), [
+      { valor: fmt(LINEA), clave: "bytes",
+        razon: "No. Esos son los bytes de la línea. Cada entero ocupa " + ENTERO +
+          ", así que faltó dividir " + LINEA + " entre " + ENTERO + "." },
+      { valor: fmt(ENTERO), clave: "entero",
+        razon: "No. Esos son los bytes de un solo int, no cuántos caben en la línea." },
+      { valor: fmt(aciertosPorFallo(LINEA, ENTERO)), clave: "vecinos",
+        razon: "No. Esos son los vecinos que acompañan al entero que se pidió. En la línea " +
+          "caben ese entero y sus vecinos, uno más." }
+    ]);
+  });
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-aciertos", boton: "btn-aciertos", veredicto: "ver-aciertos" },
-    function () { return aciertosPorFallo(LINEA, ENTERO); },
-    explicarAciertos);
+  Motor.opcionesNumericas("op-aciertos", "ver-aciertos", function () {
+    var real = aciertosPorFallo(LINEA, ENTERO);
+    return opcionesDe(fmt(real), explicarAciertos(true, real), [
+      { valor: fmt(enterosPorLinea(LINEA, ENTERO)), clave: "todos",
+        razon: "No. Los " + enterosPorLinea(LINEA, ENTERO) + " son todos los enteros de la " +
+          "línea, y el primero de ellos es el que falla y la trae. Aciertan los que siguen." },
+      { valor: fmt(LINEA - 1), clave: "bytes",
+        razon: "No. Contó bytes: " + LINEA + " menos uno. Cada acceso lee un entero de " +
+          ENTERO + " bytes, y los accesos que caben en la línea son " +
+          enterosPorLinea(LINEA, ENTERO) + "." }
+    ]);
+  });
 
   document.getElementById("btn-destapar").addEventListener("click", function () {
     vista = true;
@@ -240,12 +269,25 @@ function iniciar() {
     document.getElementById("nota-contadores").hidden = false;
   });
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-razon", boton: "btn-razon", veredicto: "ver-razon" },
-    function () { return razonDeFallos(LECTURAS.malo, LECTURAS.bueno); },
-    explicarRazon);
+  Motor.opcionesNumericas("op-razon", "ver-razon", function () {
+    var real = razonDeFallos(LECTURAS.malo, LECTURAS.bueno);
+    return opcionesDe(dec1(real), explicarRazon(true, real), [
+      { valor: dec1(enterosPorLinea(LINEA, ENTERO)), clave: "ideal",
+        razon: "No. Esa es la cuenta de cabeza, una línea aprovechada entera contra una línea " +
+          "por acceso. La pregunta es por la medición: " + fmt(LECTURAS.malo) + " contra " +
+          fmt(LECTURAS.bueno) + ", que queda algo por encima." },
+      { valor: dec1(razonDeFallos(PRIMER_NIVEL.malo, PRIMER_NIVEL.bueno)), clave: "totales",
+        razon: "No. Usó los D1 misses, que suman también los fallos de escritura, y esos son " +
+          "iguales en los dos binarios (" + fmt(ESCRITURAS.bueno) + "). Los fallos de lectura " +
+          "son D1mr: " + fmt(LECTURAS.malo) + " contra " + fmt(LECTURAS.bueno) + "." },
+      { valor: Motor.num(razonDeFallos(LECTURAS.bueno, LECTURAS.malo), 2), clave: "alreves",
+        razon: "No. Dividió el fallo pequeño entre el grande. Se pregunta cuántas veces más " +
+          "tiene ./malo, así que va ./malo sobre ./bueno." }
+    ]);
+  });
 
-  document.getElementById("btn-razon").addEventListener("click", function () {
+  document.getElementById("op-razon").addEventListener("click", function (ev) {
+    if (ev.target.getAttribute("data-op") !== "correcta") { return; }
     Motor.pintarChips("chips-razon", [
       { texto: "veces más fallos de lectura",
         valor: dec1(razonDeFallos(LECTURAS.malo, LECTURAS.bueno)), cuenta: true },

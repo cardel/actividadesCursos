@@ -57,20 +57,25 @@ var EJERCICIO = (function () {
   ];
 
   /* Veredicto de la predicción: cuántas veces se evalúa la condición. */
-  function evaluar(valor, m) {
-    var res;
-    if (valor === m + 1) {
-      res = { ok: true, msg: "Correcto: " + (m + 1) + " evaluaciones. i toma los valores 1, 2, …, " + m + ", que dan cierto, y " + (m + 1) + ", que da falso y saca del ciclo." };
-    } else if (valor === m) {
-      res = { ok: false, msg: "Faltó una: la evaluación con i = " + (m + 1) + " da falso, pero también se ejecuta. Sin ella el programa no sabría que tiene que salir." };
-    } else if (valor === m + 2) {
-      res = { ok: false, msg: "Sobra una. El índice arranca en 1 y la condición es <=: los valores que dan cierto son exactamente m, del 1 al " + m + "." };
-    } else if (valor === m - 1) {
-      res = { ok: false, msg: "Con <= la vuelta de i = " + m + " también entra. Son " + m + " vueltas y una evaluación más." };
-    } else {
-      res = { ok: false, msg: "No coincide. Escriba los valores que toma i y marque cuáles dan cierto en i <= " + m + "." };
-    }
-    return res;
+  /* Una opción cuyo valor repite el de otra ya puesta se descarta. */
+  function sinRepetidos(lista, tope) {
+    var vistos = {};
+    var sal = [];
+    lista.forEach(function (o) {
+      if (!vistos[o.valor] && o.valor >= 0 && sal.length < tope) { vistos[o.valor] = true; sal.push(o); }
+    });
+    return sal;
+  }
+
+  /* Opciones de la predicción: cuántas veces se evalúa la condición. */
+  function opciones(params) {
+    var m = params.m;
+    return sinRepetidos([
+      { valor: m + 1, clave: "correcta", razon: "Correcto: " + (m + 1) + " evaluaciones. i toma los valores 1, 2, …, " + m + ", que dan cierto, y " + (m + 1) + ", que da falso y saca del ciclo." },
+      { valor: m, clave: "sinFalla", razon: "Faltó una: la evaluación con i = " + (m + 1) + " da falso, pero también se ejecuta. Sin ella el programa no sabría que tiene que salir." },
+      { valor: m + 2, clave: "sobra", razon: "Sobra una. El índice arranca en 1 y la condición es <=: los valores que dan cierto son exactamente m, del 1 al " + m + "." },
+      { valor: m - 1, clave: "sinUltima", razon: "Con <= la vuelta de i = " + m + " también entra. Son " + m + " vueltas y una evaluación más." }
+    ], 4);
   }
 
   var RAZONES = {
@@ -81,7 +86,7 @@ var EJERCICIO = (function () {
   };
 
   return { codigo: CODIGO, simular: simular, conteos: conteos, T: T, FORMULAS: FORMULAS,
-    evaluar: evaluar, RAZONES: RAZONES };
+    opciones: opciones, RAZONES: RAZONES };
 })();
 
 if (typeof module !== "undefined") {
@@ -127,7 +132,7 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) { return EJERCICIO.evaluar(valor, params.m); });
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto", EJERCICIO.opciones);
 
     Array.prototype.forEach.call(document.querySelectorAll("#opciones-analisis button"), function (b) {
       b.addEventListener("click", function () {

@@ -255,26 +255,68 @@ if (typeof document !== "undefined") (function () {
   var actual = DEFECTO;
   var k = 0;   // cuantos tramos se han mostrado
 
+  var opcReloj = null, opcCpu = null;
   function tramos() { return PROGRAMAS[actual].tramos; }
   function escala() { var t = tramos(); return Math.max(reloj(t), cpu(t)) || 1; }
 
-  /* El valor de un input number siempre trae punto decimal, y Motor.leerNumero
-     lo quita como separador de miles; aqui se lee directo y el veredicto lo
-     da Motor.veredictoNumerico.                                             */
-  function leerSegundos(id) {
-    var v = String(document.getElementById(id).value).trim().replace(",", ".");
-    return v === "" ? NaN : parseFloat(v);
+  /* Opciones de segundos: el valor se muestra con coma y se descartan las
+     que coinciden con otra al redondear a dos decimales.                    */
+  function agregar(lista, x, clave, razon) {
+    var r = Math.round(x * 100) / 100;
+    var repetido = lista.some(function (o) { return o.redondo === r; });
+    if (!repetido && r > 0 && lista.length < 4) {
+      lista.push({ valor: num(r, 2) + " s", redondo: r, clave: clave, razon: razon });
+    }
   }
 
-  function conectarSegundos(ids, esperado, explicar) {
-    var caja = document.getElementById(ids.veredicto);
-    document.getElementById(ids.boton).addEventListener("click", function () {
-      var dicho = leerSegundos(ids.entrada);
-      var real = esperado();
-      var v = Motor.veredictoNumerico(dicho, real);
-      caja.className = "veredicto " + (v.bien ? "bien" : "mal");
-      caja.textContent = isNaN(dicho) ? v.motivo : explicar(v.bien, real, dicho);
-    });
+  function sumar(ts, f) {
+    return ts.reduce(function (s, t) { return s + f(t); }, 0);
+  }
+
+  function armarReloj() {
+    var t = tramos();
+    var lista = [];
+    agregar(lista, reloj(t), "correcta", explicarReloj(t, true, reloj(t), reloj(t)));
+    agregar(lista, cpu(t), "cpu",
+      "Ese es el valor de process_time, " + num(cpu(t), 2) + " s: cuenta cada hilo y " +
+      "deja fuera las esperas. perf_counter es reloj de pared y mide lo que pasó en la pared.");
+    agregar(lista, sumar(t.filter(esCalculo), function (x) { return x.duracion; }), "sinEsperas",
+      "Esa suma deja fuera las esperas. El reloj de pared corre también mientras el " +
+      "proceso aguarda el disco, la red o un sleep.");
+    agregar(lista, sumar(t, function (x) { return x.duracion * x.hilos; }), "porHilos",
+      "Multiplicar por los hilos es lo que hace process_time. El reloj de pared mide " +
+      "el tiempo transcurrido, y cuatro hilos que corren a la vez no lo alargan.");
+    agregar(lista, sumar(t, function (x) { return esCalculo(x) ? x.duracion / x.hilos : x.duracion; }),
+      "repartido",
+      "Dividir la duración entre los hilos supone que el tramo dura menos con más " +
+      "hilos. En este programa cada tramo ya trae su duración en el reloj, con sus hilos incluidos.");
+    agregar(lista, sumar(t.filter(function (x) { return !esCalculo(x); }),
+      function (x) { return x.duracion; }), "soloEsperas",
+      "Esa suma es solo lo que se espera. El reloj de pared suma además los tramos de cálculo.");
+    return lista;
+  }
+
+  function armarCpu() {
+    var t = tramos();
+    var lista = [];
+    agregar(lista, cpu(t), "correcta", explicarCpu(t, true, cpu(t), cpu(t)));
+    agregar(lista, reloj(t), "reloj",
+      "Ese es el valor de perf_counter, " + num(reloj(t), 2) + " s. process_time no cuenta " +
+      "las esperas, porque el proceso no ocupa ningún núcleo mientras aguarda.");
+    agregar(lista, sumar(t.filter(esCalculo), function (x) { return x.duracion; }), "sinHilos",
+      "Esa suma cuenta cada tramo de cálculo una vez. process_time suma el tiempo de cada " +
+      "núcleo ocupado, así que un tramo con h hilos aporta h veces su duración.");
+    agregar(lista, sumar(t, function (x) { return x.duracion * x.hilos; }), "conEsperas",
+      "Ahí también se multiplicaron las esperas por sus hilos. Una espera no ocupa " +
+      "ningún núcleo, así que no suma nada, tenga los hilos que tenga.");
+    agregar(lista, sumar(t.filter(esCalculo), function (x) { return x.duracion / x.hilos; }),
+      "dividido",
+      "Esa cuenta divide entre los hilos, y hay que multiplicar: h núcleos ocupados " +
+      "durante la duración del tramo son h veces esa duración de CPU.");
+    agregar(lista, sumar(t.filter(function (x) { return !esCalculo(x); }),
+      function (x) { return x.duracion; }), "soloEsperas",
+      "Esa suma es justo lo que no cuenta: las esperas no ocupan ningún núcleo.");
+    return lista;
   }
 
   function pintarPresets() {
@@ -323,8 +365,8 @@ if (typeof document !== "undefined") (function () {
     pintarTabla();
     pintarGantt();
     // las predicciones de la carta 2 valen para el programa que esta puesto
-    document.getElementById("veredicto-reloj").className = "veredicto";
-    document.getElementById("veredicto-cpu").className = "veredicto";
+    if (opcReloj) { opcReloj.refrescar(); }
+    if (opcCpu) { opcCpu.refrescar(); }
   }
 
   document.querySelectorAll("[data-preset]").forEach(function (b) {
@@ -339,14 +381,8 @@ if (typeof document !== "undefined") (function () {
   document.getElementById("btn-reiniciar").addEventListener("click", function () {
     k = 0; pintarGantt();
   });
-  conectarSegundos(
-    { entrada: "prediccion-reloj", boton: "btn-comprobar-reloj", veredicto: "veredicto-reloj" },
-    function () { return reloj(tramos()); },
-    function (bien, real, dicho) { return explicarReloj(tramos(), bien, real, dicho); });
-  conectarSegundos(
-    { entrada: "prediccion-cpu", boton: "btn-comprobar-cpu", veredicto: "veredicto-cpu" },
-    function () { return cpu(tramos()); },
-    function (bien, real, dicho) { return explicarCpu(tramos(), bien, real, dicho); });
+  opcReloj = Motor.opcionesNumericas("opciones-reloj", "veredicto-reloj", armarReloj);
+  opcCpu = Motor.opcionesNumericas("opciones-cpu", "veredicto-cpu", armarCpu);
   Motor.conectarOpciones("opciones-cociente", "veredicto-cociente", RAZONES);
 
   pintar();

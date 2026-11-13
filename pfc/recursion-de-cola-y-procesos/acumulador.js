@@ -48,9 +48,12 @@
         c2.textContent = f.prod;
         c2.className = "dada";
       } else {
-        var inp = document.createElement("input");
-        inp.type = "number"; inp.id = "prod-" + i; inp.placeholder = "?";
-        c2.appendChild(inp);
+        var ops = document.createElement("div");
+        ops.className = "opciones"; ops.id = "opciones-prod-" + i;
+        c2.appendChild(ops);
+        var ver = document.createElement("div");
+        ver.className = "veredicto"; ver.id = "veredicto-prod-" + i;
+        c2.appendChild(ver);
         var real = document.createElement("span");
         real.className = "real"; real.id = "real-" + i;
         c2.appendChild(real);
@@ -64,6 +67,7 @@
     });
     document.getElementById("veredicto-tabla").className = "veredicto";
     document.getElementById("veredicto-tabla").textContent = "";
+    cuerpo.onclick = revisarTabla;
   }
 
   function pintar(e) {
@@ -100,31 +104,61 @@
     alPintar: pintar
   });
 
-  document.getElementById("btn-comprobar-tabla").addEventListener("click", function () {
-    var F = filas(nActual), malas = 0, vacias = 0;
-    F.forEach(function (f, i) {
-      if (i === 0) { return; }
-      var inp = document.getElementById("prod-" + i);
-      var v = parseInt(inp.value, 10);
-      if (isNaN(v)) { vacias = vacias + 1; inp.className = ""; return; }
-      inp.className = v === f.prod ? "bien" : "mal";
-      if (v !== f.prod) { malas = malas + 1; }
-    });
-    var ver = document.getElementById("veredicto-tabla");
-    if (vacias > 0) {
-      ver.className = "veredicto mal";
-      ver.textContent = "Faltan " + vacias + " casillas.";
-    } else if (malas === 0) {
-      ver.className = "veredicto bien";
-      ver.textContent = "Correcto. Cada fila multiplica el cont de la anterior por su prod: el resultado se va armando en el parámetro.";
-    } else {
-      ver.className = "veredicto mal";
-      ver.textContent = malas + " casilla(s) en rojo. Regla: el prod de una fila es cont × prod de la fila de arriba, no de la misma.";
+  /* Una casilla por fila: el prod de la fila es cont * prod de la de arriba.
+     Quien se equivoca copia el de arriba, suma, usa el cont de su propia
+     fila o arranca el acumulador en cero. Un valor repetido se descarta. */
+  function opcionesFila(i, n) {
+    var F = filas(n), f = F[i], a = F[i - 1], lista = [];
+    if (!f) { return lista; }
+    lista.push({ valor: f.prod, clave: "correcta",
+      razon: "Correcto: " + a.cont + " * " + a.prod + " = " + f.prod
+        + ". El producto se calcula antes de llamar, con el cont y el prod de la fila de arriba." });
+    lista.push({ valor: a.prod, clave: "copia",
+      razon: "Eso copia el prod de la fila de arriba sin multiplicar. El acumulador crece en cada llamada: "
+        + "recibe " + a.cont + " * " + a.prod + "." });
+    lista.push({ valor: a.cont + a.prod, clave: "suma",
+      razon: "Eso suma " + a.cont + " + " + a.prod + ". El factorial multiplica: la llamada pasa cont * prod." });
+    lista.push({ valor: f.cont * a.prod, clave: "contpropio",
+      razon: "Eso usa el cont de esta fila (" + f.cont + "). El producto lo calcula la llamada de arriba, "
+        + "con su propio cont (" + a.cont + ")." });
+    lista.push({ valor: 0, clave: "cero",
+      razon: "Un acumulador que arranca en 0 se queda en 0 al multiplicar. Aquí arranca en 1, "
+        + "el neutro del producto." });
+    var vistos = {};
+    return lista.filter(function (o) {
+      var nuevo = !vistos[o.valor];
+      vistos[o.valor] = true;
+      return nuevo;
+    }).slice(0, 4);
+  }
+
+  function revisarTabla() {
+    var F = filas(nActual), i, bien = 0;
+    for (i = 1; i < F.length; i = i + 1) {
+      var v = document.getElementById("veredicto-prod-" + i);
+      if (v && v.className.indexOf("bien") >= 0) { bien = bien + 1; }
     }
-  });
+    var ver = document.getElementById("veredicto-tabla");
+    if (bien === F.length - 1) {
+      ver.className = "veredicto bien";
+      ver.textContent = "Tabla completa. Cada fila multiplica el cont de la anterior por su prod: el resultado se va armando en el parámetro.";
+    } else {
+      ver.className = "veredicto";
+      ver.textContent = "";
+    }
+  }
 
   construirTabla(nActual);
   Motor.repintar();
+
+  var MAX_FILAS = 6, r;
+  for (r = 1; r <= MAX_FILAS; r = r + 1) {
+    (function (i) {
+      Motor.opcionesNumericas("opciones-prod-" + i, "veredicto-prod-" + i, function (n) {
+        return opcionesFila(i, n);
+      });
+    })(r);
+  }
 
   document.querySelectorAll("[data-preset]").forEach(function (b) {
     b.addEventListener("click", function () {

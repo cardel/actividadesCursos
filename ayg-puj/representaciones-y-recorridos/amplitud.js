@@ -239,21 +239,39 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
-      var e = EJERCICIO.excentricidad(params.G, params.s);
-      var n = params.G.length;
-      if (valor === e) {
-        return { ok: true, msg: "Correcto: el más lejano está a " + e +
-          " aristas. Ejecute y vea cómo la cola nunca mezcla más de dos capas." };
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto",
+      function (params) {
+        var e = EJERCICIO.excentricidad(params.G, params.s);
+        var n = params.G.length;
+      function sinRepetir(lista) {
+        var vistos = {};
+        var salida = [];
+        lista.forEach(function (o) {
+          if (!vistos[o.valor] && o.valor >= 0) {
+            vistos[o.valor] = true;
+            salida.push(o);
+          }
+        });
+        return salida.slice(0, 4);
       }
-      if (valor === n - 1) {
-        return { ok: false, msg: "Ese sería el caso si el grafo fuera una fila " +
-          "de vértices uno tras otro. Mire el dibujo: hay atajos." };
-      }
-      return { ok: false, msg: "No coincide. Marque en el dibujo los vecinos " +
-        "del arranque, luego los vecinos de esos, y cuente cuántas rondas " +
-        "hacen falta para no dejar a nadie." };
-    });
+        return sinRepetir([
+          { valor: e, clave: "correcta",
+            razon: "Correcto: el más lejano está a " + e +
+              " aristas. Ejecute y vea cómo la cola nunca mezcla más de dos capas." },
+          { valor: n - 1, clave: "fila",
+            razon: "Ese sería el caso si el grafo fuera una fila " +
+              "de vértices uno tras otro. Mire el dibujo: hay atajos." },
+          { valor: e + 1, clave: "sobra",
+            razon: "Le sobra uno: contó el arranque como una capa más, pero el " +
+              "arranque está a distancia 0." },
+          { valor: e - 1, clave: "falta",
+            razon: "Le falta uno: la última ronda también cuenta, la que mete " +
+              "en la cola a los vértices más lejanos." },
+          { valor: n, clave: "vertices",
+            razon: "Ese es el número de vértices. La distancia cuenta aristas " +
+              "del camino, no vértices del grafo." }
+        ]);
+      });
 
     Array.prototype.forEach.call(document.querySelectorAll(".presets button"), function (btn) {
       btn.addEventListener("click", function () {

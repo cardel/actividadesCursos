@@ -205,27 +205,42 @@
 
   /* --- la prediccion del numero de salidas --- */
 
+  function opcionesPrediccion() {
+    var correcta = CON_JOIN.length;
+    var lista = [
+      { valor: correcta, clave: "correcta",
+        razon: "Tres. El hilo nuevo puede imprimir antes de la primera línea del principal, " +
+          "entre las dos, o mientras el principal espera en el join; después de terminado no, porque el join lo impide." },
+      { valor: SIN_JOIN.length, clave: "sin-join",
+        razon: "Esas son las salidas que quedan sin el join. Con él, la línea del hilo nuevo no puede salir después de terminado, y esa salida se descarta." },
+      { valor: PRINCIPAL.length + NUEVO.length, clave: "sin-fusionar",
+        razon: "Eso cuenta las intercalaciones sin el join y sin fundir las que imprimen lo mismo. Con el join el hilo nuevo no cabe después de la barrera, y las dos líneas de puntos son idénticas." },
+      { valor: 1, clave: "una",
+        razon: "Esa es la salida del deck, y es solo una de las posibles. El hilo nuevo puede imprimir en más de un hueco antes del join." }
+    ];
+    var vistos = [];
+    return lista.filter(function (o) {
+      var nuevo = vistos.indexOf(o.valor) < 0;
+      if (nuevo) { vistos.push(o.valor); }
+      return nuevo;
+    });
+  }
+
   function cablearPrediccion() {
-    document.getElementById("btn-comprobar").addEventListener("click", function () {
-      var campo = document.getElementById("prediccion");
-      var v = document.getElementById("veredicto");
-      var valor = parseInt(campo.value, 10);
-      if (isNaN(valor)) {
-        v.className = "veredicto mal";
-        v.textContent = "Escriba un número primero.";
-        return;
-      }
-      if (valor === CON_JOIN.length) {
-        v.className = "veredicto bien";
-        v.textContent = "Tres. El hilo nuevo puede imprimir antes de la primera línea del principal, " +
-          "entre las dos, o mientras el principal espera en el join; después de terminado no, porque el join lo impide.";
-        mostrarSalidas();
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = valor > CON_JOIN.length
-          ? "Son menos. Revise cuáles intercalaciones deja fuera el join: terminado se imprime después de la barrera, así que nada del hilo nuevo puede salir detrás."
-          : "Son más. El hilo nuevo no tiene por qué imprimir en un sitio fijo: cuente en cuántos huecos de la secuencia del principal puede caer su línea.";
-      }
+    var opciones = opcionesPrediccion();
+    var caja = document.getElementById("opciones-salidas");
+    var v = document.getElementById("veredicto");
+    var giro = (opciones.length + CON_JOIN.length) % opciones.length;
+    opciones.slice(giro).concat(opciones.slice(0, giro)).forEach(function (o) {
+      var b = document.createElement("button");
+      b.setAttribute("data-op", o.clave);
+      b.textContent = o.valor;
+      b.addEventListener("click", function () {
+        v.className = "veredicto " + (o.clave === "correcta" ? "bien" : "mal");
+        v.textContent = o.razon;
+        if (o.clave === "correcta") { mostrarSalidas(); }
+      });
+      caja.appendChild(b);
     });
   }
 

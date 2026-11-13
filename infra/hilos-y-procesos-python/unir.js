@@ -225,6 +225,7 @@ if (typeof document !== "undefined") (function () {
   var num = Motor.num;
   var version = "a";
   var claveDur = DEFECTO;
+  var refrescarA, refrescarB;      // se asignan al armar las opciones
   var k = 0;                        // operaciones recorridas
   var hechas = { a: false, b: false };   // versiones ya recorridas hasta el final
 
@@ -310,9 +311,9 @@ if (typeof document !== "undefined") (function () {
       claveDur = b.dataset.dur;
       k = 0;
       hechas = { a: false, b: false };
-      document.getElementById("veredicto-a").className = "veredicto";
-      document.getElementById("veredicto-b").className = "veredicto";
       pintar();
+      refrescarA.refrescar();
+      refrescarB.refrescar();
     });
   });
   document.querySelectorAll("[data-version]").forEach(function (b) {
@@ -340,14 +341,70 @@ if (typeof document !== "undefined") (function () {
     pintarPaso();
   });
 
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-a", boton: "btn-comprobar-a", veredicto: "veredicto-a" },
-    function () { return total("a", dur()); },
-    function (bien, real, dicho) { return explicarA(dur(), bien, real, dicho); });
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-b", boton: "btn-comprobar-b", veredicto: "veredicto-b" },
-    function () { return total("b", dur()); },
-    function (bien, real, dicho) { return explicarB(dur(), bien, real, dicho); });
+  /* Quita los valores repetidos: con duraciones iguales dos errores dan el
+     mismo numero y no pueden ser dos botones.                              */
+  function sinRepetidos(lista) {
+    var vistos = [];
+    return lista.filter(function (o) {
+      var r = o.valor.toFixed(1);
+      var nuevo = vistos.indexOf(r) < 0;
+      if (nuevo) { vistos.push(r); }
+      return nuevo;
+    }).map(function (o) { o.valor = num(o.valor, 1); return o; });
+  }
+
+  refrescarA = Motor.opcionesNumericas("opciones-a", "veredicto-a", function () {
+    var d = dur();
+    var real = total("a", d);
+    var lento = d.h1 >= d.h2 ? "1" : "2";
+    var otro = lento === "1" ? "2" : "1";
+    return sinRepetidos([
+      { valor: real, clave: "correcta",
+        razon: "Sí: " + num(real, 1) + " s. Los dos start van seguidos, así que hilo 1 e " +
+          "hilo 2 arrancan en el instante 0 y avanzan a la vez. El principal se bloquea en " +
+          "los join hasta el más largo de los dos, máx(" + num(d.h1, 1) + ", " + num(d.h2, 1) +
+          ") = " + num(real, 1) + " s; el hilo " + otro + " termina antes o a la par y su " +
+          "join ya no espera. Los tiempos no se suman: manda el hilo " + lento + "." },
+      { valor: d.h1 + d.h2, clave: "suma",
+        razon: "Eso es la suma, " + num(d.h1, 1) + " + " + num(d.h2, 1) + ". Con los dos " +
+          "start seguidos los hilos corren a la vez y sus tiempos se solapan: el total es el " +
+          "del más largo." },
+      { valor: Math.min(d.h1, d.h2), clave: "corto",
+        razon: "Ese es el hilo más corto. Los join esperan a los dos, así que el principal no " +
+          "sigue hasta que termina el más largo." },
+      { valor: Math.max(d.h1, d.h2) * 2, clave: "doble",
+        razon: "Eso cuenta el hilo más largo dos veces. Corren a la vez desde el instante 0: " +
+          "el principal espera una sola vez, hasta que termina el más largo." },
+      { valor: 0, clave: "cero",
+        razon: "Cero supone que el principal no espera a nadie, porque start no bloquea. Los dos " +
+          "join sí lo detienen hasta que cada hilo termina." }
+    ]).slice(0, 4);
+  });
+  refrescarB = Motor.opcionesNumericas("opciones-b", "veredicto-b", function () {
+    var d = dur();
+    var real = total("b", d);
+    return sinRepetidos([
+      { valor: real, clave: "correcta",
+        razon: "Sí: " + num(real, 1) + " s. El join del hilo 1 está delante del start del " +
+          "hilo 2, y el hilo 2 no existe hasta que el principal sale de ese join: " +
+          num(d.h1, 1) + " + " + num(d.h2, 1) + " = " + num(real, 1) + " s. Los dos hilos " +
+          "nunca coinciden, así que los tiempos se suman y el programa corre igual que si no " +
+          "hubiera hilos." },
+      { valor: Math.max(d.h1, d.h2), clave: "maximo",
+        razon: "Eso sería con los dos hilos corriendo a la vez. Aquí el join del hilo 1 va " +
+          "antes del start del hilo 2, así que el segundo hilo arranca cuando el primero ya " +
+          "terminó." },
+      { valor: d.h1, clave: "primero",
+        razon: "Ese es solo el hilo 1. El hilo 2 todavía falta: arranca después del join y su " +
+          "tiempo también cuenta." },
+      { valor: d.h2, clave: "segundo",
+        razon: "Ese es solo el hilo 2. Antes de que arranque el principal espera todo el hilo 1, " +
+          "y esos " + num(d.h1, 1) + " s también cuentan." },
+      { valor: 0, clave: "cero",
+        razon: "Cero supone que el principal no espera a nadie, porque start no bloquea. Cada " +
+          "join lo detiene hasta que su hilo termina." }
+    ]).slice(0, 4);
+  });
   Motor.conectarOpciones("opciones-join", "veredicto-join", RAZONES);
 
   pintar();

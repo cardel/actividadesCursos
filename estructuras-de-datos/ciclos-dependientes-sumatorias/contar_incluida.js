@@ -180,25 +180,23 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto", function (params) {
       var n = params.n;
       var esperado = n * (n + 1) / 2;
-      if (valor === esperado) {
-        return { ok: true, msg: "Correcto: la línea 6 corre 1 + 2 + … + n = " +
-          esperado + " veces. ¿Qué fórmula produce esa suma para cualquier n? La pregunta está al final." };
+      var lista = [];
+      function agregar(valor, clave, razon) {
+        var repetido = false;
+        lista.forEach(function (o) { if (o.valor === valor) { repetido = true; } });
+        if (!repetido && valor >= 0) { lista.push({ valor: valor, clave: clave, razon: razon }); }
       }
-      if (valor === n * (n - 1) / 2) {
-        return { ok: false, msg: "Esa es la versión estricta (j < i). El signo igual regala " +
-          "una ejecución por vuelta: la suma pasa de 0 + 1 + … + (n − 1) a 1 + 2 + … + n." };
-      }
-      if (valor === n * n) {
-        return { ok: false, msg: "Multiplicó las dos cotas como si los ciclos fueran independientes. " +
-          "El interno depende de i: corre 1, 2, 3, … veces." };
-      }
-      if (valor === n * (n + 1)) {
-        return { ok: false, msg: "Cerca: contó cada casilla dos veces. La escalera es la mitad del rectángulo n × (n + 1)." };
-      }
-      return { ok: false, msg: "No coincide. Pista: en la vuelta i el interno corre i + 1 veces. Sume esas cantidades." };
+      agregar(esperado, "correcta", "Correcto: la línea 6 corre 1 + 2 + … + n = " +
+        esperado + " veces. ¿Qué fórmula produce esa suma para cualquier n? La pregunta está al final.");
+      agregar(n * (n - 1) / 2, "estricta", "Esa es la versión estricta (j < i). El signo igual regala " +
+        "una ejecución por vuelta: la suma pasa de 0 + 1 + … + (n − 1) a 1 + 2 + … + n.");
+      agregar(n * n, "cuadrado", "Multiplicó las dos cotas como si los ciclos fueran independientes. " +
+        "El interno depende de i: corre 1, 2, 3, … veces.");
+      agregar(n * (n + 1), "doble", "Cerca: contó cada casilla dos veces. La escalera es la mitad del rectángulo n × (n + 1).");
+      return lista;
     });
 
     document.getElementById("rango-n").addEventListener("input", function (ev) {

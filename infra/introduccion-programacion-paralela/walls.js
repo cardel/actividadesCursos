@@ -98,24 +98,7 @@ if (typeof document !== "undefined") (function () {
       miles(b) + "×</b></span>";
   }
 
-  function comprobar() {
-    var caja = document.getElementById("veredicto");
-    var dicho = parseFloat(document.getElementById("prediccion").value
-                            .replace(",", "."));
-    var real = frecuenciaDelPresupuesto(PRESUPUESTO);
-    if (isNaN(dicho)) {
-      caja.className = "veredicto mal";
-      caja.textContent = "Escriba un número antes de comprobar.";
-      return;
-    }
-    var bien = Math.abs(dicho - real) < 0.15;
-    caja.className = "veredicto " + (bien ? "bien" : "mal");
-    caja.textContent = bien
-      ? "Sí: el presupuesto se agota cerca de " + num(real, 2) + " GHz."
-      : "Se agota en " + num(real, 2) + " GHz. Desde los " + BASE_GHZ +
-        " GHz y " + BASE_VATIOS + " W, duplicar la frecuencia multiplica el " +
-        "consumo por ocho, no por dos.";
-  }
+  var opsPred = null;
 
   var RAZONES = {
     correcta: "Eso es. Subir la frecuencia dejó de ser viable por el consumo, " +
@@ -148,7 +131,30 @@ if (typeof document !== "undefined") (function () {
     año = parseInt(e.target.value, 10);
     pintarMemoria();
   });
-  document.getElementById("btn-comprobar").addEventListener("click", comprobar);
+  opsPred = Motor.opcionesNumericas("opciones-prediccion", "veredicto", function () {
+    var real = frecuenciaDelPresupuesto(PRESUPUESTO);
+    var razon = BASE_VATIOS + " W a " + BASE_GHZ + " GHz y un tope de " + PRESUPUESTO + " W.";
+    var propuestas = [
+      { valor: num(BASE_GHZ * PRESUPUESTO / BASE_VATIOS, 2), clave: "lineal",
+        razon: "Eso supone que el consumo crece en proporción a la frecuencia. Crece con el " +
+          "cubo: desde " + razon + " la frecuencia que agota el presupuesto es " +
+          num(real, 2) + " GHz." },
+      { valor: num(BASE_GHZ * Math.sqrt(PRESUPUESTO / BASE_VATIOS), 2), clave: "cuadrado",
+        razon: "Eso supone que el consumo crece con el cuadrado de la frecuencia. Con el " +
+          "voltaje subiendo a la par, crece con el cubo, y el límite queda en " +
+          num(real, 2) + " GHz." },
+      { valor: num(BASE_GHZ * Math.pow(PRESUPUESTO / BASE_VATIOS, 3), 2), clave: "cubo",
+        razon: "Eso eleva al cubo la razón de vatios cuando hay que sacarle la raíz cúbica: " +
+          "la potencia es el cubo de la frecuencia, no al revés. El límite está en " +
+          num(real, 2) + " GHz." }
+    ];
+    var lista = [{ valor: num(real, 2), clave: "correcta",
+      razon: "Sí: el presupuesto se agota cerca de " + num(real, 2) + " GHz. La potencia crece " +
+        "con el cubo de la frecuencia, así que f = " + BASE_GHZ + " · (" + PRESUPUESTO + "/" +
+        BASE_VATIOS + ")^(1/3)." }];
+    propuestas.forEach(function (o) { lista.push(o); });
+    return lista;
+  });
 
   var caja = document.getElementById("veredicto-final");
   document.querySelectorAll("#opciones-final button").forEach(function (b) {

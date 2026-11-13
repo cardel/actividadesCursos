@@ -55,6 +55,35 @@ function explicarPuerto(bien, real, dicho) {
     "</code> lo dice en ese mismo orden: <code>" + mapeo() + "</code>.";
 }
 
+/* Quita las opciones que repiten el valor de otra, la correcta primero. */
+function sinRepetidas(lista) {
+  var vistas = {};
+  return lista.filter(function (o) {
+    var k = String(o.valor);
+    var nueva = !vistas[k];
+    vistas[k] = true;
+    return nueva;
+  });
+}
+
+/* Las opciones del puerto al que se hace curl. */
+function opcionesPuerto() {
+  var real = puertoDeCurl();
+  return sinRepetidas([
+    { valor: real, clave: "correcta", razon: explicarPuerto(true, real, real) },
+    { valor: CORRIDA.puertoContenedor, clave: "contenedor",
+      razon: "No, y ese es el número del otro lado: en <code>-p " + CORRIDA.puertoAnfitrion +
+        ":" + CORRIDA.puertoContenedor + "</code> el segundo es el del contenedor, donde " +
+        "escucha el servicio. Desde el anfitrión solo responde el primero." },
+    { valor: 8080, clave: "otro",
+      razon: "El mapeo no publica el 8080: <code>-p</code> abre solo el " +
+        CORRIDA.puertoAnfitrion + ". En el 8080 del anfitrión no hay nada que atienda." },
+    { valor: 80, clave: "http",
+      razon: "El 80 es el puerto que HTTP usa por omisión, pero la orden no lo publica. Desde " +
+        "el anfitrión solo responde el que aparece primero en <code>-p</code>." }
+  ]);
+}
+
 var RAZONES_CINCO_MIL = {
   correcta: "Eso es. El 5000 existe dentro del contenedor, en su propia interfaz. En el " +
     "anfitrión el único puerto publicado es el " + CORRIDA.puertoAnfitrion + ", y en el 5000 " +
@@ -134,10 +163,8 @@ function iniciar() {
   pintarChips();
   pintarApariciones();
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-puerto", boton: "btn-puerto", veredicto: "ver-puerto" },
-    puertoDeCurl, explicarPuerto);
-  document.getElementById("btn-puerto").addEventListener("click", function () {
+  Motor.opcionesNumericas("op-puerto", "ver-puerto", opcionesPuerto);
+  document.getElementById("op-puerto").addEventListener("click", function () {
     destapado = true;
     pintarChips();
   });

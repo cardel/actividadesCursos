@@ -78,31 +78,26 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    document.getElementById("btn-comprobar").addEventListener("click", function () {
-      var vx = parseInt(document.getElementById("prediccion-x").value, 10);
-      var vy = parseInt(document.getElementById("prediccion-y").value, 10);
-      var v = document.getElementById("veredicto");
-      var esperado = EJERCICIO.finales();
-      if (isNaN(vx) || isNaN(vy)) {
-        v.className = "veredicto mal";
-        v.textContent = "Escriba los dos valores primero.";
-      } else if (vx === esperado.x && vy === esperado.y) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: x = " + esperado.x + ", y = " + esperado.y +
-          ". Recorra la ejecución paso a paso y confirme en qué línea cambió cada una.";
-      } else if (vx === 3 && vy === esperado.y) {
-        v.className = "veredicto mal";
-        v.textContent = "La y va bien, pero x no se quedó en 3: la línea *p = 7 " +
-          "escribe en la celda a la que apunta p en ese momento. ¿A quién apuntaba?";
-      } else if (vx === esperado.x && vy === 8) {
-        v.className = "veredicto mal";
-        v.textContent = "La x va bien, pero y no se quedó en 8: después de p = &y, " +
-          "el mismo *p habla de otra variable.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "No coincide. Pista: siga p con el dedo; *p siempre toca la " +
-          "celda a la que p apunta en ese momento, no la de antes.";
-      }
+    Motor.opcionesNumericas("opciones-salida", "veredicto", function () {
+      var f = EJERCICIO.finales();
+      function fmt(x, y) { return "x = " + x + ", y = " + y; }
+      var lista = [
+        { valor: fmt(f.x, f.y), clave: "correcta",
+          razon: "Correcto: " + fmt(f.x, f.y) + ". *p = 7 escribe en x porque p " +
+            "guarda &x; después de p = &y, el *p + 1 escribe en y. " +
+            "Recorra la ejecución paso a paso y confirme en qué línea cambió cada una." },
+        { valor: fmt(3, f.y), clave: "x-queda",
+          razon: "La y va bien, pero x no se quedó en 3: la línea *p = 7 " +
+            "escribe en la celda a la que apunta p en ese momento. ¿A quién apuntaba?" },
+        { valor: fmt(f.x, 8), clave: "y-queda",
+          razon: "La x va bien, pero y no se quedó en 8: después de p = &y, " +
+            "la línea *p = *p + 1 lee y y escribe y + 1 en esa misma celda. " +
+            "Olvidó que ese *p ya no es el de x." },
+        { valor: fmt(f.x + 1, 8), clave: "suma-x",
+          razon: "Eso supone que el *p + 1 sigue escribiendo en x. Pero la línea " +
+            "p = &y movió a p antes: *p toca la celda a la que p apunta en ese momento." }
+      ];
+      return lista;
     });
 
     Array.prototype.forEach.call(document.querySelectorAll("#opciones-final button"), function (btn) {

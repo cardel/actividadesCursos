@@ -130,34 +130,73 @@ if (typeof module !== "undefined") {
 
     pintarCodigo("codigo-techo", EJERCICIO.lineas);
 
-    document.getElementById("btn-techo").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-cuentas");
+    var cuentas = { a: false, e: false, m: false };
+    function alAcertar(idCaja, clave) {
+      document.getElementById(idCaja).addEventListener("click", function (ev) {
+        var b = ev.target;
+        if (b && b.getAttribute && b.getAttribute("data-op") === "correcta") {
+          cuentas[clave] = true;
+          if (cuentas.a && cuentas.e && cuentas.m) {
+            logradas.cuentas = true; revisar();
+            var ee = EJERCICIO.cabenEnLaEnlazada(EJERCICIO.intentos);
+            var nota = document.getElementById("nota-cuentas");
+            nota.style.display = "block";
+            nota.textContent = "El dato es la cuarta parte de lo que se guarda: los 20000 enteros son " + Math.floor(ee * 4 / 1024) + " KiB y el resto son punteros y relleno. El arreglo no paga nada de eso, y a cambio reserva sus " + EJERCICIO.capacidad + " casillas aunque la pila esté vacía.";
+          }
+        }
+      });
+    }
+    function sinRepetir(lista) {
+      var vistos = {};
+      return lista.filter(function (o) {
+        var nuevo = !vistos[o.valor];
+        vistos[o.valor] = true;
+        return nuevo;
+      });
+    }
+    alAcertar("opciones-c-arreglo", "a");
+    alAcertar("opciones-c-enlazada", "e");
+    alAcertar("opciones-c-memoria", "m");
+    Motor.opcionesNumericas("opciones-c-arreglo", "veredicto-c-arreglo", function () {
+      var ea = EJERCICIO.cabenEnElArreglo(EJERCICIO.intentos, EJERCICIO.capacidad);
+      return sinRepetir([
+        { valor: ea, clave: "correcta",
+          razon: "Correcto: " + ea + ". El arreglo se queda en CAPACIDAD y los " + (EJERCICIO.intentos - ea) + " intentos que siguen no entran." },
+        { valor: EJERCICIO.intentos, clave: "todos",
+          razon: "El arreglo no admite los " + EJERCICIO.intentos + ": el if (n < CAPACIDAD) deja de aumentar el contador cuando llega a " + EJERCICIO.capacidad + ", y los intentos que siguen pasan sin efecto." },
+        { valor: EJERCICIO.intentos - ea, clave: "rechazados",
+          razon: "Esos son los intentos que no entran, " + (EJERCICIO.intentos - ea) + ", no los que caben." },
+        { valor: ea - 1, clave: "uno-menos",
+          razon: "La condición es n < CAPACIDAD y n arranca en 0: entran exactamente CAPACIDAD elementos, no uno menos." }
+      ]);
+    });
+    Motor.opcionesNumericas("opciones-c-enlazada", "veredicto-c-enlazada", function () {
       var ea = EJERCICIO.cabenEnElArreglo(EJERCICIO.intentos, EJERCICIO.capacidad);
       var ee = EJERCICIO.cabenEnLaEnlazada(EJERCICIO.intentos);
+      return sinRepetir([
+        { valor: ee, clave: "correcta",
+          razon: "Correcto: " + ee + ". La enlazada no tiene techo fijo: admite todo lo que se intente mientras haya memoria." },
+        { valor: ea, clave: "techo-arreglo",
+          razon: "Ese es el techo del arreglo. La enlazada no reserva casillas por adelantado: pide un nodo por elemento y no hay CAPACIDAD que la detenga." },
+        { valor: EJERCICIO.intentos - ea, clave: "rechazados",
+          razon: "Esos son los intentos que el arreglo rechaza. La enlazada los recibe todos, y los que ya habían entrado también." },
+        { valor: EJERCICIO.intentos + ea, clave: "suma",
+          razon: "Nadie apila más elementos de los que se intentan: son " + EJERCICIO.intentos + " intentos y cada uno crea un solo nodo." }
+      ]);
+    });
+    Motor.opcionesNumericas("opciones-c-memoria", "veredicto-c-memoria", function () {
+      var ee = EJERCICIO.cabenEnLaEnlazada(EJERCICIO.intentos);
       var em = EJERCICIO.memoriaKiB(ee, EJERCICIO.bytesNodo);
-      var a = parseInt(document.getElementById("pred-arreglo").value, 10);
-      var e = parseInt(document.getElementById("pred-enlazada").value, 10);
-      var m = parseInt(document.getElementById("pred-memoria").value, 10);
-      if (a === ea && e === ee && m === em) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: " + ea + ", " + ee + " y " + em + " KiB. El arreglo se queda en CAPACIDAD y los 19500 intentos que siguen no entran. La enlazada admite los 20000 y cada nodo ocupa " + EJERCICIO.bytesNodo + " bytes: 4 del entero, 8 del puntero y 4 de relleno para que el puntero quede alineado. Son " + (ee * EJERCICIO.bytesNodo) + " bytes, que dividido por 1024 da " + em + " KiB.";
-        logradas.cuentas = true; revisar();
-        var nota = document.getElementById("nota-cuentas");
-        nota.style.display = "block";
-        nota.textContent = "El dato es la cuarta parte de lo que se guarda: los 20000 enteros son " + Math.floor(ee * 4 / 1024) + " KiB y el resto son punteros y relleno. El arreglo no paga nada de eso, y a cambio reserva sus " + EJERCICIO.capacidad + " casillas aunque la pila esté vacía.";
-      } else if (a === EJERCICIO.intentos) {
-        ver.className = "veredicto mal";
-        ver.textContent = "El arreglo no admite los 20000: el if (n < CAPACIDAD) deja de aumentar el contador cuando llega a " + EJERCICIO.capacidad + ", y los intentos que siguen pasan sin efecto.";
-      } else if (a === ea && e === ee && m === 320) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Un KiB son 1024 bytes, no 1000: " + (ee * EJERCICIO.bytesNodo) + " entre 1024 da " + em + " con la división entera.";
-      } else if (a === ea && e === ee && m === Math.floor(ee * 12 / 1024)) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Un Nodo no ocupa 12 bytes: el compilador agrega 4 de relleno para que el puntero de 8 quede en una dirección múltiplo de 8. Son " + EJERCICIO.bytesNodo + " bytes por nodo.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "El arreglo se detiene en CAPACIDAD, la enlazada admite todo lo que se intente, y la memoria es el número de nodos por lo que ocupa un Nodo, dividido por 1024.";
-      }
+      return sinRepetir([
+        { valor: em, clave: "correcta",
+          razon: "Correcto: " + em + " KiB. Cada nodo ocupa " + EJERCICIO.bytesNodo + " bytes: 4 del entero, 8 del puntero y 4 de relleno para que el puntero quede alineado. Son " + (ee * EJERCICIO.bytesNodo) + " bytes, que dividido por 1024 da " + em + " KiB." },
+        { valor: Math.floor(ee * EJERCICIO.bytesNodo / 1000), clave: "mil",
+          razon: "Un KiB son 1024 bytes, no 1000: " + (ee * EJERCICIO.bytesNodo) + " entre 1024 da " + em + " con la división entera." },
+        { valor: Math.floor(ee * 12 / 1024), clave: "doce",
+          razon: "Un Nodo no ocupa 12 bytes: el compilador agrega 4 de relleno para que el puntero de 8 quede en una dirección múltiplo de 8. Son " + EJERCICIO.bytesNodo + " bytes por nodo." },
+        { valor: Math.floor(ee * 4 / 1024), clave: "solo-dato",
+          razon: "Eso es solo lo que ocupan los enteros, 4 bytes por nodo. Cada nodo además guarda un puntero de 8 bytes y 4 de relleno." }
+      ]);
     });
   })();
 }

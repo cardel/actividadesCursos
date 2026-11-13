@@ -16,8 +16,6 @@
   }
   .nodo-arbol.hoja { border-color: var(--verde); background: var(--verde-suave); color: var(--verde); }
   .puntos { color: var(--gris); font-size: 0.85rem; white-space: nowrap; }
-  input.celda-num { width: 4.5rem; padding: 0.25rem 0.35rem; font-size: 0.95rem;
-    border: 1px solid var(--borde); border-radius: 6px; }
   tr.actual-fila td { background: var(--resalte); }
   tr.revelada td { color: var(--gris); }
   .desarrollo { font-family: ui-monospace, monospace; white-space: pre; background: var(--codigo-fondo);
@@ -43,7 +41,7 @@
 
   <div class="carta">
     <h2>2. Nivel por nivel</h2>
-    <p style="margin-top:0">Para el nivel resaltado escriba cuántos nodos tiene,
+    <p style="margin-top:0">Para el nivel resaltado elija cuántos nodos tiene,
     cuánto trabaja cada uno y cuánto cuesta el nivel entero.</p>
     <div class="dibujo" id="dibujo"></div>
     <div class="envoltura-tabla">
@@ -53,9 +51,19 @@
       </table>
     </div>
     <div class="prediccion" id="zona-nivel">
-      <button id="btn-nivel" class="primario">Comprobar el nivel</button>
       <button id="btn-revelar-nivel">Revelar</button>
       <button id="btn-medio">Llenar hasta el penúltimo</button>
+    </div>
+    <div id="zona-opciones">
+      <p style="margin-bottom:0">¿Cuántos nodos tiene el nivel?</p>
+      <div class="opciones" id="opciones-nodos"></div>
+      <div id="veredicto-nodos" class="veredicto"></div>
+      <p style="margin-bottom:0">¿Cuánto trabaja cada nodo, en unidades de c?</p>
+      <div class="opciones" id="opciones-trabajo"></div>
+      <div id="veredicto-trabajo" class="veredicto"></div>
+      <p style="margin-bottom:0">¿Cuánto cuesta el nivel entero, en unidades de c?</p>
+      <div class="opciones" id="opciones-costo"></div>
+      <div id="veredicto-costo" class="veredicto"></div>
     </div>
     <div id="veredicto-nivel" class="veredicto"></div>
   </div>
@@ -63,13 +71,13 @@
   <div class="carta" id="carta-total">
     <h2>3. Niveles y total</h2>
     <div class="prediccion">
-      <span>¿Cuántos niveles tiene el árbol?</span>
-      <input type="number" id="in-niveles" min="1">
-      <span>¿Cuánto suma todo, en unidades de c?</span>
-      <input type="number" id="in-total" min="1">
-      <button id="btn-total" class="primario">Comprobar</button>
       <button id="btn-revelar-total">Revelar</button>
     </div>
+    <p style="margin-bottom:0">¿Cuántos niveles tiene el árbol?</p>
+    <div class="opciones" id="opciones-niveles"></div>
+    <div id="veredicto-niveles" class="veredicto"></div>
+    <p style="margin-bottom:0">¿Cuánto suma todo, en unidades de c?</p>
+    <div class="opciones" id="opciones-total"></div>
     <div id="veredicto-total" class="veredicto"></div>
     <div id="bloque-desarrollo">
       <p>Desarrollando la recurrencia por sustitución:</p>
@@ -85,6 +93,7 @@
     <div id="veredicto-clase" class="veredicto"></div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="arbol.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

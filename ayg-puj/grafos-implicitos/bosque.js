@@ -457,7 +457,6 @@ if (typeof module !== "undefined") {
       bloquearEjecucion();
       pintarMarcado();
       Motor.limpiarVeredicto();
-      document.getElementById("prediccion").value = "";
       Motor.reiniciar({ bosque: actual });
     }
 
@@ -467,25 +466,42 @@ if (typeof module !== "undefined") {
       paramsIniciales: { bosque: PRESETS[0] }, alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
+    function sinRepetir(lista) {
+      var vistos = {}, sal = [];
+      lista.forEach(function (o) {
+        if (vistos[o.valor] !== true) { vistos[o.valor] = true; sal.push(o); }
+      });
+      return sal;
+    }
+
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto", function (params) {
       var p = params.bosque;
       var real = EJERCICIO.respuesta(p);
       var manhattan = (p.R - 1) + (p.C - 1);
-      if (valor === real) {
-        return { ok: true, msg: real >= 0
-          ? "Correcto: " + real + " pasos. Ahora marque el peligro en la tarjeta 2 y después ejecute para ver las capas."
-          : "Correcto: es Impossible. Marque el peligro en la tarjeta 2 y vea con la ejecución dónde se queda la cola." };
+      var lista = [
+        { valor: real, clave: "correcta",
+          razon: real >= 0
+            ? "Correcto: " + real + " pasos. Ahora marque el peligro en la tarjeta 2 y después ejecute para ver las capas."
+            : "Correcto: es Impossible. Marque el peligro en la tarjeta 2 y vea con la ejecución dónde se queda la cola." },
+        { valor: manhattan, clave: "recta",
+          razon: "Esa es la distancia sin obstáculos (" + manhattan + "). Aquí hay que devolverse: cuente sobre el dibujo el camino que rodea las rocas y el peligro." }
+      ];
+      if (real >= 0) {
+        lista.push({ valor: -1, clave: "imposible",
+          razon: "Sí hay camino. Rodee el peligro por el lado que quede libre y cuente los pasos." });
+        lista.push({ valor: real + 1, clave: "celdas",
+          razon: "Eso cuenta las celdas del camino, incluida la de partida, en vez de los pasos." });
+        if (real > 1) {
+          lista.push({ valor: real - 1, clave: "unoMenos",
+            razon: "Uno de menos: falta contar el paso que llega a la salida." });
+        }
+      } else {
+        lista.push({ valor: manhattan + 2, clave: "rodeo",
+          razon: "Eso supone que se puede rodear con un desvío de dos pasos. Hay una celda que no se puede pisar y sin ella no se sale: mire qué queda dentro de cada volumen." });
+        lista.push({ valor: 0, clave: "cero",
+          razon: "Cero pasos sería si ya se estuviera en la salida. Aquí la salida es inalcanzable, y eso es −1." });
       }
-      if (real === -1) {
-        return { ok: false, msg: "Hay una celda que no se puede pisar y sin ella no se sale. Mire qué queda dentro de cada volumen." };
-      }
-      if (valor === -1) {
-        return { ok: false, msg: "Sí hay camino. Rodee el peligro por el lado que quede libre y cuente los pasos." };
-      }
-      if (valor === manhattan && real !== manhattan) {
-        return { ok: false, msg: "Esa es la distancia sin obstáculos (" + manhattan + "). Aquí hay que devolverse: cuente sobre el dibujo el camino que rodea las rocas y el peligro." };
-      }
-      return { ok: false, msg: "No coincide. Siga con el dedo un camino que evite rocas y peligro y cuente los pasos; después busque uno más corto." };
+      return sinRepetir(lista).slice(0, 4);
     });
 
     document.getElementById("btn-comprobar-peligro").addEventListener("click", comprobarPeligro);

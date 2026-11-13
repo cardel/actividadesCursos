@@ -183,27 +183,55 @@ if (typeof document !== "undefined") (function () {
     pintarComparacion();
   }
 
-  function explicarA(bien, real, dicho) {
+  function agregar(lista, x) {
+    var repetido = lista.some(function (o) { return o.valor === x.valor; });
+    if (!repetido && lista.length < 4) { lista.push(x); }
+  }
+
+  function opcionesPorcentaje() {
     var c = costosBase();
     var r = repartir("contiguo", c);
     var peor = r.unidadesPorHilo.indexOf(r.fin);
+    var real = Math.round(r.fin / total(c) * 100);
+    var turnos = Math.round(repartir("turnos", c).fin / total(c) * 100);
     var texto = "El hilo " + peor + " recibe las tareas 48 a 63, las dieciséis más " +
       "caras: " + num(r.unidadesPorHilo[peor]) + " de " + num(total(c)) + " unidades, el " +
       real + " %. Los otros tres suman entre los tres " +
       num(total(c) - r.unidadesPorHilo[peor]) + ".";
-    return (bien ? "Sí, el " + real + " %. " : "Es el " + real + " %, no el " + num(dicho) + " %. ") + texto;
+    var lista = [{ valor: real + " %", clave: "correcta", razon: "Sí, el " + real + " %. " + texto }];
+    agregar(lista, { valor: (100 / HILOS) + " %", clave: "parejo",
+      razon: "El " + (100 / HILOS) + " % sería un reparto parejo: un cuarto del trabajo " +
+        "para cada hilo. Con costo i² los bloques no pesan lo mismo. " + texto });
+    agregar(lista, { valor: (100 - real) + " %", clave: "resto",
+      razon: "El " + (100 - real) + " % es lo que cargan los otros tres hilos entre todos, " +
+        "no el que termina último. " + texto });
+    agregar(lista, { valor: turnos + " %", clave: "turnos",
+      razon: "El " + turnos + " % es lo que carga el hilo más cargado cuando se reparte por " +
+        "turnos, no con bloques contiguos. " + texto });
+    return lista;
   }
 
-  function explicarB(bien, real, dicho) {
-    comparada = true;
-    pintarComparacion();
+  function opcionesVeces() {
     var c = costosBase();
     var a = repartir("contiguo", c).fin, b = repartir("demanda", c).fin;
+    var real = a / b;
     var texto = "En unidades, " + num(a) + " contra " + num(b) + ": " + num(real, 2) +
       " veces. Medido en la máquina de la clase, " + num(MEDIDO.contiguo) + " contra " +
       num(MEDIDO.demanda) + " ms, " + num(MEDIDO.contiguo / MEDIDO.demanda, 2) +
       " veces. El trabajo es el mismo; lo que cambia es quién hace cada tarea y cuándo.";
-    return (bien ? "Sí: " : "Son " + num(real, 2) + " veces, no " + num(dicho, 2) + ". ") + texto;
+    var ideal = total(c) / HILOS;
+    var lista = [{ valor: num(real, 2), clave: "correcta", razon: "Sí: " + texto }];
+    agregar(lista, { valor: num(a / ideal, 2), clave: "ideal",
+      razon: num(a / ideal, 2) + " es cuántas veces el ideal tarda el contiguo. La " +
+        "pregunta compara contra el reparto por demanda, que tampoco llega al ideal: " +
+        "se queda en " + num(b / ideal, 2) + ". " + texto });
+    agregar(lista, { valor: num(b / a, 2), clave: "al-reves",
+      razon: num(b / a, 2) + " es el cociente al revés: demanda entre contiguo. " +
+        "Contiguo tarda más, así que va en el numerador. " + texto });
+    agregar(lista, { valor: num(HILOS, 2), clave: "hilos",
+      razon: num(HILOS, 2) + " sería la ganancia de un reparto perfecto entre " + HILOS +
+        " hilos frente a uno solo, no la de un reparto sobre otro. " + texto });
+    return lista;
   }
 
   var RAZONES = {
@@ -236,20 +264,12 @@ if (typeof document !== "undefined") (function () {
   document.getElementById("btn-reiniciar").addEventListener("click", function () {
     k = 0; pintarGantt();
   });
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-a", boton: "btn-comprobar-a", veredicto: "veredicto-a" },
-    function () {
-      var c = costosBase(); var r = repartir("contiguo", c);
-      return Math.round(r.fin / total(c) * 100);
-    },
-    explicarA);
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-b", boton: "btn-comprobar-b", veredicto: "veredicto-b" },
-    function () {
-      var c = costosBase();
-      return repartir("contiguo", c).fin / repartir("demanda", c).fin;
-    },
-    explicarB);
+  Motor.opcionesNumericas("opciones-carga", "veredicto-a", opcionesPorcentaje);
+  Motor.opcionesNumericas("opciones-veces", "veredicto-b", opcionesVeces);
+  document.getElementById("opciones-veces").addEventListener("click", function () {
+    comparada = true;
+    pintarComparacion();
+  });
   Motor.conectarOpciones("opciones-fijo", "veredicto-fijo", RAZONES);
 
   pintar();

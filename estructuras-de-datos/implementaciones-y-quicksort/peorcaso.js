@@ -74,8 +74,24 @@ if (typeof module !== "undefined") {
       ver.className = "veredicto " + (bien ? "bien" : "mal");
       ver.textContent = texto;
     }
-    function valor(id) {
-      return parseInt(document.getElementById(id).value, 10);
+    /* Anota el acierto: el boton de la correcta lleva data-op="correcta". */
+    function alAcertar(idOpciones, clave) {
+      document.getElementById(idOpciones).addEventListener("click", function (e) {
+        var t = e.target;
+        if (t && t.getAttribute && t.getAttribute("data-op") === "correcta") {
+          logradas[clave] = true; revisar();
+        }
+      });
+    }
+    /* Deja la correcta y los distractores con valores distintos, hasta cuatro. */
+    function sinRepetir(lista) {
+      var salida = [];
+      lista.forEach(function (o) {
+        var repetido = false;
+        salida.forEach(function (x) { if (x.valor === o.valor) { repetido = true; } });
+        if (!repetido && salida.length < 4) { salida.push(o); }
+      });
+      return salida;
     }
     var logradas = { peor: false, cuenta: false, razon: false, medio: false, estrategia: false };
     function revisar() {
@@ -102,20 +118,20 @@ if (typeof module !== "undefined") {
       });
     });
 
-    document.getElementById("btn-cuenta").addEventListener("click", function () {
-      var d = valor("pred-cuenta");
+    Motor.opcionesNumericas("opciones-cuenta", "veredicto-cuenta", function () {
       var c = U.a.comparaciones;
-      if (d === c) {
-        decir("veredicto-cuenta", true, "Correcto: " + c + " = 6 + 5 + 4 + 3 + 2 + 1 = 7 · 6 / 2. Es la misma cuenta del arreglo ordenado: lo que la produce es el pivote en un extremo, no el orden de la entrada.");
-        logradas.cuenta = true; revisar();
-      } else if (d === 49 || d === 42) {
-        decir("veredicto-cuenta", false, "Las particiones encogen: 6 comparaciones la primera, 5 la segunda, y así hasta 1.");
-      } else if (d === 6) {
-        decir("veredicto-cuenta", false, "Esa es la primera partición. El 3 queda en la casilla 0 y la derecha tiene seis elementos más por partir.");
-      } else {
-        decir("veredicto-cuenta", false, "Cada pivote de A es un extremo de su rango. ¿Cuántas comparaciones hace un rango de m elementos, y qué tamaños van saliendo?");
-      }
+      return sinRepetir([
+        { valor: c, clave: "correcta",
+          razon: "Correcto: " + c + " = 6 + 5 + 4 + 3 + 2 + 1 = 7 · 6 / 2. Es la misma cuenta del arreglo ordenado: lo que la produce es el pivote en un extremo, no el orden de la entrada." },
+        { valor: 49, clave: "cuadrado",
+          razon: "Las particiones encogen: 6 comparaciones la primera, 5 la segunda, y así hasta 1." },
+        { valor: 42, clave: "ene-por-menos",
+          razon: "Eso es 7 · 6, como si cada partición comparara seis. Las particiones encogen: 6 comparaciones la primera, 5 la segunda, y así hasta 1." },
+        { valor: 6, clave: "primera",
+          razon: "Esa es la primera partición. El 3 queda en la casilla 0 y la derecha tiene seis elementos más por partir." }
+      ]);
     });
+    alAcertar("opciones-cuenta", "cuenta");
 
     var MSJ_RAZON = {
       extremo: "Correcto. El costo de particionar es fijo, m − 1 comparaciones para m elementos; lo que cambia es el tamaño de las dos llamadas que siguen. Si el pivote es un extremo, una de ellas recibe m − 1 elementos y la otra ninguno.",
@@ -131,20 +147,20 @@ if (typeof module !== "undefined") {
       });
     });
 
-    document.getElementById("btn-medio").addEventListener("click", function () {
-      var d = valor("pred-medio");
+    Motor.opcionesNumericas("opciones-medio", "veredicto-medio", function () {
       var c = M.a.comparaciones;
-      if (d === c) {
-        decir("veredicto-medio", true, "Correcto: " + c + ", contra " + U.a.comparaciones + " con el último. El primer pivote pasa a ser a[3] = 15, que deja cuatro elementos a la izquierda y dos a la derecha. Dentro de la izquierda los pivotes 12, 9 y 6 vuelven a caer en un extremo, pero el rango ya es de cuatro: 6 + 3 + 2 + 1, más 1 de la derecha.");
-        logradas.medio = true; revisar();
-      } else if (d === U.a.comparaciones) {
-        decir("veredicto-medio", false, "Con el del medio la primera partición ya cambia: el pivote es a[3] = 15, no el 3.");
-      } else if (d === 10) {
-        decir("veredicto-medio", false, "10 sería con particiones perfectas de 3 y 3. El 15 deja cuatro a un lado y dos al otro; siga la llamada de la izquierda.");
-      } else {
-        decir("veredicto-medio", false, "Antes de cada particionar se cambia a[(ini + fin) / 2] con a[fin]. Empiece con a[3] = 15 como pivote del rango completo.");
-      }
+      return sinRepetir([
+        { valor: c, clave: "correcta",
+          razon: "Correcto: " + c + ", contra " + U.a.comparaciones + " con el último. El primer pivote pasa a ser a[3] = 15, que deja cuatro elementos a la izquierda y dos a la derecha. Dentro de la izquierda los pivotes 12, 9 y 6 vuelven a caer en un extremo, pero el rango ya es de cuatro: 6 + 3 + 2 + 1, más 1 de la derecha." },
+        { valor: U.a.comparaciones, clave: "igual",
+          razon: "Con el del medio la primera partición ya cambia: el pivote es a[3] = 15, no el 3." },
+        { valor: 10, clave: "perfecta",
+          razon: "10 sería con particiones perfectas de 3 y 3. El 15 deja cuatro a un lado y dos al otro; siga la llamada de la izquierda." },
+        { valor: c - 1, clave: "sin-derecha",
+          razon: "Falta la partición de la derecha: quedan dos elementos y partirlos hace una comparación." }
+      ]);
     });
+    alAcertar("opciones-medio", "medio");
 
     var MSJ_ESTRATEGIA = {
       azar: "Correcto. Con la casilla escogida al azar ninguna entrada fija provoca siempre el peor caso, y el tiempo esperado es Θ(n log n) sobre cualquier entrada. El peor caso sigue existiendo, pero depende de la suerte y no de los datos.",

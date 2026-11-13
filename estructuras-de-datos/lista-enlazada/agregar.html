@@ -21,14 +21,12 @@
     <p style="margin-top:0">Contando la cabeza y cada avance,
     ¿cuántos nodos de la cadena vieja toca cada versión antes de enlazar el
     nodo nuevo?</p>
-    <div class="prediccion">
-      <span>sin ultimo:</span>
-      <input type="number" id="pred-sin" placeholder="?">
-      <span>con ultimo:</span>
-      <input type="number" id="pred-con" placeholder="?">
-      <button id="btn-visitas" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-visitas" class="veredicto"></div>
+    <p><b>Sin ultimo:</b></p>
+    <div class="opciones" id="opciones-sin"></div>
+    <div id="veredicto-sin" class="veredicto"></div>
+    <p><b>Con ultimo:</b></p>
+    <div class="opciones" id="opciones-con"></div>
+    <div id="veredicto-con" class="veredicto"></div>
   </div>
 
   <div class="carta">
@@ -67,6 +65,7 @@
     que produce un puntero colgante.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="agregar.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

@@ -652,24 +652,22 @@ if (typeof module !== "undefined") {
     arrancar();
     armar();
 
-    Motor.prediccionNumerica(function (valor, params) {
-      var p = g();
-      var total = p.aristas.length + P.puentes.length, res;
-      if (valor === total) {
-        res = { ok: true, msg: "Correcto: " + total + ". Son " + p.aristas.length +
-          " calles, y las " + P.puentes.length + " que son puente salen en los dos sentidos. " +
-          "Cada calle que no es puente sale una sola vez porque la comparación d[v] < d[u] del elif deja pasar una sola de las dos miradas." };
-      } else if (valor === p.aristas.length) {
-        res = { ok: false, msg: "Ese es el número de calles, " + p.aristas.length +
-          ". Las que son puente no se pueden orientar y salen dos veces, así que la salida tiene " + total + " líneas." };
-      } else if (valor === 2 * p.aristas.length) {
-        res = { ok: false, msg: "Eso sería emitir cada calle en los dos sentidos, y entonces no se convertiría ninguna. Solo los puentes van dobles: " + total + " líneas." };
-      } else {
-        res = { ok: false, msg: "No coincide. Cuente las calles y agregue una línea extra por cada puente: " + total + "." };
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto", function () {
+      var p = g(), lista = [], usados = {};
+      var total = p.aristas.length + P.puentes.length;
+      function agregar(valor, clave, razon) {
+        if (valor >= 1 && !usados[valor]) { usados[valor] = true; lista.push({ valor: valor, clave: clave, razon: razon }); }
       }
-      return res;
+      agregar(total, "correcta", "Correcto: " + total + ". Son " + p.aristas.length +
+        " calles, y las " + P.puentes.length + " que son puente salen en los dos sentidos. " +
+        "Cada calle que no es puente sale una sola vez porque la comparación d[v] < d[u] del elif deja pasar una sola de las dos miradas.");
+      agregar(p.aristas.length, "calles", "Ese es el número de calles, " + p.aristas.length +
+        ". Las que son puente no se pueden orientar y salen dos veces, así que la salida tiene " + total + " líneas.");
+      agregar(2 * p.aristas.length, "doble", "Eso sería emitir cada calle en los dos sentidos, y entonces no se convertiría ninguna. Solo los puentes van dobles: " + total + " líneas.");
+      agregar(P.puentes.length, "puentes", "Ese es solo el número de puentes, " + P.puentes.length + ". La salida lleva además una línea por cada calle que se orienta.");
+      agregar(p.n, "intersecciones", "Ese es el número de intersecciones, " + p.n + ". La salida es una línea por calle, más una por cada puente.");
+      return lista.slice(0, 4);
     });
-
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (btn) {
       btn.addEventListener("click", function () {
         presetActual = parseInt(btn.getAttribute("data-preset"), 10);

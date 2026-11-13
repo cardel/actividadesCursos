@@ -43,12 +43,8 @@
     </div>
     <p style="margin-bottom:0.2rem">Los dos imprimen <code>999900000000</code>. La matriz se
     reserva igual, se llena igual y se recorre el mismo número de veces.</p>
-    <div class="prediccion">
-      <span>El de filas tarda 0,43538 s y el de columnas 0,79385 s.
-      ¿Cuántas veces más tarda el de columnas? Dos decimales.</span>
-      <input type="number" id="pred-tiempo" min="0" step="0.01" placeholder="veces">
-      <button id="btn-tiempo" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0.3rem">El de filas tarda 0,43538 s y el de columnas 0,79385 s. ¿Cuántas veces más tarda el de columnas?</p>
+    <div class="opciones" id="op-tiempo"></div>
     <div id="ver-tiempo" class="veredicto"></div>
   </div>
 
@@ -57,17 +53,11 @@
     <p style="margin-top:0">El procesador ejecutó 3.504.983.954 instrucciones en
     1.177.787.894 ciclos para el de filas, y 3.504.984.293 en 2.796.626.915 para el de
     columnas. El cociente dice cuánto trabajo sale de cada ciclo de reloj.</p>
-    <div class="prediccion">
-      <span>Por filas:</span>
-      <input type="number" id="pred-ipc-bueno" min="0" step="0.01" placeholder="IPC">
-      <button id="btn-ipc-bueno" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0.3rem">Por filas:</p>
+    <div class="opciones" id="op-ipc-bueno"></div>
     <div id="ver-ipc-bueno" class="veredicto"></div>
-    <div class="prediccion">
-      <span>Por columnas:</span>
-      <input type="number" id="pred-ipc-malo" min="0" step="0.01" placeholder="IPC">
-      <button id="btn-ipc-malo" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0.3rem">Por columnas:</p>
+    <div class="opciones" id="op-ipc-malo"></div>
     <div id="ver-ipc-malo" class="veredicto"></div>
     <div class="botones" style="margin-top:0.8rem">
       <button id="btn-destapar">Destapar los contadores</button>

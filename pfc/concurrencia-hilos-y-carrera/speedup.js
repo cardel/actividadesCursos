@@ -160,31 +160,47 @@
     });
   }
 
-  function cablearPrediccion() {
-    document.getElementById("btn-comprobar").addEventListener("click", function () {
-      var v = document.getElementById("veredicto");
-      var texto = document.getElementById("prediccion").value.replace(",", ".");
-      var valor = parseFloat(texto);
-      if (isNaN(valor)) {
-        v.className = "veredicto mal";
-        v.textContent = "Escriba un número primero.";
-        return;
-      }
-      if (Math.abs(valor - OBJETIVO) < 0.05) {
-        v.className = "veredicto bien";
-        v.textContent = "S = " + MEDIDAS[0].ms + " / " + MEDIDAS[2].ms + " = " +
+  function opcionesPrediccion() {
+    var lista = [
+      { valor: OBJETIVO.toFixed(2), clave: "correcta",
+        razon: "S = " + MEDIDAS[0].ms + " / " + MEDIDAS[2].ms + " = " +
           OBJETIVO.toFixed(2) + ". Con cuatro núcleos el ideal era 4, así que " +
-          "poco más de la mitad de lo que se podía ganar se quedó en el camino.";
-        document.getElementById("celda-objetivo").textContent = OBJETIVO.toFixed(2);
-        document.getElementById("celda-objetivo").className = "";
-        acerto = true;
-        marcar();
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = Math.abs(valor - MEDIDAS[2].ms / MEDIDAS[0].ms) < 0.05
-          ? "El cociente está al revés. El speedup compara el tiempo secuencial contra el paralelo, y es mayor que 1 cuando se gana."
-          : "Revise la fórmula: es el tiempo de la versión secuencial dividido por el de la paralela, con los dos tiempos de la tabla.";
-      }
+          "poco más de la mitad de lo que se podía ganar se quedó en el camino." },
+      { valor: (MEDIDAS[2].ms / MEDIDAS[0].ms).toFixed(2), clave: "al-reves",
+        razon: "El cociente está al revés. El speedup compara el tiempo secuencial contra el paralelo, y es mayor que 1 cuando se gana." },
+      { valor: String(MEDIDAS[2].hilos), clave: "ideal",
+        razon: "Ese es el speedup ideal, el número de núcleos. Lo que se midió es 42 ms contra 15 ms, y la diferencia con 4 es justo lo que la página explica." },
+      { valor: speedup(MEDIDAS[1].ms).toFixed(2), clave: "fila-dos",
+        razon: "Ese es el speedup de la versión con 2 hilos (42 / 24). La pregunta es por la fila de 4 hilos, que tarda 15 ms." }
+    ];
+    var vistos = [];
+    return lista.filter(function (o) {
+      var nuevo = vistos.indexOf(o.valor) < 0;
+      if (nuevo) { vistos.push(o.valor); }
+      return nuevo;
+    });
+  }
+
+  function cablearPrediccion() {
+    var opciones = opcionesPrediccion();
+    var caja = document.getElementById("opciones-speedup");
+    var v = document.getElementById("veredicto");
+    var giro = (opciones.length + MEDIDAS[2].ms) % opciones.length;
+    opciones.slice(giro).concat(opciones.slice(0, giro)).forEach(function (o) {
+      var b = document.createElement("button");
+      b.setAttribute("data-op", o.clave);
+      b.textContent = o.valor;
+      b.addEventListener("click", function () {
+        v.className = "veredicto " + (o.clave === "correcta" ? "bien" : "mal");
+        v.textContent = o.razon;
+        if (o.clave === "correcta") {
+          document.getElementById("celda-objetivo").textContent = OBJETIVO.toFixed(2);
+          document.getElementById("celda-objetivo").className = "";
+          acerto = true;
+          marcar();
+        }
+      });
+      caja.appendChild(b);
     });
   }
 

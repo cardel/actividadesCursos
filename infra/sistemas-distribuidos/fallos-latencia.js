@@ -192,22 +192,69 @@ function iniciar() {
   pintarPing();
   pintarEnlaces();
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-nueves", boton: "btn-nueves", veredicto: "ver-nueves" },
-    function () { return caidoHoras(99.9); }, explicarNueves);
-  document.getElementById("btn-nueves").addEventListener("click", function () {
+  /* Dos opciones que se vean igual no pueden convivir: se descartan las
+     que repitan el valor de otra antes de devolver la lista. */
+  function sinRepetidos(lista) {
+    var vistos = {};
+    return lista.filter(function (o) {
+      var ya = vistos[o.valor];
+      vistos[o.valor] = true;
+      return !ya;
+    });
+  }
+
+  Motor.opcionesNumericas("op-nueves", "ver-nueves", function () {
+    var real = caidoHoras(99.9);
+    return sinRepetidos([
+      { valor: fmt(real, 2), clave: "correcta", razon: explicarNueves(true, real) },
+      { valor: fmt(caidoHoras(99), 2), clave: "dos-nueves",
+        razon: "Eso es lo que deja un 99 %, con dos nueves. Con tres nueves el tiempo caído es " +
+          "el 0,1 % del año, diez veces menos." },
+      { valor: fmt(caidoHoras(99.99), 2), clave: "cuatro-nueves",
+        razon: "Eso es lo que deja un 99,99 %, con cuatro nueves: " +
+          fmt(caidoMinutos(99.99), 1) + " minutos. Aquí son tres nueves, diez veces más." },
+      { valor: fmt(DIAS_ANO * 0.001, 3), clave: "dias",
+        razon: "Eso es el 0,1 % de " + DIAS_ANO + ", y son días. Para dar horas se multiplica " +
+          "por 24." }
+    ]);
+  });
+  document.getElementById("op-nueves").addEventListener("click", function () {
     destapado = true;
     pintarNueves();
     document.getElementById("nota-nueves").hidden = false;
   });
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-pico", boton: "btn-pico", veredicto: "ver-pico" },
-    razonPico, explicarPico);
+  Motor.opcionesNumericas("op-pico", "ver-pico", function () {
+    var real = razonPico();
+    return sinRepetidos([
+      { valor: fmt(real, 1), clave: "correcta", razon: explicarPico(true, real) },
+      { valor: fmt(PING.max / PING.avg, 1), clave: "contra-avg",
+        razon: "Eso compara el máximo con el promedio. La pregunta es contra el mínimo, el " +
+          "camino sin cola." },
+      { valor: fmt(PING.avg / PING.min, 1), clave: "avg-min",
+        razon: "Eso es el promedio contra el mínimo. El peor paquete es el máximo, " +
+          fmt(PING.max, 3) + " ms." },
+      { valor: fmt(PING.max / PING.mdev, 1), clave: "contra-mdev",
+        razon: "Eso divide entre mdev, que mide dispersión, no un tiempo de paquete. El piso " +
+          "con el que se compara es el mínimo." }
+    ]);
+  });
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-mbit", boton: "btn-mbit", veredicto: "ver-mbit" },
-    function () { return mbitPorSegundo(CURL.bytesPorSegundo); }, explicarMbit);
+  Motor.opcionesNumericas("op-mbit", "ver-mbit", function () {
+    var real = mbitPorSegundo(CURL.bytesPorSegundo);
+    return sinRepetidos([
+      { valor: fmt(real, 0), clave: "correcta", razon: explicarMbit(true, real) },
+      { valor: fmt(megabytesPorSegundo(CURL.bytesPorSegundo), 0), clave: "bytes",
+        razon: "Eso son los megabytes por segundo, sin pasar a bits. Cada byte son ocho bits, " +
+          "así que la cifra en Mbit/s es ocho veces mayor." },
+      { valor: fmt(megabytesPorSegundo(CURL.bytesPorSegundo) / 8, 0), clave: "al-reves",
+        razon: "Eso divide entre ocho, que es pasar de bits a bytes. Aquí se va de bytes a " +
+          "bits, y se multiplica." },
+      { valor: fmt(CURL.bytesPorSegundo * 8 / 1048576, 0), clave: "mebi",
+        razon: "Eso divide entre 1.048.576, que son mebibits. Un megabit son un millón de " +
+          "bits, y los proveedores venden en esas unidades." }
+    ]);
+  });
 
   Motor.conectarOpciones("op-piso", "ver-piso", RAZONES_PISO);
   Motor.conectarOpciones("op-perdida", "ver-perdida", RAZONES_PERDIDA);

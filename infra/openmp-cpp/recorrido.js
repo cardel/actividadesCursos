@@ -73,17 +73,39 @@ function filasTiempos() {
   ];
 }
 
-function explicarLinea(bien, real, dicho) {
-  var s = bien
-    ? "Sí: " + real + " accesos por cada línea que entra. "
-    : "Son " + real + ", no " + Motor.num(dicho, 1) + ". ";
-  s += BYTES_LINEA + " entre " + BYTES_ENTERO + ": en una línea caben " + real +
-    " enteros seguidos. Por filas esos " + real + " son justamente los " + real +
-    " accesos que siguen, así que se paga un fallo y luego " + (real - 1) +
-    " aciertos. Por columnas el acceso siguiente cae " + Motor.num(PASO_FILA) +
-    " bytes más adelante, en otra fila y fuera de la línea: un fallo cada vez. " +
-    "De esa relación de " + real + " a 1 salen los dos tiempos.";
-  return s;
+/* Opciones de cuantos accesos aprovechan cada linea: la correcta es
+   POR_LINEA y cada distractor es una cuenta con los mismos datos mal usados. */
+function opcionesLinea() {
+  var real = POR_LINEA;
+  var lista = [{ valor: real, clave: "correcta",
+    razon: "Sí: " + real + " accesos por cada línea que entra. " +
+      BYTES_LINEA + " entre " + BYTES_ENTERO + ": en una línea caben " + real +
+      " enteros seguidos. Por filas esos " + real + " son justamente los " + real +
+      " accesos que siguen, así que se paga un fallo y luego " + (real - 1) +
+      " aciertos. Por columnas el acceso siguiente cae " + Motor.num(PASO_FILA) +
+      " bytes más adelante, en otra fila y fuera de la línea: un fallo cada vez. " +
+      "De esa relación de " + real + " a 1 salen los dos tiempos." }];
+  var candidatas = [
+    { v: real - 1, razon: "Esos son los aciertos que vienen después del fallo. El acceso que " +
+      "trae la línea también la aprovecha: son " + real + " accesos con un solo fallo, " +
+      "uno de ellos el que la trajo." },
+    { v: BYTES_LINEA, razon: "Esos son los bytes de la línea, no los accesos. Cada acceso " +
+      "lee un entero de " + BYTES_ENTERO + " bytes, así que caben " + BYTES_LINEA + " / " +
+      BYTES_ENTERO + " = " + real + "." },
+    { v: BYTES_ENTERO, razon: "Esos son los bytes de un entero. La pregunta es cuántos enteros " +
+      "seguidos caben en una línea de " + BYTES_LINEA + " bytes, y son " + real + "." },
+    { v: BYTES_LINEA / (2 * BYTES_ENTERO), razon: "Eso supone enteros de " + (2 * BYTES_ENTERO) +
+      " bytes. Un int ocupa " + BYTES_ENTERO + ", y por eso caben " + real + " en la línea." }
+  ];
+  var vistos = {};
+  vistos[real] = true;
+  candidatas.forEach(function (c) {
+    if (lista.length < 4 && !vistos[c.v]) {
+      vistos[c.v] = true;
+      lista.push({ valor: c.v, clave: "d" + c.v, razon: c.razon });
+    }
+  });
+  return lista;
 }
 
 function describirPaso(filas, i) {
@@ -180,7 +202,7 @@ if (typeof module !== "undefined" && module.exports) {
     RAZONES_DIFERENCIA: RAZONES_DIFERENCIA, RAZONES_FALSA: RAZONES_FALSA,
     fallos: fallos, factor: factor, traza: traza, acumulado: acumulado,
     transferencias: transferencias, filasTiempos: filasTiempos,
-    explicarLinea: explicarLinea, describirPaso: describirPaso,
+    opcionesLinea: opcionesLinea, describirPaso: describirPaso,
     describirCierre: describirCierre, textoEscritura: textoEscritura
   };
 }
@@ -270,10 +292,7 @@ if (typeof document !== "undefined") (function () {
     k = 0; pintarPaso();
   });
 
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-linea", boton: "btn-comprobar-linea", veredicto: "veredicto-linea" },
-    function () { return POR_LINEA; },
-    explicarLinea);
+  Motor.opcionesNumericas("opciones-linea", "veredicto-linea", opcionesLinea);
 
   Motor.conectarOpciones("opciones-diferencia", "veredicto-diferencia", RAZONES_DIFERENCIA);
   document.querySelectorAll("#opciones-diferencia button").forEach(function (b) {

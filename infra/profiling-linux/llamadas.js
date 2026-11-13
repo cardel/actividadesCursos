@@ -157,6 +157,18 @@ function filasBueno() {
   ];
 }
 
+
+/* Una pregunta numerica se contesta escogiendo: la correcta y los errores que
+   alguien comete de verdad, cada uno con su razon. Un valor repetido se descarta. */
+function opcionesDe(buena, razonBuena, malas) {
+  var lista = [{ valor: buena, clave: "correcta", razon: razonBuena }];
+  malas.forEach(function (m) {
+    var repetido = lista.some(function (o) { return o.valor === m.valor; });
+    if (!repetido) { lista.push({ valor: m.valor, clave: m.clave, razon: m.razon }); }
+  });
+  return lista;
+}
+
 function iniciar() {
   var vistaTrazas = false;
 
@@ -179,7 +191,8 @@ function iniciar() {
     ]);
   }
 
-  function destapar() {
+  function destapar(ev) {
+    if (ev.target.getAttribute("data-op") !== "correcta") { return; }
     vistaTrazas = true;
     pintarTrazas();
     document.getElementById("nota-trazas").hidden = false;
@@ -203,22 +216,54 @@ function iniciar() {
   pintarTrazas();
   pintarBueno();
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-llamadas", boton: "btn-llamadas", veredicto: "ver-llamadas" },
-    function () { return razonLlamadasWrite(LENTO, RAPIDO); },
-    explicarRazonLlamadas);
-  document.getElementById("btn-llamadas").addEventListener("click", destapar);
+  Motor.opcionesNumericas("op-llamadas", "ver-llamadas", function () {
+    var real = razonLlamadasWrite(LENTO, RAPIDO);
+    return opcionesDe(fmt(real, 1), explicarRazonLlamadas(true, real), [
+      { valor: fmt(LENTO.total.llamadas / RAPIDO.total.llamadas, 1), clave: "total",
+        razon: "No. Contó todas las llamadas de la traza, " + fmt(LENTO.total.llamadas) +
+          " contra " + fmt(RAPIDO.total.llamadas) + ". La pregunta es solo por write." },
+      { valor: fmt(razonTiempoNucleo(LENTO, RAPIDO), 1), clave: "tiempo",
+        razon: "No. Esa es la razón del tiempo dentro del núcleo, que se pregunta después. " +
+          "Aquí se cuentan llamadas, no segundos." },
+      { valor: fmt(razonReloj(LENTO, RAPIDO), 1), clave: "reloj",
+        razon: "No. Esa es la razón del reloj sin strace, " + fmt(LENTO.reloj, 2) + " s contra " +
+          fmt(RAPIDO.reloj, 2) + " s. Se pregunta por el número de llamadas a write." }
+    ]);
+  });
+  document.getElementById("op-llamadas").addEventListener("click", destapar);
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-tiempo", boton: "btn-tiempo", veredicto: "ver-tiempo" },
-    function () { return razonTiempoNucleo(LENTO, RAPIDO); },
-    explicarRazonTiempo);
-  document.getElementById("btn-tiempo").addEventListener("click", destapar);
+  Motor.opcionesNumericas("op-tiempo", "ver-tiempo", function () {
+    var real = razonTiempoNucleo(LENTO, RAPIDO);
+    return opcionesDe(fmt(real, 1), explicarRazonTiempo(true, real), [
+      { valor: fmt(razonLlamadasWrite(LENTO, RAPIDO), 1), clave: "llamadas",
+        razon: "No. Esa es la razón de llamadas a write, la pregunta anterior. Aquí se " +
+          "compara el tiempo dentro del núcleo, y cada write de ./rapido cuesta más que uno " +
+          "de ./lento porque entrega un bloque entero." },
+      { valor: fmt(LENTO.write.segundos / RAPIDO.write.segundos, 1), clave: "solowrite",
+        razon: "No. Usó los segundos de write, " + fmt(LENTO.write.segundos, 6) + " contra " +
+          fmt(RAPIDO.write.segundos, 6) + ". El tiempo dentro del núcleo es el de la fila " +
+          "total: " + fmt(LENTO.total.segundos, 6) + " contra " + fmt(RAPIDO.total.segundos, 6) + "." },
+      { valor: fmt(razonReloj(LENTO, RAPIDO), 1), clave: "reloj",
+        razon: "No. Esa es la razón del reloj sin strace, que se pregunta en la carta siguiente. " +
+          "Aquí se compara el tiempo que strace midió dentro del núcleo." }
+    ]);
+  });
+  document.getElementById("op-tiempo").addEventListener("click", destapar);
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-reloj", boton: "btn-reloj", veredicto: "ver-reloj" },
-    function () { return razonReloj(LENTO, RAPIDO); },
-    explicarRazonReloj);
+  Motor.opcionesNumericas("op-reloj-razon", "ver-reloj", function () {
+    var real = razonReloj(LENTO, RAPIDO);
+    return opcionesDe(fmt(real), explicarRazonReloj(true, real), [
+      { valor: fmt(razonTiempoNucleo(LENTO, RAPIDO)), clave: "nucleo",
+        razon: "No. Esa es la razón del tiempo dentro del núcleo, y es justo la cifra que no " +
+          "se repite en el reloj: mide solo las llamadas, no el programa entero." },
+      { valor: fmt(razonLlamadasWrite(LENTO, RAPIDO)), clave: "llamadas",
+        razon: "No. Esa es la razón de llamadas a write. El reloj mide cuánto tarda el programa, " +
+          "y las llamadas son solo una parte de ese tiempo." },
+      { valor: fmt(LENTO.reloj - RAPIDO.reloj, 2), clave: "resta",
+        razon: "No. Esa es la diferencia, " + fmt(LENTO.reloj, 2) + " menos " + fmt(RAPIDO.reloj, 2) +
+          " s, en segundos. Se pregunta cuántas veces más, que es un cociente." }
+    ]);
+  });
 
   Motor.conectarOpciones("op-reloj", "ver-reloj-op", RAZONES_RELOJ);
   Motor.conectarOpciones("op-cruce", "ver-cruce", RAZONES_CRUCE);

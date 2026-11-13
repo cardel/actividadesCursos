@@ -10,7 +10,7 @@
 <div class="contenedor">
   <a class="volver" href="#">← Volver a los ejercicios</a>
   <h1>string</h1>
-  <p class="intro">Cuatro expresiones sobre cadenas. Escriba lo que
+  <p class="intro">Cuatro expresiones sobre cadenas. Escoja lo que
   imprime <code>printf("%d", ...)</code> con cada una: 1 o 0 para las
   comparaciones, el número para el tamaño.</p>
 
@@ -18,9 +18,8 @@
     <h2>1. Al revés</h2>
     <div class="prediccion">
       <span><code>alReves("anilina") == "anilina"</code></span>
-      <input type="number" id="pred-reves" placeholder="?">
-      <button id="btn-reves" class="primario">Comprobar</button>
     </div>
+    <div class="opciones" id="opciones-reves"></div>
     <div id="veredicto-reves" class="veredicto"></div>
   </div>
 
@@ -28,9 +27,8 @@
     <h2>2. Menor, letra a letra</h2>
     <div class="prediccion">
       <span><code>string("mapa") &lt; string("mano")</code></span>
-      <input type="number" id="pred-menor" placeholder="?">
-      <button id="btn-menor" class="primario">Comprobar</button>
     </div>
+    <div class="opciones" id="opciones-menor"></div>
     <div id="veredicto-menor" class="veredicto"></div>
   </div>
 
@@ -38,9 +36,8 @@
     <h2>3. El prefijo</h2>
     <div class="prediccion">
       <span><code>string("cola") &lt; string("colar")</code></span>
-      <input type="number" id="pred-prefijo" placeholder="?">
-      <button id="btn-prefijo" class="primario">Comprobar</button>
     </div>
+    <div class="opciones" id="opciones-prefijo"></div>
     <div id="veredicto-prefijo" class="veredicto"></div>
   </div>
 
@@ -48,9 +45,8 @@
     <h2>4. Concatenar y medir</h2>
     <div class="prediccion">
       <span><code>(string("pila") + " y cola").size()</code></span>
-      <input type="number" id="pred-size" placeholder="?">
-      <button id="btn-size" class="primario">Comprobar</button>
     </div>
+    <div class="opciones" id="opciones-size"></div>
     <div id="veredicto-size" class="veredicto"></div>
   </div>
 
@@ -62,6 +58,7 @@
     push_back) es el mismo contrato de vector.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="cadena.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

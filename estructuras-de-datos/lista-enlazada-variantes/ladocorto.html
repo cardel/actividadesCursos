@@ -17,14 +17,12 @@
   <div class="carta">
     <h2>1. Los dos caminos hasta la posición 10</h2>
     <div class="codigo" id="codigo-nodoen"></div>
-    <div class="prediccion">
-      <span>pasos de frente:</span>
-      <input type="number" id="pred-frente" placeholder="?">
-      <span>pasos por el lado corto:</span>
-      <input type="number" id="pred-corto" placeholder="?">
-      <button id="btn-diez" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-diez" class="veredicto"></div>
+    <div><b>¿Cuántos pasos de frente hasta la posición 10?</b></div>
+    <div class="opciones" id="opciones-frente"></div>
+    <div id="veredicto-frente" class="veredicto"></div>
+    <div><b>¿Cuántos pasos por el lado corto?</b></div>
+    <div class="opciones" id="opciones-corto"></div>
+    <div id="veredicto-corto" class="veredicto"></div>
   </div>
 
   <div class="carta">
@@ -52,14 +50,12 @@
     <h2>3. Recorrer las doce posiciones</h2>
     <p style="margin-top:0">Un programa pide <code>obtener(p)</code> una vez por
     cada posición, de la 0 a la 11. ¿Cuántos pasos da en total cada versión?</p>
-    <div class="prediccion">
-      <span>total de frente:</span>
-      <input type="number" id="pred-total-frente" placeholder="?">
-      <span>total por el lado corto:</span>
-      <input type="number" id="pred-total-corto" placeholder="?">
-      <button id="btn-totales" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-totales" class="veredicto"></div>
+    <div><b>Total de frente</b></div>
+    <div class="opciones" id="opciones-total-frente"></div>
+    <div id="veredicto-total-frente" class="veredicto"></div>
+    <div><b>Total por el lado corto</b></div>
+    <div class="opciones" id="opciones-total-corto"></div>
+    <div id="veredicto-total-corto" class="veredicto"></div>
   </div>
 
   <div class="carta">
@@ -84,6 +80,7 @@
     constante, y eso sí se mide en el reloj.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="ladocorto.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

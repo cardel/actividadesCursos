@@ -63,15 +63,26 @@ if (typeof module !== "undefined") {
         caja.appendChild(linea);
       });
     }
-    function leerLista(texto) {
-      return texto.trim().split(/[\s,]+/).filter(function (x) { return x !== ""; }).map(Number);
+    /* Opciones numericas con el motor comun; avisa cuando se pulsa la correcta. */
+    function opcionesLogro(idOpciones, idVeredicto, armar, alAcertar) {
+      Motor.opcionesNumericas(idOpciones, idVeredicto, armar);
+      document.getElementById(idOpciones).addEventListener("click", function (e) {
+        var b = e.target;
+        if (b && b.getAttribute && b.getAttribute("data-op") === "correcta") { alAcertar(); }
+      });
     }
-    function iguales(a, b) {
-      return a.length === b.length && a.every(function (x, i) { return x === b[i]; });
+    /* Descarta las opciones cuyo valor ya salio: nunca dos botones iguales. */
+    function unicas(lista) {
+      var vistos = [];
+      return lista.filter(function (o) {
+        var nuevo = vistos.indexOf(o.valor) === -1;
+        if (nuevo) { vistos.push(o.valor); }
+        return nuevo;
+      });
     }
-    var logradas = { lb: false, unique: false, acc: false };
+    var logradas = { lb: false, uniqueN: false, uniqueTxt: false, acc: false };
     function revisar() {
-      if (logradas.lb && logradas.unique && logradas.acc) {
+      if (logradas.lb && logradas.uniqueN && logradas.uniqueTxt && logradas.acc) {
         document.getElementById("carta-cierre").style.display = "block";
       }
     }
@@ -81,25 +92,28 @@ if (typeof module !== "undefined") {
       ["vector<int>::iterator it = lower_bound(v.begin(), v.end(), x);", "bloque-1"],
       ["printf(\"%d\\n\", (int) (it - v.begin()));", "bloque-2"]
     ]);
-    document.getElementById("btn-lb").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-lb");
-      var esperado = EJERCICIO.consultas.map(function (x) { return EJERCICIO.lowerBound(EJERCICIO.ordenado, x); });
-      var dada = leerLista(document.getElementById("pred-lb").value);
-      if (iguales(dada, esperado)) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: 1 4 5 6. Con 4, la primera de las tres apariciones; con 5, que no está, la posición donde iría (la del 9); con 11, la última casilla; con 12, mayor que todos, end(): índice 6, el tamaño. Por eso se comprueba it != v.end() antes de leer *it.";
-        logradas.lb = true; revisar();
-      } else if (dada.length === 4 && dada[0] === 3) {
-        ver.className = "veredicto mal";
-        ver.textContent = "lower_bound da la primera posición cuyo valor no es menor que x: con tres 4 seguidos, la primera, no la última.";
-      } else if (dada.length === 4 && dada[3] !== 6) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Con 12, ningún valor es mayor o igual: lower_bound devuelve end(), y end() - begin() es el tamaño del vector.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "Cuatro números, uno por consulta: la primera posición con valor >= x, o el tamaño si no la hay.";
-      }
-    });
+    opcionesLogro("opciones-lb", "veredicto-lb", function () {
+      var o = EJERCICIO.ordenado;
+      var q = EJERCICIO.consultas;
+      var esperado = q.map(function (x) { return EJERCICIO.lowerBound(o, x); });
+      var ultima = q.map(function (x) {
+        var p = EJERCICIO.lowerBound(o, x);
+        while (p + 1 < o.length && o[p] === x && o[p + 1] === x) { p = p + 1; }
+        return p;
+      });
+      var sinFin = esperado.map(function (p) { return Math.min(p, o.length - 1); });
+      var desdeUno = esperado.map(function (p) { return p + 1; });
+      return unicas([
+        { valor: esperado.join(" "), clave: "correcta",
+          razon: "Correcto: " + esperado.join(" ") + ". Con 4, la primera de las tres apariciones; con 5, que no está, la posición donde iría (la del 9); con 11, la última casilla; con 12, mayor que todos, end(): índice 6, el tamaño. Por eso se comprueba it != v.end() antes de leer *it." },
+        { valor: ultima.join(" "), clave: "ultima",
+          razon: "lower_bound da la primera posición cuyo valor no es menor que x: con tres 4 seguidos, la primera, no la última." },
+        { valor: sinFin.join(" "), clave: "sin-end",
+          razon: "Con 12, ningún valor es mayor o igual: lower_bound devuelve end(), y end() - begin() es el tamaño del vector, " + o.length + ", no el último índice." },
+        { valor: desdeUno.join(" "), clave: "desde-uno",
+          razon: "Esa cuenta empieza en 1. it - v.begin() da índices desde 0." }
+      ]);
+    }, function () { logradas.lb = true; revisar(); });
 
     pintarCodigo("codigo-unique", [
       ["vector<int> v = {7, 3, 7, 1, 3, 3, 9};", ""],
@@ -108,27 +122,42 @@ if (typeof module !== "undefined") {
       ["printf(\"%d\\n\", (int) (fin - v.begin()));", "bloque-2"],
       ["v.erase(fin, v.end());", "bloque-3"]
     ]);
-    document.getElementById("btn-unique").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-unique");
+    opcionesLogro("opciones-unique-n", "veredicto-unique-n", function () {
       var r = EJERCICIO.sinRepetidos(EJERCICIO.conRepetidos);
-      var dada = leerLista(document.getElementById("pred-unique").value);
-      var n = parseInt(document.getElementById("pred-unique-n").value, 10);
-      if (iguales(dada, r.final) && n === r.distintos) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: imprime 4 y v queda < 1 3 7 9 >. Tras el sort, < 1 3 3 3 7 7 9 >; unique copia al frente cada valor distinto del anterior y devuelve la posición 4, donde termina lo válido; el erase recorta desde ahí.";
-        logradas.unique = true; revisar();
-        document.getElementById("nota-unique").style.display = "block";
-        document.getElementById("nota-unique").textContent = "Con esta biblioteca, justo después de unique y antes del erase el vector quedó < " + r.trasUnique.join(" ") + " >: de la posición 4 en adelante no significa nada, y otra biblioteca puede dejar otra cosa.";
-      } else if (iguales(dada, r.final)) {
-        ver.className = "veredicto mal";
-        ver.textContent = "El vector final está bien. Lo que imprime es cuántos distintos dejó unique al frente: la posición que devuelve.";
-      } else if (iguales(dada, [7, 3, 1, 9]) || iguales(dada, [7, 3, 7, 1, 9])) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Primero va el sort: unique solo junta repetidos consecutivos, y después del sort los iguales quedan juntos y en orden.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "Tres pasos: ordene, deje un solo representante de cada valor y recorte. Escriba el vector que queda y cuántos son.";
-      }
+      var v = EJERCICIO.conRepetidos;
+      // unique sin sort: solo junta repetidos consecutivos
+      var sinOrden = v.filter(function (x, i) { return i === 0 || x !== v[i - 1]; }).length;
+      return unicas([
+        { valor: r.distintos, clave: "correcta",
+          razon: "Correcto: " + r.distintos + ". Tras el sort los iguales quedan juntos, unique deja uno de cada y devuelve la posición donde termina lo válido." },
+        { valor: v.length, clave: "tamano",
+          razon: "Ese es el tamaño del vector. unique no borra nada: devuelve dónde termina lo válido, y eso es lo que imprime fin - v.begin()." },
+        { valor: sinOrden, clave: "sin-sort",
+          razon: "Ese sería el resultado sin el sort: unique solo junta repetidos consecutivos. Después del sort los iguales quedan juntos y salen " + r.distintos + " distintos." },
+        { valor: r.distintos - 1, clave: "indice",
+          razon: "Ese es el índice del último distinto. fin apunta a la casilla que sigue, así que fin - v.begin() cuenta los " + r.distintos + "." }
+      ]);
+    }, function () { logradas.uniqueN = true; revisar(); });
+    opcionesLogro("opciones-unique", "veredicto-unique", function () {
+      var v = EJERCICIO.conRepetidos;
+      var r = EJERCICIO.sinRepetidos(v);
+      var sinOrden = v.filter(function (x, i) { return i === 0 || x !== v[i - 1]; });
+      var aparicion = v.filter(function (x, i) { return v.indexOf(x) === i; });
+      return unicas([
+        { valor: r.final.join(" "), clave: "correcta",
+          razon: "Correcto: v queda < " + r.final.join(" ") + " >. Tras el sort, < " + r.ordenado.join(" ") + " >; unique copia al frente cada valor distinto del anterior y el erase recorta desde la posición donde termina lo válido." },
+        { valor: aparicion.join(" "), clave: "aparicion",
+          razon: "Primero va el sort: sin él los distintos no quedan en orden de aparición, quedan ordenados de menor a mayor." },
+        { valor: sinOrden.join(" "), clave: "sin-sort",
+          razon: "Sin el sort, unique solo junta repetidos consecutivos. Después del sort los iguales quedan juntos y en orden." },
+        { valor: r.trasUnique.join(" "), clave: "sin-erase",
+          razon: "Eso es el vector justo después de unique y antes del erase: de la posición " + r.distintos + " en adelante no significa nada. El erase lo recorta." }
+      ]);
+    }, function () {
+      logradas.uniqueTxt = true; revisar();
+      var r = EJERCICIO.sinRepetidos(EJERCICIO.conRepetidos);
+      document.getElementById("nota-unique").style.display = "block";
+      document.getElementById("nota-unique").textContent = "Con esta biblioteca, justo después de unique y antes del erase el vector quedó < " + r.trasUnique.join(" ") + " >: de la posición " + r.distintos + " en adelante no significa nada, y otra biblioteca puede dejar otra cosa.";
     });
 
     var MENSAJES_ACC = {

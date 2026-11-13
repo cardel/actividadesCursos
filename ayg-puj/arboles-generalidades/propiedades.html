@@ -30,11 +30,15 @@
     <div class="dibujo" id="panel-grafo"></div>
     <div class="leyenda">Los vértices van de <i>p</i> a <i>w</i> en los tres. Las aristas no tienen
     sentido ni peso.</div>
-    <div id="cuentas"></div>
-    <div class="botones" style="margin-top:0.6rem">
-      <button id="btn-cuentas" class="primario">Comprobar las tres</button>
-    </div>
-    <div id="fb-cuentas"></div>
+    <div class="pregunta">¿Cuántas aristas tiene?</div>
+    <div class="opciones" id="opciones-aristas"></div>
+    <div id="veredicto-aristas" class="veredicto"></div>
+    <div class="pregunta">¿Cuántas hojas, es decir vértices de grado 1?</div>
+    <div class="opciones" id="opciones-hojas"></div>
+    <div id="veredicto-hojas" class="veredicto"></div>
+    <div class="pregunta">¿Cuántos ciclos independientes tiene?</div>
+    <div class="opciones" id="opciones-ciclos"></div>
+    <div id="veredicto-ciclos" class="veredicto"></div>
   </div>
 
   <div class="carta">
@@ -46,6 +50,7 @@
     grafo.</p>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="../comun/arbol.js"></script>
 <script src="../comun/grafo-svg.js"></script>
 <script src="propiedades.js"></script>

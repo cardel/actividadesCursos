@@ -119,32 +119,61 @@ if (typeof module !== "undefined") {
       ["escrituras = escrituras + 2;", "bloque-2"]
     ]);
 
-    document.getElementById("btn-cuentas").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-cuentas");
-      var esperadoA = EJERCICIO.movidasArreglo(EJERCICIO.n);
-      var esperadoE = EJERCICIO.escriturasEnlazada(EJERCICIO.n);
-      var a = parseInt(document.getElementById("pred-arreglo").value, 10);
-      var e = parseInt(document.getElementById("pred-enlazada").value, 10);
-      if (a === esperadoA && e === esperadoE) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: " + esperadoA + " y " + esperadoE + ". La inserción número k corre los k elementos que ya estaban, así que el total es 0 + 1 + ... + 19 = 20·19/2 = 190. La enlazada escribe dos punteros cada vez: 2·20 = 40.";
+    function alAcertar(idCaja, fn) {
+      document.getElementById(idCaja).addEventListener("click", function (ev) {
+        var b = ev.target;
+        if (b && b.getAttribute && b.getAttribute("data-op") === "correcta") { fn(); }
+      });
+    }
+    function unicas(lista) {
+      var vistos = {};
+      return lista.filter(function (o) {
+        var dup = vistos[o.valor] === true;
+        vistos[o.valor] = true;
+        return !dup;
+      });
+    }
+
+    var cuentasParcial = { arreglo: false, enlazada: false };
+    function cerrarCuentas() {
+      if (cuentasParcial.arreglo && cuentasParcial.enlazada) {
         logradas.cuentas = true; revisar();
         var nota = document.getElementById("nota-cuentas");
         nota.style.display = "block";
         nota.textContent = "Con n = 200 el arreglo haría " + EJERCICIO.movidasArreglo(200) + " movidas y la enlazada " + EJERCICIO.escriturasEnlazada(200) + " escrituras: multiplicar n por 10 multiplica por 100 el trabajo de una y por 10 el de la otra.";
-      } else if (a === esperadoA) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Las movidas están bien. La enlazada escribe dos punteros por inserción, el del nodo nuevo y la cabeza, y no depende de cuántos elementos haya.";
-      } else if (a === 400 || a === 200) {
-        ver.className = "veredicto mal";
-        ver.textContent = "La primera inserción no mueve nada y la vigésima mueve 19: los sumandos van de 0 a 19, no 20 veces lo mismo.";
-      } else if (a === 210) {
-        ver.className = "veredicto mal";
-        ver.textContent = "La suma va de 0 a n - 1, no de 1 a n: la inserción sobre la lista vacía no corre ningún elemento.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "Sume lo que corre cada inserción: 0, 1, 2, ..., 19. Es n(n-1)/2.";
       }
+    }
+
+    Motor.opcionesNumericas("opciones-arreglo", "veredicto-arreglo", function () {
+      var n = EJERCICIO.n;
+      var esperado = EJERCICIO.movidasArreglo(n);
+      return unicas([
+        { valor: esperado, clave: "correcta",
+          razon: "Correcto: " + esperado + ". La inserción número k corre los k elementos que ya estaban, así que el total es 0 + 1 + ... + " + (n - 1) + " = " + n + "·" + (n - 1) + "/2 = " + esperado + "." },
+        { valor: n * n, clave: "cuadrado",
+          razon: "La primera inserción no mueve nada y la última mueve " + (n - 1) + ": los sumandos van de 0 a " + (n - 1) + ", no " + n + " veces lo mismo." },
+        { valor: n * (n + 1) / 2, clave: "desdeuno",
+          razon: "La suma va de 0 a n - 1, no de 1 a n: la inserción sobre la lista vacía no corre ningún elemento." },
+        { valor: n * (n - 1), clave: "doble",
+          razon: "Eso es el doble de la suma. 0 + 1 + ... + " + (n - 1) + " vale n(n-1)/2: cada inserción corre k elementos, no n - 1." }
+      ]);
     });
+    alAcertar("opciones-arreglo", function () { cuentasParcial.arreglo = true; cerrarCuentas(); });
+
+    Motor.opcionesNumericas("opciones-enlazada", "veredicto-enlazada", function () {
+      var n = EJERCICIO.n;
+      var esperado = EJERCICIO.escriturasEnlazada(n);
+      return unicas([
+        { valor: esperado, clave: "correcta",
+          razon: "Correcto: " + esperado + ". La enlazada escribe dos punteros cada vez, el del nodo nuevo y la cabeza: 2·" + n + " = " + esperado + ", sin depender de cuántos elementos haya." },
+        { valor: n, clave: "uno",
+          razon: "Cada inserción escribe dos punteros, no uno: nuevo->siguiente y cabeza." },
+        { valor: n + 2, clave: "suma",
+          razon: "Las dos escrituras se pagan en cada inserción: se multiplican por n, no se suman una sola vez." },
+        { valor: EJERCICIO.movidasArreglo(n), clave: "delarreglo",
+          razon: "Esa es la cuenta del arreglo. La enlazada no corre ningún elemento: no depende de cuántos haya." }
+      ]);
+    });
+    alAcertar("opciones-enlazada", function () { cuentasParcial.enlazada = true; cerrarCuentas(); });
   })();
 }

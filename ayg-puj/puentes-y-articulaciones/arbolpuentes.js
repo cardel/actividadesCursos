@@ -701,7 +701,6 @@ if (typeof module !== "undefined") {
       trazarArbol(document.getElementById("panel-arbol"), R.T, R.miembros);
       var hojas = EJERCICIO.hojas(R.T);
       var par = p.pregunta;
-      var dist = EJERCICIO.distancia(R.T, R.comp[par[0]], R.comp[par[1]]);
       document.getElementById("cuenta-arbol").innerHTML =
         "<tr><th>Nodos</th><td>" + R.total + ", uno por componente 2-arista-conexo</td></tr>" +
         "<tr><th>Aristas</th><td>" + R.puentes.length + ", una por puente</td></tr>" +
@@ -716,26 +715,6 @@ if (typeof module !== "undefined") {
       var vd = document.getElementById("veredicto-dist");
       vd.className = "veredicto";
       vd.textContent = "";
-      document.getElementById("dist-correcta").value = "";
-      document.getElementById("btn-dist").onclick = function () {
-        var valor = parseInt(document.getElementById("dist-correcta").value, 10);
-        if (isNaN(valor)) {
-          vd.className = "veredicto mal";
-          vd.textContent = "Escriba un número primero.";
-        } else if (valor === dist) {
-          vd.className = "veredicto bien";
-          vd.textContent = "Correcto: " + dist + ". Es la distancia de c" + R.comp[par[0]] + " a c" + R.comp[par[1]] +
-            " en el árbol, y en un árbol ese camino es único. Dentro de un componente se va de un vértice a otro sin cruzar ningún puente, así que los puentes del camino son exactamente las aristas del árbol que se recorren.";
-        } else if (valor === R.puentes.length) {
-          vd.className = "veredicto mal";
-          vd.textContent = "Ese es el total de puentes del grafo, " + R.puentes.length +
-            ". El camino entre esos dos componentes no pasa por todos: son " + dist + ".";
-        } else {
-          vd.className = "veredicto mal";
-          vd.textContent = "No coincide. Cuente las aristas del árbol entre c" + R.comp[par[0]] + " y c" + R.comp[par[1]] +
-            "; la respuesta es " + dist + ".";
-        }
-      };
     }
 
     function armar() {
@@ -772,23 +751,38 @@ if (typeof module !== "undefined") {
     arrancar();
     armar();
 
-    Motor.prediccionNumerica(function (valor) {
-      var res;
-      if (valor === R.total) {
-        res = { ok: true, msg: "Correcto: " + R.total + " nodos y " + R.puentes.length +
-          " aristas, y la diferencia es 1 porque el grafo es conexo. Los componentes son " +
-          R.miembros.map(function (l, c) { return "c" + c + " = {" + l.join(", ") + "}"; }).join("; ") + "." };
-      } else if (valor === R.puentes.length) {
-        res = { ok: false, msg: "Ese es el número de puentes, " + R.puentes.length +
-          ", que son las aristas del árbol. Los nodos son uno más: " + R.total + "." };
-      } else if (valor === R.puentes.length + 2) {
-        res = { ok: false, msg: "Contó un componente de más. Un puente une dos componentes que ya existen; con " +
-          R.puentes.length + " puentes y el grafo conexo, los nodos son " + R.total + "." };
-      } else {
-        res = { ok: false, msg: "No coincide. Borre mentalmente los puentes y cuente los pedazos que quedan: son " +
-          R.total + ". Con el grafo conexo, los nodos del árbol son siempre los puentes más uno." };
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto", function () {
+      var p = g(), lista = [], usados = {};
+      function agregar(valor, clave, razon) {
+        if (valor >= 1 && !usados[valor]) { usados[valor] = true; lista.push({ valor: valor, clave: clave, razon: razon }); }
       }
-      return res;
+      agregar(R.total, "correcta", "Correcto: " + R.total + " nodos y " + R.puentes.length +
+        " aristas, y la diferencia es 1 porque el grafo es conexo. Los componentes son " +
+        R.miembros.map(function (l, c) { return "c" + c + " = {" + l.join(", ") + "}"; }).join("; ") + ".");
+      agregar(R.puentes.length, "puentes", "Ese es el número de puentes, " + R.puentes.length +
+        ", que son las aristas del árbol. Los nodos son uno más: " + R.total + ".");
+      agregar(R.puentes.length + 2, "de-mas", "Contó un componente de más. Un puente une dos componentes que ya existen; con " +
+        R.puentes.length + " puentes y el grafo conexo, los nodos son " + R.total + ".");
+      agregar(p.n, "vertices", "Ese es el número de vértices del grafo, " + p.n + ". Cada nodo del árbol agrupa todos los vértices de un componente 2-arista-conexo, así que son menos: " + R.total + ".");
+      return lista.slice(0, 4);
+    });
+
+    Motor.opcionesNumericas("opciones-dist", "veredicto-dist", function () {
+      var par = g().pregunta, lista = [], usados = {};
+      var dist = EJERCICIO.distancia(R.T, R.comp[par[0]], R.comp[par[1]]);
+      function agregar(valor, clave, razon) {
+        if (valor >= 0 && !usados[valor]) { usados[valor] = true; lista.push({ valor: valor, clave: clave, razon: razon }); }
+      }
+      agregar(dist, "correcta", "Correcto: " + dist + ". Es la distancia de c" + R.comp[par[0]] + " a c" + R.comp[par[1]] +
+        " en el árbol, y en un árbol ese camino es único. Dentro de un componente se va de un vértice a otro sin cruzar ningún puente, así que los puentes del camino son exactamente las aristas del árbol que se recorren.");
+      agregar(R.puentes.length, "todos", "Ese es el total de puentes del grafo, " + R.puentes.length +
+        ". El camino entre esos dos componentes no pasa por todos: son " + dist + ".");
+      agregar(dist + 1, "nodos", "Contó los nodos del camino, incluido el de partida, y se pide cuántos puentes se cruzan: uno menos, " + dist + ".");
+      if (dist >= 1) {
+        agregar(dist - 1, "menos", "Contó los nodos intermedios del camino y olvidó una arista: entre dos nodos hay una arista más que nodos intermedios. Son " + dist + " puentes.");
+      }
+      agregar(R.total, "componentes", "Ese es el número de componentes, " + R.total + ". El camino entre dos de ellos cruza solo los puentes que los separan: " + dist + ".");
+      return lista.slice(0, 4);
     });
 
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (btn) {

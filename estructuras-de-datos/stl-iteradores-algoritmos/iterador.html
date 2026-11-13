@@ -16,27 +16,23 @@
   <div class="carta">
     <h2>1. Posición e índice</h2>
     <div class="codigo" id="codigo-pos"></div>
-    <div class="prediccion">
-      <span>*it:</span>
-      <input type="number" id="pred-pos-valor" placeholder="?">
-      <span>it - v.begin():</span>
-      <input type="number" id="pred-pos-indice" placeholder="?">
-      <button id="btn-pos" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-pos" class="veredicto"></div>
+    <p style="margin-bottom:0"><code>*it</code>:</p>
+    <div class="opciones" id="opciones-pos-valor"></div>
+    <div id="veredicto-pos-valor" class="veredicto"></div>
+    <p style="margin-bottom:0"><code>it - v.begin()</code>:</p>
+    <div class="opciones" id="opciones-pos-indice"></div>
+    <div id="veredicto-pos-indice" class="veredicto"></div>
   </div>
 
   <div class="carta">
     <h2>2. Un recorrido que filtra</h2>
     <div class="codigo" id="codigo-pares"></div>
-    <div class="prediccion">
-      <span>imprime:</span>
-      <input type="text" id="pred-pares" placeholder="a b c" style="width:8rem">
-      <span>veces que se lee *it:</span>
-      <input type="number" id="pred-pares-n" placeholder="?">
-      <button id="btn-pares" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0">imprime:</p>
+    <div class="opciones" id="opciones-pares"></div>
     <div id="veredicto-pares" class="veredicto"></div>
+    <p style="margin-bottom:0">Veces que se lee <code>*it</code>:</p>
+    <div class="opciones" id="opciones-pares-n"></div>
+    <div id="veredicto-pares-n" class="veredicto"></div>
   </div>
 
   <div class="carta">
@@ -58,6 +54,7 @@
     última: se compara, no se lee.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="iterador.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

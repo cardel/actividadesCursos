@@ -77,10 +77,7 @@ if (typeof module !== "undefined") {
 
     /* --- Comprobacion por version --------------------------------- */
     var logradas = { valor: false, puntero: false, referencia: false };
-
-    function leer(version, campo) {
-      return parseInt(document.getElementById("pred-" + version + "-" + campo).value, 10);
-    }
+    var aciertos = {};
 
     function revisarDesbloqueo() {
       if (logradas.valor && logradas.puntero && logradas.referencia) {
@@ -88,58 +85,71 @@ if (typeof module !== "undefined") {
       }
     }
 
-    /* Devuelve el mensaje de error mas informativo, o null si todo esta bien. */
-    function diagnostico(version, x, y, z) {
+    /* Opciones de cada variable: la correcta sale de EJERCICIO.esperado y
+       cada distractor es un error que el estudiante daria de verdad. */
+    function armarX(version) {
       var e = EJERCICIO.esperado[version];
-      if (isNaN(x) || isNaN(y) || isNaN(z)) {
-        return "Complete los tres valores primero.";
-      }
-      if (z === EJERCICIO.inicial.z) {
-        return "El retorno no se pierde: la línea dice z = z + ajuste(...), " +
-          "así que lo retornado se le suma al 4 que z ya tenía.";
-      }
-      if (z === EJERCICIO.retorno()) {
-        return "Casi: z = z + ajuste(...) suma el retorno al 4 que z ya " +
-          "tenía, no lo reemplaza.";
-      }
-      if (z !== e.z) {
-        return "Revise z: calcule primero qué retorna ajuste y luego mire " +
-          "qué hace main con ese valor.";
-      }
-      if (x === EJERCICIO.inicial.x) {
-        return "Es cierto que la función no alcanza a x, pero mire la línea " +
-          "que sigue a la llamada: w guarda la dirección de x, y main " +
-          "escribe ahí con *w.";
-      }
-      if (x === 7 || x === 8) {
-        return "a viaja por valor en las tres firmas de esta página: el " +
-          "a + 5 se quedó en el marco de ajuste y murió con él.";
-      }
-      if (x !== e.x) {
-        return "Revise x: la función nunca recibe su dirección, y aun así " +
-          "x termina distinta. La respuesta está en main.";
-      }
-      if (version === "valor" && y === 3) {
-        return "b = b - a restó en la copia: con int b solo viaja el valor " +
-          "de y, y la celda original no se entera.";
-      }
-      if (version !== "valor" && y === EJERCICIO.inicial.y) {
-        if (version === "puntero") {
-          return "Ahora b guarda la dirección de y: *b = *b - a viaja hasta " +
-            "la celda original y y sí cambia.";
-        }
-        return "int &b no copia: b es otro nombre de y durante la llamada, " +
-          "y b = b - a escribe en la celda de y.";
-      }
-      if (y === 8) {
-        return "Cuidado con el orden: cuando llega la resta, a ya subió a 7.";
-      }
-      if (y !== e.y) {
-        return "Siga la resta: a sube a 7 y la resta deja 10 - 7 = 3. " +
-          "Pregúntese a qué celda le quedó ese 3 en esta versión.";
-      }
-      return null;
+      return [
+        { valor: e.x, clave: "correcta",
+          razon: "Correcto: la función nunca recibe la dirección de x, " +
+            "pero main escribe ahí con *w y x queda en " + e.x + "." },
+        { valor: EJERCICIO.inicial.x, clave: "inicial",
+          razon: "Es cierto que la función no alcanza a x, pero mire la " +
+            "línea que sigue a la llamada: w guarda la dirección de x, y " +
+            "main escribe ahí con *w." },
+        { valor: EJERCICIO.inicial.x + 5, clave: "marco",
+          razon: "a viaja por valor en las tres firmas de esta página: el " +
+            "a + 5 se quedó en el marco de ajuste y murió con él." },
+        { valor: e.x + 5, clave: "marco-w",
+          razon: "El + 5 es de a, no de x: a es una copia en el marco de " +
+            "ajuste y x solo cambia por el *w = *w + 1 de main." }
+      ];
     }
+
+    function armarY(version) {
+      var e = EJERCICIO.esperado[version];
+      var lista = [
+        { valor: e.y, clave: "correcta",
+          razon: version === "valor"
+            ? "Correcto: con int b solo viaja el valor de y, y la celda " +
+              "original no se entera."
+            : "Correcto: b llegó hasta la celda de y y la resta " +
+              "10 - 7 la dejó en " + e.y + "." },
+        { valor: EJERCICIO.inicial.y - EJERCICIO.inicial.x, clave: "orden",
+          razon: "Cuidado con el orden: cuando llega la resta, a ya subió a 7." }
+      ];
+      if (version === "valor") {
+        lista.push({ valor: EJERCICIO.retorno(), clave: "copia",
+          razon: "b = b - a restó en la copia: con int b solo viaja el " +
+            "valor de y, y la celda original no se entera." });
+      } else {
+        lista.push({ valor: EJERCICIO.inicial.y, clave: "sin-cambio",
+          razon: version === "puntero"
+            ? "Ahora b guarda la dirección de y: *b = *b - a viaja hasta " +
+              "la celda original y y sí cambia."
+            : "int &b no copia: b es otro nombre de y durante la llamada, " +
+              "y b = b - a escribe en la celda de y." });
+      }
+      return lista;
+    }
+
+    function armarZ(version) {
+      var e = EJERCICIO.esperado[version];
+      return [
+        { valor: e.z, clave: "correcta",
+          razon: "Correcto: ajuste retorna " + EJERCICIO.retorno() +
+            " y z = z + ajuste(...) se lo suma al 4 que z ya tenía." },
+        { valor: EJERCICIO.inicial.z, clave: "pierde",
+          razon: "El retorno no se pierde: la línea dice z = z + " +
+            "ajuste(...), así que lo retornado se le suma al 4 que z ya " +
+            "tenía." },
+        { valor: EJERCICIO.retorno(), clave: "reemplaza",
+          razon: "Casi: z = z + ajuste(...) suma el retorno al 4 que z ya " +
+            "tenía, no lo reemplaza." }
+      ];
+    }
+
+    var armadores = { x: armarX, y: armarY, z: armarZ };
 
     var EXITO = {
       valor: "Correcto: nada de lo que hizo ajuste salió de su marco —a y b " +
@@ -154,18 +164,25 @@ if (typeof module !== "undefined") {
     };
 
     ["valor", "puntero", "referencia"].forEach(function (version) {
-      document.getElementById("btn-" + version).addEventListener("click", function () {
-        var v = document.getElementById("veredicto-" + version);
-        var mensaje = diagnostico(version, leer(version, "x"), leer(version, "y"), leer(version, "z"));
-        if (mensaje === null) {
-          v.className = "veredicto bien";
-          v.textContent = EXITO[version];
-          logradas[version] = true;
-          revisarDesbloqueo();
-        } else {
-          v.className = "veredicto mal";
-          v.textContent = mensaje;
-        }
+      ["x", "y", "z"].forEach(function (campo) {
+        Motor.opcionesNumericas("opciones-" + version + "-" + campo,
+          "veredicto-" + version + "-" + campo,
+          function () { return armadores[campo](version); });
+
+        // el listener de la caja corre despues del boton: ahi ya esta el veredicto
+        document.getElementById("opciones-" + version + "-" + campo)
+          .addEventListener("click", function () {
+            var v = document.getElementById("veredicto-" + version + "-" + campo);
+            if (v.className.indexOf("bien") >= 0) { aciertos[version + "-" + campo] = true; }
+            if (aciertos[version + "-x"] && aciertos[version + "-y"] &&
+                aciertos[version + "-z"]) {
+              var g = document.getElementById("veredicto-" + version);
+              g.className = "veredicto bien";
+              g.textContent = EXITO[version];
+              logradas[version] = true;
+              revisarDesbloqueo();
+            }
+          });
       });
     });
   })();

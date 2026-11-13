@@ -33,10 +33,9 @@
     </div>
     <div class="prediccion">
       <span>El mismo binario con uno y con doce hilos da 1.292,7 y 1.283,6 ms.
-      ¿Cuántas veces más rápido corrió con doce? Dos decimales.</span>
-      <input type="number" id="prediccion-relacion" min="0" step="0.01" placeholder="veces">
-      <button id="btn-comprobar-relacion" class="primario">Comprobar</button>
+      ¿Cuántas veces más rápido corrió con doce?</span>
     </div>
+    <div class="opciones" id="opciones-relacion"></div>
     <div id="veredicto-relacion" class="veredicto"></div>
     <div class="chips" id="chips-relacion" style="margin-top:0.7rem"></div>
     <div class="alerta" id="nota-relacion" hidden>La variable de ambiente no fabrica hilos.
@@ -91,10 +90,9 @@
     </div>
     <div class="prediccion">
       <span>Con un hilo, perf gastó 3.802 ms de CPU en 3,803 s de reloj. Con doce,
-      7.078 ms en 0,850 s. ¿Cuántos núcleos ocupó la segunda corrida? Dos decimales.</span>
-      <input type="number" id="prediccion-nucleos" min="0" step="0.01" placeholder="núcleos">
-      <button id="btn-comprobar-nucleos" class="primario">Comprobar</button>
+      7.078 ms en 0,850 s. ¿Cuántos núcleos ocupó la segunda corrida?</span>
     </div>
+    <div class="opciones" id="opciones-nucleos"></div>
     <div id="veredicto-nucleos" class="veredicto"></div>
     <div class="chips" id="chips-perf" style="margin-top:0.7rem"></div>
     <div class="alerta" id="nota-perf" hidden>Son dos relojes y miden cosas distintas. El

@@ -161,19 +161,23 @@ if (typeof document !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor) {
+    Motor.opcionesNumericas("opciones-parejas", "veredicto", function (params) {
       var r = E.respuesta(params.p), a = E.PRESETS[params.p].a;
-      var n = a.length, maximo = n * (n - 1) / 2;
-      if (valor === r) {
-        return { ok: true, msg: "Son " + r + ". Cada intercambio de vecinos arregla exactamente una, así que ese es también el número de intercambios." };
-      }
-      if (valor === maximo) {
-        return { ok: false, msg: "Ese es el máximo posible, con el arreglo al revés del todo. Aquí son " + r + "." };
-      }
-      if (valor === 0) {
-        return { ok: false, msg: "Cero sería un arreglo ya ordenado. Busque una pareja con el mayor a la izquierda: hay " + r + "." };
-      }
-      return { ok: false, msg: "Son " + r + ". Cuéntelas a mano en este arreglo chico y después siga la mezcla para ver dónde las suma el código." };
+      var n = a.length, maximo = n * (n - 1) / 2, vecinas = 0, t = 0;
+      while (t < n - 1) { if (a[t] > a[t + 1]) { vecinas = vecinas + 1; } t = t + 1; }
+      var lista = [{ valor: r, clave: "correcta", razon: "Son " + r + ". Cada intercambio de vecinos arregla exactamente una, así que ese es también el número de intercambios." }];
+      var cand = [
+        { valor: maximo, clave: "maximo", razon: "Ese es el máximo posible, con el arreglo al revés del todo. Aquí son " + r + "." },
+        { valor: vecinas, clave: "vecinas", razon: "Eso cuenta solo las parejas de posiciones vecinas. Una pareja fuera de orden puede estar separada: aquí son " + r + "." },
+        { valor: n - 1, clave: "pares", razon: "Eso es cuántas parejas de posiciones vecinas hay, estén o no fuera de orden. Cuente solo las que tienen el mayor a la izquierda: son " + r + "." },
+        { valor: 0, clave: "cero", razon: "Cero sería un arreglo ya ordenado. Busque una pareja con el mayor a la izquierda: hay " + r + "." }
+      ];
+      cand.forEach(function (o) {
+        var repetido = false;
+        lista.forEach(function (x) { if (x.valor === o.valor) { repetido = true; } });
+        if (!repetido && lista.length < 4) { lista.push(o); }
+      });
+      return lista;
     });
 
     el("presets").innerHTML = E.PRESETS.map(function (x, i) {

@@ -16,7 +16,7 @@
   <a class="volver" href="#">← Volver a los ejercicios</a>
   <h1>Una foto del programa cada décima de segundo: qué ve el perfilador y qué se le escapa</h1>
   <p class="intro">Pyinstrument no cuenta llamadas: despierta cada <code>interval</code> segundos,
-  anota en qué función está el programa y de ese conteo deduce el reparto del tiempo. Escriba
+  anota en qué función está el programa y de ese conteo deduce el reparto del tiempo. Escoja
   cuántas muestras salen y qué intervalo conviene antes de verlo, y después muestree el árbol
   del Monte Carlo de la clase con 5, 132 o 1.000 muestras para medir cuánto se equivoca.</p>
 
@@ -25,16 +25,13 @@
     <div class="prediccion">
       <span><code>fib(35)</code> tarda 4,64 s. Con <code>interval = 0,1</code>, ¿cuántas
       muestras toma el perfilador?</span>
-      <input type="number" id="prediccion-a" min="0" step="1" placeholder="muestras">
-      <button id="btn-comprobar-a" class="primario">Comprobar</button>
     </div>
+    <div class="opciones" id="opciones-muestras"></div>
     <div id="veredicto-a" class="veredicto"></div>
     <div class="prediccion">
-      <span>¿Qué <code>interval</code> conviene para un programa de 0,1 s? En segundos, tres
-      decimales.</span>
-      <input type="number" id="prediccion-b" min="0" step="any" placeholder="segundos">
-      <button id="btn-comprobar-b" class="primario">Comprobar</button>
+      <span>¿Qué <code>interval</code> conviene para un programa de 0,1 s?</span>
     </div>
+    <div class="opciones" id="opciones-interval"></div>
     <div id="veredicto-b" class="veredicto"></div>
     <div class="nota">Entre muestra y muestra el programa corre solo, y por eso el overhead se
     queda cerca del 5 %. Lo que dura menos que el intervalo no existe para el perfilador.</div>

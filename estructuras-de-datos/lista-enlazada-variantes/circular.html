@@ -23,11 +23,12 @@
     <div class="prediccion">
       <span>cadena desde cabeza:</span>
       <input type="text" id="pred-cadena-a" placeholder="a b c d" style="width:9rem">
-      <span>dato de <code>cabeza</code>:</span>
-      <input type="number" id="pred-cabeza-a" placeholder="?">
       <button id="btn-a" class="primario">Comprobar</button>
     </div>
     <div id="veredicto-a" class="veredicto"></div>
+    <div><b>¿Qué dato tiene <code>cabeza</code> al terminar?</b></div>
+    <div class="opciones" id="opciones-cabeza-a"></div>
+    <div id="veredicto-cabeza-a" class="veredicto"></div>
   </div>
 
   <div class="carta">
@@ -37,11 +38,12 @@
     <div class="prediccion">
       <span>cadena desde cabeza:</span>
       <input type="text" id="pred-cadena-b" placeholder="a b c d e" style="width:10rem">
-      <span>dato de <code>cabeza</code>:</span>
-      <input type="number" id="pred-cabeza-b" placeholder="?">
       <button id="btn-b" class="primario">Comprobar</button>
     </div>
     <div id="veredicto-b" class="veredicto"></div>
+    <div><b>¿Qué dato tiene <code>cabeza</code> al terminar?</b></div>
+    <div class="opciones" id="opciones-cabeza-b"></div>
+    <div id="veredicto-cabeza-b" class="veredicto"></div>
     <div class="nota">Las dos inserciones ejecutan las mismas cuatro líneas del
     empalme. La diferencia está en el <code>if</code> del final.</div>
   </div>
@@ -107,6 +109,7 @@
     los dos lados y al borrarse deja <code>cabeza</code> en <code>NULL</code>.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="circular.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

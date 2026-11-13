@@ -63,6 +63,21 @@ if (typeof module !== "undefined") {
       return a.length === b.length && a.every(function (x, i) { return x === b[i]; });
     }
     var logradas = { vueltas: false, cortes: false, peor: false };
+    var vueltasParcial = { lista: false, total: false };
+    function alAcertar(idCaja, fn) {
+      document.getElementById(idCaja).addEventListener("click", function (ev) {
+        var b = ev.target;
+        if (b && b.getAttribute && b.getAttribute("data-op") === "correcta") { fn(); }
+      });
+    }
+    function unicas(lista) {
+      var vistos = {};
+      return lista.filter(function (o) {
+        var dup = vistos[o.valor] === true;
+        vistos[o.valor] = true;
+        return !dup;
+      });
+    }
     function revisar() {
       if (logradas.vueltas && logradas.cortes && logradas.peor) {
         document.getElementById("carta-cierre").style.display = "block";
@@ -94,14 +109,11 @@ if (typeof module !== "undefined") {
     document.getElementById("btn-vueltas").addEventListener("click", function () {
       var ver = document.getElementById("veredicto-vueltas");
       var dada = leerLista(document.getElementById("pred-vueltas").value);
-      var total = parseInt(document.getElementById("pred-total").value, 10);
-      if (iguales(dada, CORRIMIENTOS) && total === R.total) {
+      if (iguales(dada, CORRIMIENTOS)) {
         ver.className = "veredicto bien";
-        ver.textContent = "Correcto: 1, 0, 3, 0, 3 y " + R.total + " en total. Las vueltas de j = 2 y j = 4 traen el 8 y el 9, que ya son mayores que todo lo que tienen a la izquierda: el ciclo interno no entra y esa vuelta cuesta una comparación.";
-        logradas.vueltas = true; revisar();
-      } else if (iguales(dada, CORRIMIENTOS)) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Los corrimientos por vuelta están bien; el total es su suma.";
+        ver.textContent = "Correcto: 1, 0, 3, 0, 3. Las vueltas de j = 2 y j = 4 traen el 8 y el 9, que ya son mayores que todo lo que tienen a la izquierda: el ciclo interno no entra y esa vuelta cuesta una comparación.";
+        vueltasParcial.lista = true;
+        if (vueltasParcial.total) { logradas.vueltas = true; revisar(); }
       } else if (dada.length === 5 && dada[1] !== 0) {
         ver.className = "veredicto mal";
         ver.textContent = "En j = 2 la clave es 8 y a su izquierda quedaron 4 y 6: la condición a[i] > clave falla en la primera comparación y no se corre nada.";
@@ -112,6 +124,24 @@ if (typeof module !== "undefined") {
         ver.className = "veredicto mal";
         ver.textContent = "Para cada vuelta, cuente cuántos elementos a la izquierda de la clave son mayores que ella: esos son los que se corren.";
       }
+    });
+
+    Motor.opcionesNumericas("opciones-total", "veredicto-total", function () {
+      var n = EJERCICIO.arreglo.length;
+      return unicas([
+        { valor: R.total, clave: "correcta",
+          razon: "Correcto: " + R.total + ", la suma de los corrimientos de cada vuelta: " + CORRIMIENTOS.join(" + ") + "." },
+        { valor: n - 1, clave: "vueltas",
+          razon: "Ese es el número de vueltas del ciclo externo, no de corrimientos: cada vuelta corre una cantidad distinta de elementos, y varias no corren ninguno." },
+        { valor: R.total + (n - 1), clave: "comparacion",
+          razon: "Sumó una comparación extra por vuelta. Comparar no es correr: el corrimiento es la asignación a[i + 1] = a[i], y esa es la que cuenta corrimientos." },
+        { valor: EJERCICIO.peorCaso(n), clave: "peor",
+          razon: "Esa es la cuenta del peor caso, con la entrada de mayor a menor. Este arreglo viene mezclado y varias vueltas se detienen antes." }
+      ]);
+    });
+    alAcertar("opciones-total", function () {
+      vueltasParcial.total = true;
+      if (vueltasParcial.lista) { logradas.vueltas = true; revisar(); }
     });
 
     document.getElementById("btn-cortes").addEventListener("click", function () {
@@ -169,27 +199,20 @@ if (typeof module !== "undefined") {
     });
     pintarTabla();
 
-    document.getElementById("btn-peor").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-peor");
+    Motor.opcionesNumericas("opciones-peor", "veredicto-peor", function () {
+      var n = EJERCICIO.decreciente.length;
       var esperado = EJERCICIO.ordenar(EJERCICIO.decreciente).total;
-      var dada = parseInt(document.getElementById("pred-peor").value, 10);
-      if (dada === esperado) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: " + esperado + ". Cada clave es menor que todas las de su izquierda, así que la vuelta j corre los j elementos anteriores: 1 + 2 + 3 + 4 + 5, que es 6·5/2. Ese es el peor caso y por eso insertion sort es Θ(n²) ahí.";
-        logradas.peor = true; revisar();
-      } else if (dada === EJERCICIO.peorCaso(7)) {
-        ver.className = "veredicto mal";
-        ver.textContent = "La suma va de 1 a n - 1, no a n: el primer elemento no tiene ninguna vuelta propia, el ciclo externo arranca en j = 1.";
-      } else if (dada === 36 || dada === 30) {
-        ver.className = "veredicto mal";
-        ver.textContent = "No son n² ni n(n-1) corrimientos: la vuelta j corre j elementos, no n, y las vueltas son n - 1.";
-      } else if (dada === R.total) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Ese es el conteo de la entrada mezclada. Aquí cada elemento que llega es menor que todos los anteriores, así que ninguna vuelta se detiene antes de tiempo.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "Sume lo que corre cada vuelta cuando la entrada viene de mayor a menor: 1, 2, 3, 4 y 5.";
-      }
+      return unicas([
+        { valor: esperado, clave: "correcta",
+          razon: "Correcto: " + esperado + ". Cada clave es menor que todas las de su izquierda, así que la vuelta j corre los j elementos anteriores: 1 + 2 + 3 + 4 + 5, que es 6·5/2. Ese es el peor caso y por eso insertion sort es Θ(n²) ahí." },
+        { valor: EJERCICIO.peorCaso(n + 1), clave: "hastan",
+          razon: "La suma va de 1 a n - 1, no a n: el primer elemento no tiene ninguna vuelta propia, el ciclo externo arranca en j = 1." },
+        { valor: n * n, clave: "cuadrado",
+          razon: "No son n² corrimientos: la vuelta j corre j elementos, no n, y las vueltas son n - 1." },
+        { valor: R.total, clave: "mezclada",
+          razon: "Ese es el conteo de la entrada mezclada. Aquí cada elemento que llega es menor que todos los anteriores, así que ninguna vuelta se detiene antes de tiempo." }
+      ]);
     });
+    alAcertar("opciones-peor", function () { logradas.peor = true; revisar(); });
   })();
 }

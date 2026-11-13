@@ -278,7 +278,6 @@ if (typeof module !== "undefined") {
       var p = v();
       el("ver-texto").textContent = p.texto;
       el("ver-inter").textContent = p.interruptores.map(function (s) { return "en la " + s[0] + " cambia la " + s[1]; }).join("; ") + ".";
-      el("prediccion").value = "";
       Motor.limpiarVeredicto();
     }
 
@@ -288,7 +287,26 @@ if (typeof module !== "undefined") {
       paramsIniciales: v(), alPintar: alPintar
     });
     preparar();
-    Motor.prediccionNumerica(function (valor) { return EJERCICIO.evaluar(valor, v()); });
+    Motor.opcionesNumericas("opciones-estados", "veredicto", function (villa) {
+      var r = EJERCICIO.resumen(villa), N = villa.r, d = r.descubiertos;
+      var total = N * Math.pow(2, N), luces = Math.pow(2, N);
+      var lista = [{ valor: d, clave: "correcta", razon: EJERCICIO.evaluar(d, villa).msg }];
+      var candidatas = [
+        { valor: total, clave: "total",
+          razon: "Ese es el total posible, " + N + " · 2^" + N + " = " + total + ": todas las posiciones con todas las combinaciones de luces. Pero dist solo guarda los estados que el programa llegó a descubrir, y muchas combinaciones nunca se alcanzan." },
+        { valor: luces, clave: "luces",
+          razon: "Ese es 2^" + N + " = " + luces + ", las combinaciones de luces. Falta la posición: un estado es la pareja (pos, light), y la misma luz con otra habitación es otro estado." },
+        { valor: d - 1, clave: "sin-inicial",
+          razon: "Falta el estado inicial. Se guarda en dist antes del ciclo, con distancia 0, y también cuenta." },
+        { valor: d + 1, clave: "uno-mas",
+          razon: "Sobra uno: solo entran a dist los estados que se descubren, y hay " + d + ". Ningún estado se guarda sin haber salido de una puerta o de un interruptor permitido." }
+      ];
+      candidatas.forEach(function (c) {
+        var repetida = lista.some(function (o) { return o.valor === c.valor; });
+        if (!repetida && c.valor >= 1 && c.valor <= total && lista.length < 4) { lista.push(c); }
+      });
+      return lista;
+    });
 
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (btn) {
       btn.addEventListener("click", function () {

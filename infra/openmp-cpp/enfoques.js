@@ -151,18 +151,41 @@ var RAZONES_OVERHEAD = {
     "cuatro tiempos. El que paga la creación en cada repetición es std::thread."
 };
 
-function explicarPrediccion(bien, real, dicho) {
+/* Opciones del tiempo de std::thread: la correcta es la medida; cada
+   distractor es lo que saldria con una idea equivocada del costo de crear
+   hilos. */
+function opcionesThread() {
   var num = Motor.num;
-  var s = bien
-    ? "Sí: " + num(real, 2) + " ms. "
-    : "No: " + num(real, 2) + " ms, no " + num(dicho, 2) + ". ";
-  s += "Un millón de enteros es poco trabajo. Son " +
+  var real = TIEMPOS[1].ms;
+  var explicacion = "Un millón de enteros es poco trabajo. Son " +
     num(relacion(real, SECUENCIAL), 2) + " veces el tiempo secuencial, " +
     num(SECUENCIAL, 2) + " ms, porque crear y destruir cuatro hilos cuesta " +
     "más que recorrer el vector. TBB y OpenMP mantienen un equipo de hilos " +
     "vivo y bajan a " + num(TIEMPOS[2].ms, 2) + " y " + num(TIEMPOS[3].ms, 2) +
     " ms. La ganancia de verdad aparece con vectores de mil millones.";
-  return s;
+  var lista = [{ valor: num(real, 2), clave: "correcta",
+    razon: "Sí: " + num(real, 2) + " ms. " + explicacion }];
+  var candidatas = [
+    { v: SECUENCIAL / HILOS, razon: "Eso es el reparto ideal, " + num(SECUENCIAL, 2) +
+      " ms entre " + HILOS + " hilos. Ignora lo que cuesta crear y destruir los hilos, " +
+      "que con un vector tan corto pesa más que la suma." },
+    { v: TIEMPOS[2].ms, razon: "Eso es lo que tarda TBB, que mantiene su equipo de hilos " +
+      "vivo entre llamadas. std::thread crea cuatro hilos nuevos en cada llamada." },
+    { v: SECUENCIAL, razon: "Eso es el tiempo secuencial, que OpenMP también iguala. " +
+      "std::thread paga la creación de cuatro hilos y queda por encima." },
+    { v: SECUENCIAL * HILOS, razon: "Eso multiplica el tiempo secuencial por el número de " +
+      "hilos, como si cada hilo recorriera todo el vector. Cada uno recorre un cuarto." }
+  ];
+  var vistos = {};
+  vistos[num(real, 2)] = true;
+  candidatas.forEach(function (c) {
+    var t = num(c.v, 2);
+    if (lista.length < 4 && !vistos[t]) {
+      vistos[t] = true;
+      lista.push({ valor: t, clave: "d" + t, razon: c.razon });
+    }
+  });
+  return lista;
 }
 
 /* Filas para Motor.pintarGantt. Mientras destapado sea falso, las barras van
@@ -192,7 +215,7 @@ if (typeof module !== "undefined" && module.exports) {
     RAZONES_OVERHEAD: RAZONES_OVERHEAD,
     relacion: relacion, porRepeticion: porRepeticion, buscarCaso: buscarCaso,
     elegir: elegir, razonesOpciones: razonesOpciones,
-    explicarPrediccion: explicarPrediccion, filasBarras: filasBarras,
+    opcionesThread: opcionesThread, filasBarras: filasBarras,
     escalaBarras: escalaBarras
   };
 }
@@ -267,17 +290,11 @@ if (typeof document !== "undefined") (function () {
     if (listos) { document.getElementById("caja-cualitativa").hidden = false; }
   }
 
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-thread", boton: "btn-comprobar-thread",
-      veredicto: "veredicto-thread" },
-    function () { return TIEMPOS[1].ms; },
-    explicarPrediccion);
-
-  document.getElementById("btn-comprobar-thread")
-    .addEventListener("click", function () {
-      destapado = true;
-      pintarTiempos();
-    });
+  Motor.opcionesNumericas("opciones-thread", "veredicto-thread", opcionesThread);
+  document.getElementById("opciones-thread").addEventListener("click", function () {
+    destapado = true;
+    pintarTiempos();
+  });
 
   Motor.conectarOpciones("opciones-overhead", "veredicto-overhead",
     RAZONES_OVERHEAD);

@@ -29,6 +29,18 @@ function memoriaMB() {
   return (MATRIZ.lado * MATRIZ.lado * MATRIZ.bytesPorEntero) / (1024 * 1024);
 }
 
+
+/* Una pregunta numerica se contesta escogiendo: la correcta y los errores que
+   alguien comete de verdad, cada uno con su razon. Un valor repetido se descarta. */
+function opcionesDe(buena, razonBuena, malas) {
+  var lista = [{ valor: buena, clave: "correcta", razon: razonBuena }];
+  malas.forEach(function (m) {
+    var repetido = lista.some(function (o) { return o.valor === m.valor; });
+    if (!repetido) { lista.push({ valor: m.valor, clave: m.clave, razon: m.razon }); }
+  });
+  return lista;
+}
+
 function fmt(x, d) { return Motor.num(x, d); }
 
 function explicarTiempo(bien, real) {
@@ -86,20 +98,54 @@ var RAZONES_TIPO = {
 };
 
 function iniciar() {
-  Motor.conectarPrediccion(
-    { entrada: "pred-tiempo", boton: "btn-tiempo", veredicto: "ver-tiempo" },
-    function () { return razon(MEDIDAS.bueno.segundos, MEDIDAS.malo.segundos); },
-    explicarTiempo);
+  Motor.opcionesNumericas("op-tiempo", "ver-tiempo", function () {
+    var real = razon(MEDIDAS.bueno.segundos, MEDIDAS.malo.segundos);
+    return opcionesDe(fmt(real, 2), explicarTiempo(true, real), [
+      { valor: fmt(razon(MEDIDAS.malo.segundos, MEDIDAS.bueno.segundos), 2), clave: "alreves",
+        razon: "No. Dividió al revés: 0,43538 entre 0,79385 da " +
+          fmt(razon(MEDIDAS.malo.segundos, MEDIDAS.bueno.segundos), 2) +
+          ", que dice qué fracción del tiempo de columnas ocupa el de filas. Se pregunta cuántas " +
+          "veces más tarda el de columnas, así que va el mayor entre el menor." },
+      { valor: fmt(razon(MEDIDAS.bueno.ciclos, MEDIDAS.malo.ciclos), 2), clave: "ciclos",
+        razon: "No. Esa es la razón de los ciclos, " + fmt(MEDIDAS.malo.ciclos) + " contra " +
+          fmt(MEDIDAS.bueno.ciclos) + ". La pregunta es por el tiempo transcurrido, y los " +
+          "ciclos crecen más que el reloj." },
+      { valor: fmt(razon(MEDIDAS.bueno.instrucciones, MEDIDAS.malo.instrucciones), 2), clave: "instrucciones",
+        razon: "No. Esa es la razón de las instrucciones: los dos programas ejecutan " +
+          fmt(MEDIDAS.bueno.instrucciones) + " y " + fmt(MEDIDAS.malo.instrucciones) +
+          ", casi las mismas. Lo que cambia es el tiempo." }
+    ]);
+  });
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-ipc-bueno", boton: "btn-ipc-bueno", veredicto: "ver-ipc-bueno" },
-    function () { return ipc(MEDIDAS.bueno); },
-    explicarIpc("filas"));
+  Motor.opcionesNumericas("op-ipc-bueno", "ver-ipc-bueno", function () {
+    var real = ipc(MEDIDAS.bueno);
+    return opcionesDe(fmt(real, 2), explicarIpc("filas")(true, real), [
+      { valor: fmt(ipc(MEDIDAS.malo), 2), clave: "otro",
+        razon: "No. Ese es el IPC del de columnas, con sus " + fmt(MEDIDAS.malo.ciclos) +
+          " ciclos. El de filas gastó " + fmt(MEDIDAS.bueno.ciclos) + "." },
+      { valor: fmt(MEDIDAS.bueno.ciclos / MEDIDAS.bueno.instrucciones, 2), clave: "alreves",
+        razon: "No. Dividió ciclos entre instrucciones, que da ciclos por instrucción. " +
+          "El IPC es instrucciones entre ciclos." },
+      { valor: fmt(razon(MEDIDAS.bueno.ciclos, MEDIDAS.malo.ciclos), 2), clave: "razon",
+        razon: "No. Esa es la razón de ciclos entre los dos programas. El IPC de un programa " +
+          "sale de sus propias instrucciones y sus propios ciclos." }
+    ]);
+  });
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-ipc-malo", boton: "btn-ipc-malo", veredicto: "ver-ipc-malo" },
-    function () { return ipc(MEDIDAS.malo); },
-    explicarIpc("columnas"));
+  Motor.opcionesNumericas("op-ipc-malo", "ver-ipc-malo", function () {
+    var real = ipc(MEDIDAS.malo);
+    return opcionesDe(fmt(real, 2), explicarIpc("columnas")(true, real), [
+      { valor: fmt(ipc(MEDIDAS.bueno), 2), clave: "otro",
+        razon: "No. Ese es el IPC del de filas, con sus " + fmt(MEDIDAS.bueno.ciclos) +
+          " ciclos. El de columnas gastó " + fmt(MEDIDAS.malo.ciclos) + "." },
+      { valor: fmt(MEDIDAS.malo.ciclos / MEDIDAS.malo.instrucciones, 2), clave: "alreves",
+        razon: "No. Dividió ciclos entre instrucciones, que da ciclos por instrucción. " +
+          "El IPC es instrucciones entre ciclos." },
+      { valor: fmt(razon(MEDIDAS.bueno.ciclos, MEDIDAS.malo.ciclos), 2), clave: "razon",
+        razon: "No. Esa es la razón de ciclos entre los dos programas. " +
+          "El IPC sale de las instrucciones y los ciclos del mismo programa." }
+    ]);
+  });
 
   document.getElementById("btn-destapar").addEventListener("click", function () {
     var filas = [

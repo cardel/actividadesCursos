@@ -21,29 +21,19 @@ if (typeof module !== "undefined") {
   (function () {
 
     /* --- Tarjeta 1: p + 1 ---------------------------------------- */
-    document.getElementById("btn-mas-uno").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-mas-uno");
-      var valor = parseInt(document.getElementById("prediccion-mas-uno").value, 10);
-      if (isNaN(valor)) {
-        v.className = "veredicto mal";
-        v.textContent = "Escriba un número primero.";
-      } else if (valor === 2004) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: sumar 1 a un int * avanza una casilla completa, " +
-          "4 bytes. El compilador multiplica por sizeof(int) por nosotros.";
-      } else if (valor === 2001) {
-        v.className = "veredicto mal";
-        v.textContent = "Avanzó un byte. Un int ocupa 4: la casilla siguiente no " +
-          "empieza en 2001.";
-      } else if (valor === 2008) {
-        v.className = "veredicto mal";
-        v.textContent = "Eso es p + 2: dos casillas. Se pide una sola.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "No coincide. Pista: p + k avanza k casillas del tipo " +
-          "apuntado, y cada casilla de int mide 4 bytes.";
-      }
-    });
+    Motor.opcionesNumericas("opciones-mas-uno", "veredicto-mas-uno",
+      function () {
+        return [
+          { valor: EJERCICIO.base + 4, clave: "correcta",
+            razon: "Correcto: sumar 1 a un int * avanza una casilla completa, " +
+              "4 bytes. El compilador multiplica por sizeof(int) por nosotros." },
+          { valor: EJERCICIO.base + 1, clave: "byte",
+            razon: "Avanzó un byte. Un int ocupa 4: la casilla siguiente no " +
+              "empieza en 2001." },
+          { valor: EJERCICIO.base + 8, clave: "dos",
+            razon: "Eso es p + 2: dos casillas. Se pide una sola." }
+        ];
+      });
 
     /* --- Tarjeta 2: el arreglo y el puntero ----------------------- */
     var caja = document.getElementById("arreglo-cajas");
@@ -73,34 +63,38 @@ if (typeof module !== "undefined") {
       });
     }
 
-    document.getElementById("btn-expresion").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-expresion");
-      var valor = parseInt(document.getElementById("prediccion-expresion").value, 10);
-      var esperado = EJERCICIO.evaluar();
-      if (isNaN(valor)) {
-        v.className = "veredicto mal";
-        v.textContent = "Escriba un número primero.";
-      } else if (valor === esperado) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: p apunta a A[1] = 4 y p + 2 apunta a A[3] = 8; " +
-          "la suma da " + esperado + ". Las casillas usadas quedan iluminadas.";
+    var V = EJERCICIO.valores;
+    Motor.opcionesNumericas("opciones-expresion", "veredicto-expresion",
+      function () {
+        var esperado = EJERCICIO.evaluar();
+        var candidatas = [
+          { valor: esperado, clave: "correcta",
+            razon: "Correcto: p apunta a A[1] = " + V[1] + " y p + 2 apunta a " +
+              "A[3] = " + V[3] + "; la suma da " + esperado + ". Las casillas " +
+              "usadas quedan iluminadas." },
+          { valor: V[0] + V[2], clave: "desdeA0",
+            razon: "A[0] + A[2] = " + (V[0] + V[2]) + ": arrancó p en A[0], " +
+              "pero p es A + 1, una casilla adentro." },
+          { valor: V[2] + V[4], clave: "desdeA2",
+            razon: "A[2] + A[4] = " + (V[2] + V[4]) + ": corrió p una casilla " +
+              "de más. p es A + 1, no A + 2." },
+          { valor: V[1] + V[2], clave: "unaCasilla",
+            razon: "Sumó *p con *(p + 1) = " + (V[1] + V[2]) + ". El segundo " +
+              "sumando salta dos casillas desde p, no una." }
+        ];
+        var lista = [];
+        candidatas.forEach(function (o) {
+          var repetida = lista.some(function (x) { return x.valor === o.valor; });
+          if (!repetida) { lista.push(o); }
+        });
+        return lista;
+      });
+
+    document.getElementById("opciones-expresion").addEventListener("click", function (e) {
+      var t = e && e.target;
+      if (t && t.getAttribute && t.getAttribute("data-op") === "correcta") {
         resaltar([1, 3]);
         document.getElementById("tabla-expresion").style.display = "block";
-      } else if (valor === 10) {
-        v.className = "veredicto mal";
-        v.textContent = "2 + 8: arrancó p en A[0], pero p es A + 1, una casilla " +
-          "adentro.";
-      } else if (valor === 14) {
-        v.className = "veredicto mal";
-        v.textContent = "6 + 8: corrió p una casilla de más. p es A + 1, no A + 2.";
-      } else if (valor === 6) {
-        v.className = "veredicto mal";
-        v.textContent = "Sumó *p con *(p + 1). El segundo sumando salta dos " +
-          "casillas desde p, no una.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "No coincide. Pista: ubique primero a p en el dibujo y " +
-          "desde ahí cuente 2 casillas para el segundo término.";
       }
     });
 

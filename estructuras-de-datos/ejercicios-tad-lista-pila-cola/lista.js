@@ -79,8 +79,27 @@ if (typeof module !== "undefined") {
       ["}", ""]
     ]);
 
+    /* Una opcion cuyo valor ya salio antes se descarta: nunca dos botones iguales. */
+    function unicas(lista) {
+      var vistos = [];
+      return lista.filter(function (o) {
+        var nueva = vistos.indexOf(o.valor) < 0;
+        if (nueva) { vistos.push(o.valor); }
+        return nueva;
+      });
+    }
+    /* Avisa cada vez que el estudiante acierta en el contenedor de opciones. */
+    function alAcertar(idOpciones, f) {
+      document.getElementById(idOpciones).addEventListener("click", function (e) {
+        if (e.target && e.target.getAttribute("data-op") === "correcta") { f(); }
+      });
+    }
     var logradas = { correcto: false, avanzando: false, union: false };
+    var texto = { correcto: false, union: false };
+    var numero = { correcto: false, union: false };
     function revisar() {
+      logradas.correcto = texto.correcto && numero.correcto;
+      logradas.union = texto.union && numero.union;
       if (logradas.correcto && logradas.avanzando && logradas.union) {
         document.getElementById("carta-cierre").style.display = "block";
       }
@@ -119,15 +138,11 @@ if (typeof module !== "undefined") {
       var v = document.getElementById("veredicto-correcto");
       var dada = leerLista(document.getElementById("pred-correcto").value);
       var esperada = EJERCICIO.quitarRepetidos(EJERCICIO.casos.repetidos);
-      var elim = parseInt(document.getElementById("pred-correcto-elim").value, 10);
-      if (iguales(dada, esperada) && elim === 3) {
+      if (iguales(dada, esperada)) {
         v.className = "veredicto bien";
-        v.textContent = "Correcto: ⟨2 5 9⟩ con tres eliminaciones, dos en p = 0 y una en p = 2. p solo avanza cuando los vecinos difieren.";
-        logradas.correcto = true;
+        v.textContent = "Correcto: ⟨2 5 9⟩. p solo avanza cuando los vecinos difieren.";
+        texto.correcto = true;
         revisar();
-      } else if (iguales(dada, esperada)) {
-        v.className = "veredicto mal";
-        v.textContent = "La lista está bien. Cuente las llamadas a eliminar: cada 2 sobrante cuesta una, y el 5 sobrante otra.";
       } else {
         v.className = "veredicto mal";
         v.textContent = "Sin avanzar al eliminar, cada valor queda una sola vez: ⟨2 5 9⟩. Vuelva a trazar.";
@@ -140,15 +155,11 @@ if (typeof module !== "undefined") {
       var c = EJERCICIO.casos.union;
       var r = EJERCICIO.union(c.a, c.b);
       var dada = leerLista(document.getElementById("pred-union").value);
-      var comp = parseInt(document.getElementById("pred-union-comp").value, 10);
-      if (iguales(dada, r.lista) && comp === r.comparaciones) {
+      if (iguales(dada, r.lista)) {
         v.className = "veredicto bien";
-        v.textContent = "Correcto: ⟨1 2 4 5 6 8 9⟩ con 6 comparaciones. Cuando a se agota en el 8, el 9 se copia sin comparar.";
-        logradas.union = true;
+        v.textContent = "Correcto: ⟨1 2 4 5 6 8 9⟩. Cuando a se agota en el 8, el 9 se copia sin comparar.";
+        texto.union = true;
         revisar();
-      } else if (iguales(dada, r.lista)) {
-        v.className = "veredicto mal";
-        v.textContent = "La lista está bien. Las comparaciones son las vueltas del ciclo principal, que termina cuando una lista se agota; el resto se copia sin comparar.";
       } else if (iguales(dada, [1, 2, 4, 4, 5, 6, 8, 8, 9])) {
         v.className = "veredicto mal";
         v.textContent = "Eso es mezclar. La unión copia un valor común una sola vez y avanza las dos posiciones.";
@@ -160,5 +171,39 @@ if (typeof module !== "undefined") {
         v.textContent = "Dos posiciones: iguales, copiar una vez y avanzar ambas; distintos, copiar el menor y avanzar solo esa.";
       }
     });
+
+    /* --- Opciones numericas --------------------------------------- */
+    Motor.opcionesNumericas("opciones-elim", "veredicto-elim", function () {
+      var l = EJERCICIO.casos.repetidos;
+      var elim = l.length - EJERCICIO.quitarRepetidos(l).length;
+      var primero = l.filter(function (x) { return x === l[0]; }).length - 1;
+      var enGrupos = l.filter(function (x, i) { return (i > 0 && l[i - 1] === x) || (i < l.length - 1 && l[i + 1] === x); }).length;
+      return unicas([
+        { valor: elim, clave: "correcta",
+          razon: "Correcto: " + elim + " eliminaciones, dos en p = 0 y una en p = 2. Cada valor sobrante cuesta una llamada." },
+        { valor: primero, clave: "solo-primero",
+          razon: "Esos son los 2 sobrantes. Cuente también el 5 sobrante: cada valor repetido de más cuesta una llamada a eliminar." },
+        { valor: enGrupos, clave: "grupos",
+          razon: "Eso cuenta todos los elementos que tienen un vecino igual, y de cada grupo el primero se queda: solo se elimina lo que sobra." },
+        { valor: l.length, clave: "tamano",
+          razon: "Ese es el tamaño de la lista. eliminar solo se llama cuando el vecino es igual, no una vez por elemento." }
+      ]);
+    });
+    alAcertar("opciones-elim", function () { numero.correcto = true; revisar(); });
+    Motor.opcionesNumericas("opciones-comp", "veredicto-comp", function () {
+      var c = EJERCICIO.casos.union;
+      var r = EJERCICIO.union(c.a, c.b);
+      return unicas([
+        { valor: r.comparaciones, clave: "correcta",
+          razon: "Correcto: " + r.comparaciones + " comparaciones. Cuando a se agota en el 8, el 9 se copia sin comparar." },
+        { valor: r.lista.length, clave: "copiados",
+          razon: "Ese es el tamaño de la unión. Las comparaciones son las vueltas del ciclo principal, que termina cuando una lista se agota; el resto se copia sin comparar." },
+        { valor: c.a.length + c.b.length, clave: "mezclar",
+          razon: "Eso sería una comparación por elemento de las dos listas. Un valor común se compara una vez y avanza las dos posiciones." },
+        { valor: Math.max(c.a.length, c.b.length), clave: "larga",
+          razon: "Ese es el tamaño de la lista más larga. Cada vuelta avanza una posición, o las dos si los valores son iguales, y el ciclo termina cuando una se agota, no cuando se recorre la otra." }
+      ]);
+    });
+    alAcertar("opciones-comp", function () { numero.union = true; revisar(); });
   })();
 }

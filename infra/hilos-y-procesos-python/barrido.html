@@ -17,7 +17,7 @@
   <h1>Hilos que no aceleran y una suma 112 veces más rápida</h1>
   <p class="intro">El mismo trabajo, sumar cien millones de enteros, corrido de dos maneras:
   con una lista de Python recorrida por índices y con un arreglo de NumPy sumado por segmentos,
-  cada una con 1, 2, 4 y hasta 16 hilos. Escriba cuánto tarda cada versión antes de destapar
+  cada una con 1, 2, 4 y hasta 16 hilos. Escoja cuánto tarda cada versión antes de destapar
   las tablas medidas y después compare las dos escalas de tiempo.</p>
 
   <div class="carta">
@@ -59,17 +59,14 @@
   <div class="carta">
     <h2>2. Antes de ver la tabla</h2>
     <div class="prediccion">
-      <span>Con la lista de Python, ¿cuántos segundos tarda la suma con 4 hilos? Dos
-      decimales.</span>
-      <input type="number" id="prediccion-puro" min="0" step="0.01" placeholder="segundos">
-      <button id="btn-comprobar-puro" class="primario">Comprobar</button>
+      <span>Con la lista de Python, ¿cuántos segundos tarda la suma con 4 hilos?</span>
     </div>
+    <div class="opciones" id="opciones-puro"></div>
     <div id="veredicto-puro" class="veredicto"></div>
     <div class="prediccion">
       <span>Con NumPy y un solo hilo, ¿cuántos milisegundos tarda?</span>
-      <input type="number" id="prediccion-numpy" min="0" step="1" placeholder="ms">
-      <button id="btn-comprobar-numpy" class="primario">Comprobar</button>
     </div>
+    <div class="opciones" id="opciones-numpy"></div>
     <div id="veredicto-numpy" class="veredicto"></div>
     <div class="nota">Un hilo con la lista tardó 5,05 s. Los cuatro hilos se reparten el mismo
     trabajo, veinticinco millones de sumas cada uno, y corren sobre una máquina con 6 núcleos

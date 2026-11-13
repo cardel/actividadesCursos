@@ -121,133 +121,84 @@
 
   /* ---------- las dos predicciones numéricas ---------- */
 
-  function revisarConstruidas(valor) {
+  /* Opciones de cada pregunta: la correcta sale del modelo y cada distractor
+     es un error que alguien daría de verdad, con su explicación. */
+  function opcionesConstruidas() {
     var buena = SIETE.construcciones;
-    if (valor === buena) {
-      return {
-        ok: true,
-        msg: "Son " + buena + ". La inserción baja 10 → 8 → 6 → subárbol vacío, y de " +
+    var lista = [
+      { valor: buena, clave: "correcta",
+        razon: "Son " + buena + ". La inserción baja 10 → 8 → 6 → subárbol vacío, y de " +
           "vuelta construye un nodo por cada paso de ese camino: el 7 que nace en Vacio, " +
-          "y los nodos 6, 8 y 10 rehechos con el subárbol que cambió."
-      };
-    }
-    if (valor === 1) {
-      return {
-        ok: false,
-        msg: "El nodo 7 es el único que nace con un elemento nuevo, pero no es el único que " +
+          "y los nodos 6, 8 y 10 rehechos con el subárbol que cambió." },
+      { valor: 1, clave: "uno",
+        razon: "El nodo 7 es el único que nace con un elemento nuevo, pero no es el único que " +
           "se construye: el padre no se puede modificar para que apunte al 7, así que el " +
-          "padre también se construye, y el suyo, hasta la raíz."
-      };
-    }
-    if (valor === SIETE.nodosResultado || valor === SIETE.nodosOriginal) {
-      return {
-        ok: false,
-        msg: "Ese es el tamaño del árbol, no lo que cuesta la inserción. Los subárboles que " +
+          "padre también se construye, y el suyo, hasta la raíz." },
+      { valor: SIETE.nodosResultado, clave: "tamano",
+        razon: "Ese es el tamaño del árbol, no lo que cuesta la inserción. Los subárboles que " +
           "no están en el camino de la raíz al sitio del 7 entran al resultado tal como " +
-          "estaban, sin volver a construirse."
-      };
-    }
-    if (valor === 3) {
-      return {
-        ok: false,
-        msg: "Faltó uno de los dos extremos del camino. Cuente el nodo nuevo que Vacio " +
-          "construye y además cada nodo que ya existía y quedó rehecho, incluida la raíz."
-      };
-    }
-    if (valor === 0) {
-      return {
-        ok: false,
-        msg: "Sin construir nada no habría dónde poner el 7: los tres campos de un NoVacio se " +
-          "fijan al construirlo y después nadie los cambia."
-      };
-    }
-    return {
-      ok: false,
-      msg: "Siga el camino de la llamada desde la raíz hasta el subárbol vacío donde cae el 7 " +
-        "y cuente un new NoVacio por cada nodo de ese camino, más el que nace en Vacio."
-    };
+          "estaban, sin volver a construirse." },
+      { valor: 3, clave: "faltaUno",
+        razon: "Eso cuenta solo los nodos rehechos, el 6, el 8 y el 10, y olvida el 7: Vacio " +
+          "también evalúa un new NoVacio, el del elemento nuevo." }
+    ];
+    return sinRepetidos(lista);
   }
 
-  function revisarCompartidas(valor) {
+  function opcionesCompartidas() {
     var buena = SIETE.compartidos.length;
-    if (valor === buena) {
-      return {
-        ok: true,
-        msg: "Son " + buena + ": los nodos " + SIETE.compartidos.join(", ") +
+    var lista = [
+      { valor: buena, clave: "correcta",
+        razon: "Son " + buena + ": los nodos " + SIETE.compartidos.join(", ") +
           ". Ninguno está en el camino hacia el 7, así que entran al resultado como los " +
-          "mismos objetos que ya tenía c."
-      };
-    }
-    if (valor === 0) {
-      return {
-        ok: false,
-        msg: "Si no se compartiera nada, cada inserción costaría copiar el árbol entero. " +
+          "mismos objetos que ya tenía c." },
+      { valor: 0, clave: "ninguno",
+        razon: "Si no se compartiera nada, cada inserción costaría copiar el árbol entero. " +
           "El subárbol que no cambia se pasa por donde está: new NoVacio(elem, izq insertar " +
-          "x, der) entrega der sin tocarlo."
-      };
-    }
-    if (valor === SIETE.nodosOriginal) {
-      return {
-        ok: false,
-        msg: "Los siete nodos de c siguen existiendo, pero tres de ellos quedaron fuera del " +
+          "x, der) entrega der sin tocarlo." },
+      { valor: SIETE.nodosOriginal, clave: "todosOriginal",
+        razon: "Los siete nodos de c siguen existiendo, pero tres de ellos quedaron fuera del " +
           "resultado: el camino 10 → 8 → 6 se rehízo. Lo que se pregunta es cuántos nodos del " +
-          "árbol nuevo son objetos del viejo."
-      };
-    }
-    if (valor === SIETE.nodosResultado) {
-      return {
-        ok: false,
-        msg: "Ese es el total de nodos del resultado, y entre ellos están los que acaba de " +
-          "contar como construidos. Resta esos del total."
-      };
-    }
-    return {
-      ok: false,
-      msg: "El resultado tiene " + SIETE.nodosResultado + " nodos NoVacio y usted contó " +
-        SIETE.construcciones + " construidos. Los demás son los compartidos."
-    };
+          "árbol nuevo son objetos del viejo." },
+      { valor: SIETE.nodosResultado, clave: "todosResultado",
+        razon: "Ese es el total de nodos del resultado, y entre ellos están los que acaba de " +
+          "contar como construidos. Resta esos del total." }
+    ];
+    return sinRepetidos(lista);
   }
 
-  function revisarNueve(valor) {
+  function opcionesNueve() {
     var buena = NUEVE.construcciones;
-    if (valor === buena) {
-      return {
-        ok: true,
-        msg: "Son " + buena + ". La tercera rama devuelve this y el nodo 9 no se vuelve a " +
+    var lista = [
+      { valor: buena, clave: "correcta",
+        razon: "Son " + buena + ". La tercera rama devuelve this y el nodo 9 no se vuelve a " +
           "construir, pero las dos llamadas que quedaron esperando ya decidieron su rama: " +
           "el nodo 8 y la raíz 10 se construyen igual, con el mismo contenido. El resultado " +
           "tiene " + NUEVE.nodosResultado + " nodos, " + NUEVE.compartidos.length +
-          " compartidos, y su recorrido en orden es " + NUEVE.listaResultado.join(", ") + "."
-      };
-    }
-    if (valor === 0) {
-      return {
-        ok: false,
-        msg: "El this de la tercera rama evita construir el nodo 9, y ahí se detiene el " +
+          " compartidos, y su recorrido en orden es " + NUEVE.listaResultado.join(", ") + "." },
+      { valor: 0, clave: "cero",
+        razon: "El this de la tercera rama evita construir el nodo 9, y ahí se detiene el " +
           "ahorro: la llamada en el nodo 8 ya entró por la rama de " + NUEVE.x + " > 8 y su " +
-          "cuerpo es un new NoVacio, aunque lo que reciba de der sea el mismo subárbol."
-      };
-    }
-    if (valor === 3) {
-      return {
-        ok: false,
-        msg: "El nodo 9 no se construye: la tercera rama devuelve this. Los que sí se " +
+          "cuerpo es un new NoVacio, aunque lo que reciba de der sea el mismo subárbol." },
+      { valor: 3, clave: "tres",
+        razon: "El nodo 9 no se construye: la tercera rama devuelve this. Los que sí se " +
           "construyen son los de arriba, los que ya habían elegido rama antes de saber que " +
-          "el elemento estaba."
-      };
-    }
-    if (valor === 4) {
-      return {
-        ok: false,
-        msg: "Con el 7 eran cuatro porque hacía falta un nodo nuevo. Con el 9 no nace ningún " +
-          "elemento: mire cuántos nodos del camino quedan por encima del 9."
-      };
-    }
-    return {
-      ok: false,
-      msg: "El camino es 10 → 8 → 9. Cuente en cuáles de esos tres nodos el cuerpo de " +
-        "insertar llega a un new NoVacio."
-    };
+          "el elemento estaba." },
+      { valor: 4, clave: "cuatro",
+        razon: "Con el 7 eran cuatro porque hacía falta un nodo nuevo. Con el 9 no nace ningún " +
+          "elemento: mire cuántos nodos del camino quedan por encima del 9." }
+    ];
+    return sinRepetidos(lista);
+  }
+
+  /* nunca dos botones con el mismo valor: gana la primera, que es la correcta */
+  function sinRepetidos(lista) {
+    var vistos = {};
+    return lista.filter(function (o) {
+      var repetido = vistos[o.valor] === true;
+      vistos[o.valor] = true;
+      return !repetido;
+    });
   }
 
   /* ---------- disposición del dibujo ---------- */
@@ -291,8 +242,8 @@
     VACIO: VACIO, noVacio: noVacio, insertar: insertar, listaEnteros: listaEnteros,
     nodos: nodos, INSERCIONES: INSERCIONES, ARBOL: ARBOL,
     insertarConTraza: insertarConTraza, reparto: reparto, informe: informe,
-    SIETE: SIETE, NUEVE: NUEVE, revisarConstruidas: revisarConstruidas,
-    revisarCompartidas: revisarCompartidas, revisarNueve: revisarNueve,
+    SIETE: SIETE, NUEVE: NUEVE, opcionesConstruidas: opcionesConstruidas,
+    opcionesCompartidas: opcionesCompartidas, opcionesNueve: opcionesNueve,
     disponer: disponer, marcas: marcas
   };
   if (typeof module !== "undefined") { module.exports = API; }
@@ -376,19 +327,13 @@
 
   var acertadas = { construidas: false, compartidas: false };
 
-  function leer(id) {
-    var v = parseInt(document.getElementById(id).value, 10);
-    return isNaN(v) ? null : v;
-  }
-
-  function responder(campo, idVer, res) {
-    var v = document.getElementById(idVer);
-    v.className = res.ok ? "veredicto bien" : "veredicto mal";
-    v.textContent = res.msg;
-    acertadas[campo] = res.ok;
-    if (acertadas.construidas && acertadas.compartidas) {
-      revelar();
-    }
+  /* La razón y el color los escribe Motor.opcionesNumericas; aquí solo se
+     reacciona cuando el botón pulsado es la correcta. */
+  function alAcertar(idOpciones, fn) {
+    document.getElementById(idOpciones).addEventListener("click", function (e) {
+      var b = e.target;
+      if (b && b.getAttribute && b.getAttribute("data-op") === "correcta") { fn(); }
+    });
   }
 
   function revelar() {
@@ -408,37 +353,20 @@
     document.getElementById("carta-nueve").classList.remove("bloqueado");
   }
 
-  document.getElementById("btn-construidas").addEventListener("click", function () {
-    var v = leer("pred-construidas");
-    if (v === null) {
-      responder("construidas", "ver-construidas",
-        { ok: false, msg: "Escriba un número primero." });
-      return;
-    }
-    responder("construidas", "ver-construidas", revisarConstruidas(v));
-  });
+  Motor.opcionesNumericas("opciones-construidas", "ver-construidas", opcionesConstruidas);
+  Motor.opcionesNumericas("opciones-compartidas", "ver-compartidas", opcionesCompartidas);
+  Motor.opcionesNumericas("opciones-nueve", "ver-nueve", opcionesNueve);
 
-  document.getElementById("btn-compartidas").addEventListener("click", function () {
-    var v = leer("pred-compartidas");
-    if (v === null) {
-      responder("compartidas", "ver-compartidas",
-        { ok: false, msg: "Escriba un número primero." });
-      return;
-    }
-    responder("compartidas", "ver-compartidas", revisarCompartidas(v));
+  alAcertar("opciones-construidas", function () {
+    acertadas.construidas = true;
+    if (acertadas.compartidas) { revelar(); }
   });
-
-  document.getElementById("btn-nueve").addEventListener("click", function () {
-    var v = leer("pred-nueve");
-    var ver = document.getElementById("ver-nueve");
-    var res = v === null
-      ? { ok: false, msg: "Escriba un número primero." }
-      : revisarNueve(v);
-    ver.className = res.ok ? "veredicto bien" : "veredicto mal";
-    ver.textContent = res.msg;
-    if (res.ok) {
-      document.getElementById("carta-vieja").classList.remove("bloqueado");
-    }
+  alAcertar("opciones-compartidas", function () {
+    acertadas.compartidas = true;
+    if (acertadas.construidas) { revelar(); }
+  });
+  alAcertar("opciones-nueve", function () {
+    document.getElementById("carta-vieja").classList.remove("bloqueado");
   });
 
   document.querySelectorAll("[data-vieja]").forEach(function (b) {

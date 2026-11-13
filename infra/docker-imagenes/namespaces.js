@@ -72,6 +72,36 @@ function explicarDistintos(bien, real, dicho) {
     "creados después del arranque.";
 }
 
+/* Quita las opciones que repiten el valor de otra, la correcta primero. */
+function sinRepetidas(lista) {
+  var vistas = {};
+  return lista.filter(function (o) {
+    var k = String(o.valor);
+    var nueva = !vistas[k];
+    vistas[k] = true;
+    return nueva;
+  });
+}
+
+/* Las opciones de cuantos identificadores cambian dentro del contenedor. */
+function opcionesDistintos() {
+  var real = cuantosDistintos();
+  return sinRepetidas([
+    { valor: real, clave: "correcta", razon: explicarDistintos(true, real, real) },
+    { valor: NS.length, clave: "todos",
+      razon: "No, y es el error que vale la pena ver: el de usuario trae el mismo número a " +
+        "los dos lados (" + NS[4].anfitrion + "). Docker crea un namespace nuevo de pid, " +
+        "net, mnt y uts, y deja el de usuario como estaba." },
+    { valor: distintosConRedDelAnfitrion(), clave: "red",
+      razon: "Son " + distintosConRedDelAnfitrion() + " solo si el contenedor corre con " +
+        "<code>--network host</code>, que comparte la pila de red. Aquí la red es propia y " +
+        "también cambia su número." },
+    { valor: 1, clave: "uno",
+      razon: "Cada namespace se pide aparte y Docker pide cuatro de los cinco. No es solo el " +
+        "de procesos: net, mnt y uts también traen número propio." }
+  ]);
+}
+
 var RAZONES_USER = {
   correcta: "Eso es. El aislamiento por omisión no es una frontera de seguridad: el UID 0 de " +
     "dentro es el UID 0 de fuera, y lo único que lo separa del sistema de archivos del " +
@@ -172,10 +202,8 @@ function iniciar() {
   pintarNs();
   pintarMec();
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-distintos", boton: "btn-distintos", veredicto: "ver-distintos" },
-    cuantosDistintos, explicarDistintos);
-  document.getElementById("btn-distintos").addEventListener("click", function () {
+  Motor.opcionesNumericas("op-distintos", "ver-distintos", opcionesDistintos);
+  document.getElementById("op-distintos").addEventListener("click", function () {
     destapado = true;
     pintarNs();
   });

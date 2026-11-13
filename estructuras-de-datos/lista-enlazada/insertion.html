@@ -22,11 +22,12 @@
     <div class="prediccion">
       <span>por vuelta:</span>
       <input type="text" id="pred-vueltas" placeholder="a b c d e" style="width:9rem">
-      <span>total:</span>
-      <input type="number" id="pred-total" placeholder="?">
       <button id="btn-vueltas" class="primario">Comprobar</button>
     </div>
     <div id="veredicto-vueltas" class="veredicto"></div>
+    <p><b>¿Cuántos corrimientos suman en total?</b></p>
+    <div class="opciones" id="opciones-total"></div>
+    <div id="veredicto-total" class="veredicto"></div>
   </div>
 
   <div class="carta">
@@ -64,10 +65,7 @@
     <h2>4. La entrada más cara</h2>
     <p style="margin-top:0">Con la misma cantidad de elementos, ¿cuántos
     corrimientos hace insertion sort sobre <code>9 8 6 5 4 2</code>?</p>
-    <div class="prediccion">
-      <input type="number" id="pred-peor" placeholder="?">
-      <button id="btn-peor" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-peor"></div>
     <div id="veredicto-peor" class="veredicto"></div>
   </div>
 
@@ -80,6 +78,7 @@
     n(n-1)/2 en total. El espacio aparte es Θ(1): se ordena en el sitio.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="insertion.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

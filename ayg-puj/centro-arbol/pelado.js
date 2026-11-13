@@ -181,20 +181,26 @@ if (typeof document !== "undefined") {
       paramsIniciales: p, alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor) {
-      var m = E.medidas(E.CASOS[p.c]);
-      if (valor === m.vueltas) {
-        return { ok: true, msg: "Son " + m.vueltas + ". Quedan " + m.centro.length +
-          (m.centro.length === 1 ? " centro, así que el radio también es " : " centros, así que el radio es uno más: ") + m.radio + "." };
+    Motor.opcionesNumericas("opciones-vueltas", "veredicto", function (q) {
+      var caso = E.CASOS[q.c], m = E.medidas(caso);
+      var lista = [
+        { valor: m.vueltas, clave: "correcta",
+          razon: "Son " + m.vueltas + ". Quedan " + m.centro.length +
+            (m.centro.length === 1 ? " centro, así que el radio también es " : " centros, así que el radio es uno más: ") + m.radio + "." },
+        { valor: m.radio, clave: "radio",
+          razon: "Ese es el radio. Las vueltas son " + m.vueltas +
+            ", que es el piso de " + m.diametro + " sobre dos." },
+        { valor: m.capas.length, clave: "capas",
+          razon: "Esa es la cantidad de capas que se listan, contando la que queda al final. Vueltas del ciclo hay " + m.vueltas + "." },
+        { valor: m.diametro, clave: "diametro",
+          razon: "Ese es el diámetro. Cada vuelta quita una capa por los dos lados del camino más largo, así que son la mitad, " + m.vueltas + "." }
+      ];
+      var vistos = [], r = [], i = 0;
+      while (i < lista.length) {
+        if (vistos.indexOf(lista[i].valor) < 0) { vistos.push(lista[i].valor); r.push(lista[i]); }
+        i = i + 1;
       }
-      if (valor === m.radio) {
-        return { ok: false, msg: "Ese es el radio. Las vueltas son " + m.vueltas +
-          ", que es el piso de " + m.diametro + " sobre dos." };
-      }
-      if (valor === m.capas.length) {
-        return { ok: false, msg: "Esa es la cantidad de capas que se listan, contando la que queda al final. Vueltas del ciclo hay " + m.vueltas + "." };
-      }
-      return { ok: false, msg: "Son " + m.vueltas + ". Cada vuelta quita una capa entera y el ciclo para apenas quedan dos vértices o menos." };
+      return r;
     });
 
     el("presets").innerHTML = E.CASOS.map(function (c, i) {

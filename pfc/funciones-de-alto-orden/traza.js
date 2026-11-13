@@ -53,6 +53,41 @@
 
   var actual = 0;
 
+  function sinRepetidos(lista) {
+    var vistos = {}, salida = [];
+    lista.forEach(function (o) {
+      if (!vistos[o.valor]) { vistos[o.valor] = true; salida.push(o); }
+    });
+    return salida;
+  }
+
+  function terminos(p) {
+    var F = filas(p), t = [];
+    F.forEach(function (f) { if (!f.base) { t.push(f.fa); } });
+    return t;
+  }
+
+  /* Los distractores se calculan con el preset del momento. */
+  function opcionesTotal(idx) {
+    var p = PRESETS[idx], t = terminos(p), real = total(p);
+    var F = filas(p), ultimoA = F[F.length - 1].a;
+    var sinUltimo = real - t[t.length - 1];
+    var conBase = real + p.f(ultimoA);
+    var deUnoEnUno = 0, x = p.a;
+    while (x <= p.b) { deUnoEnUno = deUnoEnUno + p.f(x); x = x + 1; }
+    return sinRepetidos([
+      { valor: real, clave: "correcta",
+        razon: "Correcto: " + real + ". Es la suma de la columna f(a), sin contar la fila que devuelve 0." },
+      { valor: sinUltimo, clave: "sinUltimo",
+        razon: "Eso deja fuera el último término, f(" + F[F.length - 2].a + "). Ese a todavía es menor o igual que " + p.b + ", así que sí se suma." },
+      { valor: conBase, clave: "conBase",
+        razon: "Eso suma también f(" + ultimoA + "). Con a = " + ultimoA + " ya se pasó de " + p.b + ": esa llamada devuelve 0 y no aporta término." },
+      { valor: deUnoEnUno, clave: "deUnoEnUno",
+        razon: "Eso suma f(a) para cada entero de " + p.a + " a " + p.b + ", como si prox sumara 1. Aquí prox es " + p.proxTxt + ", así que los a que se visitan son otros." }
+    ]);
+  }
+
+
   function celdaEntrada(id, dada) {
     var td = document.createElement("td");
     if (dada !== undefined) {
@@ -94,7 +129,6 @@
       tr.appendChild(que);
       cuerpo.appendChild(tr);
     });
-    document.getElementById("total").value = "";
     document.getElementById("real-total").textContent = "";
     var ver = document.getElementById("veredicto-tabla");
     ver.className = "veredicto"; ver.textContent = "";
@@ -114,7 +148,6 @@
       if (i > 0) { revisar("a-" + i, f.a); }
       if (!f.base) { revisar("fa-" + i, f.fa); revisar("prox-" + i, f.prox); }
     });
-    revisar("total", total(p));
     var ver = document.getElementById("veredicto-tabla");
     if (vacias > 0) {
       ver.className = "veredicto mal";
@@ -166,6 +199,9 @@
   });
 
   document.getElementById("btn-comprobar-tabla").addEventListener("click", comprobar);
+  Motor.opcionesNumericas("opciones-total", "veredicto-total", function (idx) {
+    return opcionesTotal(idx);
+  });
   construirTabla(actual);
   Motor.repintar();
 

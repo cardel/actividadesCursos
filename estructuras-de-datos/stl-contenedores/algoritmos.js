@@ -76,81 +76,79 @@ if (typeof module !== "undefined") {
       ["printf(\"%s\\n\", it == v.end() ? \"end\" : \"esta\");", "bloque-2"]
     ]);
 
-    var logradas = { orden: false, bs: false, find: false };
+    var logradas = { orden: false, bs: false, findPos: false, findEnd: false };
     function revisar() {
-      if (logradas.orden && logradas.bs && logradas.find) {
+      if (logradas.orden && logradas.bs && logradas.findPos && logradas.findEnd) {
         document.getElementById("carta-cierre").style.display = "block";
       }
     }
-    function leerNombres(texto) {
-      return texto.trim().split(/[\s,]+/).filter(function (x) { return x !== ""; })
-        .map(function (x) { return x.charAt(0).toUpperCase() + x.slice(1).toLowerCase(); });
+    function sinRepetir(lista) {
+      var vistos = {};
+      return lista.filter(function (o) {
+        var nuevo = !vistos[String(o.valor)];
+        vistos[String(o.valor)] = true;
+        return nuevo;
+      });
     }
-
-    document.getElementById("btn-orden").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-orden");
+    function alAcertar(id, f) {
+      document.getElementById(id).addEventListener("click", function (e) {
+        if (e.target && e.target.getAttribute && e.target.getAttribute("data-op") === "correcta") { f(); }
+      });
+    }
+    Motor.opcionesNumericas("opciones-orden", "veredicto-orden", function () {
       var esperado = EJERCICIO.ordenar(EJERCICIO.personas);
-      var dado = leerNombres(document.getElementById("pred-orden").value);
-      var igual = dado.length === esperado.length && dado.every(function (x, i) { return x === esperado[i]; });
-      if (igual) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: Omar Iván Rosa Elena Beto. Los de 19 van primero, y entre ellos Omar antes que Iván porque el empate se resuelve con > en el nombre: de la Z a la A.";
-        logradas.orden = true;
-        revisar();
-      } else if (dado.join(" ") === "Iván Omar Elena Rosa Beto") {
-        v.className = "veredicto mal";
-        v.textContent = "Las edades van bien, pero el empate usa a.nombre > b.nombre: va antes el nombre mayor, o sea el que está más cerca de la Z.";
-      } else if (dado.length === 5 && dado[0] === "Beto") {
-        v.className = "veredicto mal";
-        v.textContent = "a.edad < b.edad pone antes al de menor edad. Beto, con 23, va de último.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "Primero por edad ascendente; en empate, por nombre descendente. Escriba los cinco nombres en orden.";
-      }
+      return sinRepetir([
+        { valor: esperado.join(" "), clave: "correcta",
+          razon: "Correcto: Omar Iván Rosa Elena Beto. Los de 19 van primero, y entre ellos Omar antes que Iván porque el empate se resuelve con > en el nombre: de la Z a la A." },
+        { valor: "Iván Omar Elena Rosa Beto", clave: "empate",
+          razon: "Las edades van bien, pero el empate usa a.nombre > b.nombre: va antes el nombre mayor, o sea el que está más cerca de la Z." },
+        { valor: "Beto Rosa Elena Omar Iván", clave: "edad",
+          razon: "a.edad < b.edad pone antes al de menor edad. Beto, con 23, va de último." },
+        { valor: "Beto Elena Iván Omar Rosa", clave: "nombre",
+          razon: "Esa es la lista por nombre, de la A a la Z. antes mira primero la edad y solo usa el nombre cuando las edades empatan." }
+      ]);
     });
+    alAcertar("opciones-orden", function () { logradas.orden = true; revisar(); });
 
-    document.getElementById("btn-bs").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-bs");
-      var b3 = parseInt(document.getElementById("pred-bs3").value, 10);
-      var b9 = parseInt(document.getElementById("pred-bs9").value, 10);
+    Motor.opcionesNumericas("opciones-bs", "veredicto-bs", function () {
       var c = EJERCICIO.sinOrden;
-      if (b3 === c.busca3 && b9 === c.busca9) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: 0 y 1. Los dos números están en el vector; binary_search pierde el 3 y encuentra el 9 por casualidad. Sin la precondición de orden, la respuesta no significa nada, y no avisa.";
-        logradas.bs = true;
-        revisar();
-      } else if (b3 === 1 && b9 === 1) {
-        v.className = "veredicto mal";
-        v.textContent = "Los dos están, sí, pero binary_search no recorre: parte por la mitad suponiendo orden. Con {6, 3, 9, 2, 7} la mitad es 9; buscando 3 va hacia la izquierda, donde está el 6, y concluye que no está.";
-      } else if (b3 === 0 && b9 === 0) {
-        v.className = "veredicto mal";
-        v.textContent = "Uno de los dos sí lo encuentra: el 9 está justo en la mitad, y la primera comparación acierta. Que acierte a veces es lo que lo hace peligroso.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "Simule la búsqueda binaria sobre el vector tal como está: la mitad es la posición 2, que tiene un 9.";
-      }
+      return sinRepetir([
+        { valor: c.busca3 + " y " + c.busca9, clave: "correcta",
+          razon: "Correcto: 0 y 1. Los dos números están en el vector; binary_search pierde el 3 y encuentra el 9 por casualidad. Sin la precondición de orden, la respuesta no significa nada, y no avisa." },
+        { valor: "1 y 1", clave: "ambos",
+          razon: "Los dos están, sí, pero binary_search no recorre: parte por la mitad suponiendo orden. Con {6, 3, 9, 2, 7} la mitad es 9; buscando 3 va hacia la izquierda, donde está el 6, y concluye que no está." },
+        { valor: "0 y 0", clave: "ninguno",
+          razon: "Uno de los dos sí lo encuentra: el 9 está justo en la mitad, y la primera comparación acierta. Que acierte a veces es lo que lo hace peligroso." },
+        { valor: (1 - c.busca3) + " y " + (1 - c.busca9), clave: "alreves",
+          razon: "Está al revés: el 9 está justo en la mitad y se encuentra a la primera, mientras que el 3 queda del lado del 6 y se pierde." }
+      ]);
     });
+    alAcertar("opciones-bs", function () { logradas.bs = true; revisar(); });
 
-    document.getElementById("btn-find").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-find");
-      var p = parseInt(document.getElementById("pred-find16").value, 10);
-      var e = document.getElementById("pred-find5").value.trim().toLowerCase();
-      var pos = EJERCICIO.find(EJERCICIO.ordenado, 16);
-      if (p === pos && e === "end") {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: 3 y end. it - v.begin() convierte la posición en índice; y cuando no está, find devuelve v.end(), que no es un elemento sino la marca de después del último.";
-        logradas.find = true;
-        revisar();
-      } else if (p === 4) {
-        v.className = "veredicto mal";
-        v.textContent = "Las posiciones empiezan en 0: 4 está en la 0, 8 en la 1, 15 en la 2, 16 en la 3.";
-      } else if (e !== "end") {
-        v.className = "veredicto mal";
-        v.textContent = "El 5 no está. find devuelve v.end() y el programa imprime end.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "find recorre desde el principio y se detiene en el primer igual. Cuente desde 0.";
-      }
+    Motor.opcionesNumericas("opciones-find5", "veredicto-find", function () {
+      var pos = EJERCICIO.find(EJERCICIO.ordenado, 5);
+      return [
+        { valor: pos === -1 ? "end" : "esta", clave: "correcta",
+          razon: "Correcto: end. Cuando no está, find devuelve v.end(), que no es un elemento sino la marca de después del último." },
+        { valor: pos === -1 ? "esta" : "end", clave: "esta",
+          razon: "El 5 no está en {4, 8, 15, 16, 23, 42}. find devuelve v.end() y el programa imprime end." }
+      ];
     });
+    alAcertar("opciones-find5", function () { logradas.findEnd = true; revisar(); });
+
+    Motor.opcionesNumericas("opciones-find16", "veredicto-find16", function () {
+      var pos = EJERCICIO.find(EJERCICIO.ordenado, 16);
+      return sinRepetir([
+        { valor: pos, clave: "correcta",
+          razon: "Correcto: " + pos + ". it - v.begin() convierte la posición en índice: 4 está en la 0, 8 en la 1, 15 en la 2, 16 en la 3." },
+        { valor: pos + 1, clave: "desdeuno",
+          razon: "Las posiciones empiezan en 0: 4 está en la 0, 8 en la 1, 15 en la 2, 16 en la 3." },
+        { valor: 16, clave: "valor",
+          razon: "Ese es el valor que se busca, no su posición. it - v.begin() cuenta casillas desde el principio." },
+        { valor: EJERCICIO.ordenado.length, clave: "tamano",
+          razon: "Ese es el tamaño del vector, la posición de v.end(). El 16 sí está, y find se detiene en el primer igual." }
+      ]);
+    });
+    alAcertar("opciones-find16", function () { logradas.findPos = true; revisar(); });
   })();
 }

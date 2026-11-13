@@ -600,29 +600,42 @@ if (typeof module !== "undefined") {
       revisarTodo();
     });
 
-    document.getElementById("btn-comprobar").addEventListener("click", function () {
-      var valor = parseInt(document.getElementById("prediccion").value, 10);
-      var G = actual.G;
-      var entradas = EJERCICIO.entradasDeLista(G);
-      var e = EJERCICIO.aristasDe(G, actual.dirigido).length;
-      if (isNaN(valor)) {
-        veredicto("veredicto", false, "Escriba un número primero.");
-      } else if (valor === entradas) {
-        veredicto("veredicto", true, "Correcto: " + entradas + " entradas" +
-          (actual.dirigido
-            ? ", una por arista, porque cada arista dirigida aparece una sola vez."
-            : ", dos por arista, porque cada una aparece en las listas de sus dos extremos."));
-      } else if (valor === e) {
-        veredicto("veredicto", false, "Ese es el número de aristas (" + e + ")." +
-          (actual.dirigido ? "" : " En un grafo no dirigido cada arista deja dos entradas."));
-      } else if (valor === G.length * G.length) {
-        veredicto("veredicto", false, "Ese es el tamaño de la matriz. La lista de " +
-          "adyacencia solo guarda lo que existe.");
-      } else {
-        veredicto("veredicto", false, "No coincide. Sume el largo de las " +
-          G.length + " listas.");
+    var opcionesPred = Motor.opcionesNumericas("opciones-prediccion", "veredicto",
+      function () {
+        var G = actual.G;
+        var entradas = EJERCICIO.entradasDeLista(G);
+        var e = EJERCICIO.aristasDe(G, actual.dirigido).length;
+      function sinRepetir(lista) {
+        var vistos = {};
+        var salida = [];
+        lista.forEach(function (o) {
+          if (!vistos[o.valor] && o.valor >= 0) {
+            vistos[o.valor] = true;
+            salida.push(o);
+          }
+        });
+        return salida.slice(0, 4);
       }
-    });
+        return sinRepetir([
+          { valor: entradas, clave: "correcta",
+            razon: "Correcto: " + entradas + " entradas" +
+              (actual.dirigido
+                ? ", una por arista, porque cada arista dirigida aparece una sola vez."
+                : ", dos por arista, porque cada una aparece en las listas de sus dos extremos.") },
+          { valor: e, clave: "aristas",
+            razon: "Ese es el número de aristas (" + e + ")." +
+              (actual.dirigido ? "" : " En un grafo no dirigido cada arista deja dos entradas.") },
+          { valor: G.length * G.length, clave: "matriz",
+            razon: "Ese es el tamaño de la matriz. La lista de " +
+              "adyacencia solo guarda lo que existe." },
+          { valor: 2 * e, clave: "doble",
+            razon: "Contó dos entradas por arista, como en un grafo no dirigido. " +
+              "Aquí cada arista dirigida aparece una sola vez, en la lista de su origen." },
+          { valor: G.length, clave: "listas",
+            razon: "Ese es el número de listas (" + G.length + "), una por vértice. " +
+              "La pregunta es por las entradas que suman entre todas." }
+        ]);
+      });
 
     function cambiarPreset(k) {
       actual = PRESETS[k];
@@ -639,7 +652,7 @@ if (typeof module !== "undefined") {
       limpiarVeredicto("veredicto-aristas");
       limpiarVeredicto("veredicto-incidencia");
       limpiarVeredicto("veredicto");
-      document.getElementById("prediccion").value = "";
+      opcionesPred.refrescar();
       document.getElementById("nota-aristas").innerHTML = actual.dirigido
         ? "El grafo es dirigido: el par (u, v) no es lo mismo que (v, u), y cada " +
           "arista se escribe una sola vez, en su sentido."

@@ -43,10 +43,14 @@
   var TRAMPA = [
     { id: "menosCinco", expr: "menosCinco(3)", def: "val menosCinco = restaC(5)", valor: 2,
       bien: "Correcto: restaC(5) fija a = 5, el minuendo. menosCinco(3) es 5 − 3 = 2. El nombre engaña: no resta cinco, resta desde cinco.",
-      mal: "No. restaC(a)(b) es a − b, y restaC(5) fija a = 5. menosCinco(3) = 5 − 3 = 2." },
+      malas: [[-2, "Eso es 3 − 5: leyó el nombre y restó cinco a 3. restaC(5) fija a = 5, el minuendo, así que queda 5 − 3."],
+              [8, "Eso es 5 + 3: sumó. restaC resta, y el 5 es el minuendo."],
+              [5, "Eso es solo el 5 fijado. La función todavía resta su b = 3."]] },
     { id: "restarCinco", expr: "restarCinco(3)", def: "val restarCinco = (b: Int) => restaC(b)(5)", valor: -2,
       bien: "Correcto: aquí el 5 va en el segundo grupo, así que restarCinco(3) = 3 − 5 = −2. Para fijar el sustraendo hubo que escribir el literal.",
-      mal: "No. restarCinco(3) es restaC(3)(5) = 3 − 5 = −2. Fijar el primer grupo es gratis; fijar el segundo pide un literal." }
+      malas: [[2, "Eso es 5 − 3, como en menosCinco. Aquí el literal pone b en el primer grupo y el 5 en el segundo: 3 − 5."],
+              [8, "Eso es 3 + 5: sumó. restaC resta, y el 5 es el sustraendo."],
+              [5, "Eso es solo el 5 fijado. La función todavía recibe el 3 como minuendo."]] }
   ];
 
   var API = { PREGUNTAS: PREGUNTAS, TRAMPA: TRAMPA };
@@ -91,15 +95,23 @@
     caja.appendChild(bloque);
   });
 
+  function sinRepetidos(lista) {
+    var vistos = {}, salida = [];
+    lista.forEach(function (o) {
+      if (!vistos[o.valor]) { vistos[o.valor] = true; salida.push(o); }
+    });
+    return salida;
+  }
+
   TRAMPA.forEach(function (t) {
-    document.getElementById("btn-" + t.id).addEventListener("click", function () {
-      var inp = document.getElementById("pred-" + t.id), v = document.getElementById("ver-" + t.id);
-      var valor = parseInt(inp.value, 10);
-      if (isNaN(valor)) { v.className = "veredicto mal"; v.textContent = "Escriba un número primero."; return; }
-      var ok = valor === t.valor;
-      v.className = "veredicto " + (ok ? "bien" : "mal");
-      v.textContent = ok ? t.bien : t.mal;
-      if (ok) { avanzar(t.id); }
+    Motor.opcionesNumericas("opciones-" + t.id, "ver-" + t.id, function () {
+      var lista = [{ valor: t.valor, clave: "correcta", razon: t.bien }];
+      t.malas.forEach(function (m, n) { lista.push({ valor: m[0], clave: "mala" + n, razon: m[1] }); });
+      return sinRepetidos(lista);
+    });
+    document.getElementById("opciones-" + t.id).addEventListener("click", function (ev) {
+      var clave = ev.target.getAttribute ? ev.target.getAttribute("data-op") : null;
+      if (clave === "correcta") { avanzar(t.id); }
     });
   });
 })();

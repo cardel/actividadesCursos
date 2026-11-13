@@ -20,28 +20,42 @@ if (typeof module !== "undefined") {
   module.exports = EJERCICIO;
 } else {
   (function () {
+    /* Opciones numericas con el motor comun; avisa cuando se pulsa la correcta. */
+    function opcionesLogro(idOpciones, idVeredicto, armar, alAcertar) {
+      Motor.opcionesNumericas(idOpciones, idVeredicto, armar);
+      document.getElementById(idOpciones).addEventListener("click", function (e) {
+        var b = e.target;
+        if (b && b.getAttribute && b.getAttribute("data-op") === "correcta") { alAcertar(); }
+      });
+    }
+    /* Descarta las opciones cuyo valor ya salio: nunca dos botones iguales. */
+    function unicas(lista) {
+      var vistos = [];
+      return lista.filter(function (o) {
+        var nuevo = vistos.indexOf(o.valor) === -1;
+        if (nuevo) { vistos.push(o.valor); }
+        return nuevo;
+      });
+    }
     var logradas = { lb: false, erase: false, consultas: false, espacio: false };
     function revisar() {
       if (logradas.lb && logradas.erase && logradas.consultas && logradas.espacio) {
         document.getElementById("carta-cierre").style.display = "block";
       }
     }
-    document.getElementById("btn-lb").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-lb");
-      var n = parseInt(document.getElementById("pred-lb").value, 10);
+    opcionesLogro("opciones-lb", "veredicto-lb", function () {
       var esperado = EJERCICIO.pasosLowerBound(4096);
-      if (n === esperado) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: 12, porque 4096 = 2^12 y cada paso deja la mitad. find, en el peor caso, mira los 4096.";
-        logradas.lb = true; revisar();
-      } else if (n === 4096 || n === 2048) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Eso es recorrer. lower_bound parte el rango por la mitad en cada paso: cuente cuántas mitades hay hasta llegar a 1.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "4096, 2048, 1024, ... ¿cuántas veces se puede dividir entre 2 hasta llegar a 1?";
-      }
-    });
+      return unicas([
+        { valor: esperado, clave: "correcta",
+          razon: "Correcto: " + esperado + ", porque 4096 = 2^" + esperado + " y cada paso deja la mitad. find, en el peor caso, mira los 4096." },
+        { valor: esperado + 1, clave: "mas-uno",
+          razon: "Son " + (esperado + 1) + " tamaños de rango, 4096, 2048, ... hasta 1, pero las mitades son un paso menos: de un tamaño al siguiente hay una partición." },
+        { valor: 4096, clave: "recorrer",
+          razon: "Eso es recorrer. lower_bound parte el rango por la mitad en cada paso: cuente cuántas mitades hay hasta llegar a 1." },
+        { valor: 2048, clave: "mitad",
+          razon: "2048 es lo que queda tras la primera partición, no el número de particiones: cuente cuántas mitades hay hasta llegar a 1." }
+      ]);
+    }, function () { logradas.lb = true; revisar(); });
     var MENSAJES_ERASE = {
       kn: null,
       n: "Cada erase corre lo que sigue: con k borrados en medio son k corrimientos de hasta n elementos. Θ(n) lo logra la versión que compacta.",

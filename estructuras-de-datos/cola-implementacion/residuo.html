@@ -48,14 +48,12 @@
 
   <div class="carta">
     <h2>3. Los dos enteros al terminar</h2>
-    <div class="prediccion">
-      <span><code>inicio</code> =</span>
-      <input type="number" id="pred-inicio" placeholder="?">
-      <span><code>n</code> =</span>
-      <input type="number" id="pred-n" placeholder="?">
-      <button id="btn-enteros" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-enteros" class="veredicto"></div>
+    <p><code>inicio</code> =</p>
+    <div class="opciones" id="opciones-inicio"></div>
+    <div id="veredicto-inicio" class="veredicto"></div>
+    <p><code>n</code> =</p>
+    <div class="opciones" id="opciones-n"></div>
+    <div id="veredicto-n" class="veredicto"></div>
   </div>
 
   <div class="carta">
@@ -80,6 +78,7 @@
     <code>assert</code> que detiene el programa en el elemento que no cabe.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="residuo.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

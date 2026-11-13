@@ -36,12 +36,9 @@
 
   <div class="carta">
     <h2>3. El mejor cambio posible</h2>
-    <div class="fila-par">
-      <span class="rotulo">Menor diámetro que se puede dejar</span>
-      <input type="number" id="in-mejor" class="corto" placeholder="0">
-      <button id="btn-mejor" class="primario">Comprobar</button>
-    </div>
-    <div id="fb-mejor" class="fb"></div>
+    <div class="pregunta">Menor diámetro que se puede dejar</div>
+    <div class="opciones" id="opciones-mejor"></div>
+    <div id="veredicto-mejor" class="veredicto"></div>
     <div id="tabla"></div>
   </div>
 
@@ -75,6 +72,7 @@ for (int caso = 0; caso &lt; casos; caso++) {
     <p>Enunciado y envío: <a href="https://vjudge.net/problem/UVA-11695" target="_blank" rel="noopener">vjudge.net/problem/UVA-11695</a></p>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="../comun/arbol.js"></script>
 <script src="../comun/grafo-svg.js"></script>
 <script src="vuelos.js"></script>

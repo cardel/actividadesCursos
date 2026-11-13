@@ -16,24 +16,19 @@
   <div class="carta">
     <h2>1. Intersección con dos iteradores</h2>
     <div class="codigo" id="codigo-inter"></div>
-    <div class="prediccion">
-      <span>r queda:</span>
-      <input type="text" id="pred-inter" placeholder="a b c" style="width:8rem">
-      <span>vueltas del while:</span>
-      <input type="number" id="pred-inter-n" placeholder="?">
-      <button id="btn-inter" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0">r queda:</p>
+    <div class="opciones" id="opciones-inter"></div>
     <div id="veredicto-inter" class="veredicto"></div>
+    <p style="margin-bottom:0">Vueltas del while:</p>
+    <div class="opciones" id="opciones-inter-n"></div>
+    <div id="veredicto-inter-n" class="veredicto"></div>
   </div>
 
   <div class="carta">
     <h2>2. Frecuencias con sort</h2>
     <div class="codigo" id="codigo-frec"></div>
-    <div class="prediccion">
-      <span>imprime (líneas separadas por coma):</span>
-      <input type="text" id="pred-frec" placeholder="palabra n, palabra n, ..." style="width:20rem">
-      <button id="btn-frec" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0">imprime (líneas separadas por coma):</p>
+    <div class="opciones" id="opciones-frec"></div>
     <div id="veredicto-frec" class="veredicto"></div>
   </div>
 
@@ -43,14 +38,12 @@
     valor, ordena la copia y toma el del medio (o el promedio de los dos del
     medio). ¿Qué devuelve con <code>{6, 1, 9, 4, 2}</code> y con
     <code>{6, 1, 9, 4}</code>?</p>
-    <div class="prediccion">
-      <span>{6, 1, 9, 4, 2}:</span>
-      <input type="number" id="pred-med-impar" placeholder="?" step="0.5">
-      <span>{6, 1, 9, 4}:</span>
-      <input type="number" id="pred-med-par" placeholder="?" step="0.5">
-      <button id="btn-med" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-med" class="veredicto"></div>
+    <p style="margin-bottom:0"><code>{6, 1, 9, 4, 2}</code>:</p>
+    <div class="opciones" id="opciones-med-impar"></div>
+    <div id="veredicto-med-impar" class="veredicto"></div>
+    <p style="margin-bottom:0"><code>{6, 1, 9, 4}</code>:</p>
+    <div class="opciones" id="opciones-med-par"></div>
+    <div id="veredicto-med-par" class="veredicto"></div>
   </div>
 
   <div class="carta" id="carta-cierre" style="display:none">
@@ -61,6 +54,7 @@
     iguales, una copia que se ordena.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="ejercicios.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

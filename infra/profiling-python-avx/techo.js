@@ -57,31 +57,12 @@ if (typeof module !== "undefined" && module.exports) {
 
 if (typeof document !== "undefined") (function () {
   var num = Motor.num;
-  var destapado = false;   // las cuentas de la carta 3 aparecen al comprobar la prediccion
+  var destapado = false;   // las cuentas de la carta 3 aparecen al escoger una respuesta
   var elegida = null;      // la tabla de la carta 4 se llena al escoger una funcion
   var B = FUNCIONES[mejor(FUNCIONES)];
 
   function leerP() { return parseInt(document.getElementById("rango-p").value, 10) / 100; }
   function leerK() { return parseInt(document.getElementById("rango-k").value, 10); }
-
-  /* El valor de un input number siempre trae punto decimal, y Motor.leerNumero
-     lo quita como separador de miles; aqui se lee directo y el veredicto lo
-     da Motor.veredictoNumerico.                                             */
-  function leerVeces(id) {
-    var v = String(document.getElementById(id).value).trim().replace(",", ".");
-    return v === "" ? NaN : parseFloat(v);
-  }
-
-  function conectarVeces(ids, esperado, explicar) {
-    var caja = document.getElementById(ids.veredicto);
-    document.getElementById(ids.boton).addEventListener("click", function () {
-      var dicho = leerVeces(ids.entrada);
-      var real = esperado();
-      var v = Motor.veredictoNumerico(dicho, real);
-      caja.className = "veredicto " + (v.bien ? "bien" : "mal");
-      caja.textContent = isNaN(dicho) ? v.motivo : explicar(v.bien, real, dicho);
-    });
-  }
 
   function filasPerfil() {
     return FUNCIONES.map(function (f) {
@@ -173,18 +154,38 @@ if (typeof document !== "undefined") (function () {
     }).join("");
   }
 
-  function explicar(bien, real, dicho) {
-    destapado = true;
-    pintarPerillas();
+  function razonDoble() {
+    var real = speedup(B.p, 2);
     var t = tramos(T, B.p, 2);
-    var texto = "B es el " + num(B.p * 100) + " % de los " + num(T) + " s, " + num(t.antes) +
-      " s; el otro " + num((1 - B.p) * 100) + " % (" + num(t.fijo) + " s) no se movió. B pasa de " +
-      num(t.antes) + " a " + num(t.despues) + " s y el programa de " + num(T) + " a " + num(T) +
-      " × (" + num(1 - B.p, 2) + " + " + num(B.p / 2, 2) + ") = " + num(t.total, 1) + " s; " +
-      num(T) + "/" + num(t.total, 1) + " = " + num(real, 2) + ". Acelerar B al doble no deja el " +
-      "programa al doble: el 30 % que no se tocó sigue costando lo mismo.";
-    return (bien ? "Sí: " + num(real, 2) + " veces. "
-                 : "No: son " + num(real, 2) + " veces, no " + num(dicho, 2) + ". ") + texto;
+    return "Sí: " + num(real, 2) + " veces. B es el " + num(B.p * 100) + " % de los " + num(T) +
+      " s, " + num(t.antes) + " s; el otro " + num((1 - B.p) * 100) + " % (" + num(t.fijo) +
+      " s) no se movió. B pasa de " + num(t.antes) + " a " + num(t.despues) +
+      " s y el programa de " + num(T) + " a " + num(T) + " × (" + num(1 - B.p, 2) + " + " +
+      num(B.p / 2, 2) + ") = " + num(t.total, 1) + " s; " + num(T) + "/" + num(t.total, 1) +
+      " = " + num(real, 2) + ". Acelerar B al doble no deja el programa al doble: el " +
+      num((1 - B.p) * 100) + " % que no se tocó sigue costando lo mismo.";
+  }
+
+  function armarDoble() {
+    var real = speedup(B.p, 2);
+    var lista = [{ valor: num(real, 2), clave: "correcta", razon: razonDoble() }];
+    [
+      { x: 2, clave: "doble",
+        razon: "Eso sería si todo el programa se acelerara al doble. Solo B lo hace, y el " +
+          num((1 - B.p) * 100) + " % restante sigue costando lo mismo." },
+      { x: 1 + B.p / 2, clave: "suma",
+        razon: "Ahí se suma la mitad de lo que gana B al tiempo, como si la mejora fuera " +
+          "aditiva. La ley de Amdahl compara tiempos: " + num(T) + " s contra el tiempo nuevo, " +
+          "y se divide, no se suma." },
+      { x: techo(B.p), clave: "techo",
+        razon: "Ese es el techo, 1/(1 − p), lo que daría B con k infinito. Con k = 2 la " +
+          "parte acelerada no desaparece: queda a la mitad." }
+    ].forEach(function (o) {
+      var texto = num(o.x, 2);
+      var repetido = lista.some(function (y) { return y.valor === texto; });
+      if (!repetido) { lista.push({ valor: texto, clave: o.clave, razon: o.razon }); }
+    });
+    return lista;
   }
 
   var diez = acelerarCada(FUNCIONES, T, 10);
@@ -230,10 +231,11 @@ if (typeof document !== "undefined") (function () {
       pintarPerillas();
     });
   });
-  conectarVeces(
-    { entrada: "prediccion", boton: "btn-comprobar", veredicto: "veredicto" },
-    function () { return speedup(B.p, 2); },
-    explicar);
+  Motor.opcionesNumericas("opciones-doble", "veredicto", armarDoble);
+  document.getElementById("opciones-doble").addEventListener("click", function () {
+    destapado = true;
+    pintarPerillas();
+  });
   Motor.conectarOpciones("opciones-cual", "veredicto-cual", RAZONES_CUAL);
   document.querySelectorAll("#opciones-cual button").forEach(function (b) {
     b.addEventListener("click", function () { elegida = b.dataset.op; pintarDiez(); });

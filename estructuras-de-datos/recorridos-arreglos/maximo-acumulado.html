@@ -9,6 +9,7 @@
   .caja.maximo { border-color: var(--ambar); background: var(--ambar-suave); }
   .dos-codigos { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   @media (max-width: 760px) { .dos-codigos { grid-template-columns: 1fr; } }
+  .opciones button { text-align: left; }
   .leyenda { display: inline-block; width: 0.9rem; height: 0.9rem; border-radius: 3px; vertical-align: middle; margin: 0 0.2rem 0 0.6rem; }
 </style>
 </head>
@@ -55,13 +56,16 @@
       <span class="leyenda" style="background:var(--ambar-suave);border:2px solid var(--ambar)"></span>el máximo que se resta
     </div>
     <p id="pregunta"></p>
-    <div class="prediccion" id="zona-prediccion">
-      <span>máximo:</span>
-      <input type="number" id="pred-maximo">
-      <span>mejor:</span>
-      <input type="number" id="pred-mejor">
-      <button id="btn-comprobar" class="primario">Comprobar</button>
-      <button id="btn-revelar">Revelar</button>
+    <div id="zona-prediccion">
+      <p style="margin-bottom:0"><b>máximo</b> de A[0..j-1]</p>
+      <div class="opciones" id="opciones-maximo"></div>
+      <div id="veredicto-maximo" class="veredicto"></div>
+      <p style="margin-bottom:0"><b>mejor</b> al terminar la vuelta</p>
+      <div class="opciones" id="opciones-mejor"></div>
+      <div id="veredicto-mejor" class="veredicto"></div>
+      <div class="botones" style="margin-top:0.7rem">
+        <button id="btn-revelar">Revelar</button>
+      </div>
     </div>
     <div id="veredicto" class="veredicto"></div>
     <div class="botones" style="margin-top:0.7rem">

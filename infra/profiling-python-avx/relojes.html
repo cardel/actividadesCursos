@@ -15,7 +15,7 @@
   <a class="volver" href="#">← Volver a los ejercicios</a>
   <h1>Lo que espera el usuario y lo que gasta el procesador</h1>
   <p class="intro">Un programa hecho de tramos: unos esperan el disco o la red, otros calculan,
-  y uno calcula con cuatro hilos a la vez. Escriba qué va a marcar <code>perf_counter</code> y
+  y uno calcula con cuatro hilos a la vez. Elija qué va a marcar <code>perf_counter</code> y
   qué va a marcar <code>process_time</code> al terminar, y después vea los dos relojes avanzar
   tramo por tramo.</p>
 
@@ -50,16 +50,14 @@
   <div class="carta">
     <h2>2. Antes de correr</h2>
     <div class="prediccion">
-      <span>¿Qué marca <code>perf_counter</code> al final? (s, dos decimales)</span>
-      <input type="number" id="prediccion-reloj" min="0" step="0.01" placeholder="segundos">
-      <button id="btn-comprobar-reloj" class="primario">Comprobar</button>
+      <span>¿Qué marca <code>perf_counter</code> al final?</span>
     </div>
+    <div class="opciones" id="opciones-reloj"></div>
     <div id="veredicto-reloj" class="veredicto"></div>
     <div class="prediccion">
       <span>¿Qué marca <code>process_time</code>?</span>
-      <input type="number" id="prediccion-cpu" min="0" step="0.01" placeholder="segundos">
-      <button id="btn-comprobar-cpu" class="primario">Comprobar</button>
     </div>
+    <div class="opciones" id="opciones-cpu"></div>
     <div id="veredicto-cpu" class="veredicto"></div>
   </div>
 

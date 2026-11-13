@@ -536,20 +536,35 @@ if (typeof module !== "undefined") {
 
     arrancar();
 
-    Motor.prediccionNumerica(function (valor, params) {
+    Motor.opcionesNumericas("opciones-articulaciones", "veredicto", function (params) {
       var res = EJERCICIO.resultadoDe(params.G, "recursiva");
       var arts = res.articulaciones, n = params.G.length;
-      if (valor === arts.length) {
-        return { ok: true, msg: "Correcto: " + arts.length + ", los vértices {" + arts.join(", ") +
-          "}. Ejecute y mire en qué línea se marca cada uno: la raíz sale de la línea de los dos hijos, los demás de la comparación low[v] ≥ d[u]." };
+      var grado2 = 0, t = 0;
+      while (t < n) {
+        if (params.G[t].length >= 2) { grado2 = grado2 + 1; }
+        t = t + 1;
       }
-      if (valor === res.puentes.length) {
-        return { ok: false, msg: "Ese es el número de puentes, " + res.puentes.length + ". Los puentes son aristas; la pregunta es por vértices, y un vértice puede ser punto de articulación sin tener ningún puente al lado." };
+      var lista = [
+        { valor: arts.length, clave: "correcta",
+          msg: "Correcto: " + arts.length + ", los vértices {" + arts.join(", ") +
+          "}. Ejecute y mire en qué línea se marca cada uno: la raíz sale de la línea de los dos hijos, los demás de la comparación low[v] ≥ d[u]." },
+        { valor: res.puentes.length, clave: "puentes",
+          msg: "Ese es el número de puentes, " + res.puentes.length + ". Los puentes son aristas; la pregunta es por vértices, y un vértice puede ser punto de articulación sin tener ningún puente al lado." },
+        { valor: n, clave: "vertices",
+          msg: "Ese es el número de vértices. Las hojas del árbol de la profundidad nunca son puntos de articulación: no tienen hijos que dejar aparte." },
+        { valor: grado2, clave: "grado",
+          msg: "Esos son los vértices con dos o más vecinos (" + grado2 + "). Tener varios vecinos no basta: si los vecinos se comunican entre sí por otro camino, quitar el vértice no separa nada." }
+      ];
+      var vistos = {}, salida = [];
+      t = 0;
+      while (t < lista.length) {
+        if (!vistos[lista[t].valor]) {
+          vistos[lista[t].valor] = true;
+          salida.push({ valor: lista[t].valor, clave: lista[t].clave, razon: lista[t].msg });
+        }
+        t = t + 1;
       }
-      if (valor === n) {
-        return { ok: false, msg: "Ese es el número de vértices. Las hojas del árbol de la profundidad nunca son puntos de articulación: no tienen hijos que dejar aparte." };
-      }
-      return { ok: false, msg: "No coincide. Quite mentalmente cada vértice de grado 2 o más y mire si algún pedazo queda incomunicado del resto; la ejecución de abajo lo confirma." };
+      return salida;
     });
 
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (btn) {

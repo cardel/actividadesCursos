@@ -15,7 +15,7 @@
   <a class="volver" href="#">← Volver a los ejercicios</a>
   <h1>Cuatro double por instrucción: qué ahorra el registro ancho y qué lo rompe</h1>
   <p class="intro">Un registro AVX de 256 bits carga cuatro double u ocho float y los opera con una
-  sola instrucción. Escriba cuántas instrucciones recorren cinco millones de elementos antes de
+  sola instrucción. Elija cuántas instrucciones recorren cinco millones de elementos antes de
   verlo, y después diga, para cada uno de los cinco patrones de la clase, cuál de las cuatro
   condiciones rompe.</p>
 
@@ -43,9 +43,8 @@
     <div class="prediccion">
       <span>Con <b id="ver-reg">AVX (256 bits)</b> y <b id="ver-dato">float64</b>, ¿cuántas
       instrucciones recorren un arreglo de n = <b id="ver-n">5.000.000</b>?</span>
-      <input type="number" id="prediccion" min="1" step="1" placeholder="su número">
-      <button id="btn-comprobar" class="primario">Comprobar</button>
     </div>
+    <div class="opciones" id="opciones-instrucciones"></div>
     <div id="veredicto" class="veredicto"></div>
     <div id="panel-registro" class="registro" style="margin-top:0.8rem"></div>
     <div class="chips" id="chips-registro" style="margin-top:0.6rem"></div>

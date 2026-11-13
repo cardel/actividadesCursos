@@ -144,25 +144,34 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
+    Motor.opcionesNumericas("opciones-posiciones", "veredicto", function (params) {
       var n = params.lista.length;
       var esperado = Math.ceil(Math.log(n) / Math.log(2));
-      if (valor === esperado) {
-        return { ok: true, msg: "Correcto: con " + n + " posiciones hacen falta " +
+      var lista = [{ valor: esperado, clave: "correcta",
+        razon: "Correcto: con " + n + " posiciones hacen falta " +
           esperado + " divisiones para llegar a una sola, porque 2^" + esperado +
-          " ≥ " + n + ". Ese es el lg n del costo." };
-      }
-      if (valor === n || valor === n - 1) {
-        return { ok: false, msg: "Ese es el número de comparaciones de la búsqueda " +
-          "lineal. Aquí cada comparación descarta la mitad, no un elemento." };
-      }
-      if (valor === Math.floor(n / 2)) {
-        return { ok: false, msg: "Dividió una sola vez. La división se repite sobre " +
-          "la mitad que sobrevive, y otra vez sobre la mitad de esa." };
-      }
-      return { ok: false, msg: "No coincide. Cuente: de " + n + " se pasa a " +
-        Math.floor(n / 2) + ", luego a " + Math.floor(n / 4) + "… ¿cuántos pasos " +
-        "hasta llegar a 1?" };
+          " ≥ " + n + ". Ese es el lg n del costo." }];
+      var candidatas = [
+        { valor: n, clave: "lineal",
+          razon: "Ese es el número de comparaciones de la búsqueda " +
+            "lineal. Aquí cada comparación descarta la mitad, no un elemento." },
+        { valor: Math.floor(n / 2), clave: "una",
+          razon: "Dividió una sola vez. La división se repite sobre " +
+            "la mitad que sobrevive, y otra vez sobre la mitad de esa." },
+        { valor: esperado - 1, clave: "unaMenos",
+          razon: "Con " + (esperado - 1) + " divisiones quedan hasta " +
+            Math.ceil(n / Math.pow(2, esperado - 1)) + " posiciones, todavía no una sola: 2^" +
+            (esperado - 1) + " < " + n + "." },
+        { valor: esperado + 1, clave: "unaMas",
+          razon: "Una división de más: con " + esperado + " ya queda una sola posición, " +
+            "porque 2^" + esperado + " ≥ " + n + "." }
+      ];
+      candidatas.forEach(function (c) {
+        var repetida = false;
+        lista.forEach(function (o) { if (o.valor === c.valor) { repetida = true; } });
+        if (!repetida && c.valor > 0 && lista.length < 4) { lista.push(c); }
+      });
+      return lista;
     });
 
     Array.prototype.forEach.call(document.querySelectorAll(".presets button"), function (btn) {

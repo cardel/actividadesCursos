@@ -90,47 +90,55 @@ if (typeof module !== "undefined") {
       }
     }
 
-    document.getElementById("btn-direccion").addEventListener("click", function () {
+    var refrescarDireccion = Motor.opcionesNumericas("opciones-direccion", "veredicto-direccion",
+      function () {
+        var obj = objetivoActual();
+        var lista = [];
+        if (obj) {
+          var fi = obj[0];
+          var co = obj[1];
+          var base = EJERCICIO.base;
+          var candidatas = [
+            { valor: EJERCICIO.direccion(fi, co), clave: "correcta",
+              razon: "Correcto: " + EJERCICIO.direccion(fi, co) + ". En la calle " +
+                "quedó iluminada la posición que le corresponde." },
+            { valor: base + (fi + co) * 4, clave: "suma",
+              razon: "Sumó fila y columna sin pesar la fila: antes de la " +
+                "casilla hay " + fi + (fi === 1 ? " fila completa" : " filas completas") + " de " + EJERCICIO.columnas +
+                " casillas cada una." },
+            { valor: base + (co * EJERCICIO.filas + fi) * 4, clave: "columnas",
+              razon: "Contó por columnas. En C las filas van una tras otra: " +
+                "primero toda la fila 0, luego toda la fila 1." },
+            { valor: base + fi * EJERCICIO.columnas + co, clave: "casillas",
+              razon: "Contó casillas y no bytes: cada casilla de int ocupa 4. " +
+                "Multiplique el número de casillas por 4." },
+            { valor: base + ((fi + 1) * EJERCICIO.columnas + co) * 4, clave: "filaDeMas",
+              razon: "Contó la fila de la casilla como completa: antes de ella " +
+                "hay " + fi + " filas completas, no " + (fi + 1) + "." }
+          ];
+          candidatas.forEach(function (o) {
+            var repetida = lista.some(function (x) { return x.valor === o.valor; });
+            if (!repetida && lista.length < 4) { lista.push(o); }
+          });
+        }
+        return lista;
+      });
+
+    document.getElementById("opciones-direccion").addEventListener("click", function (e) {
+      var t = e && e.target;
       var obj = objetivoActual();
-      var v = document.getElementById("veredicto-direccion");
-      if (!obj) {
-        v.className = "veredicto bien";
-        v.textContent = "Ya están las tres: siga con la pregunta de cierre.";
-        return;
-      }
-      var fi = obj[0];
-      var co = obj[1];
-      var valor = parseInt(document.getElementById("prediccion-direccion").value, 10);
-      var esperado = EJERCICIO.direccion(fi, co);
-      if (isNaN(valor)) {
-        v.className = "veredicto mal";
-        v.textContent = "Escriba una dirección primero.";
-      } else if (valor === esperado) {
+      if (obj && t && t.getAttribute && t.getAttribute("data-op") === "correcta") {
+        var fi = obj[0];
+        var co = obj[1];
+        var mensaje = document.getElementById("veredicto-direccion").innerHTML;
         document.getElementById("calle-" + fi + "-" + co).classList.add("visitada");
         document.getElementById("celda-" + fi + "-" + co).classList.add("visitada");
         turno = turno + 1;
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: " + esperado + ". En la calle quedó iluminada " +
-          "la posición que le corresponde.";
-        document.getElementById("prediccion-direccion").value = "";
         pintarGrid();
-      } else if (valor === EJERCICIO.base + (fi + co) * 4) {
-        v.className = "veredicto mal";
-        v.textContent = "Sumó fila y columna sin pesar la fila: antes de la " +
-          "casilla hay " + fi + " filas completas de " + EJERCICIO.columnas +
-          " casillas cada una.";
-      } else if (valor === EJERCICIO.base + (co * EJERCICIO.filas + fi) * 4) {
-        v.className = "veredicto mal";
-        v.textContent = "Contó por columnas. En C las filas van una tras otra: " +
-          "primero toda la fila 0, luego toda la fila 1.";
-      } else if (valor === EJERCICIO.base + fi * EJERCICIO.columnas + co) {
-        v.className = "veredicto mal";
-        v.textContent = "Contó casillas y no bytes: cada casilla de int ocupa 4. " +
-          "Multiplique el número de casillas por 4.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "No coincide. Pista: cuente cuántas casillas hay antes " +
-          "de la marcada (filas completas más las de su fila) y páselas a bytes.";
+        refrescarDireccion.refrescar();
+        var v = document.getElementById("veredicto-direccion");
+        v.className = "veredicto bien";
+        v.innerHTML = mensaje;
       }
     });
 

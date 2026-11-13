@@ -296,19 +296,30 @@ if (typeof document !== "undefined") (function () {
 
   /* --- Prediccion --- */
 
-  function explicar(bien, real, dicho) {
+  function opcionesHilos() {
+    var real = hilosCreados(N, 3, MINIMO);
+    var hojasN = hojas(N, 3, MINIMO);
     var cuenta = "Cada división lanza un hilo y no dos: la mitad derecha la hace " +
       "el hilo que ya venía. Son 1 + 2 + 4 = 2³ − 1 = " + real +
-      "; con profundidad 4 serían 15.";
-    if (bien) { return "Sí: " + real + " hilos. " + cuenta; }
-    if (dicho === 8) {
-      return "8 son los hilos que trabajan a la vez en las hojas, contando el " +
-        "principal. Creados con std::thread son " + real + ". " + cuenta;
-    }
-    if (dicho === 14) {
-      return "14 sería lanzar dos hilos por división. " + cuenta;
-    }
-    return "Se crean " + real + ", no " + Motor.num(dicho) + ". " + cuenta;
+      "; con profundidad 4 serían " + hilosCreados(N, 4, MINIMO) + ".";
+    var lista = [{ valor: real, clave: "correcta",
+      razon: "Sí: " + real + " hilos. " + cuenta }];
+    var cands = [
+      { v: hojasN, c: "hojas", r: hojasN + " son los hilos que trabajan a la vez " +
+        "en las hojas, contando el principal. Creados con std::thread son " + real + ". " + cuenta },
+      { v: 2 * real, c: "dos", r: 2 * real + " sería lanzar dos hilos por división. " + cuenta },
+      { v: hilosCreados(N, 4, MINIMO), c: "prof4", r: hilosCreados(N, 4, MINIMO) +
+        " son los de profundidad 4, un nivel más abajo. " + cuenta },
+      { v: 3, c: "niveles", r: "3 es la profundidad, no los hilos: cada nivel " +
+        "lanza varios, uno por cada división. " + cuenta }
+    ];
+    cands.forEach(function (x) {
+      var repetido = lista.some(function (o) { return o.valor === x.v; });
+      if (!repetido && lista.length < 4) {
+        lista.push({ valor: x.v, clave: x.c, razon: x.r });
+      }
+    });
+    return lista;
   }
 
   var RAZONES = {
@@ -342,10 +353,7 @@ if (typeof document !== "undefined") (function () {
   });
   document.getElementById("btn-reiniciar").addEventListener("click", reiniciar);
 
-  Motor.conectarPrediccion(
-    { entrada: "prediccion", boton: "btn-comprobar", veredicto: "veredicto" },
-    function () { return hilosCreados(N, 3, MINIMO); },
-    explicar);
+  Motor.opcionesNumericas("opciones-hilos-prof3", "veredicto", opcionesHilos);
   Motor.conectarOpciones("opciones-medida", "veredicto-medida", RAZONES);
 
   pintar();

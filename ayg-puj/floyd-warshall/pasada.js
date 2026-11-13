@@ -29,26 +29,35 @@ var EJERCICIO = (function () {
     g.comparaciones = g.pasos.filter(function (p) { return p.linea === 56; }).length;
   });
 
-  function evaluar(valor, i) {
-    var g = GRAFOS[i], m = g.mejoras, n = g.n;
-    if (valor === m) {
-      return { ok: true, msg: "Correcto: la línea 57 corre " + m + " veces. La línea 56 compara las " +
-               g.comparaciones + " parejas de los " + n + " pasos, que son n³ = " + (n * n * n) +
-               ", y solo en " + m + " de ellas pasar por k sale más barato." };
+  function opciones(i) {
+    var g = GRAFOS[i], m = g.mejoras, n = g.n, c3 = n * n * n, n2 = n * n;
+    var D = g.T.D[g.T.D.length - 1], finitas = 0, r, c;
+    for (r = 0; r < n; r = r + 1) {
+      for (c = 0; c < n; c = c + 1) {
+        if (r !== c && D[r][c] !== null && D[r][c] !== undefined && isFinite(D[r][c])) { finitas = finitas + 1; }
+      }
     }
-    if (valor === n * n * n) {
-      return { ok: false, msg: "Ese es el número de veces que corre la línea 56, n³ = " + (n * n * n) +
-               ": la comparación se hace para toda pareja en todo paso. La línea 57 solo se ejecuta cuando la comparación es cierta, y aquí eso pasa " + m + " veces." };
-    }
-    if (valor > m) {
-      return { ok: false, msg: "Son menos: " + m + ". Cuente por pasos: " +
-               g.T.D.slice(0, n).map(function (_, k) { return "k = " + k + " mejora " + FW.mejoras(g.T.D, k).length; }).join(", ") + "." };
-    }
-    return { ok: false, msg: "Son más: " + m + ". Una pareja puede mejorar en varios pasos distintos, y las que arrancan en ∞ también cuentan. Por pasos: " +
-             g.T.D.slice(0, n).map(function (_, k) { return "k = " + k + " mejora " + FW.mejoras(g.T.D, k).length; }).join(", ") + "." };
+    var lista = [
+      { valor: m, clave: "correcta",
+        razon: "Correcto: la línea 57 corre " + m + " veces. La línea 56 compara las " + g.comparaciones +
+               " parejas de los " + n + " pasos, que son n³ = " + c3 + ", y solo en " + m +
+               " de ellas pasar por k sale más barato." },
+      { valor: c3, clave: "cubo",
+        razon: "Ese es el número de veces que corre la línea 56, n³ = " + c3 +
+               ": la comparación se hace para toda pareja en todo paso. La línea 57 solo se ejecuta cuando la comparación es cierta, y aquí eso pasa " + m + " veces." },
+      { valor: n2, clave: "una-pasada",
+        razon: "Eso es n² = " + n2 + ", las parejas que recorre una sola pasada de k. Son n pasadas, y la línea 57 cuenta solo las comparaciones ciertas de todas ellas." },
+      { valor: finitas, clave: "alcanzables",
+        razon: "Eso cuenta las parejas distintas que terminan con un camino (" + finitas +
+               "), no las veces que baja una distancia. Una pareja puede bajar en varios pasos, y las que arrancan en ∞ también cuentan." }
+    ];
+    // con ciertos grafos dos cuentas coinciden; solo entra la que da otro valor
+    return lista.filter(function (o, t) {
+      return lista.every(function (p, s) { return s >= t || p.valor !== o.valor; });
+    });
   }
 
-  return { GRAFOS: GRAFOS, evaluar: evaluar };
+  return { GRAFOS: GRAFOS, opciones: opciones };
 })();
 
 if (typeof module !== "undefined") {
@@ -128,7 +137,6 @@ if (typeof module !== "undefined") {
     function preparar() {
       var G = g();
       el("ver-texto").textContent = G.texto + " Aristas: " + FW.textoAristas(G.aristas) + ".";
-      el("prediccion").value = "";
       Motor.limpiarVeredicto();
     }
 
@@ -140,7 +148,7 @@ if (typeof module !== "undefined") {
               { campo: "suma", rotulo: "suma", clase: "cuenta" }],
       paramsIniciales: 0, alPintar: alPintar
     });
-    Motor.prediccionNumerica(function (valor, i) { return E.evaluar(valor, i); });
+    Motor.opcionesNumericas("opciones-linea57", "veredicto", function (i) { return E.opciones(i); });
 
     var caja = "", t = 0;
     while (t < E.GRAFOS.length) {

@@ -119,11 +119,23 @@ function iniciar() {
 
   pintar();
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-factor", boton: "btn-factor", veredicto: "ver-factor" },
-    function () { return factor(LEJOS); },
-    explicarFactor);
-  document.getElementById("btn-factor").addEventListener("click", function () {
+  Motor.opcionesNumericas("op-factor", "ver-factor", function () {
+    var real = factor(LEJOS);
+    var lista = [
+      { valor: fmt(real), clave: "correcta", razon: explicarFactor(true, real) },
+      { valor: fmt(real / 1000), clave: "us",
+        razon: "Eso sale de tomar el milisegundo como si fuera un microsegundo: la red queda mil " +
+          "veces más cerca de lo que está. Pasar de 50 ms a nanosegundos son seis ceros, no tres." },
+      { valor: fmt(real / 10), clave: "cero-menos",
+        razon: "Falta un cero: toma 50 ms como 5.000.000 ns. " +
+          "50 ms son 50.000.000 ns, y entre 100 ns da " + fmt(real) + "." },
+      { valor: fmt(real * 10), clave: "cero-mas",
+        razon: "Sobra un cero. 50 ms son 50.000.000 ns, y entre 100 ns da " + fmt(real) +
+          "; esa cuenta toma 50 ms como 500.000.000 ns." }
+    ];
+    return lista;
+  });
+  document.getElementById("op-factor").addEventListener("click", function () {
     destapado = true;
     pintar();
     document.getElementById("nota-latencias").hidden = false;

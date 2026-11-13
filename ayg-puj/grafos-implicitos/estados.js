@@ -205,31 +205,55 @@ if (typeof module !== "undefined") {
       } else { aviso.className = ""; aviso.innerHTML = ""; }
     }
 
-    function evaluar(valor, params) {
+    function sinRepetir(lista) {
+      var vistos = {}, sal = [];
+      lista.forEach(function (o) {
+        if (vistos[o.valor] !== true) { vistos[o.valor] = true; sal.push(o); }
+      });
+      return sal;
+    }
+
+    function armar(params) {
       var pasos = EJERCICIO.simular(params);
       var real = pasos[pasos.length - 1].resultado;
-      if (valor === real) {
-        return { ok: true, msg: params.forma === "celda"
-          ? "Correcto: −1. El programa no encuentra camino, y sin embargo hay uno de 6 pasos. Ejecute y mire qué pasa en la celda (1,3)."
-          : "Correcto: 6 pasos. Ejecute y mire cómo la misma celda entra dos veces a la cola con rachas distintas." };
+      var lista;
+      if (params.forma === "celda") {
+        lista = [
+          { valor: real, clave: "correcta",
+            razon: "Correcto: −1. El programa no encuentra camino, y sin embargo hay uno de 6 pasos. Ejecute y mire qué pasa en la celda (1,3)." },
+          { valor: 6, clave: "existe",
+            razon: "Ese es el camino que existe, pero no es lo que este programa devuelve. Ejecute hasta el final." },
+          { valor: 0, clave: "cero",
+            razon: "Cero pasos sería si el robot ya estuviera en la salida. Cuando la cola se vacía sin tocar la esquina final, el programa devuelve −1." },
+          { valor: 7, clave: "celdas",
+            razon: "Eso cuenta las celdas de un camino de 6 pasos, no los pasos, y además este programa nunca llega a ese camino." }
+        ];
+      } else {
+        lista = [
+          { valor: real, clave: "correcta",
+            razon: "Correcto: 6 pasos. Ejecute y mire cómo la misma celda entra dos veces a la cola con rachas distintas." },
+          { valor: -1, clave: "sinCamino",
+            razon: "Con el estado sí hay camino. Busque uno que pise dos obstáculos, nunca tres seguidos." },
+          { valor: 5, clave: "unoMenos",
+            razon: "Uno de menos: el camino mínimo que respeta la racha cuesta 6 pasos, y ese es el que sale al final de la cola." },
+          { valor: 7, clave: "celdas",
+            razon: "Eso cuenta las celdas del camino, incluida la de partida, en vez de los pasos." }
+        ];
       }
-      if (params.forma === "celda" && valor === 6) {
-        return { ok: false, msg: "Ese es el camino que existe, pero no es lo que este programa devuelve. Ejecute hasta el final." };
-      }
-      if (params.forma === "estado" && valor === -1) {
-        return { ok: false, msg: "Con el estado sí hay camino. Busque uno que pise dos obstáculos, nunca tres seguidos." };
-      }
-      return { ok: false, msg: "No coincide. Ejecute con Auto y lea el resultado al final." };
+      return sinRepetir(lista);
     }
+
+    var opciones = null;
 
     function arrancar(k) {
       actual = k;
-      var ids = ["btn-paso", "btn-auto", "btn-fin", "btn-reiniciar", "btn-comprobar"];
+      var ids = ["btn-paso", "btn-auto", "btn-fin", "btn-reiniciar"];
       var t = 0;
       while (t < ids.length) { var b = document.getElementById(ids[t]); b.parentNode.replaceChild(b.cloneNode(true), b); t = t + 1; }
       Motor.iniciar({ codigo: PRESETS[k].codigo, simular: EJERCICIO.simular, chips: [], paramsIniciales: PRESETS[k], alPintar: alPintar });
-      Motor.prediccionNumerica(evaluar);
-      document.getElementById("prediccion").value = "";
+      if (opciones === null) {
+        opciones = Motor.opcionesNumericas("opciones-prediccion", "veredicto", armar);
+      }
       Motor.limpiarVeredicto();
     }
 

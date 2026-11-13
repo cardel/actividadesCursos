@@ -341,19 +341,16 @@
     alPintar: alPintar
   });
 
-  Motor.prediccionNumerica(function (valor) {
-    if (valor === 6) {
-      return { ok: true, msg: "Son seis. Cada x aporta dos parejas y flatMap concatena los tres trozos en una sola secuencia." };
-    }
-    if (valor === 3) {
-      return { ok: false, msg: "3 es la cantidad de trozos, uno por cada x, y es el largo del resultado anidado que deja map. flatMap los concatena, así que su largo cuenta parejas." };
-    }
-    if (valor === 2) {
-      return { ok: false, msg: "2 es el largo de cada trozo, el que produce (1 to 2). Hay un trozo por cada valor de (1 to 3)." };
-    }
-    if (valor === 5) {
-      return { ok: false, msg: "5 sería la suma de los dos largos. Cada x de (1 to 3) recorre (1 to 2) completo, de modo que los largos se multiplican." };
-    }
-    return { ok: false, msg: "No es ese número. Cuente cuántas parejas aporta un solo x y cuántos valores recorre el generador de afuera." };
+  Motor.opcionesNumericas("opciones-parejas", "veredicto", function () {
+    return [
+      { valor: 6, clave: "correcta",
+        razon: "Son seis. Cada x aporta dos parejas y flatMap concatena los tres trozos en una sola secuencia." },
+      { valor: 3, clave: "trozos",
+        razon: "3 es la cantidad de trozos, uno por cada x, y es el largo del resultado anidado que deja map. flatMap los concatena, así que su largo cuenta parejas." },
+      { valor: 2, clave: "largo",
+        razon: "2 es el largo de cada trozo, el que produce (1 to 2). Hay un trozo por cada valor de (1 to 3)." },
+      { valor: 5, clave: "suma",
+        razon: "5 sería la suma de los dos largos. Cada x de (1 to 3) recorre (1 to 2) completo, de modo que los largos se multiplican." }
+    ];
   });
 })();

@@ -112,6 +112,58 @@ var RAZONES_INVALIDA = {
     "las instrucciones anteriores; mientras nada de eso cambie, se reutiliza."
 };
 
+/* Quita las opciones que repiten el valor de otra, la correcta primero. */
+function sinRepetidas(lista) {
+  var vistas = {};
+  return lista.filter(function (o) {
+    var k = String(o.valor);
+    var nueva = !vistas[k];
+    vistas[k] = true;
+    return nueva;
+  });
+}
+
+/* Las opciones de los pasos cacheados: cada distractor es una cuenta que alguien hace. */
+function opcionesCacheados() {
+  var real = cacheados(BUENA);
+  return sinRepetidas([
+    { valor: real, clave: "correcta", razon: explicarCacheados(true, real) },
+    { valor: cacheados(MALA), clave: "orden",
+      razon: "Esa es la cuenta del orden contrario: con el código arriba solo sobreviven " +
+        cacheados(MALA) + " de " + MALA.length + ". Con las dependencias primero, editar " +
+        "app.py deja intactos los pasos de la instalación." },
+    { valor: BUENA.length - 1, clave: "cmd",
+      razon: "Falta descontar el CMD. Va después de COPY app.py, y una capa que viene tras la " +
+        "que cambió también se reconstruye: la cadena no se corta en el código, sigue hasta " +
+        "el final." },
+    { valor: BUENA.length, clave: "todos",
+      razon: "Con " + BUENA.length + " de " + BUENA.length + " no habría nada que reconstruir, " +
+        "y la edición de app.py cambia el contenido de COPY app.py. Esa capa y todas las " +
+        "siguientes se rehacen." }
+  ]);
+}
+
+/* Las opciones de la razon entre los dos tiempos. */
+function opcionesRazon() {
+  var real = razonTiempos();
+  var mala = segundos("COPY . /app arriba");
+  var buena = segundos("dependencias arriba");
+  var primera = segundos("--no-cache");
+  return sinRepetidas([
+    { valor: fmt(real, 1), clave: "correcta", razon: explicarRazon(true, real) },
+    { valor: fmt(primera / buena, 1), clave: "primera",
+      razon: "Esa es la razón contra la construcción sin caché (" + fmt(primera, 3) + " s " +
+        "entre " + fmt(buena, 3) + " s). La pregunta compara las dos segundas construcciones, " +
+        "tras la misma edición, no contra la primera." },
+    { valor: fmt(buena / mala, 1), clave: "inversa",
+      razon: "Está dividida al revés: " + fmt(buena, 3) + " s entre " + fmt(mala, 3) + " s. " +
+        "La que tarda más va arriba, porque se pregunta cuántas veces más tarda." },
+    { valor: fmt(mala - buena, 1), clave: "resta",
+      razon: "Eso es la diferencia en segundos, no cuántas veces más. Una razón es un " +
+        "cociente, " + fmt(mala, 3) + " entre " + fmt(buena, 3) + "." }
+  ]);
+}
+
 /* ---------- pintado y conexiones ---------- */
 
 function fichasDe(orden) {
@@ -170,15 +222,11 @@ function iniciar() {
   pintarPasos();
   pintarTiempos();
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-cacheados", boton: "btn-cacheados", veredicto: "ver-cacheados" },
-    function () { return cacheados(BUENA); }, explicarCacheados);
-  document.getElementById("btn-cacheados").addEventListener("click", destapar);
+  Motor.opcionesNumericas("op-cacheados", "ver-cacheados", opcionesCacheados);
+  document.getElementById("op-cacheados").addEventListener("click", destapar);
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-razon", boton: "btn-razon", veredicto: "ver-razon" },
-    razonTiempos, explicarRazon);
-  document.getElementById("btn-razon").addEventListener("click", destapar);
+  Motor.opcionesNumericas("op-razon", "ver-razon", opcionesRazon);
+  document.getElementById("op-razon").addEventListener("click", destapar);
 
   Motor.conectarOpciones("op-capas", "ver-capas", RAZONES_CAPAS);
   Motor.conectarOpciones("op-invalida", "ver-invalida", RAZONES_INVALIDA);

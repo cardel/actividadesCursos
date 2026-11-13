@@ -215,28 +215,47 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
-      var pasos = EJERCICIO.simular(params);
-      var fin = pasos[pasos.length - 1];
-      var real = fin.vueltas;
-      var alcanza = EJERCICIO.alcanzables(params.G, params.s);
-      if (valor === real) {
-        return { ok: true, msg: params.marcar
-          ? "Correcto: " + real + " vueltas. Con la marca, cada vértice sale de " +
-            "la pila a lo sumo unas pocas veces y el recorrido termina."
-          : "Correcto: se detiene en " + real + " porque llegó al límite, no " +
-            "porque haya terminado. Mire la pila: sigue llena." };
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto",
+      function (params) {
+        var pasos = EJERCICIO.simular(params);
+        var fin = pasos[pasos.length - 1];
+        var real = fin.vueltas;
+        var alcanza = EJERCICIO.alcanzables(params.G, params.s);
+      function sinRepetir(lista) {
+        var vistos = {};
+        var salida = [];
+        lista.forEach(function (o) {
+          if (!vistos[o.valor] && o.valor >= 0) {
+            vistos[o.valor] = true;
+            salida.push(o);
+          }
+        });
+        return salida.slice(0, 4);
       }
-      if (valor === alcanza) {
-        return { ok: false, msg: params.marcar
-          ? "Esos son los vértices distintos que visita (" + alcanza + "), pero " +
-            "la pila entrega algunos más de una vez: la línea 8 los descarta."
-          : "Esos son los vértices distintos del grafo. Sin marca, el mismo " +
-            "vértice vuelve a la pila una y otra vez." };
-      }
-      return { ok: false, msg: "No coincide. Ejecute con Auto y mire el contador " +
-        "de vueltas." };
-    });
+        return sinRepetir([
+          { valor: real, clave: "correcta",
+            razon: params.marcar
+              ? "Correcto: " + real + " vueltas. Con la marca, cada vértice sale de " +
+                "la pila a lo sumo unas pocas veces y el recorrido termina."
+              : "Correcto: se detiene en " + real + " porque llegó al límite, no " +
+                "porque haya terminado. Mire la pila: sigue llena." },
+          { valor: alcanza, clave: "distintos",
+            razon: params.marcar
+              ? "Esos son los vértices distintos que visita (" + alcanza + "), pero " +
+                "la pila entrega algunos más de una vez: la línea 8 los descarta."
+              : "Esos son los vértices distintos del grafo. Sin marca, el mismo " +
+                "vértice vuelve a la pila una y otra vez." },
+          { valor: params.limite, clave: "limite",
+            razon: "Ese es el límite de vueltas del programa. Con la marca el " +
+              "recorrido termina antes de tocarlo." },
+          { valor: real + 1, clave: "sobra",
+            razon: "Le sobra una: la comprobación de la línea 5 que encuentra " +
+              "la pila vacía, o el límite alcanzado, no es una vuelta." },
+          { valor: real - 1, clave: "falta",
+            razon: "Le falta una: cada pop de la línea 6 es una vuelta, incluida " +
+              "la del último elemento de la pila." }
+        ]);
+      });
 
     Array.prototype.forEach.call(document.querySelectorAll(".presets button"), function (btn) {
       btn.addEventListener("click", function () {

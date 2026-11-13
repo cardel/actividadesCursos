@@ -76,15 +76,26 @@ if (typeof module !== "undefined") {
         caja.appendChild(linea);
       });
     }
-    function leerLista(texto) {
-      return texto.trim().split(/[\s,]+/).filter(function (x) { return x !== ""; }).map(Number);
+    /* Opciones numericas con el motor comun; avisa cuando se pulsa la correcta. */
+    function opcionesLogro(idOpciones, idVeredicto, armar, alAcertar) {
+      Motor.opcionesNumericas(idOpciones, idVeredicto, armar);
+      document.getElementById(idOpciones).addEventListener("click", function (e) {
+        var b = e.target;
+        if (b && b.getAttribute && b.getAttribute("data-op") === "correcta") { alAcertar(); }
+      });
     }
-    function iguales(a, b) {
-      return a.length === b.length && a.every(function (x, i) { return x === b[i]; });
+    /* Descarta las opciones cuyo valor ya salio: nunca dos botones iguales. */
+    function unicas(lista) {
+      var vistos = [];
+      return lista.filter(function (o) {
+        var nuevo = vistos.indexOf(o.valor) === -1;
+        if (nuevo) { vistos.push(o.valor); }
+        return nuevo;
+      });
     }
-    var logradas = { erase: false, error: false, costo: false };
+    var logradas = { erase: false, error: false, corridos: false, copias: false };
     function revisar() {
-      if (logradas.erase && logradas.error && logradas.costo) {
+      if (logradas.erase && logradas.error && logradas.corridos && logradas.copias) {
         document.getElementById("carta-cierre").style.display = "block";
       }
     }
@@ -100,25 +111,23 @@ if (typeof module !== "undefined") {
       ["  }", ""],
       ["}", ""]
     ]);
-    document.getElementById("btn-erase").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-erase");
-      var r = EJERCICIO.erase(EJERCICIO.v);
-      var dada = leerLista(document.getElementById("pred-erase").value);
-      if (iguales(dada, r.final)) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: < 5 7 0 >. Cada erase devuelve la posición del que sigue, así que -3, que venía justo después de -1, también se revisa; el 0 no es negativo y se queda.";
-        logradas.erase = true; revisar();
-      } else if (iguales(dada, [5, -3, 7, 0])) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Ese es el resultado del ciclo erróneo que salta un elemento tras cada erase. Aquí it = v.erase(it) ya deja a it sobre el -3, y no se avanza.";
-      } else if (iguales(dada, [5, 7])) {
-        ver.className = "veredicto mal";
-        ver.textContent = "El 0 no es negativo: la condición es *it < 0.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "Recorra con la regla: si es negativo, se borra y it queda sobre el siguiente; si no, ++it.";
-      }
-    });
+    opcionesLogro("opciones-erase", "veredicto-erase", function () {
+      var v = EJERCICIO.v;
+      var r = EJERCICIO.erase(v);
+      var salta = EJERCICIO.erroneo(v);
+      var soloNeg = v.filter(function (x) { return x < 0; });
+      var sinCero = v.filter(function (x) { return x > 0; });
+      return unicas([
+        { valor: r.final.join(" "), clave: "correcta",
+          razon: "Correcto: < " + r.final.join(" ") + " >. Cada erase devuelve la posición del que sigue, así que -3, que venía justo después de -1, también se revisa; el 0 no es negativo y se queda." },
+        { valor: salta.final.join(" "), clave: "salta",
+          razon: "Ese es el resultado del ciclo erróneo que salta un elemento tras cada erase. Aquí it = v.erase(it) ya deja a it sobre el -3, y no se avanza." },
+        { valor: sinCero.join(" "), clave: "sin-cero",
+          razon: "El 0 no es negativo: la condición es *it < 0." },
+        { valor: soloNeg.join(" "), clave: "invertido",
+          razon: "Esos son los que se borran. El vector conserva los que no cumplen *it < 0." }
+      ]);
+    }, function () { logradas.erase = true; revisar(); });
 
     var MENSAJES_ERROR = {
       salta: null,
@@ -150,26 +159,39 @@ if (typeof module !== "undefined") {
       });
     });
 
-    document.getElementById("btn-costo").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-costo");
+    function negativos(v) {
+      return v.filter(function (x) { return x < 0; }).length;
+    }
+    opcionesLogro("opciones-corridos", "veredicto-corridos", function () {
+      var e = EJERCICIO.erase(EJERCICIO.v);
+      var n = EJERCICIO.v.length;
+      var k = negativos(EJERCICIO.v);
+      return unicas([
+        { valor: e.corridos, clave: "correcta",
+          razon: "Correcto: " + e.corridos + " corrimientos (6 al borrar -2, 4 al borrar -1, 3 al borrar -3, 0 al borrar -4). Con k borrados sobre n elementos, O(kn) frente a Θ(n) al compactar." },
+        { valor: k * n, clave: "cota",
+          razon: "Esa es la cota k · n, con k = " + k + " y n = " + n + ". Cada erase corre lo que sigue a la posición borrada, no el vector entero, y el vector se acorta con cada borrado." },
+        { valor: k, clave: "uno-por-borrado",
+          razon: "Eso supone que cada erase cuesta un solo corrimiento. En medio del vector, erase corre todo lo que viene después." },
+        { valor: e.corridos + k, clave: "con-borrado",
+          razon: "Ahí se cuenta también el elemento borrado en cada erase, que no se corre: desaparece. Se corren solo los que van después." }
+      ]);
+    }, function () { logradas.corridos = true; revisar(); });
+    opcionesLogro("opciones-copias", "veredicto-copias", function () {
       var e = EJERCICIO.erase(EJERCICIO.v);
       var c = EJERCICIO.compactar(EJERCICIO.v);
-      var corridos = parseInt(document.getElementById("pred-corridos").value, 10);
-      var copias = parseInt(document.getElementById("pred-copias").value, 10);
-      if (corridos === e.corridos && copias === c.copias) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: " + e.corridos + " corrimientos con erase uno a uno (6 al borrar -2, 4 al borrar -1, 3 al borrar -3, 0 al borrar -4) contra " + c.copias + " copias al compactar, una por elemento que queda. Con k borrados sobre n elementos, O(kn) frente a Θ(n).";
-        logradas.costo = true; revisar();
-      } else if (corridos === e.corridos) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Los corrimientos están bien. Al compactar se copia cada elemento que no es negativo a su nueva posición: cuente cuántos quedan.";
-      } else if (copias === c.copias) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Las copias están bien. Cada erase en la posición p corre los que van después: n - p - 1 en ese momento, y n va bajando con cada borrado.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "Cuente por separado: un erase en p corre los elementos que están después de p; compactar copia una vez cada elemento que se queda.";
-      }
-    });
+      var n = EJERCICIO.v.length;
+      var k = negativos(EJERCICIO.v);
+      return unicas([
+        { valor: c.copias, clave: "correcta",
+          razon: "Correcto: " + c.copias + " copias, una por elemento que queda. Compactar toca cada elemento una sola vez." },
+        { valor: n, clave: "todos",
+          razon: "Eso copiaría todo el vector. Compactar copia solo los elementos que no son negativos, cada uno a su nueva posición." },
+        { valor: k, clave: "borrados",
+          razon: "Esos son los que se borran, y los borrados no se copian. Se copian los que se quedan: cuente cuántos son." },
+        { valor: e.corridos, clave: "corrimientos",
+          razon: "Ese es el costo de la otra versión, uno a uno con erase. Al compactar se copia una vez cada elemento que queda." }
+      ]);
+    }, function () { logradas.copias = true; revisar(); });
   })();
 }

@@ -185,9 +185,15 @@
     var xs = params.xs;
     var buena = posicionDe(x, xs);
     var n = xs.length;
-    if (valor < 1 || valor > n + 1) {
-      return "La posición va de 1 a " + (n + 1) + ": el " + x + " puede quedar " +
-        "antes de todos, entre dos de ellos o después de todos.";
+    if (valor < 1) {
+      return "Eso cuenta desde cero. Las posiciones van de 1 a " + (n + 1) +
+        ": el primer lugar es el 1, y el " + x + " puede quedar antes de todos, " +
+        "entre dos de ellos o después de todos.";
+    }
+    if (valor > n + 1) {
+      return "La posición " + valor + " no existe: con " + n + " elemento" +
+        (n === 1 ? "" : "s") + " en " + textoLista(xs) + " el resultado tiene " +
+        (n + 1) + " y las posiciones van de 1 a " + (n + 1) + ".";
     }
     if (valor < buena) {
       return "En la posición " + valor + " el " + x + " quedaría delante del " +
@@ -277,8 +283,6 @@
       "1 a " + (ronda.xs.length + 1);
     document.getElementById("marcador").textContent =
       "inserciones resueltas: " + resueltas + " de " + RONDAS.length;
-    document.getElementById("prediccion").value = "";
-    document.getElementById("prediccion").max = String(ronda.xs.length + 1);
     document.getElementById("btn-seguir").style.display = "none";
     document.getElementById("botones").classList.add("bloqueado");
     Motor.limpiarVeredicto();
@@ -305,9 +309,8 @@
     alPintar: alPintar
   });
 
-  Motor.prediccionNumerica(function (valor, params) {
-    var res = evaluar(valor, params);
-    if (res.ok && resueltas === r) {
+  function alAcertar() {
+    if (resueltas === r) {
       resueltas = resueltas + 1;
       document.getElementById("botones").classList.remove("bloqueado");
       document.getElementById("btn-seguir").style.display =
@@ -320,7 +323,25 @@
         document.getElementById("final").textContent = textoLista(iSort(LISTA));
       }
     }
-    return res;
+  }
+
+  Motor.opcionesNumericas("opciones-posicion", "veredicto", function (params) {
+    var buena = posicionDe(params.x, params.xs);
+    var n = params.xs.length;
+    var lista = [{ valor: buena, clave: "correcta", razon: evaluar(buena, params).msg }];
+    var vistos = [buena];
+    [buena - 1, buena + 1, 1, n + 1].forEach(function (v) {
+      if (vistos.indexOf(v) < 0 && lista.length < 4) {
+        vistos.push(v);
+        lista.push({ valor: v, clave: "p" + v, razon: razon(v, params) });
+      }
+    });
+    return lista;
+  });
+
+  document.getElementById("opciones-posicion").addEventListener("click", function (e) {
+    var b = e.target;
+    if (b && b.getAttribute && b.getAttribute("data-op") === "correcta") { alAcertar(); }
   });
 
   document.getElementById("btn-seguir").addEventListener("click", function () {

@@ -23,11 +23,7 @@
   <div class="carta">
     <h2>1. El saldo</h2>
     <div class="codigo" id="codigo-saldo"></div>
-    <div class="prediccion">
-      <span>saldo:</span>
-      <input type="number" id="pred-saldo" step="0.01" placeholder="con decimales">
-      <button id="btn-saldo" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-saldo"></div>
     <div id="veredicto-saldo" class="veredicto"></div>
   </div>
 
@@ -46,11 +42,7 @@
   <div class="carta">
     <h2>3. El cobro que viaja por referencia</h2>
     <div class="codigo" id="codigo-referencia"></div>
-    <div class="prediccion">
-      <span>tras cobrar:</span>
-      <input type="number" id="pred-referencia" step="0.01" placeholder="con decimales">
-      <button id="btn-referencia" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-referencia"></div>
     <div id="veredicto-referencia" class="veredicto"></div>
   </div>
 
@@ -94,6 +86,7 @@
   </div>
 
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="objetos.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

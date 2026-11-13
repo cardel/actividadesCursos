@@ -92,20 +92,6 @@ if (typeof document !== "undefined") (function () {
     return isNaN(v) || v <= 0 ? defecto : v;
   }
 
-  /* Igual que la prediccion del motor, salvo que el numero se lee con
-     leerDecimal: la respuesta de la carta 2 lleva un decimal y tiene que
-     llegar entera.                                                          */
-  function conectarPrediccion(ids, esperado, explicar) {
-    var caja = document.getElementById(ids.veredicto);
-    document.getElementById(ids.boton).addEventListener("click", function () {
-      var dicho = leerDecimal(ids.entrada);
-      var real = esperado();
-      var v = Motor.veredictoNumerico(dicho, real);
-      caja.className = "veredicto " + (v.bien ? "bien" : "mal");
-      caja.textContent = isNaN(dicho) ? v.motivo : explicar(v.bien, real, dicho);
-    });
-  }
-
   function params() {
     return {
       generar: leerParam("costo-generar", SETUP.generar),
@@ -217,12 +203,10 @@ if (typeof document !== "undefined") (function () {
     return todas.slice(usadas - k);
   }
 
-  function explicarA(bien, real, dicho) {
-    destapadaA = true;
-    pintarTablaTotal();
+  function razonA() {
+    var real = Math.round(promedio(FIB.total, FIB.number) * 1000);
     var porLlamada = promedio(FIB.total, FIB.number);
-    return (bien ? "Sí: " + num(real) + " ms por llamada. "
-                 : "No: son " + num(real) + " ms, no " + num(dicho) + ". ") +
+    return "Sí: " + num(real) + " ms por llamada. " +
       "El número que imprime timeit es la suma de las " + num(FIB.number) + " repeticiones, " +
       num(FIB.total, 1) + " s. El promedio sale al dividir entre number: " + num(FIB.total, 1) +
       " / " + num(FIB.number) + " = " + num(porLlamada, 3) + " s = " + num(real) +
@@ -230,14 +214,12 @@ if (typeof document !== "undefined") (function () {
       "de comandos, con -r 100, el reporte dice 158 msec per loop.";
   }
 
-  function explicarB(bien, real, dicho) {
-    destapadaB = true;
-    pintarTablaSetup();
+  function razonB() {
     var p = params();
     var dentro = totalConSetupDentro(p.generar, p.operacion, p.number);
     var fuera = totalConSetupFuera(p.generar, p.operacion, p.number);
-    return (bien ? "Sí: " + num(real, 1) + " ms. "
-                 : "No: son " + num(real, 1) + " ms, no " + num(dicho, 1) + ". ") +
+    var real = promedio(dentro, p.number);
+    return "Sí: " + num(real, 1) + " ms. " +
       "Dentro de stmt, cada una de las " + num(p.number) + " vueltas paga " + num(p.generar, 1) +
       " + " + num(p.operacion, 1) + " = " + num(p.generar + p.operacion, 1) + " ms: total " +
       num(dentro, 1) + " ms y promedio " + num(real, 1) + " ms. Con setup, generar_datos corre " +
@@ -245,6 +227,56 @@ if (typeof document !== "undefined") (function () {
       num(p.operacion, 1) + " ms de operacion: total " + num(fuera, 1) + " ms y promedio " +
       num(promedio(fuera, p.number), 1) + " ms. La medición sale inflada " +
       num(dentro / fuera, 1) + " veces y lo que se quería medir casi no se ve.";
+  }
+
+  function armarFib() {
+    var real = Math.round(promedio(FIB.total, FIB.number) * 1000);
+    var lista = [{ valor: num(real) + " ms", clave: "correcta", razon: razonA() }];
+    [
+      { x: FIB.total * 1000, d: 0, clave: "total",
+        razon: "Esos son los " + num(FIB.total, 1) + " s de timeit pasados a milisegundos. " +
+          "Ese número es la suma de las " + num(FIB.number) + " repeticiones; falta dividir " +
+          "entre number." },
+      { x: FIB.total * 1000 / (FIB.number / 10), d: 0, clave: "entreDiez",
+        razon: "Eso divide entre " + num(FIB.number / 10) + " y no entre las " +
+          num(FIB.number) + " vueltas que corrió timeit." },
+      { x: promedio(FIB.total, FIB.number), d: 3, clave: "segundos",
+        razon: "Ese es el promedio en segundos, " + num(promedio(FIB.total, FIB.number), 3) +
+          " s. La pregunta es en milisegundos, y un segundo son mil." }
+    ].forEach(function (o) {
+      var texto = num(o.x, o.d) + " ms";
+      var repetido = lista.some(function (y) { return y.valor === texto; });
+      if (!repetido) { lista.push({ valor: texto, clave: o.clave, razon: o.razon }); }
+    });
+    return lista;
+  }
+
+  function armarSetup() {
+    var p = params();
+    var dentro = totalConSetupDentro(p.generar, p.operacion, p.number);
+    var real = promedio(dentro, p.number);
+    var lista = [{ valor: num(real, 1) + " ms", clave: "correcta", razon: razonB() }];
+    [
+      { x: p.operacion, clave: "soloOperacion",
+        razon: "Eso es el promedio si generar_datos va en setup: " + num(p.operacion, 1) +
+          " ms. Dentro de stmt, cada vuelta también paga los " + num(p.generar, 1) +
+          " ms de generar." },
+      { x: p.generar, clave: "soloGenerar",
+        razon: "Ahí falta la operación. Dentro de stmt cada vuelta paga generar_datos y " +
+          "además operacion, " + num(p.generar, 1) + " + " + num(p.operacion, 1) + " ms." },
+      { x: dentro, clave: "total",
+        razon: "Esos " + num(dentro, 1) + " ms son el total que devuelve timeit, la suma de " +
+          num(p.number) + " vueltas. La pregunta es por el promedio de una ejecución, " +
+          "que sale de dividir entre number." },
+      { x: (p.generar + p.operacion) / 2, clave: "mitad",
+        razon: "Eso promedia los dos costos como si fueran dos mediciones. Cada vuelta paga " +
+          "los dos, uno tras otro: se suman." }
+    ].forEach(function (o) {
+      var texto = num(o.x, 1) + " ms";
+      var repetido = lista.some(function (y) { return y.valor === texto; });
+      if (!repetido && lista.length < 4) { lista.push({ valor: texto, clave: o.clave, razon: o.razon }); }
+    });
+    return lista;
   }
 
   var RAZONES = {
@@ -262,10 +294,11 @@ if (typeof document !== "undefined") (function () {
       "comandos. La carta anterior muestra la diferencia entre ponerlo dentro y fuera."
   };
 
+  var opcSetup = null;
   ["costo-generar", "costo-operacion", "number-b"].forEach(function (id) {
     document.getElementById(id).addEventListener("input", function () {
       pintarTablaSetup();
-      document.getElementById("veredicto-b").className = "veredicto";
+      if (opcSetup) { opcSetup.refrescar(); }
     });
   });
   document.getElementById("btn-una").addEventListener("click", function () {
@@ -283,17 +316,16 @@ if (typeof document !== "undefined") (function () {
     mediciones = []; usadas = 0; modo = "";
     pintarMediciones();
   });
-  conectarPrediccion(
-    { entrada: "prediccion-a", boton: "btn-comprobar-a", veredicto: "veredicto-a" },
-    function () { return Math.round(promedio(FIB.total, FIB.number) * 1000); },
-    explicarA);
-  conectarPrediccion(
-    { entrada: "prediccion-b", boton: "btn-comprobar-b", veredicto: "veredicto-b" },
-    function () {
-      var p = params();
-      return promedio(totalConSetupDentro(p.generar, p.operacion, p.number), p.number);
-    },
-    explicarB);
+  Motor.opcionesNumericas("opciones-fib", "veredicto-a", armarFib);
+  document.getElementById("opciones-fib").addEventListener("click", function () {
+    destapadaA = true;
+    pintarTablaTotal();
+  });
+  opcSetup = Motor.opcionesNumericas("opciones-setup", "veredicto-b", armarSetup);
+  document.getElementById("opciones-setup").addEventListener("click", function () {
+    destapadaB = true;
+    pintarTablaSetup();
+  });
   Motor.conectarOpciones("opciones-produccion", "veredicto-produccion", RAZONES);
 
   pintarTablaTotal();

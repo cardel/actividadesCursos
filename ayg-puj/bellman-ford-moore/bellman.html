@@ -12,6 +12,7 @@
   td.viva, tr.viva td { background: var(--ambar-suave); }
   td.cambio { background: #c8e6c9; font-weight: 700; }
   .envoltura-tabla table { max-width: 100%; }
+  .opciones button { text-align: left; }
 </style>
 </head>
 <body>
@@ -45,9 +46,8 @@
     Las aristas moradas forman el árbol de <code>p</code>; la azul es la que se examina, verde si baja un <i>d</i> y roja si resulta tensa en la revisión final.</div>
     <div class="prediccion">
       <span>¿Cuántas iteraciones realiza <code>bfm4.cpp</code> en este grafo?</span>
-      <input type="number" id="prediccion" step="1" placeholder="iteraciones">
-      <button id="btn-comprobar" class="primario">Comprobar</button>
     </div>
+    <div class="opciones" id="opciones-iteraciones"></div>
     <div id="veredicto" class="veredicto"></div>
   </div>
 

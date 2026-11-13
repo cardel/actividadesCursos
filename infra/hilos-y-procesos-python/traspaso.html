@@ -17,7 +17,7 @@
   <h1>Lo que cuesta empaquetar un dato para mandarlo a otro proceso</h1>
   <p class="intro">Los mismos datos pasan de un proceso a otro por tres caminos: un
   <code>Array</code> en memoria compartida, un <code>Pipe</code> y una <code>Queue</code>.
-  Escriba cuántas veces más tarda la <code>Queue</code> antes de ver los tiempos, siga el viaje
+  Escoja cuántas veces más tarda la <code>Queue</code> antes de ver los tiempos, siga el viaje
   de un dato por dentro y decida cuál de los tres usaría en seis situaciones.</p>
 
   <div class="carta">
@@ -31,9 +31,8 @@
     <div class="prediccion">
       <span>Pasar los datos por memoria compartida costó 0,10 s. ¿Cuántas veces más costó
       pasarlos por una <code>Queue</code>?</span>
-      <input type="number" id="prediccion-factor" min="0" step="0.1" placeholder="veces">
-      <button id="btn-comprobar-factor" class="primario">Comprobar</button>
     </div>
+    <div class="opciones" id="opciones-factor"></div>
     <div id="veredicto-factor" class="veredicto"></div>
     <p id="aviso-tiempos" class="nota">El tiempo del <code>Pipe</code> y el de la
     <code>Queue</code> salen al comprobar.</p>

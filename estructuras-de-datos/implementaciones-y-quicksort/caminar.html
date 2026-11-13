@@ -28,11 +28,8 @@
   }
   return suma;
 }</pre>
-    <div class="prediccion">
-      <span>avances en total:</span>
-      <input type="number" id="pred-lista" placeholder="?">
-      <button id="btn-lista" class="primario">Comprobar</button>
-    </div>
+    <div><b>¿Cuántos avances hace en total?</b></div>
+    <div class="opciones" id="opciones-lista"></div>
     <div id="veredicto-lista" class="veredicto"></div>
   </div>
 
@@ -50,14 +47,12 @@
   }
   return suma;
 }</pre>
-    <div class="prediccion">
-      <span>avances:</span>
-      <input type="number" id="pred-cola-avances" placeholder="?">
-      <span>nodos reservados con <code>new</code>:</span>
-      <input type="number" id="pred-cola-nuevos" placeholder="?">
-      <button id="btn-cola" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-cola" class="veredicto"></div>
+    <div><b>¿Cuántos avances hace?</b></div>
+    <div class="opciones" id="opciones-cola-avances"></div>
+    <div id="veredicto-cola-avances" class="veredicto"></div>
+    <div><b>¿Cuántos nodos reserva con <code>new</code>?</b></div>
+    <div class="opciones" id="opciones-cola-nuevos"></div>
+    <div id="veredicto-cola-nuevos" class="veredicto"></div>
   </div>
 
   <div class="carta">
@@ -76,11 +71,8 @@
   }
   return suma;
 }</pre>
-    <div class="prediccion">
-      <span>llamadas a <code>apilar</code>, sumando las dos pilas:</span>
-      <input type="number" id="pred-pila" placeholder="?">
-      <button id="btn-pila" class="primario">Comprobar</button>
-    </div>
+    <div><b>¿Cuántas llamadas a <code>apilar</code> hace, sumando las dos pilas?</b></div>
+    <div class="opciones" id="opciones-pila"></div>
     <div id="veredicto-pila" class="veredicto"></div>
   </div>
 
@@ -105,6 +97,7 @@
     una desde afuera suma Θ(n²).</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="caminar.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

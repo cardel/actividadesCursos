@@ -132,12 +132,24 @@ if (typeof module !== "undefined") {
       ver.className = "veredicto " + (bien ? "bien" : "mal");
       ver.textContent = texto;
     }
-    function leerNumeros(texto) {
-      return texto.trim().split(/[\s,;]+/).filter(function (x) { return x !== ""; })
-                  .map(function (x) { return parseInt(x, 10); });
+    /* Anota el acierto: el boton de la correcta lleva data-op="correcta". */
+    function alAcertar(idOpciones, clave) {
+      document.getElementById(idOpciones).addEventListener("click", function (e) {
+        var t = e.target;
+        if (t && t.getAttribute && t.getAttribute("data-op") === "correcta") {
+          logradas[clave] = true; revisar();
+        }
+      });
     }
-    function iguales(a, b) {
-      return a.length === b.length && a.every(function (x, k) { return x === b[k]; });
+    /* Deja la correcta y los distractores con valores distintos, hasta cuatro. */
+    function sinRepetir(lista) {
+      var salida = [];
+      lista.forEach(function (o) {
+        var repetido = false;
+        salida.forEach(function (x) { if (x.valor === o.valor) { repetido = true; } });
+        if (!repetido && salida.length < 4) { salida.push(o); }
+      });
+      return salida;
     }
     var logradas = { q: false, final: false, intercambios: false };
     function revisar() {
@@ -146,18 +158,20 @@ if (typeof module !== "undefined") {
       }
     }
 
-    document.getElementById("btn-q").addEventListener("click", function () {
-      var dado = parseInt(document.getElementById("pred-q").value, 10);
-      if (dado === R.q) {
-        decir("veredicto-q", true, "Correcto: q = " + R.q + ". Antes del pivote quedan los valores menores o iguales que " +
-          R.x + ": el 3, el 1 y el 2. Ocupan las casillas 0 a 2, en el orden que sea, y el pivote toma la siguiente.");
-        logradas.q = true; revisar();
-      } else if (dado === FIN) {
-        decir("veredicto-q", false, "El pivote solo se queda en fin cuando todos los demás son menores o iguales que él. Aquí 8, 6 y 9 son mayores que " + R.x + ".");
-      } else {
-        decir("veredicto-q", false, "Cuente cuántos de los otros seis valen " + R.x + " o menos. Esos ocupan las casillas 0 en adelante, y el pivote va justo después.");
-      }
+    Motor.opcionesNumericas("opciones-q", "veredicto-q", function () {
+      return sinRepetir([
+        { valor: R.q, clave: "correcta",
+          razon: "Correcto: q = " + R.q + ". Antes del pivote quedan los valores menores o iguales que " +
+            R.x + ": el 3, el 1 y el 2. Ocupan las casillas 0 a 2, en el orden que sea, y el pivote toma la siguiente." },
+        { valor: FIN, clave: "fin",
+          razon: "El pivote solo se queda en fin cuando todos los demás son menores o iguales que él. Aquí 8, 6 y 9 son mayores que " + R.x + "." },
+        { valor: R.q - 1, clave: "sin-uno",
+          razon: "Esa es la casilla del último menor, i. La función devuelve i + 1: el pivote va justo después de los menores." },
+        { valor: R.q + 1, clave: "con-pivote",
+          razon: "Eso cuenta el pivote entre los que quedan antes de él. Los menores o iguales que " + R.x + " son tres, y el pivote ocupa la casilla siguiente a ellos." }
+      ]);
     });
+    alAcertar("opciones-q", "q");
 
     var vista = { k: 0 };
     function pintarVista() {
@@ -218,36 +232,38 @@ if (typeof module !== "undefined") {
     });
     pintarVista();
 
-    document.getElementById("btn-final").addEventListener("click", function () {
-      var dada = leerNumeros(document.getElementById("pred-final").value);
+    Motor.opcionesNumericas("opciones-final", "veredicto-final", function () {
       var ordenado = A.slice().sort(function (u, v) { return u - v; });
-      if (iguales(dada, R.final)) {
-        decir("veredicto-final", true, "Correcto: " + R.final.join(" ") + ". Los menores quedan en el orden en que j los encontró, 3, 1 y 2, y los mayores no: el 8 viajó al final cuando el pivote ocupó su casilla.");
-        logradas.final = true; revisar();
-      } else if (iguales(dada, ordenado)) {
-        decir("veredicto-final", false, "Ese es el arreglo ordenado. particionar no ordena los lados: solo deja los menores o iguales antes del pivote y los mayores después.");
-      } else if (dada.length !== A.length) {
-        decir("veredicto-final", false, "Son siete valores, los mismos del principio en otro orden.");
-      } else {
-        decir("veredicto-final", false, "Siga el paso a paso: cada vez que a[j] <= " + R.x + ", ese valor se cambia con la primera casilla de la zona de los mayores.");
-      }
+      var sinFinal = R.final.slice();
+      var t = sinFinal[R.q];
+      sinFinal[R.q] = sinFinal[FIN];
+      sinFinal[FIN] = t;
+      return sinRepetir([
+        { valor: R.final.join(" "), clave: "correcta",
+          razon: "Correcto: " + R.final.join(" ") + ". Los menores quedan en el orden en que j los encontró, 3, 1 y 2, y los mayores no: el 8 viajó al final cuando el pivote ocupó su casilla." },
+        { valor: ordenado.join(" "), clave: "ordenado",
+          razon: "Ese es el arreglo ordenado. particionar no ordena los lados: solo deja los menores o iguales antes del pivote y los mayores después." },
+        { valor: A.join(" "), clave: "original",
+          razon: "Ese es el arreglo de entrada. Cada vez que a[j] <= " + R.x + ", ese valor se cambia con la primera casilla de la zona de los mayores, así que el arreglo se mueve." },
+        { valor: sinFinal.join(" "), clave: "sin-final",
+          razon: "Eso es el arreglo al salir del ciclo, con el pivote todavía en la última casilla. Falta el intercambio de después del ciclo, que lo lleva a la casilla " + R.q + "." }
+      ]);
     });
+    alAcertar("opciones-final", "final");
 
-    document.getElementById("btn-intercambios").addEventListener("click", function () {
-      var dado = parseInt(document.getElementById("pred-intercambios").value, 10);
-      if (dado === R.intercambios) {
-        decir("veredicto-intercambios", true, "Correcto: " + R.intercambios + ". Tres dentro del ciclo, uno por cada valor menor o igual que " + R.x +
-          " (el 3, el 1 y el 2), y el último que pone el pivote en su casilla. El primero cambia a[0] consigo mismo: el 3 ya estaba en la zona de los menores.");
-        logradas.intercambios = true; revisar();
-      } else if (dado === R.intercambios - 1) {
-        decir("veredicto-intercambios", false, "Falta uno. ¿Contó el intercambio de después del ciclo, el que lleva el pivote a la casilla i + 1?");
-      } else if (dado === R.intercambios - R.propios - 1 || dado === R.intercambios - R.propios) {
-        decir("veredicto-intercambios", false, "El código llama a intercambiar aunque i y j sean la misma casilla. Esa llamada también cuenta.");
-      } else if (dado === R.comparaciones) {
-        decir("veredicto-intercambios", false, "Ese es el número de comparaciones, una por vuelta. Solo hay intercambio en las vueltas donde a[j] <= x.");
-      } else {
-        decir("veredicto-intercambios", false, "Cuente las vueltas en que a[j] <= " + R.x + " y súmele el intercambio final.");
-      }
+    Motor.opcionesNumericas("opciones-intercambios", "veredicto-intercambios", function () {
+      return sinRepetir([
+        { valor: R.intercambios, clave: "correcta",
+          razon: "Correcto: " + R.intercambios + ". Tres dentro del ciclo, uno por cada valor menor o igual que " + R.x +
+            " (el 3, el 1 y el 2), y el último que pone el pivote en su casilla. El primero cambia a[0] consigo mismo: el 3 ya estaba en la zona de los menores." },
+        { valor: R.intercambios - 1, clave: "sin-final",
+          razon: "Falta uno. ¿Contó el intercambio de después del ciclo, el que lleva el pivote a la casilla i + 1?" },
+        { valor: R.intercambios - R.propios - 1, clave: "sin-propios",
+          razon: "El código llama a intercambiar aunque i y j sean la misma casilla. Esa llamada también cuenta." },
+        { valor: R.comparaciones, clave: "comparaciones",
+          razon: "Ese es el número de comparaciones, una por vuelta. Solo hay intercambio en las vueltas donde a[j] <= x." }
+      ]);
     });
+    alAcertar("opciones-intercambios", "intercambios");
   })();
 }

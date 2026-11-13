@@ -34,14 +34,35 @@ var TSAN = {
 
 function fmt(x) { return Motor.num(x); }
 
-function explicarHilo(id) {
-  return function (bien, real) {
-    var base = "El hilo " + id + " arranca en " + fmt(real) + ": cada bloque tiene " +
-      fmt(tamanoBloque(ITERACIONES, HILOS)) + " iteraciones y el hilo " + id +
-      " recibe el número " + id + " desde el comienzo. ";
-    return (bien ? "Correcto. " : "No. ") + base +
-      (bien ? "" : "El hilo 3, que muestra 500.000.000, es la referencia: reste o sume un bloque.");
-  };
+/* Opciones del valor de i en el hilo `id`: la correcta es el comienzo de su
+   bloque; cada distractor es una cuenta que alguien haria mal. */
+function opcionesHilo(id) {
+  var b = tamanoBloque(ITERACIONES, HILOS);
+  var real = inicioBloque(id, ITERACIONES, HILOS);
+  var lista = [{ valor: fmt(real), clave: "correcta",
+    razon: "Correcto. El hilo " + id + " arranca en " + fmt(real) + ": cada bloque tiene " +
+      fmt(b) + " iteraciones y el hilo " + id + " recibe el bloque número " + id +
+      " contando desde 1, como numera gdb." }];
+  var candidatas = [
+    { v: id * b, razon: "Eso es el comienzo del bloque siguiente. gdb numera los hilos desde 1, " +
+      "no desde 0: el hilo 3 muestra 500.000.000, que es 2 bloques, no 3." },
+    { v: (id - 2) * b, razon: "Eso es el comienzo del bloque anterior: se restó un bloque de más. " +
+      "El hilo 3 muestra 500.000.000 y cada hilo avanza un bloque sobre el anterior." },
+    { v: real + 1, razon: "Eso cuenta desde 1. OpenMP numera las iteraciones desde 0, " +
+      "y el bloque del hilo " + id + " empieza justo en un múltiplo de " + fmt(b) + "." },
+    { v: finBloque(id, ITERACIONES, HILOS), razon: "Esa es la última iteración del bloque. " +
+      "El hilo está detenido recién al entrar a su bloque, no al salir." },
+    { v: ITERACIONES, razon: "Eso es el total de iteraciones, no el comienzo de un bloque." }
+  ];
+  var vistos = {};
+  vistos[real] = true;
+  candidatas.forEach(function (c) {
+    if (lista.length < 4 && c.v >= 0 && !vistos[c.v]) {
+      vistos[c.v] = true;
+      lista.push({ valor: fmt(c.v), clave: "d" + c.v, razon: c.razon });
+    }
+  });
+  return lista;
 }
 
 var RAZONES_ARRANQUE = {
@@ -108,10 +129,8 @@ var RAZONES_CLAUSULA = {
 function iniciar() {
   [[1, "p1"], [2, "p2"], [4, "p4"]].forEach(function (par) {
     var id = par[0];
-    Motor.conectarPrediccion(
-      { entrada: "pred-" + par[1], boton: "btn-" + par[1], veredicto: "ver-" + par[1] },
-      function () { return inicioBloque(id, ITERACIONES, HILOS); },
-      explicarHilo(id));
+    Motor.opcionesNumericas("op-" + par[1], "ver-" + par[1],
+      function () { return opcionesHilo(id); });
   });
 
   document.getElementById("btn-destapar").addEventListener("click", function () {
@@ -136,7 +155,7 @@ if (typeof module !== "undefined" && module.exports) {
   module.exports = {
     ITERACIONES: ITERACIONES, HILOS: HILOS, VISTA_GDB: VISTA_GDB, TSAN: TSAN,
     tamanoBloque: tamanoBloque, inicioBloque: inicioBloque, finBloque: finBloque,
-    hiloDe: hiloDe, RAZONES_ARRANQUE: RAZONES_ARRANQUE, RAZONES_NOMBRE: RAZONES_NOMBRE,
+    hiloDe: hiloDe, opcionesHilo: opcionesHilo, RAZONES_ARRANQUE: RAZONES_ARRANQUE, RAZONES_NOMBRE: RAZONES_NOMBRE,
     RAZONES_O2: RAZONES_O2, RAZONES_PARES: RAZONES_PARES, RAZONES_CLAUSULA: RAZONES_CLAUSULA
   };
 }

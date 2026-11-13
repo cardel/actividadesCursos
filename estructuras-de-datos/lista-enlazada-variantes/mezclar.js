@@ -186,6 +186,19 @@ if (typeof module !== "undefined") {
     function ordenado(xs) {
       return xs.slice().sort(function (x, y) { return x - y; });
     }
+    function unicas(lista) {
+      var vistos = {};
+      return lista.filter(function (o) {
+        var ya = vistos[String(o.valor)] === true;
+        vistos[String(o.valor)] = true;
+        return !ya;
+      });
+    }
+    function alAcertar(idCaja, idVer, f) {
+      document.getElementById(idCaja).addEventListener("click", function () {
+        if (document.getElementById(idVer).className.indexOf("bien") >= 0) { f(); }
+      });
+    }
     var logradas = { mitades: false, total: false, razon: false };
     function revisar() {
       if (logradas.mitades && logradas.total && logradas.razon) {
@@ -252,26 +265,26 @@ if (typeof module !== "undefined") {
     });
     pintarVueltas();
 
-    document.getElementById("btn-total").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-total");
-      var t = parseInt(document.getElementById("pred-total").value, 10);
-      if (t === R.total) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: " + R.total + ". Son cinco mezclas: " +
-          R.mezclas.map(function (m) {
-            return m.a.join(" ") + " con " + m.b.join(" ") + " en " + m.comparaciones;
-          }).join("; ") + ". La lista queda " + R.ordenada.join(" ") + ".";
-        logradas.total = true; revisar();
-      } else if (t === 15 || t === 12) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Ninguna mezcla gasta una comparación por cada nodo que junta: en cuanto una de las dos cadenas se vacía, el resto de la otra se empalma sin comparar.";
-      } else if (t === 6 || t === 5) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Son cinco mezclas, no una: cada nivel de la recursión mezcla las mitades que ya ordenó el nivel de abajo. Sume las comparaciones de todas.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "Baje hasta las cadenas de un nodo, mezcle de a dos y vaya sumando. La tabla de abajo muestra las mezclas en el orden en que ocurren.";
-      }
+    Motor.opcionesNumericas("opciones-total", "veredicto-total", function () {
+      var juntados = 0;
+      R.mezclas.forEach(function (m) { juntados = juntados + m.a.length + m.b.length; });
+      var ultima = R.mezclas[R.mezclas.length - 1].comparaciones;
+      return unicas([
+        { valor: R.total, clave: "correcta",
+          razon: "Correcto: " + R.total + ". Son " + R.mezclas.length + " mezclas: " +
+            R.mezclas.map(function (m) {
+              return m.a.join(" ") + " con " + m.b.join(" ") + " en " + m.comparaciones;
+            }).join("; ") + ". La lista queda " + R.ordenada.join(" ") + "." },
+        { valor: juntados, clave: "por-nodo",
+          razon: "Ninguna mezcla gasta una comparación por cada nodo que junta: en cuanto una de las dos cadenas se vacía, el resto de la otra se empalma sin comparar." },
+        { valor: R.mezclas.length, clave: "mezclas",
+          razon: "Esas son las mezclas, no las comparaciones: cada mezcla compara varias veces, según cuántos datos de una cadena salen antes de que la otra se vacíe." },
+        { valor: ultima, clave: "ultima",
+          razon: "Esas son las de la mezcla final. Cada nivel de la recursión mezcla las mitades que ya ordenó el nivel de abajo: hay que sumar las de todas." }
+      ]);
+    });
+    alAcertar("opciones-total", "veredicto-total", function () {
+      logradas.total = true; revisar();
     });
 
     var mezclas = { i: 0 };

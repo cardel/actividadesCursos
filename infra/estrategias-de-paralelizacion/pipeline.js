@@ -139,6 +139,7 @@ if (typeof module !== "undefined" && module.exports) {
 
 if (typeof document !== "undefined") (function () {
   var num = Motor.num;
+  var ctlTotal = null;
 
   function leerEtapas() {
     var etapas = copiarEtapas(ETAPAS);
@@ -199,33 +200,60 @@ if (typeof document !== "undefined") (function () {
       { texto: "aceleración", valor: num(sec / res.total, 2) + "×" },
       { texto: "manda", valor: nombreManda(etapas), cuenta: true }
     ]);
-    document.getElementById("veredicto").className = "veredicto";
+    if (ctlTotal) { ctlTotal.refrescar(); }
   }
 
-  function explicar(bien, real) {
+  /* El total es llenado + (lotes - 1) x ritmo de la etapa lenta; las otras
+     opciones son lo que sale al dejar de lado una de esas piezas. */
+  function opcionesTotal() {
     var etapas = leerEtapas();
     var lotes = leerLotes();
+    var real = simular(etapas, lotes).total;
     var ll = llenado(etapas);
     var m = manda(etapas);
-    var formula = ll + (lotes - 1) * m.ritmo;
     var quien = m.indices.length === etapas.length
       ? "el ritmo de las tres etapas, que empatan"
       : "el ritmo de " + m.indices.map(function (i) { return etapas[i].nombre; })
           .join(" y ") + ", la etapa lenta";
-    var t = (bien ? "Sí, " : "No: son ") + num(real) + " ms. Primero " +
-      num(ll) + " ms de llenado (" +
+    var aprox = ll + (lotes - 1) * m.ritmo;
+    var cuenta = "Primero " + num(ll) + " ms de llenado (" +
       etapas.map(function (e) { return num(e.dura); }).join(" + ") +
       " del primer lote) y después un lote cada " + num(m.ritmo, 1) + " ms, " +
       quien + ": " + num(ll) + " + " + num(lotes - 1) + " × " + num(m.ritmo, 1) +
-      (formula === real ? " = " : " ≈ ") + num(real) + ".";
-    if (esDefecto(etapas, lotes)) {
-      t += " En la máquina del deck midió " + num(MEDIDO.pipeline) +
+      " = " + num(aprox, 1) + "." + (aprox === real ? ""
+        : " Con réplicas en la etapa lenta los lotes salen en tandas y el último " +
+          "cierra distinto de uno por ritmo; el reloj del Gantt marca " + num(real) + ".");
+    var cola = esDefecto(etapas, lotes)
+      ? " En la máquina del deck midió " + num(MEDIDO.pipeline) +
         " ms; en secuencia, " + num(secuencial(etapas, lotes)) +
-        " (midió " + num(MEDIDO.secuencial) + ").";
-    } else {
-      t += " En secuencia serían " + num(secuencial(etapas, lotes)) + " ms.";
-    }
-    return t;
+        " (midió " + num(MEDIDO.secuencial) + ")."
+      : " En secuencia serían " + num(secuencial(etapas, lotes)) + " ms.";
+    var lista = [{ valor: num(real), clave: "correcta",
+      razon: "Sí, " + num(real) + " ms. " + cuenta + cola }];
+    var cands = [
+      { v: secuencial(etapas, lotes), c: "secuencial",
+        r: num(secuencial(etapas, lotes)) + " ms es hacer los lotes uno tras otro, " +
+          "sin que las etapas se solapen: " + num(lotes) + " × " + num(ll) +
+          ". Con las etapas en hilos distintos, mientras una trabaja un lote la " +
+          "otra ya tiene el siguiente. " + cuenta },
+      { v: lotes * m.ritmo, c: "sin-llenado",
+        r: num(lotes * m.ritmo) + " ms olvida el llenado: el primer lote tiene que " +
+          "pasar por las tres etapas antes de que salga. " + cuenta },
+      { v: ll + lotes * m.ritmo, c: "un-lote-mas",
+        r: num(ll + lotes * m.ritmo) + " ms cuenta un lote de más: el primero ya " +
+          "va incluido en el llenado, y el ritmo se aplica a los " +
+          num(lotes - 1) + " siguientes. " + cuenta },
+      { v: lotes * etapas[0].dura, c: "leer",
+        r: num(lotes * etapas[0].dura) + " ms es lo que tardaría solo Leer. El total lo " +
+          "fija la etapa lenta y el llenado. " + cuenta }
+    ];
+    cands.forEach(function (x) {
+      var repetido = lista.some(function (o) { return o.valor === num(x.v); });
+      if (!repetido && lista.length < 4) {
+        lista.push({ valor: num(x.v), clave: x.c, razon: x.r });
+      }
+    });
+    return lista;
   }
 
   var RAZONES = {
@@ -253,10 +281,7 @@ if (typeof document !== "undefined") (function () {
     document.getElementById("lotes").value = LOTES;
     pintar();
   });
-  Motor.conectarPrediccion(
-    { entrada: "prediccion", boton: "btn-comprobar", veredicto: "veredicto" },
-    function () { return simular(leerEtapas(), leerLotes()).total; },
-    explicar);
+  ctlTotal = Motor.opcionesNumericas("opciones-total", "veredicto", opcionesTotal);
   Motor.conectarOpciones("opciones-manda", "veredicto-manda", RAZONES);
 
   pintar();

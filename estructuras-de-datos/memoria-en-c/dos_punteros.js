@@ -81,32 +81,24 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    document.getElementById("btn-comprobar").addEventListener("click", function () {
-      var va = parseInt(document.getElementById("prediccion-a").value, 10);
-      var vb = parseInt(document.getElementById("prediccion-b").value, 10);
-      var v = document.getElementById("veredicto");
-      var esperado = EJERCICIO.finales();
-      if (isNaN(va) || isNaN(vb)) {
-        v.className = "veredicto mal";
-        v.textContent = "Escriba los dos valores primero.";
-      } else if (va === esperado.a && vb === esperado.b) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: a = " + esperado.a + ", b = " + esperado.b +
-          ". Ejecute paso a paso y ubique la línea exacta en que b quedó fuera " +
-          "del juego.";
-      } else if (va === esperado.a && vb === 30) {
-        v.className = "veredicto mal";
-        v.textContent = "b no llega a 30: cuando corre *q = 30, q ya no guarda la " +
-          "dirección de b. ¿Qué hizo la línea q = p?";
-      } else if (va === 20 && vb === 20) {
-        v.className = "veredicto mal";
-        v.textContent = "Va bien hasta *p = *q, pero falta el final: *q = 30 " +
-          "todavía escribe en alguna celda. ¿En cuál?";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "No coincide. Pista: *p = *q mueve un valor entre celdas; " +
-          "q = p mueve una dirección entre punteros. Son jugadas distintas.";
-      }
+    Motor.opcionesNumericas("opciones-salida", "veredicto", function () {
+      var f = EJERCICIO.finales();
+      function fmt(a, b) { return "a = " + a + ", b = " + b; }
+      var lista = [
+        { valor: fmt(f.a, f.b), clave: "correcta",
+          razon: "Correcto: " + fmt(f.a, f.b) + ". Ejecute paso a paso y ubique la " +
+            "línea exacta en que b quedó fuera del juego." },
+        { valor: fmt(f.a, 30), clave: "b-treinta",
+          razon: "b no llega a 30: cuando corre *q = 30, q ya no guarda la " +
+            "dirección de b. ¿Qué hizo la línea q = p?" },
+        { valor: fmt(20, 20), clave: "sin-treinta",
+          razon: "Va bien hasta *p = *q, pero falta el final: *q = 30 " +
+            "todavía escribe en alguna celda. ¿En cuál?" },
+        { valor: fmt(20, 30), clave: "q-sigue",
+          razon: "Eso supone que q sigue apuntando a b. Pero q = p copió la " +
+            "dirección de a en q: una línea copia un valor, la otra una dirección." }
+      ];
+      return lista;
     });
 
     Array.prototype.forEach.call(document.querySelectorAll("#opciones-final button"), function (btn) {

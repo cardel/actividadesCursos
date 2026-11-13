@@ -218,25 +218,22 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
+    Motor.opcionesNumericas("opciones-escritas", "veredicto", function (params) {
       var n = params.mitad - params.ini + 1;
       var m = params.fin - params.mitad;
-      if (valor === n + m) {
-        return { ok: true, msg: "Correcto: " + n + " + " + m + " = " + (n + m) +
-          ". Cada elemento de los dos tramos se escribe exactamente una vez. " +
-          "Guarde ese dato: es la clave del costo." };
-      }
-      if (valor === n * m) {
-        return { ok: false, msg: "Multiplicó los tamaños, como si cada elemento se " +
-          "comparara con todos los del frente. La mezcla escribe cada posición una " +
-          "sola vez." };
-      }
-      if (valor === Math.max(n, m)) {
-        return { ok: false, msg: "Ese es el tamaño del tramo más largo; la mezcla " +
-          "escribe el tramo completo, de ini a fin." };
-      }
-      return { ok: false, msg: "No coincide. ¿Alguna posición se queda sin escribir? " +
-        "¿Alguna se escribe dos veces?" };
+      var lista = [{ valor: n + m, clave: "correcta", razon: "Correcto: " + n + " + " + m + " = " + (n + m) +
+        ". Cada elemento de los dos tramos se escribe exactamente una vez. Guarde ese dato: es la clave del costo." }];
+      var cand = [
+        { valor: n * m, clave: "producto", razon: "Multiplicó los tamaños, como si cada elemento se comparara con todos los del frente. La mezcla escribe cada posición una sola vez." },
+        { valor: Math.max(n, m), clave: "mayor", razon: "Ese es el tamaño del tramo más largo; la mezcla escribe el tramo completo, de ini a fin." },
+        { valor: n + m - 1, clave: "unamenos", razon: "Eso deja una posición sin escribir: de ini a fin hay fin − ini + 1 posiciones, y todas se escriben." }
+      ];
+      cand.forEach(function (o) {
+        var repetido = false;
+        lista.forEach(function (x) { if (x.valor === o.valor) { repetido = true; } });
+        if (!repetido && lista.length < 4) { lista.push(o); }
+      });
+      return lista;
     });
 
     Array.prototype.forEach.call(document.querySelectorAll(".presets button"), function (btn) {

@@ -68,17 +68,27 @@
     alPintar: pintarPila
   });
 
-  Motor.prediccionNumerica(function (valor, n) {
-    if (valor === n) {
-      return { ok: true, msg: "Correcto: factorial(" + n + ") hace " + n
-        + " multiplicaciones, una por cada llamada que no es el caso base." };
-    }
-    if (valor === n + 1) {
-      return { ok: false, msg: "Casi. Son " + n + ". Hay " + (n + 1)
-        + " llamadas, pero factorial(0) no multiplica: devuelve 1 y ya." };
-    }
-    return { ok: false, msg: "No. Son " + n + ". Avance paso a paso y mire el contador de la "
-      + "línea del else: sube uno por cada llamada con n > 0." };
+  Motor.opcionesNumericas("opciones-multiplicaciones", "veredicto", function (n) {
+    var lista = [
+      { valor: n, clave: "correcta",
+        razon: "Correcto: factorial(" + n + ") hace " + n
+          + " multiplicaciones, una por cada llamada que no es el caso base." },
+      { valor: n + 1, clave: "llamadas",
+        razon: "Hay " + (n + 1) + " llamadas, pero factorial(0) no multiplica: "
+          + "devuelve 1 y ya." },
+      { valor: n * (n + 1) / 2, clave: "suma",
+        razon: "Eso suma 1 + 2 + … + " + n + ". Cada llamada hace una sola "
+          + "multiplicación, no tantas como su n." },
+      { valor: n - 1, clave: "menos",
+        razon: "Eso deja sin contar la multiplicación de la llamada con n = 1: "
+          + "ella también multiplica, por el resultado de factorial(0)." }
+    ];
+    var vistos = {};
+    return lista.filter(function (o) {
+      var nuevo = !vistos[o.valor];
+      vistos[o.valor] = true;
+      return nuevo;
+    });
   });
 
   document.querySelectorAll("[data-preset]").forEach(function (b) {
@@ -86,7 +96,6 @@
       document.querySelectorAll("[data-preset]").forEach(function (o) { o.className = ""; });
       b.className = "primario";
       Motor.limpiarVeredicto();
-      document.getElementById("prediccion").value = "";
       Motor.reiniciar(parseInt(b.getAttribute("data-preset"), 10));
     });
   });

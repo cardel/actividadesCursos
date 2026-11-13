@@ -174,14 +174,36 @@ function iniciar() {
     predicho = false;
     document.getElementById("ver-recepcion").className = "veredicto";
     document.getElementById("ver-recepcion").textContent = "";
+    opRecepcion.refrescar();
     pintar();
   });
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-recepcion", boton: "btn-recepcion", veredicto: "ver-recepcion" },
-    function () { return lamport(EVENTOS)[PASO_PREDICCION].valor; },
-    explicarRecepcion);
-  document.getElementById("btn-recepcion").addEventListener("click", function () {
+  var opRecepcion = Motor.opcionesNumericas("op-recepcion", "ver-recepcion", function () {
+    var t = lamport(EVENTOS);
+    var real = t[PASO_PREDICCION].valor;
+    var antes = t[PASO_PREDICCION - 1].relojes.P1;
+    var marca = t[PASO_PREDICCION].marca;
+    var lista = [
+      { valor: real, clave: "correcta", razon: explicarRecepcion(true, real) },
+      { valor: antes + 1, clave: "ignora",
+        razon: "Eso es sumar uno al reloj propio e ignorar la marca de m3. Al recibir se toma " +
+          "el mayor entre el reloj de P1 (" + antes + ") y la marca (" + marca +
+          ") antes de sumar." },
+      { valor: marca, clave: "sin-sumar",
+        razon: "Eso toma el mayor, " + marca + ", y se queda ahí. La recepción también es un " +
+          "evento, así que después del máximo se suma uno." },
+      { valor: antes + marca, clave: "suma",
+        razon: "Eso suma los dos relojes. La regla toma el máximo de los dos, no la suma, y " +
+          "luego agrega uno." }
+    ];
+    var vistos = {};
+    return lista.filter(function (o) {
+      var ya = vistos[o.valor];
+      vistos[o.valor] = true;
+      return !ya;
+    });
+  });
+  document.getElementById("op-recepcion").addEventListener("click", function () {
     predicho = true;
     pintar();
   });

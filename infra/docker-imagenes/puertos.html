@@ -20,11 +20,8 @@
       <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker run -d -p 8081:5000 --name hola hola-mundo:clase</span></div>
       <div class="linea"><span class="num"></span><span class="txt">a1dc782247fd987f5fdfd00b20c1f673cde47a6cce83ce4e80818eb8d92c74e9</span></div>
     </div>
-    <div class="prediccion">
-      <span>¿A qué puerto se le hace <code>curl</code> desde el anfitrión?</span>
-      <input type="number" id="pred-puerto" min="1" max="65535" step="1" placeholder="puerto">
-      <button id="btn-puerto" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">¿A qué puerto se le hace <code>curl</code> desde el anfitrión?</p>
+    <div class="opciones" id="op-puerto"></div>
     <div id="ver-puerto" class="veredicto"></div>
     <div class="chips" id="chips-puerto" style="margin-top:0.7rem"></div>
     <p style="margin-top:0.9rem;margin-bottom:0.3rem">Y <code>curl http://localhost:5000</code>

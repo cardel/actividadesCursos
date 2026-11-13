@@ -74,7 +74,7 @@ if (typeof module !== "undefined") {
   module.exports = EJERCICIO;
 } else {
   (function () {
-    var logradas = { banana: false, familia: false, piano: false };
+    var logradas = { banana: false, seis: false, ocho: false, familia: false, piano: false };
     function revisar() {
       if (logradas.banana && logradas.familia && logradas.piano) {
         document.getElementById("carta-cierre").style.display = "block";
@@ -85,27 +85,40 @@ if (typeof module !== "undefined") {
     var ULTIMO = EJERCICIO.analizar(EJERCICIO.ultimo[0], EJERCICIO.ultimo[1]);
     var TABLA = EJERCICIO.tabla();
 
-    document.getElementById("btn-banana").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-banana");
-      var dado = parseInt(document.getElementById("pred-banana").value, 10);
-      if (dado === PRIMERO.secuencias.length) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: " + PRIMERO.secuencias.length +
-          ". La b se mete de primera y se escribe de última, así que pasa toda la búsqueda en el fondo. Las bifurcaciones las abren las tres a: cuando la salida necesita una a, puede ser la que ya está en el tope o una que todavía no se ha metido. El recorrido visitó " +
-          PRIMERO.estados + " estados y " + PRIMERO.callejones +
-          " de ellos no imprimieron nada. Las secuencias son: " +
-          PRIMERO.secuencias.join("; ") + ".";
-        logradas.banana = true; revisar();
-      } else if (dado === 0) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Hay al menos una: ananab es banana al revés, y meter las seis letras y sacarlas en bloque la escribe entera.";
-      } else if (dado === 1) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Esa es la cuenta con las letras todas distintas, donde el tope coincide con la letra que toca en un solo momento. banana tiene tres a y dos n, y cada repetición abre otra forma de servir la misma letra de la salida.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "No. Cuente por aperturas: la primera a de la salida la puede dar la a que ya está en el tope o una de las que faltan por meter, y cada elección deja un resto distinto para las letras que siguen. Son menos de diez.";
-      }
+    function sinRepetir(lista) {
+      var vistos = {};
+      return lista.filter(function (o) {
+        var nuevo = !vistos[o.valor];
+        vistos[o.valor] = true;
+        return nuevo;
+      });
+    }
+    function alAcertar(idCaja, alLograr) {
+      document.getElementById(idCaja).addEventListener("click", function (e) {
+        var b = e.target;
+        if (b && b.getAttribute && b.getAttribute("data-op") === "correcta") {
+          alLograr();
+        }
+      });
+    }
+
+    alAcertar("opciones-banana", function () { logradas.banana = true; revisar(); });
+    Motor.opcionesNumericas("opciones-banana", "veredicto-banana", function () {
+      var n = PRIMERO.secuencias.length;
+      return sinRepetir([
+        { valor: n, clave: "correcta",
+          razon: "Correcto: " + n +
+            ". La b se mete de primera y se escribe de última, así que pasa toda la búsqueda en el fondo. Las bifurcaciones las abren las tres a: cuando la salida necesita una a, puede ser la que ya está en el tope o una que todavía no se ha metido. El recorrido visitó " +
+            PRIMERO.estados + " estados y " + PRIMERO.callejones +
+            " de ellos no imprimieron nada. Las secuencias son: " +
+            PRIMERO.secuencias.join("; ") + "." },
+        { valor: 1, clave: "una",
+          razon: "Esa es la cuenta con las letras todas distintas, donde el tope coincide con la letra que toca en un solo momento. banana tiene tres a y dos n, y cada repetición abre otra forma de servir la misma letra de la salida." },
+        { valor: 0, clave: "ninguna",
+          razon: "Hay al menos una: ananab es banana al revés, y meter las seis letras y sacarlas en bloque la escribe entera." },
+        { valor: 6, clave: "producto",
+          razon: "Eso es 3 por 2, las veces que se repiten la a y la n multiplicadas. Las repeticiones no actúan por separado: cada elección deja un resto distinto para las letras que siguen, y varias elecciones terminan en la misma secuencia o en callejones." }
+      ]);
     });
 
     function pintarTabla() {
@@ -135,40 +148,60 @@ if (typeof module !== "undefined") {
       caja.appendChild(t);
     }
 
-    document.getElementById("btn-familia").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-familia");
-      var seis = parseInt(document.getElementById("pred-seis").value, 10);
-      var ocho = parseInt(document.getElementById("pred-ocho").value, 10);
-      pintarTabla();
-      if (seis === TABLA[1].secuencias && ocho === TABLA[2].secuencias) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: " + TABLA[1].secuencias + " y " +
-          TABLA[2].secuencias + ". Cada par de letras que se agrega multiplica la cuenta por cuatro o más: " +
-          TABLA[0].secuencias + ", " + TABLA[1].secuencias + ", " + TABLA[2].secuencias +
-          ", y los estados visitados pasan de " + TABLA[0].estados + " a " + TABLA[2].estados + ".";
-        logradas.familia = true; revisar();
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "No. La tabla trae la cuenta: " + TABLA[1].secuencias +
-          " y " + TABLA[2].secuencias + ". Cada par de letras que se agrega no suma unas pocas secuencias: multiplica la cuenta por cuatro o más.";
-      }
+    alAcertar("opciones-seis", function () {
+      logradas.seis = true; pintarTabla();
+      if (logradas.seis && logradas.ocho) { logradas.familia = true; revisar(); }
+    });
+    alAcertar("opciones-ocho", function () {
+      logradas.ocho = true; pintarTabla();
+      if (logradas.seis && logradas.ocho) { logradas.familia = true; revisar(); }
+    });
+    function razonFamilia(correcta) {
+      return "Correcto: " + correcta + ". Cada par de letras que se agrega multiplica la cuenta por cuatro o más: " +
+        TABLA[0].secuencias + ", " + TABLA[1].secuencias + ", " + TABLA[2].secuencias +
+        ", y los estados visitados pasan de " + TABLA[0].estados + " a " + TABLA[2].estados + ".";
+    }
+    Motor.opcionesNumericas("opciones-seis", "veredicto-seis", function () {
+      var n = TABLA[1].secuencias;
+      var base = TABLA[0].secuencias;
+      return sinRepetir([
+        { valor: n, clave: "correcta", razon: razonFamilia(n) },
+        { valor: base, clave: "igual",
+          razon: "Esa es la cuenta de nana. Dos letras más abren ramas nuevas en cada punto donde la salida pide una letra repetida: la cuenta no se queda quieta." },
+        { valor: base + base, clave: "suma",
+          razon: "Sumar " + base + " + " + base + " trata el agregado como un bloque independiente. Las letras nuevas se mezclan con las anteriores en cada elección, y por eso la cuenta se multiplica, no se suma." },
+        { valor: base * base, clave: "cuadrado",
+          razon: "Elevar al cuadrado la cuenta de nana da " + (base * base) + ", pero la cuenta crece más: cada par de letras la multiplica por cuatro o más." }
+      ]);
+    });
+    Motor.opcionesNumericas("opciones-ocho", "veredicto-ocho", function () {
+      var n = TABLA[2].secuencias;
+      var m = TABLA[1].secuencias;
+      return sinRepetir([
+        { valor: n, clave: "correcta", razon: razonFamilia(n) },
+        { valor: m * 2, clave: "doble",
+          razon: "Duplicar la cuenta de nanana da " + (m * 2) + ". Cada par de letras la multiplica por cuatro o más, no por dos." },
+        { valor: m * 3, clave: "triple",
+          razon: "Triplicar la cuenta de nanana da " + (m * 3) + ". Cada par de letras la multiplica por cuatro o más; la tabla trae el valor." },
+        { valor: m * 4, clave: "cuatro",
+          razon: "Multiplicar por cuatro da " + (m * 4) + ", y todavía queda corto: cada par de letras multiplica la cuenta por cuatro o más, y esta vez es más." }
+      ]);
     });
 
-    document.getElementById("btn-piano").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-piano");
-      var dado = parseInt(document.getElementById("pred-piano").value, 10);
-      if (dado === ULTIMO.secuencias.length) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: ninguna, y el bloque sale vacío aunque opina sea anagrama de piano. La o es la última letra de la entrada y la primera de la salida, así que escribirla obliga a meter las cinco: la pila queda o n a i p con la o en el tope. Sacada la o, lo único que la pila puede entregar es n a i p, y la salida pide p i n a. El recorrido se detiene ahí, tras " +
-          ULTIMO.estados + " estados.";
-        logradas.piano = true; revisar();
-      } else if (dado === 1) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Esa es la cuenta cuando la salida es la entrada al revés, y opina no es piano al revés: eso sería onaip. Mire en qué orden puede entregar la pila las cuatro letras que quedan después de escribir la o.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "No. Escribir la o de primera obliga a meter las cinco letras, porque la o es la última de piano. Con la pila ya llena y nada por meter, el orden en que salen las cuatro letras restantes está decidido: compárelo con lo que la salida pide.";
-      }
+    alAcertar("opciones-piano", function () { logradas.piano = true; revisar(); });
+    Motor.opcionesNumericas("opciones-piano", "veredicto-piano", function () {
+      var n = ULTIMO.secuencias.length;
+      return sinRepetir([
+        { valor: n, clave: "correcta",
+          razon: "Correcto: ninguna, y el bloque sale vacío aunque opina sea anagrama de piano. La o es la última letra de la entrada y la primera de la salida, así que escribirla obliga a meter las cinco: la pila queda o n a i p con la o en el tope. Sacada la o, lo único que la pila puede entregar es n a i p, y la salida pide p i n a. El recorrido se detiene ahí, tras " +
+            ULTIMO.estados + " estados." },
+        { valor: 1, clave: "una",
+          razon: "Esa es la cuenta cuando la salida es la entrada al revés, y opina no es piano al revés: eso sería onaip. Mire en qué orden puede entregar la pila las cuatro letras que quedan después de escribir la o." },
+        { valor: 2, clave: "dos",
+          razon: "Dos secuencias requerirían dos formas distintas de servir la o, y aquí la o aparece una sola vez y obliga a meter las cinco letras; después el orden de las otras cuatro ya está decidido." },
+        { valor: 5, clave: "una-por-letra",
+          razon: "Una secuencia por letra no existe: la cuenta sale del orden en que la pila puede entregar las letras, no del número de letras." }
+      ]);
     });
   })();
 }

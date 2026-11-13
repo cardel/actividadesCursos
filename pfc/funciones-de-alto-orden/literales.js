@@ -27,10 +27,13 @@
         { txt: "(x => x + 1, x => x + 1)", ok: true, msg: "Correcto: los términos son 1, 2, 3 y f los vuelve 2, 3, 4. Suma 9. El mismo literal hace dos trabajos distintos según la posición." },
         { txt: "(x => x, x => x + 1)", ok: false, msg: "No: 1 + 2 + 3 = 6." },
         { txt: "(x => x * x, x => x + 1)", ok: false, msg: "No: 1 + 4 + 9 = 14." }] },
-    { id: "mismo", numerico: true, respuesta: 8,
+    { id: "mismo", multiple: false,
       texto: "¿Cuánto vale suma(x => x + 2, x => x + 2, 1, 3)? Los dos literales son iguales y hacen cosas distintas.",
-      bien: "Correcto: los términos son 1 y 3 (el 5 ya se pasa), y f los vuelve 3 y 5. Suma 8.",
-      mal: "No. prox = x => x + 2 genera los términos 1 y 3; f = x => x + 2 los convierte en 3 y 5. Eso da 8." }
+      opciones: [
+        { txt: "4", ok: false, msg: "No: 4 = 1 + 3 son los términos, sin pasar por f. f = x => x + 2 los convierte en 3 y 5." },
+        { txt: "15", ok: false, msg: "No: 15 = 3 + 5 + 7 supone un tercer término. prox genera 1, 3, 5 y el 5 ya pasó de b = 3, así que solo entran 1 y 3." },
+        { txt: "8", ok: true, msg: "Correcto: los términos son 1 y 3 (el 5 ya se pasa), y f los vuelve 3 y 5. Suma 8." },
+        { txt: "3", ok: false, msg: "No: 3 es solo f(1). prox = x => x + 2 lleva a 3, que todavía es menor o igual que 3, y f(3) = 5 también se suma." }] }
   ];
 
   var API = { PREGUNTAS: PREGUNTAS };
@@ -56,71 +59,52 @@
       carta.appendChild(h);
       var ver = document.createElement("div");
       ver.className = "veredicto";
-      if (q.numerico) {
-        var fila = document.createElement("div");
-        fila.className = "prediccion";
-        var inp = document.createElement("input");
-        inp.type = "number"; inp.placeholder = "su número";
+      var ops = document.createElement("div");
+      ops.className = "opciones";
+      var marcadas = {};
+      q.opciones.forEach(function (o, i) {
         var b = document.createElement("button");
-        b.className = "primario"; b.textContent = "Comprobar";
+        b.textContent = o.txt;
         b.addEventListener("click", function () {
-          var v = parseInt(inp.value, 10);
-          if (isNaN(v)) { ver.className = "veredicto mal"; ver.textContent = "Escriba un número primero."; return; }
-          var bien = v === q.respuesta;
-          ver.className = "veredicto " + (bien ? "bien" : "mal");
-          ver.textContent = bien ? q.bien : q.mal;
-          if (bien) { terminar(q.id); }
+          if (!q.multiple) {
+            ops.querySelectorAll("button").forEach(function (x) { x.className = ""; });
+            b.className = o.ok ? "primario" : "";
+            ver.className = "veredicto " + (o.ok ? "bien" : "mal");
+            ver.textContent = o.msg;
+            if (o.ok) { terminar(q.id); }
+            return;
+          }
+          marcadas[i] = !marcadas[i];
+          b.className = marcadas[i] ? "primario" : "";
+          ver.className = "veredicto";
+          ver.textContent = "";
         });
-        fila.appendChild(inp); fila.appendChild(b);
-        carta.appendChild(fila);
-      } else {
-        var ops = document.createElement("div");
-        ops.className = "opciones";
-        var marcadas = {};
-        q.opciones.forEach(function (o, i) {
-          var b = document.createElement("button");
-          b.textContent = o.txt;
-          b.addEventListener("click", function () {
-            if (!q.multiple) {
-              ops.querySelectorAll("button").forEach(function (x) { x.className = ""; });
-              b.className = o.ok ? "primario" : "";
-              ver.className = "veredicto " + (o.ok ? "bien" : "mal");
-              ver.textContent = o.msg;
-              if (o.ok) { terminar(q.id); }
-              return;
-            }
-            marcadas[i] = !marcadas[i];
-            b.className = marcadas[i] ? "primario" : "";
-            ver.className = "veredicto";
-            ver.textContent = "";
+        ops.appendChild(b);
+      });
+      carta.appendChild(ops);
+      if (q.multiple) {
+        var comprobar = document.createElement("button");
+        comprobar.className = "primario"; comprobar.textContent = "Comprobar las marcadas";
+        comprobar.style.marginTop = "0.5rem";
+        comprobar.addEventListener("click", function () {
+          var faltan = [], sobran = [];
+          q.opciones.forEach(function (o, i) {
+            if (o.ok && !marcadas[i]) { faltan.push(o); }
+            if (!o.ok && marcadas[i]) { sobran.push(o); }
           });
-          ops.appendChild(b);
+          if (faltan.length === 0 && sobran.length === 0) {
+            ver.className = "veredicto bien";
+            ver.textContent = "Correcto. " + q.opciones.filter(function (o) { return o.ok; }).map(function (o) { return o.msg; }).join(" ");
+            terminar(q.id);
+          } else if (sobran.length > 0) {
+            ver.className = "veredicto mal";
+            ver.textContent = sobran[0].msg;
+          } else {
+            ver.className = "veredicto mal";
+            ver.textContent = "Falta uno. " + faltan[0].msg;
+          }
         });
-        carta.appendChild(ops);
-        if (q.multiple) {
-          var comprobar = document.createElement("button");
-          comprobar.className = "primario"; comprobar.textContent = "Comprobar las marcadas";
-          comprobar.style.marginTop = "0.5rem";
-          comprobar.addEventListener("click", function () {
-            var faltan = [], sobran = [];
-            q.opciones.forEach(function (o, i) {
-              if (o.ok && !marcadas[i]) { faltan.push(o); }
-              if (!o.ok && marcadas[i]) { sobran.push(o); }
-            });
-            if (faltan.length === 0 && sobran.length === 0) {
-              ver.className = "veredicto bien";
-              ver.textContent = "Correcto. " + q.opciones.filter(function (o) { return o.ok; }).map(function (o) { return o.msg; }).join(" ");
-              terminar(q.id);
-            } else if (sobran.length > 0) {
-              ver.className = "veredicto mal";
-              ver.textContent = sobran[0].msg;
-            } else {
-              ver.className = "veredicto mal";
-              ver.textContent = "Falta uno. " + faltan[0].msg;
-            }
-          });
-          carta.appendChild(comprobar);
-        }
+        carta.appendChild(comprobar);
       }
       carta.appendChild(ver);
       caja.appendChild(carta);

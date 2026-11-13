@@ -406,46 +406,106 @@ var EJERCICIO = (function () {
       (esRaiz ? " y nada más, porque es la raíz." : " más la arista del padre.") };
   }
 
-  function fbAridad(A, valor) {
+  /* Nunca dos botones con el mismo valor: gana la primera de la lista. */
+  function unicas(lista) {
+    var vistos = {};
+    return lista.filter(function (o) {
+      var nuevo = !vistos[o.valor] && o.valor >= 0;
+      vistos[o.valor] = true;
+      return nuevo;
+    });
+  }
+
+  function opcionesAridad(A) {
     var a = A.aridad, cual = [], x = 0;
     while (x < A.n) {
       if (hijos(A, x).length === a) { cual.push(x); }
       x = x + 1;
     }
-    if (valor === a) {
-      return { ok: true, msg: "La aridad es " + a + ", el mayor de los grados, y lo alcanza " +
-        nombres(A, cual) + ". Con esa cota un arreglo de hijos por nodo gastaría " + (A.n * a) +
-        " casillas; los dos punteros gastan " + (2 * A.n) + "." };
-    }
-    if (valor === A.altura) {
-      return { ok: false, msg: "Es " + a + ". El " + valor +
-        " es la altura, que mide hacia abajo; la aridad mide a lo ancho, en el nodo de más hijos." };
-    }
-    if (valor === A.n) {
-      return { ok: false, msg: "Es " + a + ". El " + valor +
-        " son los nodos del árbol, no los hijos del nodo que más tiene." };
-    }
-    return { ok: false, msg: "Es " + a + ", los hijos de " + nombres(A, cual) +
-      ". La aridad es el mayor de los grados y no el de la raíz, que aquí tiene " +
-      gradoConRaiz(A, A.raiz) + "." };
+    return unicas([
+      { valor: a, clave: "correcta",
+        razon: "La aridad es " + a + ", el mayor de los grados, y lo alcanza " +
+          nombres(A, cual) + ". Con esa cota un arreglo de hijos por nodo gastaría " + (A.n * a) +
+          " casillas; los dos punteros gastan " + (2 * A.n) + "." },
+      { valor: A.altura, clave: "altura",
+        razon: "Es " + a + ". El " + A.altura +
+          " es la altura, que mide hacia abajo; la aridad mide a lo ancho, en el nodo de más hijos." },
+      { valor: A.n, clave: "nodos",
+        razon: "Es " + a + ". El " + A.n +
+          " son los nodos del árbol, no los hijos del nodo que más tiene." },
+      { valor: a + 1, clave: "aristas",
+        razon: "Es " + a + ", los hijos de " + nombres(A, cual) + ". Con " + (a + 1) +
+          " se cuenta también la arista hacia el padre, que es el grado sin raíz; la aridad cuenta solo hijos." },
+      { valor: gradoConRaiz(A, A.raiz), clave: "raiz",
+        razon: "Es " + a + ", los hijos de " + nombres(A, cual) +
+          ". La aridad es el mayor de los grados y no el de la raíz, que aquí tiene " +
+          gradoConRaiz(A, A.raiz) + "." }
+    ]).slice(0, 4);
   }
 
-  function fbProfGeneral(A, x, valor) {
+  /* Nodos del cuadro de grados: la raiz, uno interno y una hoja. */
+  function nodosGrado(A) {
+    return [
+      { u: A.raiz, que: "la raíz" },
+      { u: A.interno, que: "un nodo interno" },
+      { u: A.hoja, que: "una hoja" }
+    ];
+  }
+
+  function opcionesGrado(A, x, conRaiz) {
+    var gc = gradoConRaiz(A, x), gs = gradoSinRaiz(A, x), esRaiz = A.padre[x] === -1;
+    var g = conRaiz ? gc : gs, nom = A.nombre[x], desc = descendientes(A, x).length;
+    var lista = [{ valor: g, clave: "correcta", razon: "Correcto. " + fbGrado(A, x, conRaiz, g).msg }];
+    if (conRaiz) {
+      lista.push({ valor: gs, clave: "sinraiz",
+        razon: "Con raíz son " + gc + ". El " + gs + " cuenta también la arista hacia " +
+          (esRaiz ? "el padre, que " + nom + " no tiene" : A.nombre[A.padre[x]]) +
+          ", que es el grado sin raíz: el padre no es un hijo." });
+      lista.push({ valor: gc + 1, clave: "propio",
+        razon: "Son " + gc + ". Con " + (gc + 1) + " se cuenta a " + nom + " mismo junto con sus hijos, y el grado cuenta solo los hijos." });
+      lista.push({ valor: desc, clave: "descendientes",
+        razon: "Son " + gc + ". El " + desc + " cuenta todos los descendientes de " + nom +
+          ", nietos incluidos; el grado con raíz cuenta solo los hijos directos, los que hijos(" + nom + ") devuelve." });
+      lista.push({ valor: A.aridad, clave: "aridad",
+        razon: "Son " + gc + ". El " + A.aridad + " es la aridad del árbol, el mayor grado de todos, y no el de " + nom + "." });
+    } else {
+      lista.push({ valor: gc, clave: "conraiz",
+        razon: "Sin raíz son " + gs + ". El " + gc + " cuenta solo los hijos y deja fuera la arista hacia el padre" +
+          (esRaiz ? ", que aquí no existe: la raíz no tiene padre y por eso los dos grados coinciden." : ", que en el grafo sin raíz cuenta igual que las demás.") });
+      lista.push({ valor: gs + 1, clave: "propio",
+        razon: "Son " + gs + ". Con " + (gs + 1) + " se suma una arista de más; cada arista que toca a " + nom +
+          " va a un hijo o al padre, y no hay otra." });
+      lista.push({ valor: desc, clave: "descendientes",
+        razon: "Son " + gs + ". El " + desc + " cuenta todos los descendientes de " + nom + ", no las aristas que tocan a " + nom + "." });
+      lista.push({ valor: A.n - 1, clave: "todas",
+        razon: "Son " + gs + ". El " + (A.n - 1) + " son todas las aristas del árbol, no las que tocan a " + nom + "." });
+    }
+    lista.push({ valor: profundidad(A, x), clave: "profundidad",
+      razon: "Son " + g + ". El " + profundidad(A, x) + " es la profundidad de " + nom +
+        ", a cuántas aristas queda de la raíz, y el grado cuenta las aristas que salen de " + nom + "." });
+    return unicas(lista).slice(0, 4);
+  }
+
+  function opcionesProfGeneral(A, x) {
     var d = profundidad(A, x), cam = caminoALaRaiz(A, x);
-    if (valor === d) {
-      return { ok: true, msg: "La profundidad de " + A.nombre[x] + " es " + d +
-        ": padre lleva de " + A.nombre[x] + " a la raíz por " + nombres(A, cam) +
-        ", y son " + d + " aristas." };
-    }
-    if (valor === cam.length) {
-      return { ok: false, msg: "Es " + d + ". El " + valor + " son los nodos del camino " +
-        nombres(A, cam) + "; la profundidad cuenta aristas, de modo que la raíz queda en 0." };
-    }
-    return { ok: false, msg: "Es " + d + ": el camino de " + A.nombre[x] + " a la raíz es " +
-      nombres(A, cam) + " y tiene " + d + " aristas." };
+    return unicas([
+      { valor: d, clave: "correcta",
+        razon: "La profundidad de " + A.nombre[x] + " es " + d +
+          ": padre lleva de " + A.nombre[x] + " a la raíz por " + nombres(A, cam) +
+          ", y son " + d + " aristas." },
+      { valor: cam.length, clave: "nodos",
+        razon: "Es " + d + ". El " + cam.length + " son los nodos del camino " +
+          nombres(A, cam) + "; la profundidad cuenta aristas, de modo que la raíz queda en 0." },
+      { valor: A.profBin[x], clave: "binario",
+        razon: "Es " + d + ". Ese " + A.profBin[x] + " es la profundidad de " + A.nombre[x] +
+          " leyendo hermanoDer como hijo derecho; en el árbol de aridad libre los hermanos están al mismo nivel." },
+      { valor: d - 1, clave: "padre",
+        razon: "Es " + d + ". Con " + (d - 1) + " el conteo termina en el padre de " + A.nombre[x] +
+          " y falta la última arista: " + nombres(A, cam) + " tiene " + d + " aristas." }
+    ]);
   }
 
-  function fbProfBinaria(A, x, valor) {
+  function opcionesProfBinaria(A, x) {
     var d = A.profBin[x], dg = profundidad(A, x), ruta = rutaBinaria(A, x);
     var izq = ruta.filter(function (p) { return p.paso === "hijoIzq"; }).length;
     var der = ruta.length - izq;
@@ -453,38 +513,45 @@ var EJERCICIO = (function () {
       return A.nombre[p.de] + " " + (p.paso === "hijoIzq" ? "a la izquierda" : "a la derecha") +
         " " + A.nombre[p.a];
     }).join(", ");
-    if (valor === d) {
-      return { ok: true, msg: "En el árbol binario " + A.nombre[x] + " queda a profundidad " + d +
-        ": " + detalle + ", o sea " + izq + " paso" + (izq === 1 ? "" : "s") + " por hijoIzq y " +
-        der + " por hermanoDer. En el árbol de aridad libre está a " + dg +
-        ", porque allí los " + der + " pasos entre hermanos no bajan de nivel." };
-    }
-    if (valor === dg) {
-      return { ok: false, msg: "Esa es su profundidad en el árbol de aridad libre. En el binario es " +
-        d + ", porque cada salto de hermanoDer también baja un nivel: " + detalle + "." };
-    }
-    return { ok: false, msg: "Es " + d + ": " + detalle +
-      ". Los dos punteros cuentan igual, y ahí está la diferencia con el " + dg +
-      " del árbol de aridad libre." };
+    return unicas([
+      { valor: d, clave: "correcta",
+        razon: "En el árbol binario " + A.nombre[x] + " queda a profundidad " + d +
+          ": " + detalle + ", o sea " + izq + " paso" + (izq === 1 ? "" : "s") + " por hijoIzq y " +
+          der + " por hermanoDer. En el árbol de aridad libre está a " + dg +
+          ", porque allí los " + der + " pasos entre hermanos no bajan de nivel." },
+      { valor: dg, clave: "general",
+        razon: "Esa es su profundidad en el árbol de aridad libre. En el binario es " +
+          d + ", porque cada salto de hermanoDer también baja un nivel: " + detalle + "." },
+      { valor: der, clave: "hermanos",
+        razon: "Es " + d + ". Ese " + der + " cuenta solo los pasos por hermanoDer y deja fuera los " +
+          izq + " de hijoIzq; los dos punteros bajan un nivel: " + detalle + "." },
+      { valor: d + 1, clave: "nodos",
+        razon: "Es " + d + ": " + detalle + ". Con " + (d + 1) +
+          " se cuentan los nodos de la ruta, raíz incluida, y la profundidad cuenta aristas." }
+    ]);
   }
 
-  function fbAlturaBinaria(A, valor) {
+  function opcionesAlturaBinaria(A) {
     var hb = A.alturaBin, mas = [], x = 0;
     while (x < A.n) {
       if (A.profBin[x] === hb) { mas.push(x); }
       x = x + 1;
     }
-    if (valor === hb) {
-      return { ok: true, msg: "La altura del árbol binario es " + hb + ", con " + nombres(A, mas) +
-        " en el fondo, contra " + A.altura + " del árbol de aridad libre. Un recorrido sobre la memoria baja " +
-        hb + " niveles para ver lo que en el árbol de aridad libre está a " + A.altura + "." };
-    }
-    if (valor === A.altura) {
-      return { ok: false, msg: "Esa es la altura del árbol de aridad libre. La del binario es " + hb +
-        ": las cadenas de hermanos se vuelven ramas derechas y alargan el árbol hacia abajo." };
-    }
-    return { ok: false, msg: "Es " + hb + ", la profundidad de " + nombres(A, mas) +
-      " en el árbol binario." };
+    return unicas([
+      { valor: hb, clave: "correcta",
+        razon: "La altura del árbol binario es " + hb + ", con " + nombres(A, mas) +
+          " en el fondo, contra " + A.altura + " del árbol de aridad libre. Un recorrido sobre la memoria baja " +
+          hb + " niveles para ver lo que en el árbol de aridad libre está a " + A.altura + "." },
+      { valor: A.altura, clave: "general",
+        razon: "Esa es la altura del árbol de aridad libre. La del binario es " + hb +
+          ": las cadenas de hermanos se vuelven ramas derechas y alargan el árbol hacia abajo." },
+      { valor: hb + 1, clave: "nodos",
+        razon: "Es " + hb + ", la profundidad de " + nombres(A, mas) +
+          " en el árbol binario. Con " + (hb + 1) + " se cuentan niveles de nodos, y la altura cuenta aristas." },
+      { valor: A.profBin[A.foco], clave: "foco",
+        razon: "Es " + hb + ". Ese " + A.profBin[A.foco] + " es la profundidad de " + A.nombre[A.foco] +
+          " en el árbol binario, no la del nodo más profundo, que es " + nombres(A, mas) + "." }
+    ]);
   }
 
   return {
@@ -496,8 +563,10 @@ var EJERCICIO = (function () {
     simHijos: simHijos, CODIGO_HIJOS: CODIGO_HIJOS,
     ARBOLES: ARBOLES, PARA_CONVERTIR: PARA_CONVERTIR,
     nombres: nombres, leerNodos: leerNodos, celdas: celdas,
-    fbHijos: fbHijos, fbTablas: fbTablas, fbGrado: fbGrado, fbAridad: fbAridad,
-    fbProfGeneral: fbProfGeneral, fbProfBinaria: fbProfBinaria, fbAlturaBinaria: fbAlturaBinaria
+    fbHijos: fbHijos, fbTablas: fbTablas, fbGrado: fbGrado, opcionesAridad: opcionesAridad,
+    nodosGrado: nodosGrado, opcionesGrado: opcionesGrado,
+    opcionesProfGeneral: opcionesProfGeneral, opcionesProfBinaria: opcionesProfBinaria,
+    opcionesAlturaBinaria: opcionesAlturaBinaria
   };
 })();
 
@@ -643,49 +712,12 @@ if (typeof module !== "undefined") {
 
     /* ---------- el grado y la aridad ---------- */
 
-    function tablaGrados() {
-      var A = arbol(), filas = [
-        { u: A.raiz, que: "la raíz" },
-        { u: A.interno, que: "un nodo interno" },
-        { u: A.hoja, que: "una hoja" }
-      ];
-      el("tabla-grados").innerHTML = "<div class='envoltura-tabla'><table class='corta rellenar'>" +
-        "<tr><th>Nodo</th><th>Hijos (grado con raíz)</th><th>Aristas (grado sin raíz)</th></tr>" +
-        filas.map(function (f) {
-          return "<tr><td class='izq'>" + A.nombre[f.u] + ", " + f.que +
-            "</td><td><input id='gc-" + f.u + "' placeholder='0'></td>" +
-            "<td><input id='gs-" + f.u + "' placeholder='0'></td></tr>";
-        }).join("") + "</table></div>";
-      el("in-aridad").value = "";
-      ["fb-grados", "fb-aridad"].forEach(function (k) {
-        el(k).className = "fb";
-        el(k).textContent = "";
+    function rotulosGrados() {
+      var A = arbol();
+      E.nodosGrado(A).forEach(function (f, j) {
+        el("rot-gc-" + j).innerHTML = "<i>" + A.nombre[f.u] + "</i>, " + f.que + ": cuántos hijos tiene (grado con raíz)";
+        el("rot-gs-" + j).innerHTML = "<i>" + A.nombre[f.u] + "</i>, " + f.que + ": cuántas aristas toca (grado sin raíz)";
       });
-      return filas;
-    }
-
-    function comprobarGrados() {
-      var A = arbol(), filas = [A.raiz, A.interno, A.hoja], msgs = [], ok = true;
-      filas.forEach(function (u) {
-        var vc = parseInt(el("gc-" + u).value, 10), vs = parseInt(el("gs-" + u).value, 10);
-        var rc = E.fbGrado(A, u, true, isNaN(vc) ? -99 : vc);
-        var rs = E.fbGrado(A, u, false, isNaN(vs) ? -99 : vs);
-        el("gc-" + u).className = rc.ok ? "acierto" : "falla";
-        el("gs-" + u).className = rs.ok ? "acierto" : "falla";
-        ok = ok && rc.ok && rs.ok;
-        msgs.push(rc.ok && rs.ok
-          ? (A.padre[u] === -1
-              ? A.nombre[u] + ": los dos números coinciden, y es el único nodo donde eso pasa."
-              : rs.msg)
-          : (rc.ok ? rs.msg : rc.msg));
-      });
-      el("fb-grados").className = ok ? "fb bien" : "fb mal";
-      el("fb-grados").textContent = msgs.join(" ");
-      var a = parseInt(el("in-aridad").value, 10);
-      var ra = E.fbAridad(A, isNaN(a) ? -99 : a);
-      el("fb-aridad").className = ra.ok ? "fb bien" : "fb mal";
-      el("fb-aridad").textContent = isNaN(a) ? "Falta el número de la aridad." : ra.msg;
-      if (isNaN(a)) { el("fb-aridad").className = "fb mal"; }
     }
 
     /* ---------- el arbol binario que quedo en memoria ---------- */
@@ -696,13 +728,8 @@ if (typeof module !== "undefined") {
         "</i> en el árbol de aridad libre";
       el("rot-prof-bin").innerHTML = "Profundidad de <i>" + A.nombre[A.foco] +
         "</i> leyendo los dos punteros como un árbol binario";
-      ["prof-gen", "prof-bin", "alt-bin"].forEach(function (k) {
-        el("in-" + k).value = "";
-        el("fb-" + k).className = "fb";
-        el("fb-" + k).textContent = "";
-      });
       el("panel-binario").innerHTML = "";
-      el("pie-binario").textContent = "El dibujo aparece al comprobar.";
+      el("pie-binario").textContent = "El dibujo aparece al pulsar el botón.";
     }
 
     function dibujoBinario() {
@@ -727,18 +754,6 @@ if (typeof module !== "undefined") {
     }
 
     function comprobarBinario() {
-      var A = arbol();
-      var vg = parseInt(el("in-prof-gen").value, 10);
-      var vb = parseInt(el("in-prof-bin").value, 10);
-      var va = parseInt(el("in-alt-bin").value, 10);
-      var rg = E.fbProfGeneral(A, A.foco, isNaN(vg) ? -99 : vg);
-      var rb = E.fbProfBinaria(A, A.foco, isNaN(vb) ? -99 : vb);
-      var ra = E.fbAlturaBinaria(A, isNaN(va) ? -99 : va);
-      [["prof-gen", rg, vg], ["prof-bin", rb, vb], ["alt-bin", ra, va]].forEach(function (par) {
-        el("fb-" + par[0]).className = par[1].ok ? "fb bien" : "fb mal";
-        el("fb-" + par[0]).textContent = isNaN(par[2]) ? "Falta el número." : par[1].msg;
-        if (isNaN(par[2])) { el("fb-" + par[0]).className = "fb mal"; }
-      });
       dibujoBinario();
     }
 
@@ -758,7 +773,7 @@ if (typeof module !== "undefined") {
       el("ver-texto").textContent = A.texto + " Tiene " + A.n + " nodos y altura " + A.altura + ".";
       botonesNodo();
       limpiarHijos();
-      tablaGrados();
+      rotulosGrados();
       limpiarBinario();
       Motor.reiniciar(p);
     }
@@ -802,9 +817,31 @@ if (typeof module !== "undefined") {
       });
     });
 
+    Motor.opcionesNumericas("opciones-aridad", "veredicto-aridad", function (q) {
+      return E.opcionesAridad(E.ARBOLES[q.t]);
+    });
+    Motor.opcionesNumericas("opciones-prof-gen", "veredicto-prof-gen", function (q) {
+      var A = E.ARBOLES[q.t];
+      return E.opcionesProfGeneral(A, A.foco);
+    });
+    Motor.opcionesNumericas("opciones-prof-bin", "veredicto-prof-bin", function (q) {
+      var A = E.ARBOLES[q.t];
+      return E.opcionesProfBinaria(A, A.foco);
+    });
+    Motor.opcionesNumericas("opciones-alt-bin", "veredicto-alt-bin", function (q) {
+      return E.opcionesAlturaBinaria(E.ARBOLES[q.t]);
+    });
+
+    [0, 1, 2].forEach(function (j) {
+      [["gc", true], ["gs", false]].forEach(function (k) {
+        Motor.opcionesNumericas("opciones-" + k[0] + "-" + j, "veredicto-" + k[0] + "-" + j, function (q) {
+          var A = E.ARBOLES[q.t];
+          return E.opcionesGrado(A, E.nodosGrado(A)[j].u, k[1]);
+        });
+      });
+    });
     el("btn-hijos").addEventListener("click", comprobarHijos);
     el("btn-convertir").addEventListener("click", comprobarConvertir);
-    el("btn-grados").addEventListener("click", comprobarGrados);
     el("btn-binario").addEventListener("click", comprobarBinario);
 
     cambiarArbol();

@@ -422,10 +422,40 @@ if (typeof document !== "undefined") (function () {
     k = 0; pintarPaso();
   });
 
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-gil", boton: "btn-comprobar-gil", veredicto: "veredicto-gil" },
-    function () { return tiempoConHilos(PROGRAMAS.espera.tareas, 4, SOBRECOSTO); },
-    explicarPrediccion);
+  Motor.opcionesNumericas("opciones-gil", "veredicto-gil", function () {
+    var num = Motor.num;
+    var espera = PROGRAMAS.espera.tareas;
+    var calculo = PROGRAMAS.calculo.tareas;
+    var real = tiempoConHilos(espera, 4, SOBRECOSTO);
+    var cand = [
+      { valor: real, clave: "correcta",
+        razon: "Sí: " + num(real, 2) + " s. Las ocho esperas se solapan: cada hilo se lleva " +
+          "dos y las cuatro parejas corren a la vez, así que el total es 2 × 0,63. El hilo " +
+          "que espera una respuesta suelta el GIL antes de dormirse y otro avanza mientras " +
+          "tanto. Con el programa de cálculo puro no pasa eso: los " +
+          num(sumaCalculo(calculo), 2) + " s se hacen uno a la vez y encima se pagan " +
+          num(cambiosDeTurno(calculo, 4)) + " cambios de turno." },
+      { valor: espera.length * D, clave: "serie",
+        razon: "Eso sería si el GIL también serializara la espera. Pero el hilo suelta el " +
+          "GIL antes de dormirse, y las esperas de los cuatro hilos corren a la vez." },
+      { valor: D, clave: "una",
+        razon: "Eso es lo que dura una sola tarea. Con 4 hilos y 8 tareas, cada hilo se " +
+          "lleva dos, una tras otra: " + num(real, 2) + " s." },
+      { valor: tiempoConHilos(calculo, 4, SOBRECOSTO), clave: "calculo",
+        razon: "Ese es el programa de cálculo puro con 4 hilos: se serializa y además paga " +
+          "los cambios de turno. La espera de red no los paga." }
+    ];
+    var vistos = [];
+    return cand.filter(function (o) {
+      var r = Math.round(o.valor * 100);
+      var nuevo = vistos.indexOf(r) < 0;
+      if (nuevo) { vistos.push(r); }
+      return nuevo;
+    }).slice(0, 4).map(function (o) {
+      o.valor = num(o.valor, 2);
+      return o;
+    });
+  });
   Motor.conectarOpciones("opciones-nucleos", "veredicto-nucleos", RAZONES_NUCLEOS);
   Motor.conectarOpciones("opciones-sirven", "veredicto-sirven", RAZONES_SIRVEN);
   document.querySelectorAll("#opciones-nucleos button").forEach(function (b) {

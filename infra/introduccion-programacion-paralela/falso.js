@@ -157,34 +157,10 @@
     document.getElementById("veredicto").className = "veredicto";
     pintarMemoria();
     pintarTabla();
+    if (opsPred) { opsPred.refrescar(); }
   }
 
-  function comprobar() {
-    var caja = document.getElementById("veredicto");
-    var v = parseInt(document.getElementById("prediccion").value, 10);
-    var real = contar(relleno, orden);
-    if (isNaN(v)) {
-      caja.className = "veredicto mal";
-      caja.textContent = "Escriba un número antes de comprobar.";
-      return;
-    }
-    if (v === real) {
-      caja.className = "veredicto bien";
-      caja.textContent = "Correcto: " + real + " viajes sobre " +
-        (r * HILOS) + " escrituras.";
-    } else {
-      caja.className = "veredicto mal";
-      caja.innerHTML = "Son <b>" + real + "</b>, no " + v + ". " +
-        (relleno
-          ? "Con relleno cada hilo tiene su línea: la pide una vez y después " +
-            "escribe sin molestar a nadie."
-          : (orden === "inter"
-            ? "Sin relleno los cuatro comparten la línea 0, y como se turnan, " +
-              "cada escritura se la quita al que la tenía."
-            : "Sin relleno comparten la línea, pero cada hilo hace todas sus " +
-              "escrituras seguidas: solo paga la primera."));
-    }
-  }
+  var opsPred = null;
 
   var LECTURA = {
     concurrencia: [true, "Eso es. Compartir la línea es condición necesaria, no " +
@@ -243,7 +219,43 @@
       }
     }, 450);
   });
-  document.getElementById("btn-comprobar").addEventListener("click", comprobar);
+  opsPred = Motor.opcionesNumericas("opciones-prediccion", "veredicto", function () {
+    var real = contar(relleno, orden);
+    var escr = r * HILOS;
+    var lista = [{ valor: real, clave: "correcta",
+      razon: "Correcto: " + real + " viajes sobre " + escr + " escrituras. " +
+        (relleno
+          ? "Con relleno cada hilo tiene su línea: la pide una vez y después escribe sin molestar a nadie."
+          : (orden === "inter"
+            ? "Sin relleno los cuatro comparten la línea 0, y como se turnan, cada escritura se la quita al que la tenía."
+            : "Sin relleno comparten la línea, pero cada hilo hace todas sus escrituras seguidas: solo paga la primera.")) }];
+    var propuestas = [
+      { valor: escr, clave: "todas",
+        razon: "Eso es una por escritura, " + escr + ", como si cada una moviera la línea. " +
+          "Solo viaja cuando la tenía otro hilo: aquí son " + real + "." },
+      { valor: HILOS, clave: "uno-por-hilo",
+        razon: "Eso es un viaje por hilo, " + HILOS + ", la cuenta de quien no ve que los " +
+          "hilos se turnan. Aquí son " + real + "." },
+      { valor: real - 1, clave: "sin-el-primero",
+        razon: "Eso descuenta la primera escritura, como si la línea ya estuviera en el núcleo " +
+          "del primer hilo. Al empezar nadie la tiene: el primero también la pide. Son " +
+          real + " viajes." },
+      { valor: r, clave: "rondas",
+        razon: "Eso es el número de rondas de escritura por hilo, " + r + ", no los viajes de " +
+          "la línea. Son " + real + "." },
+      { valor: 1, clave: "uno",
+        razon: "Un solo viaje supone que la línea llega una vez y nadie más la pide. Hay " +
+          HILOS + " hilos escribiendo y son " + real + " viajes." }
+    ];
+    var vistos = [String(real)];
+    propuestas.forEach(function (o) {
+      if (lista.length < 4 && vistos.indexOf(String(o.valor)) < 0) {
+        vistos.push(String(o.valor));
+        lista.push(o);
+      }
+    });
+    return lista;
+  });
   document.querySelectorAll("#opciones-lectura button").forEach(function (b) {
     b.addEventListener("click", function () {
       var res = LECTURA[b.dataset.op];

@@ -211,21 +211,53 @@ if (typeof module !== "undefined") {
       paramsIniciales: PRESETS[0], alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
+    function sinRepetir(lista) {
+      var vistos = {}, sal = [];
+      lista.forEach(function (o) {
+        if (vistos[o.valor] !== true) { vistos[o.valor] = true; sal.push(o); }
+      });
+      return sal;
+    }
+
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto", function (params) {
       var cafe = EJERCICIO.buscar(params.lab, "C");
       var d = EJERCICIO.distanciasRef(params.lab, params.r0, params.c0, params.DR, params.DC);
       var real = d[cafe[0]][cafe[1]];
       var manhattan = Math.abs(cafe[0] - params.r0) + Math.abs(cafe[1] - params.c0);
-      if (valor === real) {
-        return { ok: true, msg: real >= 0
-          ? "Correcto: " + real + " pasos. Ejecute y vea cómo las capas se van llenando alrededor de S."
-          : "Correcto: no hay camino. Ejecute y vea dónde se detiene la cola." };
+      var d4 = EJERCICIO.distanciasRef(params.lab, params.r0, params.c0, [1, -1, 0, 0], [0, 0, 1, -1]);
+      var cuatro = d4[cafe[0]][cafe[1]];
+      var lista = [
+        { valor: real, clave: "correcta",
+          razon: real >= 0
+            ? "Correcto: " + real + " pasos. Ejecute y vea cómo las capas se van llenando alrededor de S."
+            : "Correcto: no hay camino. Ejecute y vea dónde se detiene la cola." },
+        { valor: manhattan, clave: "recta",
+          razon: "Esa es la distancia en línea recta, sin paredes (" + manhattan +
+            "). Las paredes obligan a rodear; cuente sobre el dibujo." },
+        { valor: cuatro, clave: "cuatro",
+          razon: "Ese es el resultado con cuatro direcciones. Este programa también avanza en diagonal, y eso acorta el camino." },
+        { valor: real + 1, clave: "celdas",
+          razon: "Eso cuenta las celdas del camino, incluida S, en vez de los pasos." },
+        { valor: real - 1, clave: "unoMenos",
+          razon: "Uno de menos: falta contar el paso que entra a la celda del café." },
+        { valor: -1, clave: "sinCamino",
+          razon: "Sí hay camino: rodee las paredes con el dedo y verá que la cola llega al café." }
+      ];
+      var filtrada = sinRepetir(lista);
+      if (params.DR.length === 4) {
+        filtrada = filtrada.filter(function (o) { return o.clave !== "cuatro"; });
       }
-      if (valor === manhattan && real !== manhattan) {
-        return { ok: false, msg: "Esa es la distancia en línea recta, sin paredes (" + manhattan +
-          "). Las paredes obligan a rodear; cuente sobre el dibujo." };
+      if (real <= 0) {
+        filtrada = filtrada.filter(function (o) { return o.clave !== "unoMenos" && o.clave !== "celdas"; });
       }
-      return { ok: false, msg: "No coincide. Siga con el dedo un camino que evite las paredes y cuente los pasos; después busque uno más corto." };
+      if (real < 0) {
+        filtrada.push({ valor: 0, clave: "cero",
+          razon: "Cero pasos sería si S y el café fueran la misma celda. Aquí las paredes cierran el paso y la cola se vacía sin llegar." });
+        filtrada.push({ valor: manhattan + 2, clave: "rodeo",
+          razon: "Eso supone que basta un rodeo de dos pasos sobre la distancia en línea recta. Aquí las paredes no dejan rodear: no hay camino." });
+        filtrada = sinRepetir(filtrada);
+      }
+      return filtrada.slice(0, 4);
     });
 
     Array.prototype.forEach.call(document.querySelectorAll(".presets button"), function (btn) {

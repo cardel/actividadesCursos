@@ -41,11 +41,8 @@
     </div>
     <p style="margin-top:0.6rem">La imagen ocupa 74,5 MB en disco y su contenido comprimido son
     21,9 MB. Los dos contenedores quedan arriba, cada uno con su identificador.</p>
-    <div class="prediccion">
-      <span>¿Cuánto disco más cuesta levantar un tercer contenedor de esa imagen, en megabytes?</span>
-      <input type="number" id="pred-tercero" min="0" step="0.1" placeholder="MB">
-      <button id="btn-tercero" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">¿Cuánto disco más cuesta levantar un tercer contenedor de esa imagen, en megabytes?</p>
+    <div class="opciones" id="op-tercero"></div>
     <div id="ver-tercero" class="veredicto"></div>
     <div class="chips" id="chips-imagen" style="margin-top:0.7rem"></div>
     <p style="margin-bottom:0.3rem;margin-top:1rem">La imagen es la receta y el contenedor el
@@ -68,17 +65,11 @@
       <div class="linea"><span class="num"></span><span class="txt">268435456</span></div>
       <div class="linea"><span class="num"></span><span class="txt">64</span></div>
     </div>
-    <div class="prediccion">
-      <span>De <code>cpu.max</code>, ¿cuántos núcleos tiene ese contenedor?</span>
-      <input type="number" id="pred-cpu" min="0" step="0.1" placeholder="núcleos">
-      <button id="btn-cpu" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">De <code>cpu.max</code>, ¿cuántos núcleos tiene ese contenedor?</p>
+    <div class="opciones" id="op-cpu"></div>
     <div id="ver-cpu" class="veredicto"></div>
-    <div class="prediccion">
-      <span>Y <code>memory.max</code> en mebibytes, ¿cuánto es?</span>
-      <input type="number" id="pred-mem" min="0" step="1" placeholder="MiB">
-      <button id="btn-mem" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">Y <code>memory.max</code> en mebibytes, ¿cuánto es?</p>
+    <div class="opciones" id="op-mem"></div>
     <div id="ver-mem" class="veredicto"></div>
     <div class="envoltura-tabla" style="margin-top:0.6rem">
       <table>

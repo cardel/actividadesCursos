@@ -24,28 +24,19 @@
 
   <div class="carta">
     <h2>2. Las cuatro cifras</h2>
-    <div class="fila-par">
-      <span class="rotulo">Vueltas que da el pelado</span>
-      <input type="number" id="in-vueltas" class="corto" placeholder="0">
-      <span class="fb" id="fb-vueltas"></span>
-    </div>
-    <div class="fila-par">
-      <span class="rotulo">Cuántos vértices quedan al final</span>
-      <input type="number" id="in-cent" class="corto" placeholder="0">
-      <span class="fb" id="fb-cent"></span>
-    </div>
-    <div class="fila-par">
-      <span class="rotulo">Radio</span>
-      <input type="number" id="in-radio" class="corto" placeholder="0">
-      <span class="fb" id="fb-radio"></span>
-    </div>
-    <div class="fila-par">
-      <span class="rotulo">Diámetro</span>
-      <input type="number" id="in-diam" class="corto" placeholder="0">
-      <span class="fb" id="fb-diam"></span>
-    </div>
+    <div class="pregunta">Vueltas que da el pelado</div>
+    <div class="opciones" id="opciones-vueltas"></div>
+    <div id="veredicto-vueltas" class="veredicto"></div>
+    <div class="pregunta">Cuántos vértices quedan al final</div>
+    <div class="opciones" id="opciones-cent"></div>
+    <div id="veredicto-cent" class="veredicto"></div>
+    <div class="pregunta">Radio</div>
+    <div class="opciones" id="opciones-radio"></div>
+    <div id="veredicto-radio" class="veredicto"></div>
+    <div class="pregunta">Diámetro</div>
+    <div class="opciones" id="opciones-diam"></div>
+    <div id="veredicto-diam" class="veredicto"></div>
     <div class="botones" style="margin-top:0.7rem">
-      <button id="btn-comprobar" class="primario">Comprobar las cuatro</button>
       <button id="btn-capas">Ver las capas</button>
     </div>
     <div id="capas"></div>
@@ -64,6 +55,7 @@
     dé tres vueltas y termine con uno solo.</p>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="../comun/arbol.js"></script>
 <script src="../comun/grafo-svg.js"></script>
 <script src="vueltas.js"></script>

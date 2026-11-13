@@ -19,14 +19,12 @@
     <code>ver</code> son apilar, desapilar y tope, ¿qué imprime? ¿Y si son
     encolar, desencolar y frente?</p>
     <div class="codigo" id="codigo-programa"></div>
-    <div class="prediccion">
-      <span>como pila:</span>
-      <input type="number" id="pred-pila" placeholder="?">
-      <span>como cola:</span>
-      <input type="number" id="pred-cola" placeholder="?">
-      <button id="btn-programa" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-programa" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem">¿Qué imprime como pila?</p>
+    <div class="opciones" id="opciones-pila"></div>
+    <div id="veredicto-pila" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem">¿Y como cola?</p>
+    <div class="opciones" id="opciones-cola"></div>
+    <div id="veredicto-cola" class="veredicto"></div>
   </div>
 
   <div class="carta">
@@ -66,18 +64,12 @@
     <p style="margin-top:0">Con la lista sobre un arreglo: una lista de 8
     elementos recibe <code>insertar(2, x)</code>. ¿Cuántas casillas se
     corren de lugar?</p>
-    <div class="prediccion">
-      <input type="number" id="pred-c-insertar" placeholder="?">
-      <button id="btn-c-insertar" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-c-insertar"></div>
     <div id="veredicto-c-insertar" class="veredicto"></div>
     <p style="margin-bottom:0.3rem"><code>revertir</code> recorre una lista de 6
     elementos y hace <code>insertar(0, ...)</code> con cada uno. Sumando
     todas las inserciones, ¿cuántas casillas se corren en total?</p>
-    <div class="prediccion">
-      <input type="number" id="pred-c-revertir" placeholder="?">
-      <button id="btn-c-revertir" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-c-revertir"></div>
     <div id="veredicto-c-revertir" class="veredicto"></div>
     <p style="margin-bottom:0.3rem">Imprimir una pila de n elementos sin
     destruirla, con una pila auxiliar: ¿qué cuesta?</p>
@@ -101,6 +93,7 @@
     que deja que la implementación cobre cada operación a costo constante.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="juntos.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

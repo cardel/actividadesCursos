@@ -209,26 +209,44 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
-      var A = params.A;
-      var esperado = EJERCICIO.comprimirPrefijo(A, A.length).length;
-      var distintos = EJERCICIO.distintosPrefijo(A, A.length).length;
-      if (valor === esperado) {
-        return { ok: true, msg: "Correcto: quedan " + esperado + ". Ahora " +
-          "ejecute y mire la ficha ámbar —el último escrito— contra A[i−1]." };
-      }
-      if (valor === distintos) {
-        return { ok: false, msg: "Ese es el número de valores <b>distintos</b>. " +
-          "Aquí solo se colapsan las repeticiones consecutivas: un valor que " +
-          "reaparece después de otro distinto vuelve a entrar." };
-      }
-      if (valor === A.length) {
-        return { ok: false, msg: "Ese es N. Solo coincide cuando no hay dos " +
-          "iguales seguidos; pruebe ese caso con el preset [1, 2, 3]." };
-      }
-      return { ok: false, msg: "No coincide. Cuente las rachas: cada bloque de " +
-        "valores iguales seguidos aporta exactamente un elemento." };
-    });
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto",
+      function (params) {
+        function sinRepetir(lista, maximo) {
+          var vistos = [];
+          var salida = [];
+          var t = 0;
+          while (t < lista.length && salida.length < maximo) {
+            if (vistos.indexOf(lista[t].valor) < 0) {
+              vistos.push(lista[t].valor);
+              salida.push(lista[t]);
+            }
+            t = t + 1;
+          }
+          return salida;
+        }
+        var A = params.A;
+        var esperado = EJERCICIO.comprimirPrefijo(A, A.length).length;
+        var distintos = EJERCICIO.distintosPrefijo(A, A.length).length;
+        var lista = [
+          { valor: esperado, clave: "correcta",
+            razon: "Correcto: quedan " + esperado + ". Ahora ejecute y mire la " +
+              "ficha ámbar —el último escrito— contra A[i−1]." },
+          { valor: distintos, clave: "distintos",
+            razon: "Ese es el número de valores <b>distintos</b>. Aquí solo se " +
+              "colapsan las repeticiones consecutivas: un valor que reaparece " +
+              "después de otro distinto vuelve a entrar." },
+          { valor: A.length, clave: "N",
+            razon: "Ese es N. Solo coincide cuando no hay dos iguales seguidos; " +
+              "pruebe ese caso con el preset [1, 2, 3]." },
+          { valor: esperado - 1, clave: "fronteras",
+            razon: "Ese es el número de cambios de valor entre rachas, una " +
+              "menos que las rachas: la primera racha también aporta su elemento." },
+          { valor: esperado + 1, clave: "de-mas",
+            razon: "Es una racha de más. Cada bloque de valores iguales seguidos " +
+              "aporta exactamente un elemento, y no hay más bloques que esos." }
+        ];
+        return sinRepetir(lista, 4);
+      });
 
     Array.prototype.forEach.call(document.querySelectorAll(".presets button"), function (btn) {
       btn.addEventListener("click", function () {

@@ -94,16 +94,6 @@ function nucleosCompartidos(hilos) {
 
 function fmt(x, d) { return Motor.num(x, d); }
 
-/* La suma de doce porcentajes se estima de cabeza, y el motor pide exactitud
-   cuando el esperado cae en un entero. Vale la suma con 2 % de diferencia, y
-   vale tambien el %CPU que ps imprime para el proceso: sale de la misma
-   medicion y es la otra lectura razonable de la pregunta. */
-function veredictoSuma(dicho, esperado, delPs) {
-  if (isNaN(dicho)) { return { bien: false, motivo: "Escriba un número antes de comprobar." }; }
-  var cerca = Math.abs(dicho - esperado) <= esperado * 0.02;
-  return { bien: cerca || Math.abs(dicho - delPs) <= 1, motivo: "" };
-}
-
 function explicarTecho(bien, real) {
   return (bien ? "Correcto. " : "No. ") + "El techo es " + fmt(real) +
     " %: top y ps miden %CPU contra un núcleo, de modo que 100 % es un núcleo " +
@@ -221,6 +211,18 @@ function filasTop() {
   ];
 }
 
+
+/* Una pregunta numerica se contesta escogiendo: la correcta y los errores que
+   alguien comete de verdad, cada uno con su razon. Un valor repetido se descarta. */
+function opcionesDe(buena, razonBuena, malas) {
+  var lista = [{ valor: buena, clave: "correcta", razon: razonBuena }];
+  malas.forEach(function (m) {
+    var repetido = lista.some(function (o) { return o.valor === m.valor; });
+    if (!repetido) { lista.push({ valor: m.valor, clave: m.clave, razon: m.razon }); }
+  });
+  return lista;
+}
+
 function iniciar() {
   var vistaTop = false, vistaHilos = false;
 
@@ -261,15 +263,36 @@ function iniciar() {
 
   pintarTop();
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-techo", boton: "btn-techo", veredicto: "ver-techo" },
-    function () { return techoCpu(NUCLEOS_LOGICOS); },
-    explicarTecho);
+  Motor.opcionesNumericas("op-techo", "ver-techo", function () {
+    var real = techoCpu(NUCLEOS_LOGICOS);
+    return opcionesDe(fmt(real), explicarTecho(true, real), [
+      { valor: fmt(techoCpu(1)), clave: "uno",
+        razon: "No. Cien es lo que marca un solo núcleo saturado. Un proceso con varios hilos " +
+          "suma el de cada uno, y por eso ./paralelo 900 pasa de tres dígitos." },
+      { valor: fmt(techoCpu(NUCLEOS_FISICOS)), clave: "fisicos",
+        razon: "No. Contó los " + NUCLEOS_FISICOS + " núcleos físicos. El sistema ve " +
+          NUCLEOS_LOGICOS + " lógicos y cada uno aporta sus cien." },
+      { valor: fmt(techoCpu(NUCLEOS_LOGICOS * 2)), clave: "doble",
+        razon: "No. Duplicó los lógicos, como si el SMT sumara otra capacidad. La contabilidad " +
+          "cuenta cada núcleo lógico una vez: " + NUCLEOS_LOGICOS + " por 100." }
+    ]);
+  });
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-nucleos", boton: "btn-nucleos", veredicto: "ver-nucleos" },
-    function () { return nucleosEquivalentes(TOP.pcpu); },
-    explicarNucleos);
+  Motor.opcionesNumericas("op-nucleos", "ver-nucleos", function () {
+    var real = nucleosEquivalentes(TOP.pcpu);
+    return opcionesDe(fmt(real, 2), explicarNucleos(true, real, real), [
+      { valor: fmt(TOP.pcpu / 10, 2), clave: "diez",
+        razon: "No. Dividió entre diez: " + fmt(TOP.pcpu, 1) + " entre 10 da " +
+          fmt(TOP.pcpu / 10, 2) + " núcleos, más de los " + NUCLEOS_LOGICOS +
+          " que tiene la máquina. Un núcleo lleno marca 100, así que se divide entre 100." },
+      { valor: fmt(fraccionDelTecho(TOP.pcpu, NUCLEOS_LOGICOS), 1), clave: "fraccion",
+        razon: "No. Ese es el porcentaje del techo de la máquina, " +
+          fmt(TOP.pcpu, 1) + " entre 1.200. Se pregunta por núcleos, y eso es dividir entre 100." },
+      { valor: fmt(NUCLEOS_LOGICOS), clave: "todos",
+        razon: "No. Doce es el total de núcleos lógicos, el techo. El proceso marca " +
+          fmt(TOP.pcpu, 1) + ", y al dividir entre 100 salen algo más de nueve." }
+    ]);
+  });
 
   document.getElementById("btn-destapar-top").addEventListener("click", function () {
     vistaTop = true;
@@ -282,13 +305,25 @@ function iniciar() {
     pintarHilos();
   });
 
-  document.getElementById("btn-suma").addEventListener("click", function () {
-    var dicho = Motor.leerNumero("pred-suma");
+  Motor.opcionesNumericas("op-suma", "ver-suma", function () {
     var real = sumaCpu(HILOS);
-    var v = veredictoSuma(dicho, real, PS_PROCESO.pcpu);
-    var caja = document.getElementById("ver-suma");
-    caja.className = "veredicto " + (v.bien ? "bien" : "mal");
-    caja.textContent = isNaN(dicho) ? v.motivo : explicarSuma(v.bien, real, dicho);
+    return opcionesDe(fmt(real, 1), explicarSuma(true, real, real), [
+      { valor: fmt(PS_PROCESO.pcpu), clave: "ps",
+        razon: "No. Ese es el %CPU que ps imprime para el proceso completo, una medición " +
+          "aparte que se calcula sobre el proceso y no tarea por tarea. La suma de las doce " +
+          "filas es " + fmt(real, 1) + "." },
+      { valor: fmt(promedioCpu(HILOS), 1), clave: "promedio",
+        razon: "No. Ese es el promedio por hilo. Se pide la suma, que es ese promedio " +
+          "multiplicado por los doce hilos." },
+      { valor: fmt(techoCpu(NUCLEOS_LOGICOS)), clave: "techo",
+        razon: "No. Mil doscientos es el techo, doce hilos al cien por ciento. Los hilos de la " +
+          "tabla marcan entre " + fmt(extremosCpu(HILOS).min, 1) + " y " +
+          fmt(extremosCpu(HILOS).max, 1) + ", así que suman menos." }
+    ]);
+  });
+
+  document.getElementById("op-suma").addEventListener("click", function (ev) {
+    if (ev.target.getAttribute("data-op") !== "correcta") { return; }
     if (!vistaHilos) { vistaHilos = true; pintarHilos(); }
   });
 
@@ -310,7 +345,7 @@ if (typeof module !== "undefined" && module.exports) {
     sumaCpu: sumaCpu, promedioCpu: promedioCpu, extremosCpu: extremosCpu,
     desvioFrentePs: desvioFrentePs, nucleosOcupados: nucleosOcupados,
     nucleosLibres: nucleosLibres, nucleosCompartidos: nucleosCompartidos,
-    veredictoSuma: veredictoSuma, explicarTecho: explicarTecho,
+    explicarTecho: explicarTecho,
     explicarNucleos: explicarNucleos, explicarSuma: explicarSuma,
     RAZONES_PASA100: RAZONES_PASA100, RAZONES_MEM: RAZONES_MEM,
     RAZONES_PSR: RAZONES_PSR, RAZONES_UNHILO: RAZONES_UNHILO

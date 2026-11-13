@@ -152,9 +152,10 @@ if (typeof module !== "undefined") {
     function iguales(a, b) {
       return a.length === b.length && a.every(function (x, i) { return x === b[i]; });
     }
-    var logradas = { frente: false, ultimo: false, nodos: false };
+    var logradas = { frente: false, ultimo: false, nuevos: false, liberados: false };
     function revisar() {
-      if (logradas.frente && logradas.ultimo && logradas.nodos) {
+      if (logradas.frente && logradas.ultimo && logradas.nuevos &&
+          logradas.liberados) {
         document.getElementById("carta-cierre").style.display = "block";
       }
     }
@@ -267,22 +268,49 @@ if (typeof module !== "undefined") {
       }
     });
 
-    document.getElementById("btn-nodos").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-nodos");
-      var a = parseInt(document.getElementById("pred-new").value, 10);
-      var b = parseInt(document.getElementById("pred-delete").value, 10);
-      if (a === R.nuevos && b === R.liberados) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: " + R.nuevos + " y " + R.liberados +
-          ". Cada encolar pide un nodo y cada desencolar devuelve uno. Hubo tres de cada clase, así que la cola termina vacía y sin nodos pendientes: los tres que pidió son los tres que devolvió.";
-        logradas.nodos = true; revisar();
-      } else if (a === 6 || b === 6) {
-        ver.className = "veredicto mal";
-        ver.textContent = "No es una reserva por llamada: solo encolar pide memoria, y solo desencolar la devuelve. De las seis llamadas, tres son de cada clase.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "Cuente los encolar para new y los desencolar para delete.";
-      }
+    // deja una sola opcion por valor: la correcta va primero y gana
+    function unicas(lista) {
+      var vistos = {};
+      return lista.filter(function (o) {
+        var nueva = !vistos[o.valor];
+        vistos[o.valor] = true;
+        return nueva;
+      });
+    }
+    // avisa cuando el estudiante pulsa la opcion correcta
+    function alAcertar(idOpciones, fn) {
+      document.getElementById(idOpciones).addEventListener("click", function (e) {
+        var b = e.target;
+        if (b && b.getAttribute && b.getAttribute("data-op") === "correcta") { fn(); }
+      });
+    }
+
+    var TOTAL = EJERCICIO.llamadas.length;
+    Motor.opcionesNumericas("opciones-new", "veredicto-new", function () {
+      return unicas([
+        { valor: R.nuevos, clave: "correcta",
+          razon: "Correcto: " + R.nuevos + ". Cada encolar pide un nodo con new Nodo, y hubo " + R.nuevos + " encolar. Los desencolar no piden nada." },
+        { valor: TOTAL, clave: "todas",
+          razon: "No es una reserva por llamada: solo encolar pide memoria. De las " + TOTAL + " llamadas, " + R.nuevos + " son encolar." },
+        { valor: 1, clave: "vacia",
+          razon: "agregar pide el nodo siempre; el if (cabeza == NULL) solo decide cómo se enlaza, no si se pide." },
+        { valor: R.nuevos + 1, clave: "mas",
+          razon: "Sobra uno: cuente solo las llamadas a encolar, que son las que ejecutan new Nodo." }
+      ]);
     });
+    Motor.opcionesNumericas("opciones-delete", "veredicto-delete", function () {
+      return unicas([
+        { valor: R.liberados, clave: "correcta",
+          razon: "Correcto: " + R.liberados + ". Cada desencolar devuelve su nodo con delete. Con " + R.nuevos + " new y " + R.liberados + " delete, la cola termina vacía y sin nodos pendientes." },
+        { valor: TOTAL, clave: "todas",
+          razon: "No es una devolución por llamada: solo desencolar libera. De las " + TOTAL + " llamadas, " + R.liberados + " son desencolar." },
+        { valor: 0, clave: "ninguno",
+          razon: "Desencolar no solo mueve la cabeza: el nodo que sale se devuelve con delete. Sin esa línea cada desencolar dejaría un nodo perdido." },
+        { valor: R.liberados - 1, clave: "menos",
+          razon: "Falta uno: el desencolar que deja la cola vacía también devuelve su nodo." }
+      ]);
+    });
+    alAcertar("opciones-new", function () { logradas.nuevos = true; revisar(); });
+    alAcertar("opciones-delete", function () { logradas.liberados = true; revisar(); });
   })();
 }

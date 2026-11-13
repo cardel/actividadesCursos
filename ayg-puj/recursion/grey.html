@@ -79,13 +79,11 @@
       <label><input type="radio" name="lado" id="lado-izq"> izquierda</label>
       <label><input type="radio" name="lado" id="lado-der"> derecha</label>
       <span>bit:</span>
-      <input type="number" id="bit" class="corto" min="0" max="1">
-      <span>nuevo rango [</span>
-      <input type="number" id="nuevo-ini" class="corto">
-      <span>,</span>
-      <input type="number" id="nuevo-fin" class="corto">
-      <span>) posición:</span>
-      <input type="number" id="nuevo-k" class="corto">
+      <div class="opciones" id="opciones-bit"></div>
+      <span>nuevo rango:</span>
+      <div class="opciones" id="opciones-rango"></div>
+      <span>nueva posición:</span>
+      <div class="opciones" id="opciones-pos"></div>
       <button id="btn-comprobar" class="primario">Comprobar</button>
       <button id="btn-revelar">Revelar</button>
     </div>
@@ -137,6 +135,7 @@
     se lee completa de una vez.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="grey.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

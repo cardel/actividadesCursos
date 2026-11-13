@@ -101,6 +101,67 @@ var EJERCICIO = (function () {
       fb: "El triángulo no la atrapa. La condición dist[w] == −1 de la línea 30 deja entrar cada vértice a la cola una sola vez, y al tercer paso la cola queda vacía y el ciclo termina." }
   ];
 
+  /* Nunca dos botones con el mismo valor: gana la primera de la lista. */
+  function unicas(lista) {
+    var vistos = {};
+    return lista.filter(function (o) {
+      var nuevo = !vistos[o.valor] && o.valor >= 0;
+      vistos[o.valor] = true;
+      return nuevo;
+    });
+  }
+
+  function opcionesRadio(g) {
+    return unicas([
+      { valor: g.radio, clave: "correcta",
+        razon: "El radio es " + g.radio + ", la menor de las ocho excentricidades: " + g.ecc.join(", ") + "." },
+      { valor: g.diametro, clave: "mayor",
+        razon: "Ese es el diámetro, " + g.diametro + ", la mayor de las excentricidades. El radio es la menor: " +
+          g.ecc.join(", ") + " y manda " + g.radio + "." },
+      { valor: g.ecc[0], clave: "primero",
+        razon: "Esa es la excentricidad de p, el primer vértice, y no la menor de las ocho: " +
+          g.ecc.join(", ") + ". El radio es " + g.radio + "." },
+      { valor: g.radio + 1, clave: "nodos",
+        razon: "Es " + g.radio + ". Con " + (g.radio + 1) + " se cuentan los vértices del camino hasta el más lejano del centro, y la excentricidad cuenta aristas." }
+    ]);
+  }
+
+  function opcionesDiametro(g) {
+    return unicas([
+      { valor: g.diametro, clave: "correcta",
+        razon: "El diámetro es " + g.diametro + ", la mayor de las ocho excentricidades (" + g.ecc.join(", ") +
+          "), y también la distancia entre los dos vértices más separados." },
+      { valor: g.radio, clave: "menor",
+        razon: "Ese es el radio, " + g.radio + ", la menor de las excentricidades. El diámetro es la mayor: " +
+          g.ecc.join(", ") + " y manda " + g.diametro + "." },
+      { valor: 2 * g.radio, clave: "doble",
+        razon: "El doble del radio, " + (2 * g.radio) + ", es solo la cota superior r ≤ d ≤ 2r. El diámetro real sale de las excentricidades (" +
+          g.ecc.join(", ") + ") y es " + g.diametro + "." },
+      { valor: g.diametro + 1, clave: "nodos",
+        razon: "Es " + g.diametro + ". Con " + (g.diametro + 1) + " se cuentan los vértices del camino más largo, y el diámetro cuenta aristas." }
+    ]);
+  }
+
+  function opcionesEcc(g, v) {
+    var e = g.ecc[v], d = g.DIST[v], lej = masLejanos(g, v);
+    var rotulo = d.map(function (x, w) { return NOM[w] + "=" + (x < 0 ? "−1" : x); }).join(", ");
+    return unicas([
+      { valor: e, clave: "correcta", razon: fbEcc(g, v, e).msg },
+      { valor: e + 1, clave: "nodos",
+        razon: "Es " + e + ". Con " + (e + 1) + " se cuentan los vértices del camino hasta " + lej.join(" y ") +
+          ", y la excentricidad cuenta aristas. Las distancias desde " + NOM[v] + " son " + rotulo + "." },
+      { valor: v === 7 ? -1 : g.DIST[v][7], clave: "ultimo",
+        razon: "Es " + e + ". Ese " + g.DIST[v][7] + " es la distancia de " + NOM[v] + " a w, el último vértice del arreglo, y no la mayor: " +
+          rotulo + "." },
+      { valor: g.G[v].length, clave: "grado",
+        razon: "Es " + e + ". Ese " + g.G[v].length + " es el grado de " + NOM[v] + ", cuántos vecinos tiene, y no dice hasta dónde llega el camino más largo: " +
+          rotulo + "." },
+      { valor: e - 1, clave: "antes",
+        razon: "Es " + e + ". Con " + (e - 1) + " el recorrido se detiene una arista antes de " + lej.join(" y ") +
+          ", el más lejano de " + NOM[v] + "." }
+    ]).slice(0, 4);
+  }
+
   function menosUno(g, s) {
     var c = 0;
     g.DIST[s].forEach(function (d) { if (d < 0) { c = c + 1; } });
@@ -108,7 +169,7 @@ var EJERCICIO = (function () {
   }
 
   return { NOM: NOM, GRAFOS: GRAFOS, OPCIONES_ROTO: OPCIONES_ROTO,
-           masLejanos: masLejanos, fbEcc: fbEcc, fbCentro: fbCentro, cota: cota, menosUno: menosUno };
+           masLejanos: masLejanos, fbEcc: fbEcc, opcionesRadio: opcionesRadio, opcionesDiametro: opcionesDiametro, opcionesEcc: opcionesEcc, fbCentro: fbCentro, cota: cota, menosUno: menosUno };
 })();
 
 if (typeof module !== "undefined") {
@@ -163,17 +224,6 @@ if (typeof module !== "undefined") {
       el("ver-cuerpo").textContent = a ? a.nota : "Sin arrancar: el arreglo todavía no existe.";
     }
 
-    function camposEcc() {
-      var g = grafo();
-      el("campos-ecc").innerHTML = E.NOM.split("").map(function (nm, v) {
-        return "<div class='fila-par'><span class='rotulo'>Excentricidad de " + nm +
-          "</span><input type='number' class='corto' id='in-e" + v + "' placeholder='0'>" +
-          "<span class='fb' id='fb-e" + v + "'></span></div>";
-      }).join("");
-      el("fb-ecc").className = "fb";
-      el("fb-ecc").textContent = "";
-    }
-
     function botonesCentro() {
       el("centro").innerHTML = E.NOM.split("").map(function (nm, v) {
         return "<button class='vert" + (marcados.indexOf(v) >= 0 ? " elegido" : "") + "' data-v='" + v + "'>" + nm + "</button>";
@@ -187,33 +237,8 @@ if (typeof module !== "undefined") {
       });
     }
 
-    function comprobarEcc() {
-      var g = grafo(), buenas = 0;
-      E.NOM.split("").forEach(function (nm, v) {
-        var valor = parseInt(el("in-e" + v).value, 10), caja = el("fb-e" + v);
-        if (isNaN(valor)) { caja.className = "fb mal"; caja.textContent = "Falta el número."; return; }
-        var r = E.fbEcc(g, v, valor);
-        caja.className = r.ok ? "fb bien" : "fb mal";
-        caja.textContent = r.msg;
-        if (r.ok) { buenas = buenas + 1; }
-      });
-      el("fb-ecc").className = buenas === 8 ? "fb bien" : "fb mal";
-      el("fb-ecc").textContent = buenas === 8
-        ? "Las ocho salen. Ocho amplitudes, cada una O(|V| + |E|), que es lo que cuesta este método: O(|V| · (|V| + |E|))."
-        : buenas + " de 8 correctas.";
-    }
-
     function comprobarRdc() {
       var g = grafo();
-      var r = parseInt(el("in-radio").value, 10), d = parseInt(el("in-diametro").value, 10);
-      el("fb-radio").className = r === g.radio ? "fb bien" : "fb mal";
-      el("fb-radio").textContent = isNaN(r) ? "Falta el número."
-        : (r === g.radio ? "El radio es " + g.radio + ", la menor de las ocho excentricidades."
-                         : "Es " + g.radio + ": las excentricidades son " + g.ecc.join(", ") + " y la menor manda.");
-      el("fb-diametro").className = d === g.diametro ? "fb bien" : "fb mal";
-      el("fb-diametro").textContent = isNaN(d) ? "Falta el número."
-        : (d === g.diametro ? "El diámetro es " + g.diametro + ", la mayor de las ocho, y también la distancia entre los dos vértices más separados."
-                            : "Es " + g.diametro + ": la mayor de " + g.ecc.join(", ") + ".");
       var c = E.fbCentro(g, marcados);
       el("fb-centro").className = c.ok ? "fb bien" : "fb mal";
       el("fb-centro").textContent = c.msg;
@@ -241,13 +266,7 @@ if (typeof module !== "undefined") {
       var g = grafo();
       el("ver-texto").textContent = g.texto;
       marcados = [];
-      camposEcc();
       botonesCentro();
-      ["radio", "diametro"].forEach(function (c) {
-        el("in-" + c).value = "";
-        el("fb-" + c).className = "fb";
-        el("fb-" + c).textContent = "";
-      });
       el("fb-centro").className = "fb";
       el("fb-centro").textContent = "";
       el("fb-cota").className = "fb";
@@ -299,7 +318,17 @@ if (typeof module !== "undefined") {
       });
     });
 
-    el("btn-ecc").addEventListener("click", comprobarEcc);
+    Motor.opcionesNumericas("opciones-radio", "veredicto-radio", function (q) {
+      return E.opcionesRadio(E.GRAFOS[q.g]);
+    });
+    Motor.opcionesNumericas("opciones-diametro", "veredicto-diametro", function (q) {
+      return E.opcionesDiametro(E.GRAFOS[q.g]);
+    });
+    E.NOM.split("").forEach(function (nm, v) {
+      Motor.opcionesNumericas("opciones-e" + v, "veredicto-e" + v, function (q) {
+        return E.opcionesEcc(E.GRAFOS[q.g], v);
+      });
+    });
     el("btn-rdc").addEventListener("click", comprobarRdc);
     var RAZONES_MENOS = {
       correcta: "Cinco: s, t, u, v y w, los del otro pedazo. Se quedan con el −1 con que arrancó el arreglo en la línea 23, porque la amplitud desde p nunca los alcanza.",

@@ -159,7 +159,7 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, prm) {
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto", function (prm) {
       var n = prm.n;
       var datos = prm.datos;
       var p = -1;
@@ -169,19 +169,29 @@ if (typeof module !== "undefined") {
         idx = idx + 1;
       }
       var esperado = p === -1 ? n : p + 1;
-      if (valor === esperado) {
-        var detalle = p === -1
-          ? "todos los valores son positivos, así que el ciclo llega hasta el final: n vueltas."
-          : "el ciclo procesa la casilla " + p + ", pone todos en 0 y la siguiente condición lo frena: " + esperado + " vueltas.";
-        return { ok: true, msg: "Correcto: " + detalle };
+      var detalle = p === -1
+        ? "todos los valores son positivos, así que el ciclo llega hasta el final: n vueltas."
+        : "el ciclo procesa la casilla " + p + ", pone todos en 0 y la siguiente condición lo frena: " + esperado + " vueltas.";
+      var lista = [
+        { valor: esperado, clave: "correcta", razon: "Correcto: " + detalle },
+        { valor: esperado + 1, clave: "condicion",
+          razon: "Esa es la cuenta de la condición (línea 3), que se evalúa una vez más que el cuerpo." },
+        { valor: esperado - 1, clave: "indice",
+          razon: p === -1
+            ? "Le falta una vuelta: la última casilla, la de índice n - 1, también se procesa, y el índice termina en n."
+            : "Le falta la vuelta que procesa la casilla que frena el ciclo: cuente las vueltas, no el índice de esa casilla." }
+      ];
+      if (p !== -1) {
+        lista.push({ valor: n, clave: "hastafinal",
+          razon: "El ciclo no llega hasta el final: cuando todos pasa a 0, la condición del while lo frena. Ejecute paso a paso y mire dónde se detiene." });
       }
-      if (p !== -1 && valor === n) {
-        return { ok: false, msg: "El ciclo no llega hasta el final: cuando todos pasa a 0, la condición del while lo frena. Ejecute paso a paso y mire dónde se detiene." };
-      }
-      if (valor === esperado + 1) {
-        return { ok: false, msg: "Esa es la cuenta de la condición (línea 3), que se evalúa una vez más que el cuerpo." };
-      }
-      return { ok: false, msg: "No coincide. Pista: busque la primera casilla con un valor que no sea positivo; el ciclo la procesa y ahí se frena." };
+      // una opcion que repite un valor ya presente se descarta
+      var vistos = {};
+      return lista.filter(function (o) {
+        var nuevo = !vistos[o.valor];
+        vistos[o.valor] = true;
+        return nuevo;
+      });
     });
 
     Array.prototype.forEach.call(document.querySelectorAll("#opciones-analisis button"), function (b) {

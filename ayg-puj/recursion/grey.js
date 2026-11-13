@@ -87,7 +87,7 @@ if (typeof module !== "undefined") {
   module.exports = EJERCICIO;
 } else {
   (function () {
-    var estado = { n: 3, k: 5, res: null, nivel: 0, subidos: 0 };
+    var estado = { n: 3, k: 5, res: null, nivel: 0, subidos: 0, ok: { bit: false, rango: false, pos: false } };
 
     function pintarCodigo() {
       var caja = document.getElementById("codigo");
@@ -243,6 +243,7 @@ if (typeof module !== "undefined") {
       var pregunta = document.getElementById("pregunta");
       var zona = document.getElementById("zona-bajar");
       var botonSubir = document.getElementById("btn-subir");
+      if (typeof refrescarOpciones === "function") { refrescarOpciones(); }
       pintarEscalera();
       pintarPila();
       pintarRecurrencia();
@@ -290,9 +291,7 @@ if (typeof module !== "undefined") {
     }
 
     function limpiarEntradas() {
-      ["bit", "nuevo-ini", "nuevo-fin", "nuevo-k"].forEach(function (id) {
-        document.getElementById(id).value = "";
-      });
+      estado.ok = { bit: false, rango: false, pos: false };
       document.getElementById("lado-izq").checked = false;
       document.getElementById("lado-der").checked = false;
     }
@@ -308,33 +307,112 @@ if (typeof module !== "undefined") {
           nv.mitad + " + " + nv.fin + " - 1 - " + nv.k + " = " + nv.nK + ".";
     }
 
+    function nivelActual() {
+      var nv = (estado.res && bajando()) ? estado.res.niveles[estado.nivel] : null;
+      return nv;
+    }
+
+    function sinRepetir(lista, cand) {
+      cand.forEach(function (o) {
+        var repetido = false;
+        lista.forEach(function (x) { if (String(x.valor) === String(o.valor)) { repetido = true; } });
+        if (!repetido && lista.length < 4) { lista.push(o); }
+      });
+      return lista;
+    }
+
+    function rango(a, b) { return "[" + a + ", " + b + ")"; }
+
+    var grupoBit = Motor.opcionesNumericas("opciones-bit", "veredicto", function () {
+      var nv = nivelActual();
+      var lista = [];
+      if (nv) {
+        var otro = nv.bit === 1 ? 0 : 1;
+        lista.push({ valor: nv.bit, clave: "correcta", razon: "Correcto: en la mitad " +
+          (nv.lado === "izq" ? "izquierda" : "derecha") + " se antepone un " + nv.bit + "." });
+        lista.push({ valor: otro, clave: "otro", razon: "En la mitad izquierda se antepuso un 0 y en la derecha un 1; aquí la posición " +
+          nv.k + " cae a la " + (nv.lado === "izq" ? "izquierda" : "derecha") + "." });
+      }
+      return lista;
+    });
+
+    var grupoRango = Motor.opcionesNumericas("opciones-rango", "veredicto", function () {
+      var nv = nivelActual();
+      var lista = [];
+      if (nv) {
+        var otroIni = nv.lado === "izq" ? nv.mitad : nv.ini;
+        var otroFin = nv.lado === "izq" ? nv.fin : nv.mitad;
+        lista.push({ valor: rango(nv.nIni, nv.nFin), clave: "correcta", razon: "Correcto: el nuevo rango es la mitad elegida, con el mismo formato [ini, fin)." });
+        sinRepetir(lista, [
+          { valor: rango(otroIni, otroFin), clave: "otramitad", razon: "Ese es el rango de la otra mitad. La posición " + nv.k + " está en " + rango(nv.nIni, nv.nFin) + "." },
+          { valor: rango(nv.ini, nv.fin), clave: "completo", razon: "Ese es el rango de esta llamada, sin partir: la recursión baja a una de las mitades." },
+          { valor: rango(nv.nIni, nv.nFin - 1), clave: "incluido", razon: "El fin no se incluye: la mitad elegida termina en " + nv.nFin + " con el formato [ini, fin), no en " + (nv.nFin - 1) + "." }
+        ]);
+      }
+      return lista;
+    });
+
+    var grupoPos = Motor.opcionesNumericas("opciones-pos", "veredicto", function () {
+      var nv = nivelActual();
+      var lista = [];
+      if (nv) {
+        lista.push({ valor: nv.nK, clave: "correcta", razon: nv.lado === "izq"
+          ? "Correcto: en la mitad izquierda la lista sigue igual, así que la posición no cambia."
+          : "Correcto: en la mitad derecha la lista está al revés y la posición se refleja: mitad + fin - 1 - k = " + nv.nK + "." });
+        if (nv.lado === "izq") {
+          sinRepetir(lista, [
+            { valor: nv.mitad + nv.fin - 1 - nv.k, clave: "reflejo", razon: "El reflejo es solo para la mitad derecha. En la izquierda la lista sigue igual y la posición no cambia." },
+            { valor: nv.k - nv.ini, clave: "relativa", razon: "En la mitad izquierda la posición sigue siendo la de la lista original; no se mide desde el inicio del rango." },
+            { valor: nv.k + 1, clave: "masuno", razon: "La posición no se mueve al bajar a la izquierda: sigue siendo " + nv.k + "." }
+          ]);
+        } else {
+          sinRepetir(lista, [
+            { valor: nv.k, clave: "sinreflejo", razon: "En la mitad derecha la lista está al revés: la posición no queda igual, se refleja con mitad + fin - 1 - k." },
+            { valor: nv.k - nv.mitad, clave: "relativa", razon: "Restar mitad da la distancia desde el inicio de esa mitad, pero la lista está al revés: la posición se refleja con mitad + fin - 1 - k." },
+            { valor: nv.fin - 1 - nv.k, clave: "contraelfin", razon: "Ese reflejo se mide contra el inicio del rango completo; falta sumar mitad para quedar dentro de la mitad derecha." },
+            { valor: nv.mitad + nv.fin - nv.k, clave: "sinmenos1", razon: "Casi: el reflejo es mitad + fin - 1 - k; con fin excluido, falta restar uno." }
+          ]);
+        }
+      }
+      return lista;
+    });
+
+    function marcarAciertos(id, parte) {
+      document.getElementById(id).addEventListener("click", function (e) {
+        var b = e.target;
+        if (b && b.getAttribute && b.getAttribute("data-op") === "correcta") {
+          estado.ok[parte] = true;
+        }
+      });
+    }
+    marcarAciertos("opciones-bit", "bit");
+    marcarAciertos("opciones-rango", "rango");
+    marcarAciertos("opciones-pos", "pos");
+
+    function refrescarOpciones() {
+      grupoBit.refrescar();
+      grupoRango.refrescar();
+      grupoPos.refrescar();
+    }
+
     function comprobar() {
       var nv = estado.res.niveles[estado.nivel];
       var izq = document.getElementById("lado-izq").checked;
       var der = document.getElementById("lado-der").checked;
-      var bit = parseInt(document.getElementById("bit").value, 10);
-      var a = parseInt(document.getElementById("nuevo-ini").value, 10);
-      var b = parseInt(document.getElementById("nuevo-fin").value, 10);
-      var p = parseInt(document.getElementById("nuevo-k").value, 10);
       if (bajando()) {
         if (!izq && !der) {
           veredicto("mal", "Marque primero la mitad.");
         } else if ((izq ? "izq" : "der") !== nv.lado) {
           veredicto("mal", "Compare la posición " + nv.k + " con mitad = " + nv.mitad +
             ": las posiciones menores que mitad están en la mitad izquierda.");
-        } else if (bit !== nv.bit) {
-          veredicto("mal", "La mitad está bien. En la mitad izquierda se antepuso un 0 y en la derecha un 1.");
-        } else if (a !== nv.nIni || b !== nv.nFin) {
-          veredicto("mal", "El nuevo rango es la mitad elegida, con el mismo formato [ini, fin): el fin no se incluye.");
-        } else if (p !== nv.nK) {
-          veredicto("mal", nv.lado === "izq"
-            ? "En la mitad izquierda la lista sigue igual, así que la posición no cambia."
-            : "En la mitad derecha la lista está al revés: la posición k queda a la misma distancia del fin que su reflejo del inicio de esa mitad. Pruebe con mitad + fin - 1 - k.");
+        } else if (!estado.ok.bit || !estado.ok.rango || !estado.ok.pos) {
+          veredicto("mal", "La mitad está bien. Falta acertar " +
+            (!estado.ok.bit ? "el bit" : !estado.ok.rango ? "el nuevo rango" : "la nueva posición") + ".");
         } else {
-          veredicto("bien", "Correcto. " + explicar(nv));
           estado.nivel = estado.nivel + 1;
           limpiarEntradas();
           pintar();
+          veredicto("bien", "Correcto. " + explicar(nv));
         }
       }
     }
@@ -342,10 +420,10 @@ if (typeof module !== "undefined") {
     function revelar() {
       var nv = estado.res.niveles[estado.nivel];
       if (bajando()) {
-        veredicto("mal", explicar(nv));
         estado.nivel = estado.nivel + 1;
         limpiarEntradas();
         pintar();
+        veredicto("mal", explicar(nv));
       }
     }
 

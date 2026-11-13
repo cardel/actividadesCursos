@@ -96,18 +96,30 @@
     }
   });
 
-  document.getElementById("btn-inicio-cero").addEventListener("click", function () {
-    var v = document.getElementById("ver-inicio-cero");
-    var valor = parseInt(document.getElementById("pred-inicio-cero").value, 10);
-    if (isNaN(valor)) { v.className = "veredicto mal"; v.textContent = "Escriba un número primero."; return; }
-    if (valor === 0) {
-      v.className = "veredicto bien";
-      v.textContent = "Correcto: 0. La última llamada devuelve 0, la de arriba hace 4 · 0 = 0, y así hasta la primera. inicio tiene que ser el neutro de op: 1 para el producto, 0 para la suma.";
-      document.getElementById("carta-cierre").classList.remove("bloqueado");
-    } else {
-      v.className = "veredicto mal";
-      v.textContent = "No es " + valor + ". Llene la tabla otra vez con 0 en la última fila y mire qué pasa al multiplicar hacia arriba.";
-    }
+  function sinRepetidos(lista) {
+    var vistos = {}, salida = [];
+    lista.forEach(function (o) {
+      if (!vistos[o.valor]) { vistos[o.valor] = true; salida.push(o); }
+    });
+    return salida;
+  }
+
+  Motor.opcionesNumericas("opciones-inicio-cero", "ver-inicio-cero", function () {
+    var lista = [
+      { valor: 0, clave: "correcta",
+        razon: "Correcto: 0. La última llamada devuelve 0, la de arriba hace 4 · 0 = 0, y así hasta la primera. inicio tiene que ser el neutro de op: 1 para el producto, 0 para la suma." },
+      { valor: 24, clave: "ignora",
+        razon: "Eso es el producto con inicio = 1, el primer ejemplo. Con inicio = 0 la última fila devuelve 0 y cada fila de arriba lo multiplica." },
+      { valor: 10, clave: "suma",
+        razon: "Eso es 1 + 2 + 3 + 4: sumó en lugar de multiplicar. op es x * y." },
+      { valor: 1, clave: "neutro",
+        razon: "Eso es el inicio del producto de siempre. Aquí inicio es 0, y 0 absorbe cada multiplicación hacia arriba." }
+    ];
+    return sinRepetidos(lista);
+  });
+  document.getElementById("opciones-inicio-cero").addEventListener("click", function (ev) {
+    var clave = ev.target.getAttribute ? ev.target.getAttribute("data-op") : null;
+    if (clave === "correcta") { document.getElementById("carta-cierre").classList.remove("bloqueado"); }
   });
 
   function pintar(e) {

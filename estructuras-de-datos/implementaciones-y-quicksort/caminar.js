@@ -133,58 +133,92 @@ if (typeof module !== "undefined") {
       ver.className = "veredicto " + (bien ? "bien" : "mal");
       ver.textContent = texto;
     }
-    function valor(id) {
-      return parseInt(document.getElementById(id).value, 10);
-    }
-    var logradas = { lista: false, cola: false, pila: false, cuadratica: false };
+    var logradas = { lista: false, cola: false, colaAvances: false, colaNuevos: false, pila: false, cuadratica: false };
     function revisar() {
+      logradas.cola = logradas.colaAvances && logradas.colaNuevos;
       if (logradas.lista && logradas.cola && logradas.pila && logradas.cuadratica) {
         document.getElementById("carta-cierre").style.display = "block";
       }
     }
+    /* Anota el acierto: el boton de la correcta lleva data-op="correcta". */
+    function alAcertar(idOpciones, clave) {
+      document.getElementById(idOpciones).addEventListener("click", function (e) {
+        var t = e.target;
+        if (t && t.getAttribute && t.getAttribute("data-op") === "correcta") {
+          logradas[clave] = true; revisar();
+        }
+      });
+    }
+    /* Deja la correcta y los distractores con valores distintos, hasta cuatro. */
+    function sinRepetir(lista) {
+      var salida = [];
+      lista.forEach(function (o) {
+        var repetido = false;
+        salida.forEach(function (x) { if (x.valor === o.valor) { repetido = true; } });
+        if (!repetido && salida.length < 4) { salida.push(o); }
+      });
+      return salida;
+    }
 
-    document.getElementById("btn-lista").addEventListener("click", function () {
-      var d = valor("pred-lista");
+    Motor.opcionesNumericas("opciones-lista", "veredicto-lista", function () {
       var e = L.cuenta.avances;
-      if (d === e) {
-        decir("veredicto-lista", true, "Correcto: " + e + " = 0 + 1 + 2 + ... + 11. obtener(p) arranca siempre en la cabeza y avanza p nodos; ninguna llamada aprovecha dónde quedó la anterior.");
-        logradas.lista = true; revisar();
-      } else if (d === N || d === N - 1) {
-        decir("veredicto-lista", false, "Eso costaría un solo recorrido. Pero cada obtener(p) vuelve a empezar en la cabeza: el de p = 11 camina once nodos por su cuenta.");
-      } else if (d === N * N) {
-        decir("veredicto-lista", false, "Cerca, pero obtener(p) da p avances, no n: la suma es 0 + 1 + ... + 11.");
-      } else if (d === N * (N + 1) / 2) {
-        decir("veredicto-lista", false, "Sobra el último término: obtener(0) no avanza y obtener(11) avanza once, no doce.");
-      } else {
-        decir("veredicto-lista", false, "Sume lo que avanza cada llamada: obtener(0) avanza 0, obtener(1) avanza 1, y así hasta obtener(11).");
-      }
+      return sinRepetir([
+        { valor: e, clave: "correcta",
+          razon: "Correcto: " + e + " = 0 + 1 + 2 + ... + 11. obtener(p) arranca siempre en la cabeza y avanza p nodos; ninguna llamada aprovecha dónde quedó la anterior." },
+        { valor: N - 1, clave: "recorrido",
+          razon: "Eso costaría un solo recorrido. Pero cada obtener(p) vuelve a empezar en la cabeza: el de p = 11 camina once nodos por su cuenta." },
+        { valor: N * N, clave: "ene",
+          razon: "Cerca, pero obtener(p) da p avances, no n: la suma es 0 + 1 + ... + 11." },
+        { valor: N * (N + 1) / 2, clave: "sobra",
+          razon: "Sobra el último término: obtener(0) no avanza y obtener(11) avanza once, no doce." }
+      ]);
     });
+    alAcertar("opciones-lista", "lista");
 
-    document.getElementById("btn-cola").addEventListener("click", function () {
-      var a = valor("pred-cola-avances");
-      var nu = valor("pred-cola-nuevos");
-      if (a === C.cuenta.avances && nu === C.cuenta.nuevos) {
-        decir("veredicto-cola", true, "Correcto: " + C.cuenta.avances + " avances y " + C.cuenta.nuevos + " nodos nuevos. La cola nunca camina: lee el frente, lo encola al final y lo saca de adelante. Tras doce vueltas cada elemento dio la vuelta una vez y la cola queda como empezó. A cambio, cada vuelta reserva un nodo con new y libera otro con delete.");
-        logradas.cola = true; revisar();
-      } else if (a !== C.cuenta.avances) {
-        decir("veredicto-cola", false, "frente, encolar y desencolar trabajan en los extremos, que la cola tiene a mano con cabeza y ultimo. Ninguna de las tres recorre la cadena.");
-      } else {
-        decir("veredicto-cola", false, "encolar reserva un nodo nuevo cada vez que se llama, aunque el dato ya estuviera en la cola. ¿Cuántas veces se llama?");
-      }
+    Motor.opcionesNumericas("opciones-cola-avances", "veredicto-cola-avances", function () {
+      var a = C.cuenta.avances;
+      return sinRepetir([
+        { valor: a, clave: "correcta",
+          razon: "Correcto: " + a + " avances. frente, encolar y desencolar trabajan en los extremos, que la cola tiene a mano con cabeza y ultimo. La cola nunca camina." },
+        { valor: N, clave: "vuelta",
+          razon: "Eso es una vuelta del ciclo por elemento, no un avance por la cadena: ninguna de las tres operaciones recorre nodos." },
+        { valor: N * (N - 1) / 2, clave: "triangular",
+          razon: "Esa es la cuenta de la lista, donde cada lectura por posición camina desde la cabeza. La cola lee solo el frente, que ya tiene a mano." },
+        { valor: N - 1, clave: "entre",
+          razon: "Esos serían los pasos entre un nodo y el siguiente al recorrer la cadena una vez, y la cola no la recorre." }
+      ]);
     });
+    alAcertar("opciones-cola-avances", "colaAvances");
 
-    document.getElementById("btn-pila").addEventListener("click", function () {
-      var d = valor("pred-pila");
+    Motor.opcionesNumericas("opciones-cola-nuevos", "veredicto-cola-nuevos", function () {
+      var nu = C.cuenta.nuevos;
+      return sinRepetir([
+        { valor: nu, clave: "correcta",
+          razon: "Correcto: " + nu + " nodos nuevos. Tras doce vueltas cada elemento dio la vuelta una vez y la cola queda como empezó. A cambio, cada vuelta reserva un nodo con new y libera otro con delete." },
+        { valor: 0, clave: "ninguno",
+          razon: "encolar reserva un nodo nuevo cada vez que se llama, aunque el dato ya estuviera en la cola: no reutiliza el que desencolar libera." },
+        { valor: 1, clave: "uno",
+          razon: "Con el contrato, encolar no mueve el nodo del frente: reserva uno nuevo en cada llamada, y se llama una vez por vuelta." },
+        { valor: 2 * N, clave: "doble",
+          razon: "Eso suma las reservas con las liberaciones. Aquí se pregunta solo por las reservas con new, una por vuelta." }
+      ]);
+    });
+    alAcertar("opciones-cola-nuevos", "colaNuevos");
+
+    Motor.opcionesNumericas("opciones-pila", "veredicto-pila", function () {
       var e = P.cuenta.apilar;
-      if (d === e) {
-        decir("veredicto-pila", true, "Correcto: " + e + ". Doce para pasar los elementos a aux y doce para devolverlos. Pasar dos veces deja el orden original: la primera pila invierte y la segunda deshace la inversión. El tiempo es Θ(n), y aux ocupa Θ(n) de espacio aparte cuando está llena.");
-        logradas.pila = true; revisar();
-      } else if (d === N) {
-        decir("veredicto-pila", false, "Esos son los del primer ciclo. Si la función termina ahí, p queda vacía: el segundo ciclo los devuelve.");
-      } else {
-        decir("veredicto-pila", false, "Cuente los apilar de los dos ciclos: cada elemento pasa a aux y vuelve a p.");
-      }
+      return sinRepetir([
+        { valor: e, clave: "correcta",
+          razon: "Correcto: " + e + ". Doce para pasar los elementos a aux y doce para devolverlos. Pasar dos veces deja el orden original: la primera pila invierte y la segunda deshace la inversión. El tiempo es Θ(n), y aux ocupa Θ(n) de espacio aparte cuando está llena." },
+        { valor: N, clave: "primero",
+          razon: "Esos son los del primer ciclo. Si la función termina ahí, p queda vacía: el segundo ciclo los devuelve." },
+        { valor: 2 * e, clave: "desapilar",
+          razon: "Eso cuenta también los desapilar. La pregunta es solo por las llamadas a apilar de los dos ciclos." },
+        { valor: e - 1, clave: "falta",
+          razon: "Falta uno: cada elemento se apila dos veces, también el último." }
+      ]);
     });
+    alAcertar("opciones-pila", "pila");
 
     var MSJ = {
       lista: "Correcto: la de la lista. Cada obtener cuesta Θ(p), y la suma de 0 a n − 1 da n(n − 1)/2, Θ(n²). Las otras dos son Θ(n) porque solo tocan los extremos. Recorrer la lista con un puntero que avanza un nodo por vuelta, como hace el destructor, la dejaría en Θ(n), pero eso se escribe dentro de la clase, donde se ven los nodos. Desde afuera, el contrato lee por posición con obtener(p).",

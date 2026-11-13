@@ -84,20 +84,41 @@ function aceleracion(fila) {
   return DOS_D[0].ms / fila.ms;
 }
 
-function explicarSinFor(bien, real, dicho) {
+/* Opciones de lo que imprime la escritura B: la correcta sale de
+   resultado(); cada distractor es una cuenta equivocada sobre el reparto. */
+function opcionesSinFor() {
+  var num = Motor.num;
   var a = porId("reduction"), c = porId("pragmaMala");
-  var base = "La segunda escritura imprime " + Motor.num(real) +
-    ". La directiva sin el for abre la región paralela y nada más. Los cuatro hilos recorren " +
-    "el ciclo entero, la reducción suma al final las cuatro copias y el total sale " +
-    "multiplicado por el número de hilos: ese error se delata en el número. La tercera no. " +
-    "Imprime " + Motor.num(VALOR_CORRECTO) + ", el valor correcto, y solo el reloj la delata: " +
-    Motor.num(c.ms) + " ms contra " + Motor.num(a.ms) + ", porque la directiva mal escrita se " +
-    "descarta y el ciclo queda corriendo en un hilo.";
-  if (bien) { return "Eso es. " + base; }
-  if (dicho === VALOR_CORRECTO) {
-    return "Ese es el valor correcto, y lo imprime la tercera escritura, no esta. " + base;
-  }
-  return base;
+  var real = resultado("parallelSinFor", HILOS, VALOR_CORRECTO);
+  var lista = [{ valor: num(real), clave: "correcta",
+    razon: "Eso es. La segunda escritura imprime " + num(real) +
+      ". La directiva sin el for abre la región paralela y nada más. Los cuatro hilos recorren " +
+      "el ciclo entero, la reducción suma al final las cuatro copias y el total sale " +
+      "multiplicado por el número de hilos: ese error se delata en el número. La tercera no. " +
+      "Imprime " + num(VALOR_CORRECTO) + ", el valor correcto, y solo el reloj la delata: " +
+      num(c.ms) + " ms contra " + num(a.ms) + ", porque la directiva mal escrita se " +
+      "descarta y el ciclo queda corriendo en un hilo." }];
+  var candidatas = [
+    { v: VALOR_CORRECTO, razon: "Ese es el valor correcto, y lo imprime la tercera escritura, " +
+      "no esta. Sin el for cada hilo recorre el ciclo completo, y la reducción suma las " +
+      "cuatro copias." },
+    { v: VALOR_CORRECTO / HILOS, razon: "Eso es lo que suma un hilo si el ciclo se repartiera en " +
+      "cuatro partes. Sin el for no hay reparto: cada hilo suma las " + num(N) +
+      " iteraciones." },
+    { v: VALOR_CORRECTO * 2, razon: "Eso serían dos copias completas. El equipo trae " + HILOS +
+      " hilos y cada uno aporta la suya a la reducción." },
+    { v: N * HILOS, razon: "Eso cuenta las iteraciones de los cuatro hilos, no la suma de " +
+      "productos. Cada iteración aporta un producto de 10 por 10, es decir 100." }
+  ];
+  var vistos = {};
+  vistos[real] = true;
+  candidatas.forEach(function (c) {
+    if (lista.length < 4 && !vistos[c.v]) {
+      vistos[c.v] = true;
+      lista.push({ valor: num(c.v), clave: "d" + c.v, razon: c.razon });
+    }
+  });
+  return lista;
 }
 
 var RAZONES_RECORRIDO = {
@@ -141,7 +162,7 @@ if (typeof module !== "undefined" && module.exports) {
     N: N, HILOS: HILOS, VALOR_CORRECTO: VALOR_CORRECTO,
     ESCRITURAS: ESCRITURAS, DOS_D: DOS_D,
     resultado: resultado, aceleracion: aceleracion, senal: senal, porId: porId,
-    conteos: conteos, explicarSinFor: explicarSinFor,
+    conteos: conteos, opcionesSinFor: opcionesSinFor,
     RAZONES_RECORRIDO: RAZONES_RECORRIDO, RAZONES_REVISION: RAZONES_REVISION,
     AVISO_TAPADO: AVISO_TAPADO, AVISO_ABIERTO: AVISO_ABIERTO
   };
@@ -180,16 +201,8 @@ if (typeof document !== "undefined") (function () {
     Motor.pintarChips("chips-escrituras", conteos());
   }
 
-  document.getElementById("btn-comprobar-sin-for").addEventListener("click", function () {
-    // sin numero escrito el veredicto solo pide el numero: la tabla sigue tapada
-    if (isNaN(Motor.leerNumero("prediccion-sin-for"))) { return; }
-    destapar();
-  });
-
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-sin-for", boton: "btn-comprobar-sin-for", veredicto: "veredicto-sin-for" },
-    function () { return resultado("parallelSinFor", HILOS, VALOR_CORRECTO); },
-    explicarSinFor);
+  Motor.opcionesNumericas("opciones-sin-for", "veredicto-sin-for", opcionesSinFor);
+  document.getElementById("opciones-sin-for").addEventListener("click", destapar);
   Motor.conectarOpciones("opciones-recorrido", "veredicto-recorrido", RAZONES_RECORRIDO);
   Motor.conectarOpciones("opciones-revision", "veredicto-revision", RAZONES_REVISION);
 

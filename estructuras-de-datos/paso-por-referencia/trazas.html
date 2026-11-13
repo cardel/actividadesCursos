@@ -27,45 +27,45 @@
   <div class="carta">
     <h2>1. Por valor: la llamada es <b>z = z + ajuste(x, y);</b></h2>
     <div class="codigo" id="codigo-valor"></div>
-    <div class="prediccion">
-      <span>x =</span>
-      <input type="number" id="pred-valor-x">
-      <span>y =</span>
-      <input type="number" id="pred-valor-y">
-      <span>z =</span>
-      <input type="number" id="pred-valor-z">
-      <button id="btn-valor" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0.3rem">x =</p>
+    <div class="opciones" id="opciones-valor-x"></div>
+    <div id="veredicto-valor-x" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem">y =</p>
+    <div class="opciones" id="opciones-valor-y"></div>
+    <div id="veredicto-valor-y" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem">z =</p>
+    <div class="opciones" id="opciones-valor-z"></div>
+    <div id="veredicto-valor-z" class="veredicto"></div>
     <div id="veredicto-valor" class="veredicto"></div>
   </div>
 
   <div class="carta">
     <h2>2. Por puntero: la llamada es <b>z = z + ajuste(x, &amp;y);</b></h2>
     <div class="codigo" id="codigo-puntero"></div>
-    <div class="prediccion">
-      <span>x =</span>
-      <input type="number" id="pred-puntero-x">
-      <span>y =</span>
-      <input type="number" id="pred-puntero-y">
-      <span>z =</span>
-      <input type="number" id="pred-puntero-z">
-      <button id="btn-puntero" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0.3rem">x =</p>
+    <div class="opciones" id="opciones-puntero-x"></div>
+    <div id="veredicto-puntero-x" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem">y =</p>
+    <div class="opciones" id="opciones-puntero-y"></div>
+    <div id="veredicto-puntero-y" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem">z =</p>
+    <div class="opciones" id="opciones-puntero-z"></div>
+    <div id="veredicto-puntero-z" class="veredicto"></div>
     <div id="veredicto-puntero" class="veredicto"></div>
   </div>
 
   <div class="carta">
     <h2>3. Por referencia (C++): la llamada es <b>z = z + ajuste(x, y);</b></h2>
     <div class="codigo" id="codigo-referencia"></div>
-    <div class="prediccion">
-      <span>x =</span>
-      <input type="number" id="pred-referencia-x">
-      <span>y =</span>
-      <input type="number" id="pred-referencia-y">
-      <span>z =</span>
-      <input type="number" id="pred-referencia-z">
-      <button id="btn-referencia" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0.3rem">x =</p>
+    <div class="opciones" id="opciones-referencia-x"></div>
+    <div id="veredicto-referencia-x" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem">y =</p>
+    <div class="opciones" id="opciones-referencia-y"></div>
+    <div id="veredicto-referencia-y" class="veredicto"></div>
+    <p style="margin-bottom:0.3rem">z =</p>
+    <div class="opciones" id="opciones-referencia-z"></div>
+    <div id="veredicto-referencia-z" class="veredicto"></div>
     <div id="veredicto-referencia" class="veredicto"></div>
   </div>
 
@@ -91,6 +91,7 @@
   </div>
 
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="trazas.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

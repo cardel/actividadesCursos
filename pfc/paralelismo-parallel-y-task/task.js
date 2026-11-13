@@ -215,22 +215,22 @@
     });
   }
 
-  function prediccion(idCampo, idBoton, idVeredicto, esperado, bien, pista, alAcertar) {
-    document.getElementById(idBoton).addEventListener("click", function () {
-      var v = document.getElementById(idVeredicto);
-      var valor = parseInt(document.getElementById(idCampo).value, 10);
-      if (isNaN(valor)) {
-        v.className = "veredicto mal";
-        v.textContent = "Escriba un número primero.";
-        return;
-      }
-      if (valor === esperado) {
-        v.className = "veredicto bien";
-        v.textContent = bien;
+  function sinRepetidos(lista) {
+    var vistos = {};
+    return lista.filter(function (o) {
+      var nuevo = !vistos[o.valor];
+      vistos[o.valor] = true;
+      return nuevo;
+    });
+  }
+
+  function prediccion(idOpciones, idVeredicto, armar, alAcertar) {
+    Motor.opcionesNumericas(idOpciones, idVeredicto, function () {
+      return sinRepetidos(armar());
+    });
+    document.getElementById(idOpciones).addEventListener("click", function () {
+      if (document.getElementById(idVeredicto).className.indexOf("bien") >= 0) {
         alAcertar();
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = pista;
       }
     });
   }
@@ -334,18 +334,35 @@
 
   construirCodigo("codigo-api", API_TASK);
   construirCodigo("codigo-norma", CODIGO_NORMA);
-  prediccion("pred-paralelo", "btn-paralelo", "ver-paralelo", EN_PARALELO,
-    EN_PARALELO + " ms. Las cuatro tareas se lanzan antes del primer join, " +
-      "así que los cuatro cuartos se calculan a la vez y el tiempo lo pone el más lento.",
-    "Las cuatro tareas ya están lanzadas cuando se hace el primer join, y cada una tiene su núcleo. " +
-      "Lo que se cobra no es la suma de los cuatro cuartos.",
-    function () { aciertos.paralelo = true; marcar(); });
-  prediccion("pred-fila", "btn-fila", "ver-fila", EN_FILA,
-    EN_FILA + " ms, el mismo tiempo de la versión secuencial. Cada join bloquea " +
-      "al hilo que todavía no ha lanzado las tareas que faltan, así que los cuatro cuartos se calculan en fila.",
-    "Si el join va pegado a su task, la tarea siguiente no se lanza hasta que la anterior termine. " +
-      "Cuente qué se solapa con qué en ese orden.",
-    function () { aciertos.fila = true; marcar(); });
+  prediccion("opciones-paralelo", "ver-paralelo", function () {
+    return [
+      { valor: EN_PARALELO, clave: "correcta",
+        razon: "Correcto: " + EN_PARALELO + " ms. Las cuatro tareas se lanzan antes del primer join, " +
+          "así que los cuatro cuartos se calculan a la vez y el tiempo lo pone el más lento." },
+      { valor: EN_FILA, clave: "suma",
+        razon: "Esa es la suma de los cuatro cuartos. Las cuatro tareas ya están lanzadas cuando se hace el primer join, " +
+          "y cada una tiene su núcleo: lo que se cobra no es la suma." },
+      { valor: COSTO_CUARTO / TAREAS, clave: "reparto",
+        razon: "Eso sería repartir " + COSTO_CUARTO + " ms entre cuatro tareas. Los " + COSTO_CUARTO +
+          " ms ya son lo que cuesta cada cuarto, y cada tarea hace uno completo." },
+      { valor: EN_FILA + COSTO_CUARTO, clave: "espera",
+        razon: "Esperar con join no suma tiempo propio: lanzar y esperar no cuesta nada, y las tareas corren a la vez." }
+    ];
+  }, function () { aciertos.paralelo = true; marcar(); });
+  prediccion("opciones-fila", "ver-fila", function () {
+    return [
+      { valor: EN_FILA, clave: "correcta",
+        razon: "Correcto: " + EN_FILA + " ms, el mismo tiempo de la versión secuencial. Cada join bloquea " +
+          "al hilo que todavía no ha lanzado las tareas que faltan, así que los cuatro cuartos se calculan en fila." },
+      { valor: EN_PARALELO, clave: "paralelo",
+        razon: "Eso es lo que da lanzar las cuatro antes del primer join. Si el join va pegado a su task, " +
+          "la tarea siguiente no se lanza hasta que la anterior termine." },
+      { valor: EN_FILA - COSTO_CUARTO, clave: "tres",
+        razon: "Esa cuenta olvida el último cuarto: el cuarto join también espera a que la cuarta tarea, que arrancó después, termine." },
+      { valor: EN_PARALELO * 2, clave: "parejas",
+        razon: "Solapar los cuartos de a dos exigiría lanzar la segunda tarea antes de esperar la primera, y aquí cada join va antes de la tarea siguiente." }
+    ];
+  }, function () { aciertos.fila = true; marcar(); });
   construirVariantes();
   SECCIONES.forEach(construirSeccion);
   marcar();

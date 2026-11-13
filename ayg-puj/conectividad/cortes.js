@@ -282,26 +282,34 @@ if (typeof module !== "undefined") {
       while (i < p.aristas.length) { var d = document.getElementById("re-" + i); if (d) { d.textContent = ""; } i = i + 1; }
     }
 
-    document.getElementById("btn-comprobar").addEventListener("click", function () {
+    var opcionesArt = Motor.opcionesNumericas("opciones-prediccion", "veredicto", function () {
       var p = P();
       var art = EJERCICIO.puntosDeArticulacion(p.n, p.aristas);
-      var campo = document.getElementById("prediccion");
-      var v = document.getElementById("veredicto");
-      var valor = parseInt(campo.value, 10);
-      if (isNaN(valor)) {
-        v.className = "veredicto mal"; v.textContent = "Escriba un número primero.";
-      } else if (valor === art.length) {
-        v.className = "veredicto bien";
-        v.textContent = art.length === 0
-          ? "Correcto: ninguno. Quitando cualquier vértice el grafo sigue de una pieza, porque entre cada par hay dos caminos que no comparten vértices intermedios."
-          : "Correcto: " + art.length + ". Márquelos abajo y compruebe uno por uno con el botón de quitar.";
-      } else if (valor === p.n) {
-        v.className = "veredicto mal";
-        v.textContent = "Ese es el número de vértices. Un vértice de grado 1 nunca es punto de articulación: al quitarlo no queda nadie incomunicado, solo desaparece él.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "No coincide. Pruebe con el botón de quitar de cada vértice y cuente los que dejan más componentes que el grafo completo.";
-      }
+      var grado = [], i = 0;
+      while (i < p.n) { grado.push(0); i = i + 1; }
+      i = 0;
+      while (i < p.aristas.length) { grado[p.aristas[i][0]]++; grado[p.aristas[i][1]]++; i = i + 1; }
+      var interiores = grado.filter(function (g) { return g > 1; }).length;
+      var puentes = EJERCICIO.puentes(p.n, p.aristas).length;
+      var cand = [
+        { valor: art.length, clave: "correcta",
+          razon: art.length === 0
+            ? "Correcto: ninguno. Quitando cualquier vértice el grafo sigue de una pieza, porque entre cada par hay dos caminos que no comparten vértices intermedios."
+            : "Correcto: " + art.length + ". Márquelos abajo y compruebe uno por uno con el botón de quitar." },
+        { valor: p.n, clave: "vertices",
+          razon: "Ese es el número de vértices. Un vértice de grado 1 nunca es punto de articulación: al quitarlo no queda nadie incomunicado, solo desaparece él." },
+        { valor: interiores, clave: "interiores",
+          razon: "Ese es el número de vértices con grado mayor que 1. Tener varios vecinos no basta: si los vecinos siguen unidos por otro camino, quitar el vértice no parte el grafo." },
+        { valor: puentes, clave: "puentes",
+          razon: "Ese es el número de puentes, que son aristas. Pregunta por vértices: un vértice puede partir el grafo sin que ninguna de sus aristas sea puente, si todas están en ciclos." },
+        { valor: art.length + 1, clave: "demas",
+          razon: "Cuenta uno de más. Quite cada vértice con el botón de quitar y cuente solo los que dejan más componentes que el grafo completo." }
+      ];
+      var vistos = {}, res = [];
+      cand.forEach(function (o) {
+        if (!vistos[o.valor]) { vistos[o.valor] = true; res.push(o); }
+      });
+      return res.slice(0, 4);
     });
 
     document.getElementById("btn-vertices").addEventListener("click", function () {
@@ -368,6 +376,7 @@ if (typeof module !== "undefined") {
         armarListas();
         limpiarVeredictos();
         dibujar();
+        opcionesArt.refrescar();
       });
     });
 

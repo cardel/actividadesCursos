@@ -53,12 +53,9 @@
   <div class="carta">
     <h2>2. El reparto en cuatro</h2>
     <div class="codigo" id="codigo-par"></div>
-    <div class="prediccion">
-      <span>Con <code>iter = 10</code>, ¿cuántas iteraciones hace la cuarta
-      tarea?</span>
-      <input type="number" id="prediccion" min="0" placeholder="su número">
-      <button id="btn-comprobar" class="primario">Comprobar</button>
-    </div>
+    <div><b>Con <code>iter = 10</code>, ¿cuántas iteraciones hace la cuarta
+    tarea?</b></div>
+    <div class="opciones" id="opciones-cuarta"></div>
     <div id="veredicto" class="veredicto"></div>
     <div id="reparto" style="margin-top:0.7rem"></div>
     <div class="progreso" id="marcador-reparto"></div>
@@ -83,6 +80,7 @@
     pi que sale es la misma.</p>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="montecarlo.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

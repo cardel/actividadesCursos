@@ -167,16 +167,41 @@ if (typeof module !== "undefined") {
       paramsIniciales: PRESETS[0], alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
+    function sinRepetir(lista) {
+      var vistos = {}, sal = [];
+      lista.forEach(function (o) {
+        if (vistos[o.valor] !== true) { vistos[o.valor] = true; sal.push(o); }
+      });
+      return sal;
+    }
+
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto", function (params) {
       var r = EJERCICIO.rutaRef(params.grafo, params.inicio, params.destino);
       var real = r.length > 0 ? r.length - 1 : -1;
-      if (valor === real) {
-        return { ok: true, msg: real >= 0
-          ? "Correcto: " + real + " saltos, por " + r.join(" ") + ". Ejecute y mire en qué orden se llenan los predecesores."
-          : "Correcto: no hay ruta. Ejecute y vea vaciarse la cola sin tocar el destino." };
+      var lista = [
+        { valor: real, clave: "correcta",
+          razon: real >= 0
+            ? "Correcto: " + real + " saltos, por " + r.join(" ") + ". Ejecute y mire en qué orden se llenan los predecesores."
+            : "Correcto: no hay ruta. Ejecute y vea vaciarse la cola sin tocar el destino." }
+      ];
+      if (real >= 0) {
+        lista.push({ valor: real + 1, clave: "enrutadores",
+          razon: "Eso es el número de enrutadores de la ruta. Los saltos son uno menos." });
+        lista.push({ valor: -1, clave: "sinRuta",
+          razon: "Sí hay ruta. Siga las flechas desde el origen; las listas son dirigidas." });
+        if (real > 1) {
+          lista.push({ valor: real - 1, clave: "unoMenos",
+            razon: "Uno de menos: falta contar el salto que llega al destino." });
+        }
+      } else {
+        lista.push({ valor: 0, clave: "cero",
+          razon: "Cero saltos sería si el origen fuera el destino. Aquí la cola se vacía sin llegar, y eso se informa con −1." });
+        lista.push({ valor: 1, clave: "uno",
+          razon: "Un salto exigiría una flecha directa del origen al destino. Siga las flechas: no hay forma de llegar." });
+        lista.push({ valor: 2, clave: "dos",
+          razon: "Dos saltos supone un intermedio que enlace los dos extremos, y en esta red las flechas no lo permiten." });
       }
-      if (real >= 0 && valor === real + 1) { return { ok: false, msg: "Eso es el número de enrutadores de la ruta. Los saltos son uno menos." }; }
-      return { ok: false, msg: "No coincide. Siga las flechas desde el origen; las listas son dirigidas." };
+      return sinRepetir(lista).slice(0, 4);
     });
 
     Array.prototype.forEach.call(document.querySelectorAll(".presets button"), function (btn) {

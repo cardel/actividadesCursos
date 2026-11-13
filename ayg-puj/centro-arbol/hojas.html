@@ -36,13 +36,10 @@
   <div class="carta">
     <h2>3. La cuenta de una hoja</h2>
     <div class="pregunta" id="pregunta-hoja"></div>
-    <div class="fila-par">
-      <span class="rotulo" id="rot-hoja"></span>
-      <input type="number" id="in-hoja" class="corto" placeholder="0">
-      <span class="fb" id="fb-hoja"></span>
-    </div>
+    <div class="pregunta" id="rot-hoja"></div>
+    <div class="opciones" id="opciones-hoja"></div>
+    <div id="veredicto-hoja" class="veredicto"></div>
     <div class="botones" style="margin-top:0.7rem">
-      <button id="btn-hoja" class="primario">Comprobar</button>
       <button id="btn-otra">Otra hoja</button>
     </div>
   </div>
@@ -62,6 +59,7 @@
     y cuál deja menos.</p>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="../comun/arbol.js"></script>
 <script src="../comun/grafo-svg.js"></script>
 <script src="hojas.js"></script>

@@ -27,32 +27,20 @@
 
   <div class="carta">
     <h2>1. La entrada ordenada</h2>
-    <div class="prediccion">
-      <span>comparaciones:</span>
-      <input type="number" id="pred-ordenado" placeholder="?">
-      <button id="btn-ordenado" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-ordenado"></div>
     <div id="veredicto-ordenado" class="veredicto"></div>
   </div>
 
   <div class="carta">
     <h2>2. La misma entrada al revés</h2>
-    <div class="prediccion">
-      <span>comparaciones:</span>
-      <input type="number" id="pred-reves" placeholder="?">
-      <button id="btn-reves" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-reves"></div>
     <div id="veredicto-reves" class="veredicto"></div>
   </div>
 
   <div class="carta">
     <h2>3. La entrada balanceada</h2>
     <p style="margin-top:0">Tiene un elemento más que las otras dos.</p>
-    <div class="prediccion">
-      <span>comparaciones:</span>
-      <input type="number" id="pred-balanceado" placeholder="?">
-      <button id="btn-balanceado" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-balanceado"></div>
     <div id="veredicto-balanceado" class="veredicto"></div>
   </div>
 
@@ -62,14 +50,12 @@
     a estar abiertas al mismo tiempo? Cuente la inicial y también las de rango
     vacío o de un elemento, que abren su registro aunque no entren al
     <code>if</code>.</p>
-    <div class="prediccion">
-      <span>ordenada:</span>
-      <input type="number" id="pred-prof-ordenado" placeholder="?">
-      <span>balanceada:</span>
-      <input type="number" id="pred-prof-balanceado" placeholder="?">
-      <button id="btn-profundidad" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-profundidad" class="veredicto"></div>
+    <div><b>Con la entrada ordenada</b></div>
+    <div class="opciones" id="opciones-prof-ordenado"></div>
+    <div id="veredicto-prof-ordenado" class="veredicto"></div>
+    <div><b>Con la entrada balanceada</b></div>
+    <div class="opciones" id="opciones-prof-balanceado"></div>
+    <div id="veredicto-prof-balanceado" class="veredicto"></div>
   </div>
 
   <div class="carta">
@@ -107,6 +93,7 @@
     log₂ n niveles, Θ(n log n) en tiempo y Θ(log n) en la pila.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="comparaciones.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

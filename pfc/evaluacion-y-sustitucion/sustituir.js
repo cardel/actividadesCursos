@@ -190,16 +190,36 @@
 
   Motor.iniciar(cfg);
 
-  Motor.prediccionNumerica(function (valor, preset) {
+  Motor.opcionesNumericas("opciones-reemplazos", "veredicto", function (preset) {
     var real = reducciones(preset);
-    if (valor === real) {
-      return { ok: true, msg: "Correcto: " + real + " reducciones hasta el valor." };
+    var pasos = PRESETS[preset].pasos;
+    var llamadas = 0, i;
+    for (i = 0; i < pasos.length; i = i + 1) {
+      if (pasos[i].linea !== null) { llamadas = llamadas + 1; }
     }
-    return {
-      ok: false,
-      msg: "No. Son " + real + " reducciones. Cuente una por cada flecha: "
-        + "cada paso reemplaza una sola cosa."
-    };
+    var cand = [
+      { valor: real, clave: "correcta",
+        razon: "Correcto: " + real + " reducciones hasta el valor, una por " +
+          "cada flecha, y cada paso reemplaza una sola cosa." },
+      { valor: real + 1, clave: "expresiones",
+        razon: "Ese es el número de expresiones que se escriben, contando la " +
+          "de partida. Los reemplazos son las flechas entre ellas." },
+      { valor: llamadas, clave: "llamadas",
+        razon: "Ese es el número de llamadas a funciones que se reemplazan " +
+          "por su cuerpo. Faltan las operaciones y los argumentos que " +
+          "también se reducen, uno por vuelta." },
+      { valor: real - 1, clave: "menos",
+        razon: "Se le escapó un reemplazo: cada operación aritmética y cada " +
+          "argumento sin reducir cuentan como una vuelta aparte." }
+    ];
+    var lista = [], vistos = {};
+    for (i = 0; i < cand.length; i = i + 1) {
+      if (cand[i].valor >= 0 && !vistos[cand[i].valor]) {
+        vistos[cand[i].valor] = true;
+        lista.push(cand[i]);
+      }
+    }
+    return lista;
   });
 
   document.querySelectorAll("[data-preset]").forEach(function (b) {
@@ -209,7 +229,6 @@
       });
       b.className = "primario";
       Motor.limpiarVeredicto();
-      document.getElementById("prediccion").value = "";
       Motor.reiniciar(parseInt(b.getAttribute("data-preset"), 10));
     });
   });

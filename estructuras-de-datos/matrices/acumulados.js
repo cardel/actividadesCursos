@@ -111,7 +111,7 @@ if (typeof module !== "undefined") {
   module.exports = EJERCICIO;
 } else {
   (function () {
-    var estado = { a: [], s: [], llenas: {}, esquina: null, rect: null };
+    var estado = { a: [], s: [], llenas: {}, esquina: null, rect: null, celda: null };
 
     function clave(i, j) { return i + "," + j; }
 
@@ -192,17 +192,11 @@ if (typeof module !== "undefined") {
             td.textContent = "0";
             td.className = "borde-cero";
           } else {
-            var inp = document.createElement("input");
-            inp.type = "number";
-            inp.className = "entrada-s";
-            inp.dataset.i = i;
-            inp.dataset.j = j;
-            inp.addEventListener("focus", enfocar);
-            inp.addEventListener("change", revisarCelda);
-            inp.addEventListener("keydown", function (ev) {
-              if (ev.key === "Enter") { revisarCelda.call(this); }
-            });
-            td.appendChild(inp);
+            td.textContent = "?";
+            td.className = "casilla-s";
+            td.dataset.i = i;
+            td.dataset.j = j;
+            td.addEventListener("click", elegirCelda);
           }
           fila.appendChild(td);
         }
@@ -231,30 +225,83 @@ if (typeof module !== "undefined") {
         " - <span class='t-menos'>S[" + (i - 1) + "][" + (j - 1) + "]</span>";
     }
 
-    function enfocar() {
-      mostrarFormulaCelda(parseInt(this.dataset.i, 10), parseInt(this.dataset.j, 10));
-    }
-
-    function revisarCelda() {
+    function elegirCelda() {
       var i = parseInt(this.dataset.i, 10);
       var j = parseInt(this.dataset.j, 10);
-      var v = parseInt(this.value, 10);
-      var ver = document.getElementById("veredicto-tabla");
-      if (isNaN(v)) { return; }
-      if (v === estado.s[i][j]) {
-        fijarCelda(i, j);
-        ver.className = "veredicto bien";
-        ver.textContent = "S[" + i + "][" + j + "] = " + v + ". Van " + cuantasLlenas() +
-          " de " + totalPorLlenar() + ".";
-        revisarCompleta();
-      } else {
-        this.classList.add("errada");
-        ver.className = "veredicto mal";
-        ver.textContent = "S[" + i + "][" + j + "] no es " + v + ". Sume la celda de A con el " +
-          "acumulado de arriba y el de la izquierda; la esquina de arriba a la izquierda " +
-          "quedó contada dos veces.";
-      }
+      if (estado.llenas[clave(i, j)]) { return; }
+      estado.celda = [i, j];
+      mostrarFormulaCelda(i, j);
+      celdaS(i, j).classList.add("marca-esquina");
+      document.getElementById("pregunta-celda").textContent = "S[" + i + "][" + j +
+        "] vale:";
+      document.getElementById("zona-celda").style.display = "flex";
+      opcionesCelda.refrescar();
     }
+
+    function opcionesTabla() {
+      var lista = [];
+      if (estado.celda === null) { return lista; }
+      var i = estado.celda[0], j = estado.celda[1];
+      var s = estado.s;
+      var a = estado.a[i - 1][j - 1];
+      var arriba = s[i - 1][j], izq = s[i][j - 1], diag = s[i - 1][j - 1];
+      var nombre = "S[" + i + "][" + j + "]";
+      var aSig = estado.a[Math.min(i, estado.a.length - 1)][Math.min(j, estado.a[0].length - 1)];
+      lista.push({ valor: s[i][j], clave: "correcta",
+        razon: "Correcto: " + nombre + " = " + a + " + (" + arriba + ") + (" + izq + ") - (" +
+          diag + ") = " + s[i][j] + ". Van " + (cuantasLlenas() + 1) + " de " +
+          totalPorLlenar() + "." });
+      var candidatas = [
+        { valor: a + arriba + izq, clave: "sin-resta",
+          razon: "Falta restar S[" + (i - 1) + "][" + (j - 1) + "]: la esquina de arriba a la " +
+            "izquierda está dentro del acumulado de arriba y también dentro del de la " +
+            "izquierda, y quedó contada dos veces." },
+        { valor: a + arriba + izq + diag, clave: "suma-diagonal",
+          razon: "S[" + (i - 1) + "][" + (j - 1) + "] se resta, no se suma: ya viene " +
+            "incluida en los otros dos acumulados." },
+        { valor: arriba + izq - diag, clave: "sin-celda",
+          razon: "Falta la celda A[" + (i - 1) + "][" + (j - 1) + "]: los acumulados de arriba " +
+            "y de la izquierda no la incluyen." },
+        { valor: a, clave: "solo-celda",
+          razon: "Eso es el valor de la celda de A, no el acumulado; S suma todo lo que " +
+            "queda arriba y a la izquierda." },
+        { valor: a + arriba, clave: "solo-arriba",
+          razon: "Solo se tomó el acumulado de arriba; falta el de la izquierda y quitar " +
+            "la esquina que los dos comparten." },
+        { valor: a + izq, clave: "solo-izquierda",
+          razon: "Solo se tomó el acumulado de la izquierda; falta el de arriba y quitar " +
+            "la esquina que los dos comparten." },
+        { valor: aSig + arriba + izq - diag, clave: "indice-a",
+          razon: "La celda de A que entra en " + nombre + " es A[" + (i - 1) + "][" + (j - 1) +
+            "], no A[" + Math.min(i, estado.a.length - 1) + "][" +
+            Math.min(j, estado.a[0].length - 1) + "]: la tabla S va corrida una fila y " +
+            "una columna." },
+        { valor: i * j, clave: "cuenta-celdas",
+          razon: "Eso es cuántas celdas de A caen arriba y a la izquierda, no lo que suman." },
+        { valor: diag, clave: "esquina-vieja",
+          razon: "Ese es el acumulado anterior en la diagonal, S[" + (i - 1) + "][" + (j - 1) +
+            "]; falta sumar la celda nueva y los dos acumulados vecinos, y descontar la esquina." }
+      ];
+      candidatas.forEach(function (o) {
+        var repetida = lista.some(function (p) { return p.valor === o.valor; });
+        if (!repetida && lista.length < 4) { lista.push(o); }
+      });
+      return lista;
+    }
+
+    var opcionesCelda = Motor.opcionesNumericas("opciones-celda", "veredicto-tabla",
+      opcionesTabla);
+
+    document.getElementById("opciones-celda").addEventListener("click", function (ev) {
+      var b = ev.target;
+      if (estado.celda !== null && b && b.getAttribute && b.getAttribute("data-op") === "correcta") {
+        fijarCelda(estado.celda[0], estado.celda[1]);
+        estado.celda = null;
+        limpiarMarcas();
+        document.getElementById("zona-celda").style.display = "none";
+        revisarCompleta();
+      }
+    });
 
     function revisarCompleta() {
       if (cuantasLlenas() === totalPorLlenar()) {
@@ -276,6 +323,8 @@ if (typeof module !== "undefined") {
           if (!estado.llenas[clave(i, j)]) { fijarCelda(i, j); }
         }
       }
+      estado.celda = null;
+      document.getElementById("zona-celda").style.display = "none";
       document.getElementById("veredicto-tabla").className = "veredicto";
       revisarCompleta();
     }
@@ -307,6 +356,7 @@ if (typeof module !== "undefined") {
         estado.esquina = null;
         estado.rect = [f1, c1, f2, c2];
         mostrarRect(f1, c1, f2, c2);
+        opcionesConsulta.refrescar();
       }
     }
 
@@ -330,37 +380,66 @@ if (typeof module !== "undefined") {
         " - <span class='t-menos'>S[" + f1 + "][" + (c2 + 1) + "]</span>" +
         " - <span class='t-menos'>S[" + (f2 + 1) + "][" + c1 + "]</span>" +
         " + <span class='t-mas'>S[" + f1 + "][" + c1 + "]</span>";
-      document.getElementById("pred-suma").value = "";
       document.getElementById("zona-consulta").style.display = "flex";
       document.getElementById("veredicto-consulta").className = "veredicto";
     }
 
-    function comprobarConsulta() {
-      var ver = document.getElementById("veredicto-consulta");
-      var v = parseInt(document.getElementById("pred-suma").value, 10);
-      if (estado.rect === null) { return; }
+    function opcionesSuma() {
+      var lista = [];
+      if (estado.rect === null) { return lista; }
       var f1 = estado.rect[0], c1 = estado.rect[1], f2 = estado.rect[2], c2 = estado.rect[3];
       var s = estado.s;
       var total = EJERCICIO.sumaRect(s, f1, c1, f2, c2);
       var celdas = (f2 - f1 + 1) * (c2 - c1 + 1);
       var numerica = s[f2 + 1][c2 + 1] + " - (" + s[f1][c2 + 1] + ") - (" + s[f2 + 1][c1] +
         ") + (" + s[f1][c1] + ") = " + total;
-      if (isNaN(v)) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Escriba la suma que dan los cuatro términos.";
-      } else if (v === total) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: " + numerica + ". Sumando celda por celda serían " +
+      lista.push({ valor: total, clave: "correcta",
+        razon: "Correcto: " + numerica + ". Sumando celda por celda serían " +
           celdas + " lecturas de A, y da " + EJERCICIO.sumaDirecta(estado.a, f1, c1, f2, c2) +
-          "; con la tabla son cuatro, sea cual sea el tamaño del rectángulo.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "No es " + v + ". Lea los cuatro valores resaltados en S: el verde " +
-          "grande es todo lo que queda arriba y a la izquierda de la esquina inferior; los dos " +
-          "rojos quitan la franja de arriba y la de la izquierda, y el verde pequeño devuelve " +
-          "lo que se quitó dos veces.";
-      }
+          "; con la tabla son cuatro, sea cual sea el tamaño del rectángulo." });
+      var candidatas = [
+        { valor: s[f2 + 1][c2 + 1] - s[f1][c2 + 1] - s[f2 + 1][c1], clave: "sin-esquina",
+          razon: "Falta el término verde pequeño, S[" + f1 + "][" + c1 + "]: las dos restas " +
+            "quitaron esa esquina dos veces y hay que devolverla una." },
+        { valor: s[f2 + 1][c2 + 1] - s[f1][c2 + 1] - s[f2 + 1][c1] - s[f1][c1], clave: "esquina-resta",
+          razon: "La esquina S[" + f1 + "][" + c1 + "] se suma, no se resta: está dentro de " +
+            "las dos franjas que ya se quitaron." },
+        { valor: s[f2 + 1][c2 + 1] + s[f1][c2 + 1] + s[f2 + 1][c1] + s[f1][c1], clave: "todo-suma",
+          razon: "Los dos términos en rojo restan: son la franja de arriba y la de " +
+            "la izquierda, que no pertenecen al rectángulo." },
+        { valor: s[f2 + 1][c2 + 1], clave: "solo-grande",
+          razon: "Ese es todo lo que queda arriba y a la izquierda de la esquina inferior; " +
+            "incluye las franjas que el rectángulo no cubre." },
+        { valor: s[f2][c2] - s[f1][c2] - s[f2][c1] + s[f1][c1], clave: "sin-mas-uno",
+          razon: "Los índices de la esquina inferior van con +1: S[i][j] suma hasta la " +
+            "fila i-1 y la columna j-1, así que el rectángulo termina en S[" + (f2 + 1) +
+            "][" + (c2 + 1) + "]." },
+        { valor: s[f2 + 1][c2 + 1] - s[f1][c2 + 1], clave: "una-resta",
+          razon: "Solo se quitó la franja de arriba; falta la de la izquierda, y después " +
+            "devolver la esquina que las dos quitaron." },
+        { valor: s[f2 + 1][c2 + 1] - s[f2 + 1][c1], clave: "una-resta-izq",
+          razon: "Solo se quitó la franja de la izquierda; falta la de arriba, y después " +
+            "devolver la esquina que las dos quitaron." },
+        { valor: estado.a[f1][c1] + estado.a[f2][c2], clave: "esquinas",
+          razon: "Eso suma solo las dos esquinas de A. El rectángulo tiene " + celdas +
+            " celdas y la tabla las resume todas." },
+        { valor: total + estado.a[f1][c1], clave: "esquina-doble",
+          razon: "La celda A[" + f1 + "][" + c1 + "] quedó contada dos veces: ya está dentro " +
+            "de S[" + (f2 + 1) + "][" + (c2 + 1) + "]." },
+        { valor: celdas, clave: "cuenta-celdas",
+          razon: "Eso es cuántas celdas tiene el rectángulo, no lo que suman." },
+        { valor: 4, clave: "cuenta-terminos",
+          razon: "Cuatro son las lecturas de S que hace la consulta, no el valor de la suma." }
+      ];
+      candidatas.forEach(function (o) {
+        var repetida = lista.some(function (p) { return p.valor === o.valor; });
+        if (!repetida && lista.length < 4) { lista.push(o); }
+      });
+      return lista;
     }
+
+    var opcionesConsulta = Motor.opcionesNumericas("opciones-suma", "veredicto-consulta",
+      opcionesSuma);
 
     function buscarMejor() {
       var r = EJERCICIO.mejorRect(estado.a);
@@ -369,6 +448,7 @@ if (typeof module !== "undefined") {
       estado.esquina = null;
       mostrarRect(r.f1, r.c1, r.f2, r.c2);
       estado.rect = [r.f1, r.c1, r.f2, r.c2];
+      opcionesConsulta.refrescar();
       document.getElementById("dato-mejor").innerHTML = "El mejor rectángulo es A[" + r.f1 +
         ".." + r.f2 + "][" + r.c1 + ".." + r.c2 + "], con suma <b>" + r.suma + "</b>. Se " +
         "revisaron " + r.revisados + " rectángulos con cuatro términos cada uno; sumando " +
@@ -383,8 +463,12 @@ if (typeof module !== "undefined") {
       estado.llenas = {};
       estado.esquina = null;
       estado.rect = null;
+      estado.celda = null;
       construirA();
       construirS();
+      document.getElementById("zona-celda").style.display = "none";
+      opcionesCelda.refrescar();
+      opcionesConsulta.refrescar();
       document.getElementById("carta-consulta").classList.add("apagada");
       document.getElementById("zona-consulta").style.display = "none";
       document.getElementById("formula-rect").innerHTML = "";
@@ -406,7 +490,6 @@ if (typeof module !== "undefined") {
       cargar(EJERCICIO.aleatoria(4, Math.random));
     });
     document.getElementById("btn-llenar").addEventListener("click", llenarResto);
-    document.getElementById("btn-consulta").addEventListener("click", comprobarConsulta);
     document.getElementById("btn-mejor").addEventListener("click", function () {
       if (cuantasLlenas() === totalPorLlenar()) { buscarMejor(); }
     });

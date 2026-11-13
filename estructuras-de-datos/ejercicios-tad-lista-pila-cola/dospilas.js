@@ -31,7 +31,15 @@ var EJERCICIO = (function () {
     return { respuestas: respuestas, trasvases: trasvases, estados: estados };
   }
 
-  return { operaciones: OPERACIONES, simular: simular };
+  /* Lo que responderia quien confunde la cola con una pila, y los conteos ingenuos de trasvases. */
+  function contarDistractores(ops) {
+    var encolados = ops.filter(function (op) { return op[0] === "encolar"; }).map(function (op) { return op[1]; });
+    var frentes = ops.filter(function (op) { return op[0] === "frente"; }).length;
+    var desencolares = ops.filter(function (op) { return op[0] === "desencolar"; }).length;
+    return { ultimoEncolado: encolados[2], segundoEncolado: encolados[1], frentes: frentes, consultas: frentes + desencolares };
+  }
+
+  return { operaciones: OPERACIONES, simular: simular, distractores: contarDistractores(OPERACIONES) };
 })();
 
 if (typeof module !== "undefined") {
@@ -63,38 +71,89 @@ if (typeof module !== "undefined") {
 
     var r = EJERCICIO.simular(EJERCICIO.operaciones);
 
-    document.getElementById("btn-dp").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-dp");
-      var dadas = [0, 1, 2].map(function (k) { return parseInt(document.getElementById("pred-dp-" + k).value, 10); });
-      var tras = parseInt(document.getElementById("pred-dp-tras").value, 10);
-      var bienRespuestas = dadas.every(function (x, k) { return x === r.respuestas[k]; });
-      if (bienRespuestas && tras === r.trasvases) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: 3, 8 y 5, con dos trasvases. El segundo frente no trasvasa porque salida todavía tiene al 8 y al 1 debajo; el 5 y el 9 esperan en entrada hasta que salida se vacía.";
-        document.getElementById("tabla-dp").style.display = "block";
-        var cuerpo = document.getElementById("cuerpo-dp");
-        r.estados.forEach(function (e) {
-          var fila = document.createElement("tr");
-          [e.op, "⟨" + e.entrada.join(" ") + "⟩", "⟨" + e.salida.join(" ") + "⟩"].forEach(function (c) {
-            var td = document.createElement("td");
-            td.textContent = c;
-            fila.appendChild(td);
-          });
-          cuerpo.appendChild(fila);
+    /* Una opcion cuyo valor ya salio antes se descarta: nunca dos botones iguales. */
+    function unicas(lista) {
+      var vistos = [];
+      return lista.filter(function (o) {
+        var nueva = vistos.indexOf(o.valor) < 0;
+        if (nueva) { vistos.push(o.valor); }
+        return nueva;
+      });
+    }
+    /* Avisa cada vez que el estudiante acierta en el contenedor de opciones. */
+    function alAcertar(idOpciones, f) {
+      document.getElementById(idOpciones).addEventListener("click", function (e) {
+        if (e.target && e.target.getAttribute("data-op") === "correcta") { f(); }
+      });
+    }
+
+    var D = EJERCICIO.distractores;
+    var hechos = [false, false, false, false];
+    function revelarTabla() {
+      document.getElementById("tabla-dp").style.display = "block";
+      var cuerpo = document.getElementById("cuerpo-dp");
+      cuerpo.innerHTML = "";
+      r.estados.forEach(function (e) {
+        var fila = document.createElement("tr");
+        [e.op, "⟨" + e.entrada.join(" ") + "⟩", "⟨" + e.salida.join(" ") + "⟩"].forEach(function (c) {
+          var td = document.createElement("td");
+          td.textContent = c;
+          fila.appendChild(td);
         });
-      } else if (bienRespuestas) {
-        v.className = "veredicto mal";
-        v.textContent = "Los tres frentes están bien. Cuente los trasvases: solo ocurren cuando se pide frente o desencolar con salida vacía.";
-      } else if (dadas[1] === 5 || dadas[1] === 9) {
-        v.className = "veredicto mal";
-        v.textContent = "El segundo frente no es lo último que entró. Después del primer desencolar, salida aún guarda al 8 y al 1; el 5 y el 9 se quedan en entrada.";
-      } else if (dadas[0] === 1) {
-        v.className = "veredicto mal";
-        v.textContent = "Es una cola: el primero en entrar sale primero. Al trasvasar, el 3 que entró primero queda en el tope de salida.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "Siga las dos pilas: encolar apila en entrada; frente y desencolar usan salida y solo trasvasan cuando salida está vacía.";
-      }
+        cuerpo.appendChild(fila);
+      });
+    }
+    function conectar(k, lista) {
+      var sufijo = k === 3 ? "tras" : String(k);
+      Motor.opcionesNumericas("opciones-dp-" + sufijo, "veredicto-dp-" + sufijo, function () { return unicas(lista()); });
+      alAcertar("opciones-dp-" + sufijo, function () {
+        hechos[k] = true;
+        if (hechos.every(function (x) { return x; })) { revelarTabla(); }
+      });
+    }
+    conectar(0, function () {
+      return [
+        { valor: r.respuestas[0], clave: "correcta",
+          razon: "Correcto: 3. El primer frente trasvasa 3, 8 y 1 a salida, y el 3, que entró primero, queda en el tope." },
+        { valor: D.ultimoEncolado, clave: "pila",
+          razon: "Es una cola: el primero en entrar sale primero. Al trasvasar, el 3 que entró primero queda en el tope de salida." },
+        { valor: D.segundoEncolado, clave: "segundo",
+          razon: "El 8 es el segundo en entrar. El frente es el primero, y tras el trasvase está en el tope de salida." }
+      ];
+    });
+    conectar(1, function () {
+      return [
+        { valor: r.respuestas[1], clave: "correcta",
+          razon: "Correcto: 8. Después del primer desencolar, salida aún guarda al 8 y al 1; el 5 y el 9 esperan en entrada y no hay trasvase." },
+        { valor: 5, clave: "nuevo5",
+          razon: "El 5 es el primero de los que entraron después, pero sigue en entrada. Después del primer desencolar, salida aún guarda al 8 y al 1, y el frente es el 8." },
+        { valor: 9, clave: "nuevo9",
+          razon: "El 9 es lo último que entró, y eso sería el tope de una pila. Salida aún guarda al 8 y al 1; el 9 se queda en entrada." },
+        { valor: 3, clave: "viejo",
+          razon: "El 3 ya salió con el primer desencolar. El frente es ahora el siguiente en entrar, el 8." }
+      ];
+    });
+    conectar(2, function () {
+      return [
+        { valor: r.respuestas[2], clave: "correcta",
+          razon: "Correcto: 5. Los dos desencolar vaciaron salida; el frente trasvasa 5 y 9 y el 5, que entró antes, queda en el tope." },
+        { valor: 9, clave: "pila",
+          razon: "El 9 es lo último que entró. En el trasvase se invierte el orden, y el 5 queda en el tope de salida." },
+        { valor: 1, clave: "salido",
+          razon: "El 1 ya salió con el último desencolar: salida quedó vacía y por eso el frente tiene que trasvasar." }
+      ];
+    });
+    conectar(3, function () {
+      return [
+        { valor: r.trasvases, clave: "correcta",
+          razon: "Correcto: 2. El primer frente trasvasa 3, 8 y 1; el último frente, con salida vacía, trasvasa el 5 y el 9. El segundo frente no trasvasa porque salida aún tiene al 8 y al 1; cada elemento se trasvasa una sola vez." },
+        { valor: 1, clave: "uno",
+          razon: "Hay un segundo trasvase: después del tercer desencolar, salida queda vacía y el último frente tiene que traer los dos que esperaban en entrada." },
+        { valor: D.frentes, clave: "frentes",
+          razon: "Eso es una por cada frente. No se trasvasa en cada frente: solo cuando salida está vacía, y en el segundo todavía hay elementos." },
+        { valor: D.consultas, clave: "todas",
+          razon: "Esas son todas las llamadas a frente y desencolar juntas. Ninguna trasvasa si salida tiene algo, y casi siempre lo tiene." }
+      ];
     });
   })();
 }

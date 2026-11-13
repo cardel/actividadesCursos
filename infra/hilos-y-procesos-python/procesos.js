@@ -260,27 +260,62 @@ if (typeof document !== "undefined") (function () {
     ]);
   }
 
-  function veredictoNucleos(bien, real, dicho) {
-    destapado.perf = true;
-    pintarPerf();
-    pintarLadoALado();
-    return explicarNucleos(bien, real, dicho);
-  }
-
-  function veredictoCruce(bien, real, dicho) {
-    destapado.tabla = true;
-    pintarTamanos();
-    return explicarCruce(bien, real, dicho);
-  }
-
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-nucleos", boton: "btn-comprobar-nucleos", veredicto: "veredicto-nucleos" },
-    function () { return nucleos(MEDIDO_PERF[0].cpuMs, MEDIDO_PERF[0].relojMs); },
-    veredictoNucleos);
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-cruce", boton: "btn-comprobar-cruce", veredicto: "veredicto-cruce" },
-    function () { return crucePorTabla(TAMANOS); },
-    veredictoCruce);
+  Motor.opcionesNumericas("opciones-nucleos", "veredicto-nucleos", function () {
+    var num = Motor.num;
+    var h = MEDIDO_PERF[0], p = MEDIDO_PERF[1];
+    var real = nucleos(h.cpuMs, h.relojMs);
+    var otros = nucleos(p.cpuMs, p.relojMs);
+    return [
+      { valor: num(real, 2), clave: "correcta",
+        razon: "Sí: " + num(real, 2) + " núcleos. " + num(h.cpuMs, 2) + " ms de CPU entre " +
+          num(h.relojMs) + " ms de reloj: hubo un solo hilo ejecutando bytecode en todo " +
+          "momento y los otros tres esperando el GIL. Por eso el tiempo con hilos no baja del " +
+          "secuencial. La misma división con los cuatro procesos, " + num(p.cpuMs, 2) +
+          " ms en " + num(p.relojMs / 1000, 3) + " s, da " + num(otros, 2) + " núcleos ocupados." },
+      { valor: num(HILOS, 2), clave: "cuatro",
+        razon: "Eso sería si los cuatro hilos ejecutaran a la vez. Con el GIL solo uno corre " +
+          "bytecode por vez, y los otros tres esperan sin gastar CPU." },
+      { valor: num(otros, 2), clave: "procesos",
+        razon: "Ese es el resultado de la corrida con cuatro procesos, " + num(p.cpuMs, 2) +
+          " ms entre " + num(p.relojMs) + " ms. Aquí son hilos, y el GIL los deja en un solo " +
+          "núcleo." },
+      { valor: num(h.cpuMs / 1000, 2), clave: "segundos",
+        razon: "Eso es el tiempo de CPU en segundos, no un número de núcleos. Para los " +
+          "núcleos hay que dividirlo entre el tiempo transcurrido." }
+    ];
+  });
+  Motor.opcionesNumericas("opciones-cruce", "veredicto-cruce", function () {
+    var num = Motor.num;
+    var chico = TAMANOS[0], antes = TAMANOS[1], gana = TAMANOS[2], mas = TAMANOS[3];
+    var real = crucePorTabla(TAMANOS);
+    return [
+      { valor: num(real), clave: "correcta",
+        razon: "Sí: " + num(real) + " elementos. Con " + num(chico.n) + " elementos el " +
+          "trabajo secuencial es " + num(chico.sec, 2) + " ms contra " + num(chico.par, 2) +
+          " ms de la versión con procesos: casi todo lo que se mide ahí es el arranque. En " +
+          num(gana.n) + " el secuencial ya son " + num(gana.sec, 2) + " ms contra " +
+          num(gana.par, 2) + " ms, speedup " + num(speedup(gana), 2) + "×. El cruce queda " +
+          "entre " + num(antes.n) + " y " + num(gana.n) + "." },
+      { valor: num(chico.n), clave: "primero",
+        razon: "Con " + num(chico.n) + " elementos el secuencial tarda " + num(chico.sec, 2) +
+          " ms y los procesos " + num(chico.par, 2) + " ms: casi todo es el arranque, y " +
+          "pierden." },
+      { valor: num(antes.n), clave: "antes",
+        razon: "Con " + num(antes.n) + " elementos el secuencial tarda " + num(antes.sec, 2) +
+          " ms y los procesos " + num(antes.par, 2) + " ms: el trabajo todavía no alcanza " +
+          "para pagar los 17 ms de arranque." },
+      { valor: num(mas.n), clave: "despues",
+        razon: "Ahí gana, con speedup " + num(speedup(mas), 2) + "×, pero no es el primero: " +
+          "en " + num(gana.n) + " ya había ganado, con speedup " + num(speedup(gana), 2) + "×." }
+    ];
+  });
+  [["opciones-nucleos", "perf"], ["opciones-cruce", "tabla"]].forEach(function (p) {
+    document.getElementById(p[0]).addEventListener("click", function () {
+      destapado[p[1]] = true;
+      pintarPerf();
+      if (p[1] === "perf") { pintarLadoALado(); } else { pintarTamanos(); }
+    });
+  });
   Motor.conectarOpciones("opciones-reparto", "veredicto-reparto", RAZONES);
 
   ["rango-arranque", "rango-ns"].forEach(function (id) {

@@ -44,33 +44,42 @@ if (typeof module !== "undefined") {
     ]);
 
     var logradas = { stack: false, nombres: false };
+    function sinRepetir(lista) {
+      var vistos = {};
+      return lista.filter(function (o) {
+        var nuevo = !vistos[String(o.valor)];
+        vistos[String(o.valor)] = true;
+        return nuevo;
+      });
+    }
+    function alAcertar(id, f) {
+      document.getElementById(id).addEventListener("click", function (e) {
+        if (e.target && e.target.getAttribute && e.target.getAttribute("data-op") === "correcta") { f(); }
+      });
+    }
     function revisar() {
       if (logradas.stack && logradas.nombres) {
         document.getElementById("carta-cierre").style.display = "block";
       }
     }
 
-    document.getElementById("btn-stack").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-stack");
+    Motor.opcionesNumericas("opciones-stack", "veredicto-stack", function () {
       var r = EJERCICIO.simularStack(EJERCICIO.programa);
-      var top = parseInt(document.getElementById("pred-top").value, 10);
-      var size = parseInt(document.getElementById("pred-size").value, 10);
-      if (top === r.top && size === r.size) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: 2 2. El pop quitó al 7 sin devolverlo; el 4 sigue abajo y el 2 quedó en el tope.";
-        logradas.stack = true;
-        revisar();
-      } else if (top === 7) {
-        v.className = "veredicto mal";
-        v.textContent = "El 7 fue el que salió con pop. pop no devuelve nada: solo quita el tope.";
-      } else if (size === 3) {
-        v.className = "veredicto mal";
-        v.textContent = "Entraron tres y salió uno: quedan dos.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "Apile 4, apile 7, quite el tope, apile 2. ¿Qué queda arriba y cuántos hay?";
-      }
+      var apilados = EJERCICIO.programa.filter(function (op) { return op[0] === "push"; });
+      var sacado = apilados[1][1];
+      var fondo = apilados[0][1];
+      return sinRepetir([
+        { valor: r.top + " " + r.size, clave: "correcta",
+          razon: "Correcto: " + r.top + " " + r.size + ". El pop quitó al 7 sin devolverlo; el 4 sigue abajo y el 2 quedó en el tope." },
+        { valor: sacado + " " + r.size, clave: "popdevuelve",
+          razon: "El 7 fue el que salió con pop. pop no devuelve nada: solo quita el tope." },
+        { valor: r.top + " " + apilados.length, clave: "sinpop",
+          razon: "Entraron tres y salió uno: quedan dos." },
+        { valor: fondo + " " + r.size, clave: "fondo",
+          razon: "El 4 es el primero que entró, el que está abajo. top mira el último que entró, que es el 2." }
+      ]);
     });
+    alAcertar("opciones-stack", function () { logradas.stack = true; revisar(); });
 
     var selects = document.querySelectorAll("#nombres select");
     document.getElementById("btn-nombres").addEventListener("click", function () {

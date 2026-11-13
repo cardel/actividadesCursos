@@ -169,30 +169,64 @@ if (typeof module !== "undefined") {
     var ESPERADO = EJERCICIO.fila(EJERCICIO.n);
     pintarCodigo("codigo-contadores", EJERCICIO.lineas);
 
-    document.getElementById("btn-cuatro").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-cuatro");
-      var af = parseInt(document.getElementById("pred-af").value, 10);
-      var aa = parseInt(document.getElementById("pred-aa").value, 10);
-      var ef = parseInt(document.getElementById("pred-ef").value, 10);
-      var ea = parseInt(document.getElementById("pred-ea").value, 10);
-      if (af === ESPERADO.af && aa === ESPERADO.aa && ef === ESPERADO.ef && ea === ESPERADO.ea) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: " + ESPERADO.af + ", " + ESPERADO.aa + ", " + ESPERADO.ef + " y " + ESPERADO.ea + ". En el arreglo por el frente, la inserción número k corre los k elementos que ya estaban y cada eliminación corre los que quedan: 2·(49·50/2) = " + ESPERADO.af + ". En la enlazada por el final hay que caminar hasta el penúltimo nodo, y el primer elemento entra sin caminar: 2·(48·49/2) = " + ESPERADO.ea + ".";
-        logradas.cuatro = true; revisar();
-      } else if (aa === 0 && ef === 0 && (af !== ESPERADO.af || ea !== ESPERADO.ea)) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Los dos ceros están bien. Para las otras dos sume lo que mueve cada operación: la inserción k-ésima toca k elementos y la eliminación toca los que quedan por delante.";
-      } else if (af === 1225 || ea === 1176) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Esa es la cuenta de las 50 inserciones. Faltan las 50 eliminaciones, que mueven otro tanto.";
-      } else if (af === 2500 || af === 2450 * 2) {
-        ver.className = "veredicto mal";
-        ver.textContent = "La primera inserción sobre la lista vacía no corre nada, y la última corre 49, no 50: los sumandos van de 0 a n - 1.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "Dos de las cuatro son cero: el extremo donde la estructura no tiene que mover nada. Las otras dos salen de sumar 0 + 1 + ... hasta el tamaño que tenía la lista en cada paso.";
-      }
-    });
+    var acertadas = { af: false, aa: false, ef: false, ea: false };
+    function sinRepetir(lista) {
+      var vistos = {};
+      return lista.filter(function (o) {
+        var nuevo = !vistos[o.valor];
+        vistos[o.valor] = true;
+        return nuevo;
+      });
+    }
+    function alAcertar(clave) {
+      document.getElementById("opciones-" + clave).addEventListener("click", function (ev) {
+        var b = ev.target;
+        if (b && b.getAttribute && b.getAttribute("data-op") === "correcta") {
+          acertadas[clave] = true;
+          if (acertadas.af && acertadas.aa && acertadas.ef && acertadas.ea) {
+            logradas.cuatro = true; revisar();
+          }
+        }
+      });
+    }
+    var N = EJERCICIO.n;
+    var SUMA_ARREGLO = (N - 1) * N / 2;
+    var SUMA_ENLAZADA = (N - 2) * (N - 1) / 2;
+    var RAZON_CERO = "Ahí no se mueve nada: la inserción y la eliminación trabajan sobre el extremo que está a la mano, sea el final del arreglo o la cabeza de la lista, y no corren ni recorren nada.";
+    function opcionesCero(clave) {
+      return function () {
+        return sinRepetir([
+          { valor: 0, clave: "correcta", razon: "Correcto: 0. " + RAZON_CERO },
+          { valor: N, clave: "una-por-op",
+            razon: "No es un movimiento por operación: en este extremo la inserción y la eliminación no corren ni recorren nada." },
+          { valor: 2 * N, clave: "dos-por-op",
+            razon: "Eso sería un movimiento por cada apilar y por cada desapilar, y aquí no hay ninguno: el extremo está a la mano." },
+          { valor: ESPERADO[clave === "aa" ? "af" : "ea"], clave: "el-otro",
+            razon: "Esa es la cuenta del otro extremo. En este no hay que correr ni caminar." }
+        ]);
+      };
+    }
+    function opcionesCaro(clave, suma, espera) {
+      return function () {
+        var e = ESPERADO[clave];
+        return sinRepetir([
+          { valor: e, clave: "correcta", razon: "Correcto: " + e + ". " + espera },
+          { valor: suma, clave: "mitad",
+            razon: "Esa es la cuenta de las " + N + " inserciones. Faltan las " + N + " eliminaciones, que mueven otro tanto." },
+          { valor: N * N, clave: "cuadrado",
+            razon: "La primera inserción sobre la lista vacía no corre nada y la última corre " + (N - 1) + ", no " + N + ": los sumandos van de 0 a n − 1, así que la suma es menor que n²." },
+          { valor: 0, clave: "cero",
+            razon: "Ese es el extremo barato. En este hay que correr los elementos o caminar hasta el final en cada operación." }
+        ]);
+      };
+    }
+    alAcertar("af"); alAcertar("aa"); alAcertar("ef"); alAcertar("ea");
+    Motor.opcionesNumericas("opciones-af", "veredicto-af", opcionesCaro("af", SUMA_ARREGLO,
+      "En el arreglo por el frente, la inserción número k corre los k elementos que ya estaban y cada eliminación corre los que quedan: 2·(" + (N - 1) + "·" + N + "/2) = " + ESPERADO.af + "."));
+    Motor.opcionesNumericas("opciones-aa", "veredicto-aa", opcionesCero("aa"));
+    Motor.opcionesNumericas("opciones-ef", "veredicto-ef", opcionesCero("ef"));
+    Motor.opcionesNumericas("opciones-ea", "veredicto-ea", opcionesCaro("ea", SUMA_ENLAZADA,
+      "En la enlazada por el final hay que caminar hasta el penúltimo nodo, y el primer elemento entra sin caminar: 2·(" + (N - 2) + "·" + (N - 1) + "/2) = " + ESPERADO.ea + "."));
 
     var vista = { i: 0 };
     function pintarTabla() {

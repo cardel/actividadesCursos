@@ -71,15 +71,35 @@ var EJERCICIO = (function () {
       res = { ok: false, msg: "Todavía cambia algo después de la iteración " + valor + ": la ronda " + ult + " baja un d. Siga las rondas en la tabla y mire cuál es la última con cambios." };
     } else if (valor === ult) {
       res = { ok: false, msg: "La ronda " + ult + " todavía baja un d, y bfm4 solo se entera de que ya no hay cambios cuando hace una ronda más y t queda en -1. Falta esa iteración." };
+    } else if (valor === n - 1) {
+      res = { ok: false, msg: "Ese es el número de rondas de bfm2.cpp, que siempre hace n - 1 = " + (n - 1) + ". bfm4.cpp se detiene antes: " + (ult < real ? "en la ronda " + real + " ninguna relajación baja un d" : "la ronda " + ult + " es la última que baja un d") + " y t queda en -1." };
     } else {
-      res = { ok: false, msg: "Se detiene antes. La última ronda con cambios es la " + ult + "; en la " + real + " ninguna relajación baja un d, t queda en -1 y la línea 33 ya no deja entrar a otra ronda." };
+      res = { ok: false, msg: "Se detiene antes. La última ronda con cambios es la " + ult + (ult < real ? "; en la " + real + " ninguna relajación baja un d, " : "; ") + "t queda en -1 y la línea 33 ya no deja entrar a otra ronda." };
     }
     return res;
   }
 
+  /* Opciones: la correcta y los valores que da cada rama de error de evaluar. */
+  function opcionesIteraciones(g) {
+    var r = B.resumen("bfm4", g.G, g.s), n = g.n, cr = r.cambioPorRonda, ult = 0, i = 0;
+    while (i < cr.length) { if (cr[i]) { ult = i + 1; } i = i + 1; }
+    var real = r.iteraciones, cand = [ult, ult - 1, n - 1, n], lista = [], vistos = [real];
+    lista.push({ valor: real, clave: "correcta", razon: evaluar(real, g).msg });
+    i = 0;
+    while (i < cand.length && lista.length < 4) {
+      var v = cand[i];
+      if (v >= 0 && vistos.indexOf(v) < 0) {
+        vistos.push(v);
+        lista.push({ valor: v, clave: "d" + v, razon: v === 0 ? "Con 0 el ciclo de la línea 33 no entraría ni una vez." : evaluar(v, g).msg });
+      }
+      i = i + 1;
+    }
+    return lista;
+  }
+
   function simular(params) { return B.simular(params.clave, params.G, params.s); }
 
-  return { versiones: VERSIONES, codigos: CODIGOS, grafos: GRAFOS, simular: simular, evaluar: evaluar,
+  return { versiones: VERSIONES, codigos: CODIGOS, grafos: GRAFOS, simular: simular, evaluar: evaluar, opcionesIteraciones: opcionesIteraciones,
            contar: contar, historial: historial, resumen: B.resumen };
 })();
 
@@ -245,13 +265,15 @@ if (typeof module !== "undefined") {
 
     function preparar() {
       document.getElementById("ver-texto").textContent = g().texto;
-      document.getElementById("prediccion").value = "";
       Motor.limpiarVeredicto();
     }
 
     arrancar();
     preparar();
-    Motor.prediccionNumerica(function (valor) { return EJERCICIO.evaluar(valor, g()); });
+    Motor.opcionesNumericas("opciones-iteraciones", "veredicto", function () {
+      var r = EJERCICIO.opcionesIteraciones(g());
+      return r;
+    });
 
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (btn) {
       btn.addEventListener("click", function () {

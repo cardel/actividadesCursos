@@ -139,15 +139,36 @@ function resumenPrecedencia(ambiente) {
   return t;
 }
 
-function explicarPrediccion(bien, real, dicho) {
+/* Opciones de lo que imprime omp_get_num_threads() fuera de una region: la
+   correcta sale de numThreadsFuera() y cada distractor confunde esa funcion
+   con otra cosa. */
+function opcionesFuera() {
   var num = Motor.num;
-  var t = bien
-    ? "Sí: imprime " + num(real) + "."
-    : "No: imprime " + num(real) + ", no " + num(dicho, 2) + ".";
-  return t + " Fuera de una región paralela hay un solo hilo, el que arrancó el " +
-    "programa, así que omp_get_num_threads() responde 1 siempre, con cualquier " +
-    "OMP_NUM_THREADS. La que contesta cuántos hilos usaría la próxima región es " +
-    "omp_get_max_threads(), y en el equipo de la clase devuelve " + num(MAQUINA.nproc) + ".";
+  var real = numThreadsFuera();
+  var lista = [{ valor: real, clave: "correcta",
+    razon: "Sí: imprime " + num(real) + ". Fuera de una región paralela hay un solo hilo, " +
+      "el que arrancó el programa, así que omp_get_num_threads() responde 1 siempre, con " +
+      "cualquier OMP_NUM_THREADS. La que contesta cuántos hilos usaría la próxima región " +
+      "es omp_get_max_threads(), y en el equipo de la clase devuelve " + num(MAQUINA.nproc) + "." }];
+  var candidatas = [
+    { v: MAQUINA.nproc, razon: "Esos son los hilos que trae la máquina, y lo que contesta " +
+      "omp_get_max_threads(). omp_get_num_threads() cuenta los del equipo actual, y fuera " +
+      "de una región no hay equipo: solo el hilo principal." },
+    { v: 0, razon: "Cero hilos no existe: el programa corre en el hilo principal, que " +
+      "cuenta como un equipo de uno. Por eso la respuesta es 1 y no 0." },
+    { v: INVOCACIONES[2].max, razon: "Ese es el valor de OMP_NUM_THREADS=4, que fija cuántos " +
+      "hilos tendrá la próxima región, no cuántos hay ahora. Fuera de la región, " +
+      "omp_get_num_threads() no lo ve." }
+  ];
+  var vistos = {};
+  vistos[real] = true;
+  candidatas.forEach(function (c) {
+    if (lista.length < 4 && !vistos[c.v]) {
+      vistos[c.v] = true;
+      lista.push({ valor: c.v, clave: "d" + c.v, razon: c.razon });
+    }
+  });
+  return lista;
 }
 
 var RAZONES_LOGICOS = {
@@ -187,7 +208,7 @@ if (typeof module !== "undefined" && module.exports) {
     hilosDeLaRegion: hilosDeLaRegion, maxThreads: maxThreads,
     numThreadsFuera: numThreadsFuera, fuenteDeLaRegion: fuenteDeLaRegion,
     fuenteDelMax: fuenteDelMax, filasPrecedencia: filasPrecedencia,
-    resumenPrecedencia: resumenPrecedencia, explicarPrediccion: explicarPrediccion
+    resumenPrecedencia: resumenPrecedencia, opcionesFuera: opcionesFuera
   };
 }
 
@@ -268,9 +289,7 @@ if (typeof document !== "undefined") (function () {
     pintarPrecedencia();
   });
 
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-fuera", boton: "btn-comprobar-fuera", veredicto: "veredicto-fuera" },
-    numThreadsFuera, explicarPrediccion);
+  Motor.opcionesNumericas("opciones-fuera", "veredicto-fuera", opcionesFuera);
 
   Motor.conectarOpciones("opciones-logicos", "veredicto-logicos", RAZONES_LOGICOS);
   document.querySelectorAll("#opciones-logicos button").forEach(function (b) {

@@ -297,7 +297,6 @@
         });
         b.className = "primario";
         nActual = n;
-        document.getElementById("prediccion").value = "";
         Motor.limpiarVeredicto();
         bloquearBotones();
         Motor.reiniciar(n);
@@ -395,20 +394,53 @@
     alPintar: alPintar
   });
 
-  Motor.prediccionNumerica(function (valor, n) {
+  Motor.opcionesNumericas("opciones-pruebas", "veredicto", function (n) {
     var c = cuenta(n);
-    document.getElementById("botones").classList.remove("bloqueado");
-    if (valor === c.pruebas) {
-      return {
-        ok: true,
-        msg: "Correcto: " + c.pruebas + ". " + porQue(n)
-          + " Avance paso a paso y mírelo."
-      };
+    var lista = [
+      { valor: c.pruebas, clave: "correcta",
+        razon: "Correcto: " + c.pruebas + ". " + porQue(n)
+          + " Avance paso a paso y mírelo." }
+    ];
+    var candidatas = [];
+    if (c.guarda) {
+      candidatas.push({ valor: n - 2, clave: "rango",
+        razon: "Eso es el largo de 2 until " + n + ", el rango completo. La "
+          + "búsqueda solo lo recorre entero cuando nadie divide a " + n
+          + "; aquí no es el caso." });
+      candidatas.push({ valor: c.pruebas + 1, clave: "uno-mas",
+        razon: "Uno de más: cuenta un divisor que la búsqueda no llega a "
+          + "probar, o cuenta d desde 1 en vez de desde 2." });
+      candidatas.push({ valor: 0, clave: "ninguno",
+        razon: "Cero solo ocurre cuando la guarda es falsa o el rango queda "
+          + "vacío. Con n = " + n + " la guarda se cumple y el rango tiene "
+          + "elementos." });
+      candidatas.push({ valor: n, clave: "n",
+        razon: "Ese es el valor de n, no la cantidad de divisores probados. "
+          + "Los candidatos empiezan en 2 y llegan a lo sumo a n - 1"
+          + (n === 2 ? "; con n = 2 el rango queda vacío." : ".") });
+    } else {
+      candidatas.push({ valor: 1, clave: "uno",
+        razon: "Eso supone que se prueba un divisor antes de mirar la guarda. "
+          + "Con n >= 2 falso el && corta y la búsqueda no se evalúa." });
+      candidatas.push({ valor: 2, clave: "dos",
+        razon: "Eso supone que se prueba d = 2. Con n = " + n + " la guarda "
+          + "n >= 2 es falsa y no se llega a ningún divisor." });
+      candidatas.push({ valor: 3, clave: "tres",
+        razon: "Eso supone que la búsqueda corre completa sobre un rango que "
+          + "no existe. Con n = " + n + " no hay divisores que probar." });
     }
-    return {
-      ok: false,
-      msg: "No. Son " + c.pruebas + ". " + porQue(n)
-        + " Avance paso a paso y mírelo."
-    };
+    candidatas.push({ valor: c.pruebas + 2, clave: "dos-mas",
+      razon: "Dos de más: suma el divisor que corta la búsqueda y uno que "
+        + "nunca se prueba, porque exists se detiene en el primer d que "
+        + "divide a n." });
+    candidatas.forEach(function (o) {
+      var repetida = lista.some(function (p) { return p.valor === o.valor; });
+      if (!repetida && o.valor >= 0 && lista.length < 4) { lista.push(o); }
+    });
+    return lista;
+  });
+
+  document.getElementById("opciones-pruebas").addEventListener("click", function () {
+    document.getElementById("botones").classList.remove("bloqueado");
   });
 })();

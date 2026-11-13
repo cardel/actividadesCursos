@@ -54,12 +54,6 @@ if (typeof module !== "undefined") {
         caja.appendChild(linea);
       });
     }
-    function leerLista(texto) {
-      return texto.trim().split(/[\s,]+/).filter(function (x) { return x !== ""; }).map(Number);
-    }
-    function iguales(a, b) {
-      return a.length === b.length && a.every(function (x, i) { return x === b[i]; });
-    }
     pintarCodigo("codigo-ops", [
       ["Lista l;", ""],
       ["l.agregar(4);", "bloque-1"],
@@ -83,6 +77,25 @@ if (typeof module !== "undefined") {
       ["}", ""]
     ]);
 
+    function sinRepetidos(lista) {
+      var vistos = [];
+      return lista.filter(function (o) {
+        var nuevo = vistos.indexOf(o.valor) < 0;
+        if (nuevo) { vistos.push(o.valor); }
+        return nuevo;
+      });
+    }
+    /* Avisa cuando el estudiante acierta la opcion correcta de un bloque. */
+    function alAcertar(idOpciones, hacer) {
+      document.getElementById(idOpciones).addEventListener("click", function (e) {
+        if (e.target && e.target.getAttribute("data-op") === "correcta") { hacer(); }
+      });
+    }
+
+    var opsOk = { lista: false, tam: false };
+    function revisarOps() {
+      if (opsOk.lista && opsOk.tam) { logradas.ops = true; revisar(); }
+    }
     var logradas = { ops: false, pre: false, inter: false };
     function revisar() {
       if (logradas.ops && logradas.pre && logradas.inter) {
@@ -90,27 +103,47 @@ if (typeof module !== "undefined") {
       }
     }
 
-    document.getElementById("btn-ops").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-ops");
+    function texto(l) { return "⟨" + l.join(" ") + "⟩"; }
+    function quitar(nombre) {
+      return EJERCICIO.operaciones.filter(function (op) { return op[0] !== nombre; });
+    }
+    Motor.opcionesNumericas("opciones-ops", "veredicto-ops", function () {
       var esperado = EJERCICIO.simular(EJERCICIO.operaciones);
-      var dado = leerLista(document.getElementById("pred-ops").value);
-      var n = parseInt(document.getElementById("pred-ops-n").value, 10);
-      if (iguales(dado, esperado) && n === esperado.length) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: < 2 9 5 >, tamaño 3. El insertar(2, 5) final cumple la precondición porque p = n = 2: es agregar al final.";
-        logradas.ops = true;
-        revisar();
-      } else if (iguales(dado, [2, 9])) {
-        v.className = "veredicto mal";
-        v.textContent = "Falta el último insertar: con p igual al tamaño, insertar no viola nada y pone el 5 al final.";
-      } else if (iguales(dado, [2, 4, 9, 5]) || iguales(dado, [2, 4, 6, 5])) {
-        v.className = "veredicto mal";
-        v.textContent = "Revise el eliminar(1): quita el elemento de la posición 1 (el 4) y corre el resto a la izquierda.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "Escriba el estado después de cada línea: agregar pone al final, insertar corre a la derecha, eliminar corre a la izquierda.";
-      }
+      var sinUltimo = EJERCICIO.simular(EJERCICIO.operaciones.slice(0, -1));
+      var sinEliminar = EJERCICIO.simular(quitar("eliminar"));
+      var sinAsignar = EJERCICIO.simular(quitar("asignar"));
+      return sinRepetidos([
+        { valor: texto(esperado), clave: "correcta",
+          razon: "Correcto: " + texto(esperado) + ". El insertar(2, 5) final cumple la precondición porque p = n = 2: es agregar al final." },
+        { valor: texto(sinUltimo), clave: "sinultimo",
+          razon: "Falta el último insertar: con p igual al tamaño, insertar no viola nada y pone el 5 al final." },
+        { valor: texto(sinEliminar), clave: "sineliminar",
+          razon: "Revise el eliminar(1): quita el elemento de la posición 1 (el 4) y corre el resto a la izquierda." },
+        { valor: texto(sinAsignar), clave: "sinasignar",
+          razon: "asignar(2, 9) sí cambia la lista: reemplaza el valor de la posición 2, que en ese momento es el 6, por el 9." }
+      ]);
     });
+    alAcertar("opciones-ops", function () { opsOk.lista = true; revisarOps(); });
+
+    Motor.opcionesNumericas("opciones-ops-n", "veredicto-ops-n", function () {
+      var n = EJERCICIO.simular(EJERCICIO.operaciones).length;
+      var sinUltimo = EJERCICIO.simular(EJERCICIO.operaciones.slice(0, -1)).length;
+      var sinEliminar = EJERCICIO.simular(EJERCICIO.operaciones.filter(function (op) {
+        return op[0] !== "eliminar";
+      })).length;
+      var llamadas = EJERCICIO.operaciones.length;
+      return sinRepetidos([
+        { valor: n, clave: "correcta",
+          razon: "Correcto: tamaño " + n + ". Se agrega dos veces, se inserta una, el eliminar quita una y el último insertar agrega otra; asignar no cambia el tamaño." },
+        { valor: sinUltimo, clave: "sinultimo",
+          razon: "Falta el último insertar: con p igual al tamaño no viola nada y agrega un elemento." },
+        { valor: sinEliminar, clave: "sineliminar",
+          razon: "Olvida que eliminar(1) quita un elemento y corre el resto a la izquierda: el tamaño baja en uno." },
+        { valor: llamadas, clave: "llamadas",
+          razon: "Esas son las " + llamadas + " líneas del programa, no los elementos. asignar no agrega nada y eliminar quita uno." }
+      ]);
+    });
+    alAcertar("opciones-ops-n", function () { opsOk.tam = true; revisarOps(); });
 
     var aciertosPre = EJERCICIO.llamadas.map(function () { return false; });
     var PISTA_PRE = [
@@ -140,26 +173,23 @@ if (typeof module !== "undefined") {
       });
     });
 
-    document.getElementById("btn-inter").addEventListener("click", function () {
-      var v = document.getElementById("veredicto-inter");
+    Motor.opcionesNumericas("opciones-inter", "veredicto-inter", function () {
       var c = EJERCICIO.casoIntercalar;
       var esperado = EJERCICIO.intercalar(c.a, c.b);
-      var dado = leerLista(document.getElementById("pred-inter").value);
-      if (iguales(dado, esperado)) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: < 1 8 2 9 3 >. En i = 2 la lista b ya se agotó: el segundo if es la precondición de obtener, vigilada desde el área del programador.";
-        logradas.inter = true;
-        revisar();
-      } else if (iguales(dado, [1, 8, 2, 9])) {
-        v.className = "veredicto mal";
-        v.textContent = "El ciclo sigue mientras alguna de las dos tenga elementos: en i = 2 todavía queda el 3 de a.";
-      } else if (iguales(dado, [1, 2, 3, 8, 9])) {
-        v.className = "veredicto mal";
-        v.textContent = "Eso sería copiar a y después b. Aquí en cada vuelta se agrega uno de a y uno de b.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "Siga i = 0, 1, 2: en cada vuelta agrega a_i si existe y b_i si existe.";
-      }
+      var corto = esperado.slice(0, 2 * c.b.length);
+      var seguidas = c.a.concat(c.b);
+      var alReves = EJERCICIO.intercalar(c.b, c.a);
+      return sinRepetidos([
+        { valor: texto(esperado), clave: "correcta",
+          razon: "Correcto: " + texto(esperado) + ". En i = 2 la lista b ya se agotó: el segundo if es la precondición de obtener, vigilada desde el área del programador." },
+        { valor: texto(corto), clave: "corto",
+          razon: "El ciclo sigue mientras alguna de las dos tenga elementos: en i = 2 todavía queda el 3 de a." },
+        { valor: texto(seguidas), clave: "seguidas",
+          razon: "Eso sería copiar a y después b. Aquí en cada vuelta se agrega uno de a y uno de b." },
+        { valor: texto(alReves), clave: "alreves",
+          razon: "En cada vuelta se agrega primero a_i y después b_i; empezar por b cambia el orden de cada pareja." }
+      ]);
     });
+    alAcertar("opciones-inter", function () { logradas.inter = true; revisar(); });
   })();
 }

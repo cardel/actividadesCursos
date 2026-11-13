@@ -80,6 +80,18 @@ function digitosComunes(a, b) {
   return i;
 }
 
+
+/* Una pregunta numerica se contesta escogiendo: la correcta y los errores que
+   alguien comete de verdad, cada uno con su razon. Un valor repetido se descarta. */
+function opcionesDe(buena, razonBuena, malas) {
+  var lista = [{ valor: buena, clave: "correcta", razon: razonBuena }];
+  malas.forEach(function (m) {
+    var repetido = lista.some(function (o) { return o.valor === m.valor; });
+    if (!repetido) { lista.push({ valor: m.valor, clave: m.clave, razon: m.razon }); }
+  });
+  return lista;
+}
+
 function nombreEvento(tanda, clave) {
   for (var i = 0; i < tanda.eventos.length; i++) {
     if (tanda.eventos[i].clave === clave) { return tanda.eventos[i].nombre; }
@@ -283,27 +295,75 @@ if (typeof document !== "undefined") (function () {
     ]);
   }
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-ipc-bueno", boton: "btn-ipc-bueno", veredicto: "ver-ipc-bueno" },
-    function () { return ipcDe(TANDA1, "bueno"); }, explicarIpc("bueno"));
+  function opcionesIpc(cual) {
+    var otro = cual === "bueno" ? "malo" : "bueno";
+    var inst = valor(TANDA1, "instrucciones", cual);
+    var cic = valor(TANDA1, "ciclos", cual);
+    var real = ipc(inst, cic);
+    return opcionesDe(dec2(real), explicarIpc(cual)(true, real), [
+      { valor: dec2(ipcDe(TANDA1, otro)), clave: "otro",
+        razon: "No. Ese es el IPC de ./" + otro + ", con " +
+          Motor.num(valor(TANDA1, "ciclos", otro)) + " ciclos. ./" + cual + " tiene " +
+          Motor.num(cic) + "." },
+      { valor: dec2(cic / inst), clave: "alreves",
+        razon: "No. Dividió ciclos entre instrucciones y salen ciclos por instrucción. " +
+          "El IPC es instrucciones sobre ciclos." },
+      { valor: dec2(ipc(inst, valor(TANDA2, "ciclos", cual))), clave: "tanda",
+        razon: "No. Los " + Motor.num(valor(TANDA2, "ciclos", cual)) + " ciclos son de la " +
+          "segunda tanda, otra corrida con otros eventos. El IPC se calcula con instrucciones " +
+          "y ciclos de la misma tanda." }
+    ]);
+  }
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-ipc-malo", boton: "btn-ipc-malo", veredicto: "ver-ipc-malo" },
-    function () { return ipcDe(TANDA1, "malo"); }, explicarIpc("malo"));
+  Motor.opcionesNumericas("op-ipc-bueno", "ver-ipc-bueno", function () {
+    return opcionesIpc("bueno");
+  });
+
+  Motor.opcionesNumericas("op-ipc-malo", "ver-ipc-malo", function () {
+    return opcionesIpc("malo");
+  });
 
   document.getElementById("btn-destapar-tanda1").addEventListener("click",
     function () { vistaTanda1 = true; pintarTanda1(); });
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-fallos", boton: "btn-fallos", veredicto: "ver-fallos" },
-    function () { return razonDe(TANDA2, "fallos"); }, explicarFallos);
+  Motor.opcionesNumericas("op-fallos", "ver-fallos", function () {
+    var real = razonDe(TANDA2, "fallos");
+    return opcionesDe(dec1(real), explicarFallos(true, real), [
+      { valor: dec1(razonDe(TANDA2, "referencias")), clave: "referencias",
+        razon: "No. Esa es la razón de cache-references, " +
+          Motor.num(valor(TANDA2, "referencias", "malo")) + " contra " +
+          Motor.num(valor(TANDA2, "referencias", "bueno")) +
+          ". La pregunta es por cache-misses, que son los que no se encontraron." },
+      { valor: dec2(razonTiempo(TANDA2)), clave: "tiempo",
+        razon: "No. Esa es la razón del tiempo transcurrido, que se pregunta aparte. " +
+          "Mide el programa completo y los fallos son solo una pieza del camino." },
+      { valor: Motor.num(valor(TANDA2, "fallos", "bueno") / valor(TANDA2, "fallos", "malo"), 4),
+        clave: "alreves",
+        razon: "No. Dividió el conteo pequeño entre el grande. Se pregunta cuántas veces más " +
+          "tiene ./malo, así que va ./malo sobre ./bueno." }
+    ]);
+  });
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-tiempo", boton: "btn-tiempo", veredicto: "ver-tiempo" },
-    function () { return razonTiempo(TANDA2); }, explicarTiempoT2);
+  Motor.opcionesNumericas("op-tiempo", "ver-tiempo", function () {
+    var real = razonTiempo(TANDA2);
+    return opcionesDe(dec2(real), explicarTiempoT2(true, real), [
+      { valor: dec2(1 / real), clave: "alreves",
+        razon: "No. Dividió el tiempo de ./bueno entre el de ./malo. Se pregunta cuántas veces " +
+          "más tarda ./malo, así que va ./malo sobre ./bueno." },
+      { valor: dec2(razonDe(TANDA2, "ciclos")), clave: "ciclos",
+        razon: "No. Esa es la razón de los ciclos, " + Motor.num(valor(TANDA2, "ciclos", "malo")) +
+          " contra " + Motor.num(valor(TANDA2, "ciclos", "bueno")) +
+          ". Los ciclos cuentan trabajo del procesador, y la pregunta es por el reloj." },
+      { valor: dec2(razonTiempo(TANDA1)), clave: "tanda",
+        razon: "No. Esa es la razón de la primera tanda, " + dec2(TANDA1.segundos.malo) + " s " +
+          "contra " + dec2(TANDA1.segundos.bueno) + " s. Esta tabla es otra corrida, y sus " +
+          "tiempos son " + dec2(TANDA2.segundos.malo) + " s y " + dec2(TANDA2.segundos.bueno) + " s." }
+    ]);
+  });
 
-  [["btn-fallos", "fallos"], ["btn-tiempo", "tiempo"]].forEach(function (par) {
-    document.getElementById(par[0]).addEventListener("click", function () {
+  [["op-fallos", "fallos"], ["op-tiempo", "tiempo"]].forEach(function (par) {
+    document.getElementById(par[0]).addEventListener("click", function (ev) {
+      if (ev.target.getAttribute("data-op") !== "correcta") { return; }
       vistaTanda2[par[1]] = true;
       pintarTanda2();
       if (vistaTanda2.fallos && vistaTanda2.tiempo) {

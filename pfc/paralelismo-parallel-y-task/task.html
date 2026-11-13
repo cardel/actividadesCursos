@@ -52,19 +52,13 @@
     <p class="nota">Para las dos cuentas de abajo, suponga que cada cuarto del
     arreglo cuesta 100 ms, que hay un núcleo libre por tarea y que lanzar una
     tarea y esperarla no cuesta nada.</p>
-    <div class="prediccion">
-      <span>¿Cuánto tarda <code>pNormCuatro</code> tal como está escrita, en
-      milisegundos?</span>
-      <input type="number" id="pred-paralelo" min="1" placeholder="su número">
-      <button id="btn-paralelo" class="primario">Comprobar</button>
-    </div>
+    <div><b>¿Cuánto tarda <code>pNormCuatro</code> tal como está escrita, en
+    milisegundos?</b></div>
+    <div class="opciones" id="opciones-paralelo"></div>
     <div id="ver-paralelo" class="veredicto"></div>
-    <div class="prediccion">
-      <span>¿Y si cada <code>join</code> se escribe pegado a su
-      <code>task</code>, antes de crear la tarea siguiente?</span>
-      <input type="number" id="pred-fila" min="1" placeholder="su número">
-      <button id="btn-fila" class="primario">Comprobar</button>
-    </div>
+    <div><b>¿Y si cada <code>join</code> se escribe pegado a su
+    <code>task</code>, antes de crear la tarea siguiente?</b></div>
+    <div class="opciones" id="opciones-fila"></div>
     <div id="ver-fila" class="veredicto"></div>
   </div>
 
@@ -92,6 +86,7 @@
     <code>join</code>.</p>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="task.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

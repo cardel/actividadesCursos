@@ -20,11 +20,7 @@
     <h2>1. banana contra ananab</h2>
     <p style="margin-top:0">Seis letras, tres <code>a</code> y dos
     <code>n</code>. ¿Cuántas líneas imprime el bloque?</p>
-    <div class="prediccion">
-      <span>secuencias:</span>
-      <input type="number" id="pred-banana" placeholder="?">
-      <button id="btn-banana" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-banana"></div>
     <div id="veredicto-banana" class="veredicto"></div>
   </div>
 
@@ -33,14 +29,12 @@
     <p style="margin-top:0"><code>nana</code> contra <code>nana</code> imprime
     tres secuencias. Con la misma alternancia y dos letras más, y con cuatro
     más, ¿cuántas imprime?</p>
-    <div class="prediccion">
-      <span>nanana:</span>
-      <input type="number" id="pred-seis" placeholder="?">
-      <span>nananana:</span>
-      <input type="number" id="pred-ocho" placeholder="?">
-      <button id="btn-familia" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-familia" class="veredicto"></div>
+    <div style="margin-top:.8rem"><b><code>nanana</code></b></div>
+    <div class="opciones" id="opciones-seis"></div>
+    <div id="veredicto-seis" class="veredicto"></div>
+    <div style="margin-top:.8rem"><b><code>nananana</code></b></div>
+    <div class="opciones" id="opciones-ocho"></div>
+    <div id="veredicto-ocho" class="veredicto"></div>
     <div class="envoltura-tabla" id="tabla-familia"></div>
   </div>
 
@@ -48,11 +42,7 @@
     <h2>3. piano contra opina</h2>
     <p style="margin-top:0">Las dos palabras tienen las mismas cinco letras.
     ¿Cuántas secuencias imprime el bloque?</p>
-    <div class="prediccion">
-      <span>secuencias:</span>
-      <input type="number" id="pred-piano" placeholder="?">
-      <button id="btn-piano" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-piano"></div>
     <div id="veredicto-piano" class="veredicto"></div>
   </div>
 
@@ -71,6 +61,7 @@
     Envío en <a href="https://vjudge.net/problem/UVA-732">https://vjudge.net/problem/UVA-732</a>.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="cuantas.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

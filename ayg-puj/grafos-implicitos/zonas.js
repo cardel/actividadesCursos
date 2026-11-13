@@ -252,23 +252,25 @@ var EJERCICIO = (function () {
     return r;
   }
 
-  function juzgarCierre(q, valor) {
+  function opcionesCierre(q) {
     var r = bosque(q.tablero, q.tripletas), rombo = recorrido(q.tablero, q.tripletas, "rombo").respuesta, cuad = recorrido(q.tablero, q.tripletas, "cuadrado").respuesta;
-    var sinRev = arrancarSinRevisar(q.tablero, q.tripletas), ok = valor === r, msg;
-    if (ok) {
-      msg = r === -1 ? "Es −1: las zonas dejan sin camino a la salida." : "Son " + r + " pasos.";
-    } else if (valor === rombo) {
-      msg = "Sale al medir en rombo. Revise las casillas a (2, 2) de una criatura con radio 3: 4 + 4 = 8 <= 9.";
-    } else if (valor === sinRev && r === -1) {
-      msg = "Sale al arrancar desde la entrada sin revisarla, y aquí la entrada está prohibida.";
-    } else if (valor === cuad) {
-      msg = "Sale al medir en cuadrado: una casilla a (3, 3) de una criatura con radio 3 queda afuera, porque 9 + 9 = 18 > 9.";
-    } else if (r === -1) {
-      msg = "Hay algo que cierra el paso. Marque cada zona con la cuenta y mire si la entrada o la salida quedaron libres.";
-    } else {
-      msg = "No es ese número. Marque cada zona con la cuenta y avance por capas desde E.";
+    var sinRev = arrancarSinRevisar(q.tablero, q.tripletas), vistos = {}, lista = [], sal = [];
+    lista.push({ valor: r, clave: "correcta", razon: r === -1 ? "Es −1: las zonas dejan sin camino a la salida." : "Son " + r + " pasos." });
+    lista.push({ valor: rombo, clave: "rombo", razon: "Sale al medir en rombo. Revise las casillas a (2, 2) de una criatura con radio 3: 4 + 4 = 8 <= 9." });
+    if (r === -1) {
+      lista.push({ valor: sinRev, clave: "entrada", razon: "Sale al arrancar desde la entrada sin revisarla, y aquí la entrada está prohibida." });
     }
-    return { ok: ok, msg: msg };
+    lista.push({ valor: cuad, clave: "cuadrado", razon: "Sale al medir en cuadrado: una casilla a (3, 3) de una criatura con radio 3 queda afuera, porque 9 + 9 = 18 > 9." });
+    if (r !== -1) {
+      lista.push({ valor: -1, clave: "sinCamino", razon: "Hay camino: las zonas dejan libres la entrada y la salida. Marque cada zona con la cuenta y avance por capas desde E." });
+      lista.push({ valor: r + 1, clave: "celdas", razon: "Eso cuenta las casillas del camino, incluida E, en vez de los pasos." });
+    } else {
+      lista.push({ valor: 0, clave: "cero", razon: "Cero pasos sería si E fuera la misma casilla que S. Aquí hay algo que cierra el paso: marque cada zona con la cuenta y mire si la entrada o la salida quedaron libres." });
+    }
+    lista.forEach(function (o) {
+      if (vistos[o.valor] !== true) { vistos[o.valor] = true; sal.push(o); }
+    });
+    return sal.slice(0, 4);
   }
 
   function miniZona(medida, nombreZ) {
@@ -356,7 +358,7 @@ var EJERCICIO = (function () {
   return { TABLERO: TABLERO, TRIPLETAS: TRIPLETAS, codigo: CODIGO, CIERRES: CIERRES, ERRORES: ERRORES, PREGUNTAS: PREGUNTAS,
            zona: zona, marcar: marcar, recorrido: recorrido, bosque: bosque, camino: camino, cuentaCasilla: cuentaCasilla,
            yaProhibidas: yaProhibidas, juzgarZona: juzgarZona, juzgarEntradas: juzgarEntradas, arrancarSinRevisar: arrancarSinRevisar, marcandoTarde: marcandoTarde,
-           vacio: vacio, correrError: correrError, juzgarCierre: juzgarCierre, nombre: nombre };
+           vacio: vacio, correrError: correrError, opcionesCierre: opcionesCierre, nombre: nombre };
 })();
 
 if (typeof module !== "undefined") { module.exports = EJERCICIO; }
@@ -542,7 +544,7 @@ if (typeof document !== "undefined") {
     })(0);
 
     /* El tablero sin ayuda */
-    var cierre = 0, propias = [], verSol = false;
+    var cierre = 0, propias = [], verSol = false, opcionesDeCierre = null;
     function pintarCierre() {
       var q = E.CIERRES[cierre], rec = E.recorrido(q.tablero, q.tripletas, "circulo"), cam = E.camino(rec.dist);
       el("cierre-datos").innerHTML = "Tripletas: <code>" + q.tripletas.map(function (x) { return "(" + x.join(", ") + ")"; }).join(", ") + "</code>";
@@ -560,20 +562,18 @@ if (typeof document !== "undefined") {
     }
     PLANTEO.botones("cierres", E.CIERRES.map(function (x) { return x.nombre; }), function (i) {
       cierre = i; propias = []; verSol = false;
-      el("cierre-valor").value = "";
       PLANTEO.decir("cierre-veredicto", true, "");
       pintarCierre();
+      if (opcionesDeCierre !== null) { opcionesDeCierre.refrescar(); }
     })(0);
+    opcionesDeCierre = Motor.opcionesNumericas("opciones-cierre", "cierre-veredicto", function () {
+      return E.opcionesCierre(E.CIERRES[cierre]);
+    });
     alTocar("cierre-tablero", function (r, c) {
       if (!verSol) {
         if (tiene(propias, r, c)) { propias = propias.filter(function (x) { return !(x[0] === r && x[1] === c); }); } else { propias.push([r, c]); }
         pintarCierre();
       }
-    });
-    el("cierre-comprobar").addEventListener("click", function () {
-      var v = parseInt(el("cierre-valor").value, 10), r;
-      if (isNaN(v)) { PLANTEO.decir("cierre-veredicto", false, "Escriba un número primero."); }
-      else { r = E.juzgarCierre(E.CIERRES[cierre], v); PLANTEO.decir("cierre-veredicto", r.ok, r.msg); }
     });
     el("cierre-solucion").addEventListener("click", function () {
       var q = E.CIERRES[cierre];

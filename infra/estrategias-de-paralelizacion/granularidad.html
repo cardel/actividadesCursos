@@ -47,11 +47,8 @@
 
   <div class="carta">
     <h2>2. Antes de destapar</h2>
-    <div class="prediccion">
-      <span>¿En qué fila cruza el 1? Escriba el exponente: 3, 4, 5, 6 o 7</span>
-      <input type="number" id="prediccion" min="3" max="7" step="1" placeholder="exponente">
-      <button id="btn-comprobar" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-top:0;margin-bottom:0.3rem">¿En qué fila cruza el 1?</p>
+    <div class="opciones" id="opciones-primera-fila"></div>
     <div id="veredicto" class="veredicto"></div>
     <div class="nota" id="nota-modelo" hidden>La columna nueva sale de dos
     sumandos: crear y unir cada hilo cuesta 16 µs y cada iteración del ciclo

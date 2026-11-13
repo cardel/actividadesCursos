@@ -18,11 +18,8 @@
     <h2>1. Los nueves, en tiempo caído</h2>
     <p style="margin-top:0">Un servicio con 99,9 % de <em>uptime</em> tiene tres nueves. El año
     tiene 365 días.</p>
-    <div class="prediccion">
-      <span>¿Cuántas horas al año puede estar caído?</span>
-      <input type="number" id="pred-nueves" min="0" step="0.01" placeholder="horas">
-      <button id="btn-nueves" class="primario">Comprobar</button>
-    </div>
+    <div><b>¿Cuántas horas al año puede estar caído?</b></div>
+    <div class="opciones" id="op-nueves"></div>
     <div id="ver-nueves" class="veredicto"></div>
     <div class="envoltura-tabla" style="margin-top:0.6rem">
       <table>
@@ -44,11 +41,8 @@
       <div class="linea"><span class="num"></span><span class="txt">20 packets transmitted, 20 received, 0% packet loss, time 3830ms</span></div>
       <div class="linea"><span class="num"></span><span class="txt">rtt min/avg/max/mdev = 11.394/23.377/172.228/37.439 ms</span></div>
     </div>
-    <div class="prediccion">
-      <span>¿Cuántas veces el mínimo es el peor paquete?</span>
-      <input type="number" id="pred-pico" min="0" step="0.1" placeholder="veces">
-      <button id="btn-pico" class="primario">Comprobar</button>
-    </div>
+    <div><b>¿Cuántas veces el mínimo es el peor paquete?</b></div>
+    <div class="opciones" id="op-pico"></div>
     <div id="ver-pico" class="veredicto"></div>
     <div class="envoltura-tabla" style="margin-top:0.6rem">
       <table>
@@ -109,11 +103,8 @@
       <div class="linea"><span class="num">$</span><span class="txt">curl -s -o /dev/null -w 'total: %{time_total} s velocidad: %{speed_download} B/s\n' …</span></div>
       <div class="linea"><span class="num"></span><span class="txt">total: 1.512595 s  velocidad: 34661538 B/s</span></div>
     </div>
-    <div class="prediccion">
-      <span>¿A cuántos Mbit/s equivale esa velocidad?</span>
-      <input type="number" id="pred-mbit" min="0" step="1" placeholder="Mbit/s">
-      <button id="btn-mbit" class="primario">Comprobar</button>
-    </div>
+    <div><b>¿A cuántos Mbit/s equivale esa velocidad?</b></div>
+    <div class="opciones" id="op-mbit"></div>
     <div id="ver-mbit" class="veredicto"></div>
     <p style="margin-bottom:0.3rem;margin-top:1rem">Contra la propia máquina, <code>iperf3</code>
     midió 27,9 Gbit/s y una descarga HTTP por el mismo camino dio 10,5 Gbit/s. ¿Qué explica el

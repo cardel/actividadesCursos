@@ -57,11 +57,8 @@
     </div>
     <p style="margin-top:0.7rem">Se edita una línea de <code>app.py</code> y se vuelve a
     construir.</p>
-    <div class="prediccion">
-      <span>Con dependencias primero, ¿cuántos de los seis pasos salen de la caché?</span>
-      <input type="number" id="pred-cacheados" min="0" max="6" step="1" placeholder="pasos">
-      <button id="btn-cacheados" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">Con dependencias primero, ¿cuántos de los seis pasos salen de la caché?</p>
+    <div class="opciones" id="op-cacheados"></div>
     <div id="ver-cacheados" class="veredicto"></div>
     <div class="secuencia" id="pasos-buena"></div>
     <div class="secuencia" id="pasos-mala"></div>
@@ -72,11 +69,8 @@
     <h2>3. Lo que cuesta la línea mal puesta</h2>
     <p style="margin-top:0">Las tres construcciones, medidas: la primera con
     <code>--no-cache</code>, y las dos segundas tras la misma edición de una línea.</p>
-    <div class="prediccion">
-      <span>¿Cuántas veces más tarda la segunda construcción con el código arriba?</span>
-      <input type="number" id="pred-razon" min="0" step="0.1" placeholder="veces">
-      <button id="btn-razon" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">¿Cuántas veces más tarda la segunda construcción con el código arriba?</p>
+    <div class="opciones" id="op-razon"></div>
     <div id="ver-razon" class="veredicto"></div>
     <div class="envoltura-tabla" style="margin-top:0.6rem">
       <table>

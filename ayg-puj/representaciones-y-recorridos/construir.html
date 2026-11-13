@@ -56,11 +56,8 @@
       <button data-preset="1">H2, dirigido</button>
     </div>
     <div id="panel-grafo"></div>
-    <div class="prediccion">
-      <span>¿Cuántas entradas suman, en total, las listas de adyacencia?</span>
-      <input type="number" id="prediccion" min="0" placeholder="su número">
-      <button id="btn-comprobar" class="primario">Comprobar</button>
-    </div>
+    <div><b>¿Cuántas entradas suman, en total, las listas de adyacencia?</b></div>
+    <div class="opciones" id="opciones-prediccion"></div>
     <div id="veredicto" class="veredicto"></div>
     <div class="fila-n" style="margin-top:0.8rem">
       <span>Representaciones correctas:</span>
@@ -146,6 +143,7 @@
   </div>
 
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="construir.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

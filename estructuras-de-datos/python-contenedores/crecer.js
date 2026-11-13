@@ -60,21 +60,6 @@ var EJERCICIO = (function () {
     return P.crecer(m).filter(function (r) { return r.cambia; }).length;
   }
 
-  function evaluar(valor, m) {
-    var c = cambios(m);
-    var res;
-    if (valor === c) {
-      res = { ok: true, msg: "Correcto: " + c + " cambios en " + m + " append. Las capacidades van 4, 8, 16, 24, 32, 40, 52, 64, 76…: cada una es la anterior más un octavo, redondeada a múltiplo de 4." };
-    } else if (valor === m) {
-      res = { ok: false, msg: "La línea 9 no corre en cada vuelta: solo cuando la capacidad cambió, y casi todos los append caben." };
-    } else if (valor === c - 1) {
-      res = { ok: false, msg: "Falta uno: el primer append también cambia la capacidad, de 0 a 4." };
-    } else {
-      res = { ok: false, msg: "Escriba la sucesión 0, 4, 8, 16, 24, 32, 40, 52, 64, 76, 92, 108, 128… y cuente cuántas capacidades hacen falta para llegar a " + m + " o más." };
-    }
-    return res;
-  }
-
   var RAZONES = {
     log: "Correcto. Cada capacidad es más o menos 9/8 de la anterior, así que los cambios crecen como el logaritmo de m: Θ(log m). Y las referencias copiadas suman O(m), que es por qué append cuesta O(1) amortizado.",
     lineal: "Si cambiara en cada append serían m. Pruebe m = 200: la línea 9 corre muchas menos veces.",
@@ -82,7 +67,7 @@ var EJERCICIO = (function () {
     constante: "Pruebe m = 40 y m = 200: los cambios aumentan, aunque despacio."
   };
 
-  return { codigo: CODIGO, simular: simular, cambios: cambios, evaluar: evaluar, RAZONES: RAZONES };
+  return { codigo: CODIGO, simular: simular, cambios: cambios, RAZONES: RAZONES };
 })();
 
 if (typeof module !== "undefined") {
@@ -118,7 +103,30 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) { return EJERCICIO.evaluar(valor, params.m); });
+    Motor.opcionesNumericas("opciones-cambios", "veredicto", function (params) {
+      var m = params.m;
+      var c = EJERCICIO.cambios(m);
+      var lista = [
+        { valor: c, clave: "correcta",
+          razon: "Correcto: " + c + " cambios en " + m + " append. Las capacidades van 4, 8, 16, 24, 32, 40, 52, 64, 76…: cada una es la anterior más un octavo, redondeada a múltiplo de 4." }
+      ];
+      var candidatos = [
+        { valor: m, clave: "todos",
+          razon: "La línea 9 no corre en cada vuelta: solo cuando la capacidad cambió, y casi todos los append caben." },
+        { valor: c - 1, clave: "falta",
+          razon: "Falta uno: el primer append también cambia la capacidad, de 0 a 4." },
+        { valor: Math.ceil(m / 4), clave: "cuarto",
+          razon: "Eso pasaría si la capacidad creciera siempre de 4 en 4. Crece en proporción a su tamaño, así que los saltos son cada vez más largos." },
+        { valor: c + 1, clave: "sobra",
+          razon: "Eso cuenta un cambio de más: la capacidad no vuelve a cambiar mientras el siguiente append quepa." }
+      ];
+      candidatos.forEach(function (o) {
+        var repetido = false;
+        lista.forEach(function (x) { if (x.valor === o.valor) { repetido = true; } });
+        if (!repetido && o.valor >= 0 && lista.length < 4) { lista.push(o); }
+      });
+      return lista;
+    });
 
     Array.prototype.forEach.call(document.querySelectorAll("#opciones-analisis button"), function (b) {
       b.addEventListener("click", function () {

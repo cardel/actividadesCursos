@@ -295,32 +295,34 @@ if (typeof module !== "undefined") {
       });
     });
 
-    document.getElementById("btn-cuantos").addEventListener("click", function () {
+    var opcionesCuantos = Motor.opcionesNumericas("opciones-cuantos", "veredicto-cuantos", function () {
       var p = P();
       var lista = p.dir ? EJERCICIO.kosaraju(p.G) : EJERCICIO.componentesConexos(p.G);
       var total = lista.length;
-      var campo = document.getElementById("cuantos");
-      var v = document.getElementById("veredicto-cuantos");
-      var valor = parseInt(campo.value, 10);
       var pintados = lista.map(function (c) { return "{" + c.slice().sort(function (a, b) { return a - b; }).join(", ") + "}"; }).join(", ");
-      if (isNaN(valor)) {
-        v.className = "veredicto mal"; v.textContent = "Escriba un número primero.";
-      } else if (valor === total) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: " + total + ". " + pintados + ".";
-      } else if (p.dir && valor === EJERCICIO.componentesConexos(EJERCICIO.subyacente(p.G)).length) {
-        v.className = "veredicto mal";
-        v.textContent = "Ese es el número de componentes débilmente conexos, que sale de ignorar las puntas. Con las puntas puestas hacen falta los dos caminos, de ida y de vuelta, y los componentes son " + pintados + ".";
-      } else if (valor === p.G.length) {
-        v.className = "veredicto mal";
-        v.textContent = "Ese es el número de vértices. Un vértice solo forma componente por su cuenta cuando no comparte camino de ida y vuelta con ningún otro; aquí varios sí lo comparten.";
-      } else if (valor === 1) {
-        v.className = "veredicto mal";
-        v.textContent = "Con un solo componente todo vértice alcanzaría a todos los demás. Busque una pareja sin camino y ya tiene dos componentes distintos.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "No coincide. Vaya vértice por vértice: agrupe cada uno con aquellos a los que llega y de los que puede volver, y cuente los grupos.";
+      var sinSolos = lista.filter(function (c) { return c.length > 1; }).length;
+      var cand = [
+        { valor: total, clave: "correcta", razon: "Correcto: " + total + ". " + pintados + "." },
+        { valor: p.G.length, clave: "vertices",
+          razon: p.dir
+            ? "Ese es el número de vértices. Un vértice solo forma componente por su cuenta cuando no comparte camino de ida y vuelta con ningún otro; aquí varios sí lo comparten."
+            : "Ese es el número de vértices. Un vértice solo forma componente por su cuenta cuando no tiene camino hacia ningún otro; aquí varios están unidos por aristas." },
+        { valor: 1, clave: "uno",
+          razon: "Con un solo componente todo vértice alcanzaría a todos los demás. Busque una pareja sin camino y ya tiene dos componentes distintos." }
+      ];
+      if (p.dir) {
+        cand.push({ valor: EJERCICIO.componentesConexos(EJERCICIO.subyacente(p.G)).length, clave: "debil",
+          razon: "Ese es el número de componentes débilmente conexos, que sale de ignorar las puntas. Con las puntas puestas hacen falta los dos caminos, de ida y de vuelta, y los componentes son " + pintados + "." });
       }
+      cand.push({ valor: sinSolos, clave: "sinsolos",
+        razon: "Ese deja fuera los vértices que quedan solos. Un vértice sin pareja también es un componente, de tamaño uno: los componentes son " + pintados + "." });
+      cand.push({ valor: total + 1, clave: "demas",
+        razon: "Cuenta uno de más. Cada vértice pertenece a un solo componente y los componentes no se traslapan: los componentes son " + pintados + "." });
+      var vistos = {}, res = [];
+      cand.forEach(function (o) {
+        if (!vistos[o.valor] && o.valor >= 1) { vistos[o.valor] = true; res.push(o); }
+      });
+      return res.slice(0, 4);
     });
 
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (btn) {
@@ -330,6 +332,7 @@ if (typeof module !== "undefined") {
         presetActual = parseInt(btn.getAttribute("data-preset"), 10);
         limpiar();
         dibujar();
+        opcionesCuantos.refrescar();
       });
     });
 

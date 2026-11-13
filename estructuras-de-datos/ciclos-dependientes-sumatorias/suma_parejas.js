@@ -194,25 +194,23 @@ if (typeof module !== "undefined") {
     });
     mostrarDatos(4);
 
-    Motor.prediccionNumerica(function (valor, params) {
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto", function (params) {
       var n = params.n;
       var esperado = n * (n + 1) / 2;
-      if (valor === esperado) {
-        return { ok: true, msg: "Correcto: la línea 6 corre n + (n − 1) + … + 1 = " +
-          esperado + " veces. El patrón baja, pero la suma es la misma. La fórmula general se pregunta al final." };
+      var lista = [];
+      function agregar(valor, clave, razon) {
+        var repetido = false;
+        lista.forEach(function (o) { if (o.valor === valor) { repetido = true; } });
+        if (!repetido && valor >= 0) { lista.push({ valor: valor, clave: clave, razon: razon }); }
       }
-      if (valor === n * (n - 1) / 2) {
-        return { ok: false, msg: "Esa sería la cuenta si j arrancara en i + 1 (parejas estrictas). " +
-          "Aquí j arranca en i, así que cada vuelta gana una ejecución." };
-      }
-      if (valor === n * n) {
-        return { ok: false, msg: "Eso contaría cada i con cada j completo. Aquí j arranca en i: " +
-          "la primera vuelta corre n veces y la última una sola." };
-      }
-      if (valor === n * (n + 1)) {
-        return { ok: false, msg: "Cerca: contó cada casilla dos veces. La escalera es la mitad del rectángulo n × (n + 1)." };
-      }
-      return { ok: false, msg: "No coincide. Pista: en la vuelta i el interno corre n − i veces. Sume esas cantidades." };
+      agregar(esperado, "correcta", "Correcto: la línea 6 corre n + (n − 1) + … + 1 = " +
+        esperado + " veces. El patrón baja, pero la suma es la misma. La fórmula general se pregunta al final.");
+      agregar(n * (n - 1) / 2, "estricta", "Esa sería la cuenta si j arrancara en i + 1 (parejas estrictas). " +
+        "Aquí j arranca en i, así que cada vuelta gana una ejecución.");
+      agregar(n * n, "cuadrado", "Eso contaría cada i con cada j completo. Aquí j arranca en i: " +
+        "la primera vuelta corre n veces y la última una sola.");
+      agregar(n * (n + 1), "doble", "Cerca: contó cada casilla dos veces. La escalera es la mitad del rectángulo n × (n + 1).");
+      return lista;
     });
 
     document.getElementById("rango-n").addEventListener("input", function (ev) {

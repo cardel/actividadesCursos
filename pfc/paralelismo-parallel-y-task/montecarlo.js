@@ -236,27 +236,33 @@
     document.getElementById("tabla-medidas").appendChild(tabla);
   }
 
+  function opcionesCuarta() {
+    var r = reparto(EJEMPLO);
+    var lista = [
+      { valor: OBJETIVO, clave: "correcta",
+        razon: "Correcto: q vale " + r.q + ", así que los cuatro pedazos son " +
+          r.pedazos.join(" + ") + " = " + r.suma + ". La cuarta tarea recoge lo que la división entera dejó por fuera." },
+      { valor: r.q, clave: "q",
+        razon: "q es el tamaño de las tres primeras. La cuarta recibe iter - 3 * q, que con iter = " + EJEMPLO + " no es lo mismo." },
+      { valor: EJEMPLO - r.q, clave: "iter-q",
+        razon: "Ahí falta el 3: la cuarta recibe iter - 3 * q, porque las tres primeras ya se llevaron q cada una." },
+      { valor: Math.ceil(EJEMPLO / 4), clave: "redondeo",
+        razon: "iter / 4 es división entera y trunca, no redondea hacia arriba. Por eso las tres primeras hacen q y la cuarta recoge el resto." }
+    ];
+    var vistos = {};
+    return lista.filter(function (o) {
+      var nuevo = !vistos[o.valor];
+      vistos[o.valor] = true;
+      return nuevo;
+    });
+  }
+
   function cablearPrediccion() {
-    document.getElementById("btn-comprobar").addEventListener("click", function () {
-      var v = document.getElementById("veredicto");
-      var valor = parseInt(document.getElementById("prediccion").value, 10);
-      var r = reparto(EJEMPLO);
-      if (isNaN(valor)) {
-        v.className = "veredicto mal";
-        v.textContent = "Escriba un número primero.";
-        return;
-      }
-      if (valor === OBJETIVO) {
-        v.className = "veredicto bien";
-        v.textContent = "q vale " + r.q + ", así que los cuatro pedazos son " +
-          r.pedazos.join(" + ") + " = " + r.suma + ". La cuarta tarea recoge lo que la división entera dejó por fuera.";
+    Motor.opcionesNumericas("opciones-cuarta", "veredicto", opcionesCuarta);
+    document.getElementById("opciones-cuarta").addEventListener("click", function () {
+      if (document.getElementById("veredicto").className.indexOf("bien") >= 0) {
         acerto = true;
         marcar();
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = valor === r.q
-          ? "q es el tamaño de las tres primeras. La cuarta recibe iter - 3 * q, que con iter = " + EJEMPLO + " no es lo mismo."
-          : "Calcule primero q = " + EJEMPLO + " / 4 con división entera, y después iter - 3 * q.";
       }
     });
   }

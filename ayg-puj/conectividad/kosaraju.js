@@ -266,6 +266,21 @@ if (typeof module !== "undefined") {
       return { G: PRESETS[presetActual].G, pos: PRESETS[presetActual].pos };
     }
 
+    function componentesDebiles(G) {
+      var n = G.length, padre = [], i = 0, j, cuenta;
+      while (i < n) { padre.push(i); i = i + 1; }
+      function raiz(x) { while (padre[x] !== x) { x = padre[x]; } return x; }
+      i = 0;
+      while (i < n) {
+        j = 0;
+        while (j < G[i].length) { padre[raiz(i)] = raiz(G[i][j]); j = j + 1; }
+        i = i + 1;
+      }
+      cuenta = 0; i = 0;
+      while (i < n) { if (raiz(i) === i) { cuenta = cuenta + 1; } i = i + 1; }
+      return cuenta;
+    }
+
     function pintarConjunto(c) {
       return "{" + c.slice().sort(function (a, b) { return a - b; }).join(", ") + "}";
     }
@@ -413,39 +428,54 @@ if (typeof module !== "undefined") {
       paramsIniciales: paramsActuales(), alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
+    Motor.opcionesNumericas("opciones-cuantos", "veredicto", function (params) {
       var lista = EJERCICIO.kosaraju(params.G);
       var n = params.G.length;
-      if (valor === lista.length) {
-        return { ok: true, msg: "Correcto: " + lista.length + ". " + lista.map(pintarConjunto).join(", ") + "." };
-      }
-      if (valor === n) {
-        return { ok: false, msg: "Ese es el número de vértices, y solo sería la respuesta si el grafo no tuviera ningún ciclo. Busque los ciclos: cada uno junta a todos sus vértices en un componente." };
-      }
-      if (valor === 1) {
-        return { ok: false, msg: "Con un solo componente, de cualquier vértice se llegaría a cualquier otro y de vuelta. Busque un vértice del que no se pueda regresar." };
-      }
-      return { ok: false, msg: "No coincide. Marque los ciclos del dibujo; los vértices de un mismo ciclo van juntos, y los que no están en ningún ciclo con nadie van solos." };
+      var debiles = componentesDebiles(params.G);
+      var cand = [
+        { valor: lista.length, clave: "correcta",
+          razon: "Correcto: " + lista.length + ". " + lista.map(pintarConjunto).join(", ") + "." },
+        { valor: n, clave: "vertices",
+          razon: "Ese es el número de vértices, y solo sería la respuesta si el grafo no tuviera ningún ciclo. Busque los ciclos: cada uno junta a todos sus vértices en un componente." },
+        { valor: 1, clave: "uno",
+          razon: "Con un solo componente, de cualquier vértice se llegaría a cualquier otro y de vuelta. Busque un vértice del que no se pueda regresar." },
+        { valor: debiles, clave: "debiles",
+          razon: "Ese es el número de pedazos que quedan al ignorar las puntas de las flechas. Con las puntas puestas hacen falta camino de ida y de vuelta, y los componentes son " + lista.map(pintarConjunto).join(", ") + "." },
+        { valor: lista.length + 1, clave: "demas",
+          razon: "Cuenta uno de más. Los vértices de un mismo ciclo van juntos y los que no están en ningún ciclo con nadie van solos; ningún vértice queda fuera de un componente." }
+      ];
+      var vistos = {}, res = [];
+      cand.forEach(function (o) {
+        if (!vistos[o.valor]) { vistos[o.valor] = true; res.push(o); }
+      });
+      return res.slice(0, 4);
     });
 
-    document.getElementById("btn-ord").addEventListener("click", function () {
+    Motor.opcionesNumericas("opciones-primero", "veredicto-primero", function () {
       var G = PRESETS[presetActual].G;
       var orden = EJERCICIO.ordenPorFinalizacion(G);
-      var campo = document.getElementById("primero");
-      var v = document.getElementById("veredicto-primero");
-      var valor = parseInt(campo.value, 10);
-      if (isNaN(valor)) {
-        v.className = "veredicto mal"; v.textContent = "Escriba un vértice primero.";
-      } else if (valor === orden[0]) {
-        v.className = "veredicto bien";
-        v.textContent = "Correcto: el " + orden[0] + ". Es el de f más grande, y su componente es una fuente del grafo de componentes: nada le entra, así que en Gᵀ nada le sale y el recorrido no se puede escapar de él.";
-      } else if (valor === orden[orden.length - 1]) {
-        v.className = "veredicto mal";
-        v.textContent = "Ese es el último de ord, el de f más pequeño. Su componente es un sumidero, y arrancar por ahí en Gᵀ recorrería medio grafo de una vez.";
-      } else {
-        v.className = "veredicto mal";
-        v.textContent = "No: ord arranca con el vértice de mayor tiempo de finalización, y en este grafo es el " + orden[0] + ". Ejecute la primera pasada y mire cuál queda de último en la lista antes de invertirla.";
-      }
+      var primero = orden[0];
+      var ordenT = EJERCICIO.ordenPorFinalizacion(EJERCICIO.transpuesto(G));
+      var cand = [
+        { valor: primero, clave: "correcta",
+          razon: "Correcto: el " + primero + ". Es el de f más grande, y su componente es una fuente del grafo de componentes: nada le entra, así que en Gᵀ nada le sale y el recorrido no se puede escapar de él." },
+        { valor: orden[orden.length - 1], clave: "ultimo",
+          razon: "Ese es el último de ord, el de f más pequeño. Su componente es un sumidero, y arrancar por ahí en Gᵀ recorrería medio grafo de una vez." },
+        { valor: 0, clave: "cero",
+          razon: "El 0 es por donde arranca la primera pasada, pero arrancar no es terminar: ord arranca con el vértice de mayor tiempo de finalización, y ese es el " + primero + "." },
+        { valor: ordenT[0], clave: "sobreT",
+          razon: "Ese sale de hacer la primera pasada sobre Gᵀ en vez de sobre G. La primera pasada recorre G; Gᵀ es para la segunda, y el vértice que abre ord es el " + primero + "." }
+ ,
+        { valor: orden[1], clave: "segundo",
+          razon: "Ese es el segundo de ord, el de segundo f más grande. La segunda pasada arranca por el primero, que es el " + primero + "; el " + orden[1] + " viene después en la lista." },
+        { valor: G.length - 1, clave: "mayor",
+          razon: "El " + (G.length - 1) + " es el vértice de número más alto, pero el número no dice nada del reloj de la primera pasada: ord se ordena por f, y el primero es el " + primero + "." }
+      ];
+      var vistos = {}, res = [];
+      cand.forEach(function (o) {
+        if (!vistos[o.valor]) { vistos[o.valor] = true; res.push(o); }
+      });
+      return res.slice(0, 4);
     });
 
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (btn) {
@@ -454,8 +484,6 @@ if (typeof module !== "undefined") {
         btn.classList.add("primario");
         presetActual = parseInt(btn.getAttribute("data-preset"), 10);
         Motor.limpiarVeredicto();
-        var v = document.getElementById("veredicto-primero");
-        v.className = "veredicto"; v.textContent = "";
         Motor.reiniciar(paramsActuales());
       });
     });

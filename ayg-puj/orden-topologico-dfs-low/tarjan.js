@@ -549,20 +549,35 @@ if (typeof module !== "undefined") {
     arrancar();
     document.getElementById("ver-texto").textContent = g().texto;
 
-    Motor.prediccionNumerica(function (valor, params) {
+    Motor.opcionesNumericas("opciones-componentes", "veredicto", function (params) {
       var pasos = EJERCICIO.simular(params), comps = pasos[pasos.length - 1].resultado, n = params.G.length;
       var nom = params.nombres;
       var lista = comps.map(function (c) { return conjunto(c, nom); }).join(", ");
-      if (valor === comps.length) {
-        return { ok: true, msg: "Correcto: " + comps.length + ". " + lista + ". Es el número de veces que se ejecuta la línea " + (version === "pila" ? 36 : 34) + "." };
+      var grandes = 0, t = 0;
+      while (t < comps.length) {
+        if (comps[t].length > 1) { grandes = grandes + 1; }
+        t = t + 1;
       }
-      if (valor === n) {
-        return { ok: false, msg: "Ese es el número de vértices: cada vértice quedaría solo, lo que pasa únicamente si el grafo no tiene ningún ciclo. Busque los ciclos; todos los vértices de un ciclo van en el mismo componente." };
+      var cand = [
+        { valor: comps.length, clave: "correcta",
+          msg: "Correcto: " + comps.length + ". " + lista + ". Es el número de veces que se ejecuta la línea " + (version === "pila" ? 36 : 34) + "." },
+        { valor: n, clave: "vertices",
+          msg: "Ese es el número de vértices: cada vértice quedaría solo, lo que pasa únicamente si el grafo no tiene ningún ciclo. Busque los ciclos; todos los vértices de un ciclo van en el mismo componente." },
+        { valor: 1, clave: "uno",
+          msg: "Con un solo componente, de cualquier vértice se llegaría a cualquier otro y de vuelta. Busque un vértice del que no se pueda regresar." },
+        { valor: grandes, clave: "grandes",
+          msg: "Ese es el número de componentes con más de un vértice (" + grandes + "). Un vértice que no está en ningún ciclo también forma su propio componente, y se cuenta." }
+      ];
+      var vistos = {}, salida = [];
+      t = 0;
+      while (t < cand.length) {
+        if (!vistos[cand[t].valor]) {
+          vistos[cand[t].valor] = true;
+          salida.push({ valor: cand[t].valor, clave: cand[t].clave, razon: cand[t].msg });
+        }
+        t = t + 1;
       }
-      if (valor === 1) {
-        return { ok: false, msg: "Con un solo componente, de cualquier vértice se llegaría a cualquier otro y de vuelta. Busque un vértice del que no se pueda regresar." };
-      }
-      return { ok: false, msg: "No coincide. Marque los ciclos del dibujo: los vértices de un mismo ciclo van juntos, y los que no están en ningún ciclo con otros forman un componente de un solo vértice." };
+      return salida;
     });
 
     Array.prototype.forEach.call(document.querySelectorAll("#presets-grafo button"), function (btn) {

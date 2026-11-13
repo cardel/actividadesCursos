@@ -16,11 +16,8 @@
   <div class="carta">
     <h2>1. it = v.erase(it)</h2>
     <div class="codigo" id="codigo-erase"></div>
-    <div class="prediccion">
-      <span>v queda:</span>
-      <input type="text" id="pred-erase" placeholder="a b c" style="width:8rem">
-      <button id="btn-erase" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0">v queda:</p>
+    <div class="opciones" id="opciones-erase"></div>
     <div id="veredicto-erase" class="veredicto"></div>
   </div>
 
@@ -41,14 +38,12 @@
     negativos: ¿cuántos elementos se <b>corren</b> en total con la versión 1,
     sumando todos los erase? ¿Y cuántas <b>copias</b> hace la versión que
     compacta hacia el frente y recorta al final?</p>
-    <div class="prediccion">
-      <span>corrimientos:</span>
-      <input type="number" id="pred-corridos" placeholder="?">
-      <span>copias:</span>
-      <input type="number" id="pred-copias" placeholder="?">
-      <button id="btn-costo" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-costo" class="veredicto"></div>
+    <p style="margin-bottom:0">Corrimientos con la versión 1:</p>
+    <div class="opciones" id="opciones-corridos"></div>
+    <div id="veredicto-corridos" class="veredicto"></div>
+    <p style="margin-bottom:0">Copias al compactar:</p>
+    <div class="opciones" id="opciones-copias"></div>
+    <div id="veredicto-copias" class="veredicto"></div>
   </div>
 
   <div class="carta" id="carta-cierre" style="display:none">
@@ -59,6 +54,7 @@
     sola vez.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="borrar.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

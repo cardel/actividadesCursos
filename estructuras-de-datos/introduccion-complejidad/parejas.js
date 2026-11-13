@@ -69,23 +69,26 @@ var EJERCICIO = (function () {
     { linea: 9, txt: "1", f: function () { return 1; } }
   ];
 
-  function evaluar(valor, n, m) {
-    var esperado = n * (m + 1);
-    var res;
-    if (valor === esperado) {
-      res = { ok: true, msg: "Correcto: " + esperado + " evaluaciones. Cada una de las " + n + " vueltas de afuera evalúa j < m " + (m + 1) + " veces: " + m + " ciertas y la que sale." };
-    } else if (valor === n * m) {
-      res = { ok: false, msg: "Faltan " + n + ": en cada vuelta de afuera el ciclo de adentro también tiene su evaluación que falla, y hay " + n + " vueltas." };
-    } else if (valor === n * m + 1) {
-      res = { ok: false, msg: "La evaluación que falla no ocurre una sola vez: j vuelve a 0 en cada vuelta de afuera, y el ciclo de adentro sale " + n + " veces." };
-    } else if (valor === (n + 1) * (m + 1)) {
-      res = { ok: false, msg: "En la última evaluación de i < n, que da falso, no se entra al ciclo: el de adentro corre " + n + " veces, no " + (n + 1) + "." };
-    } else if (valor === m + 1) {
-      res = { ok: false, msg: "Eso es una sola pasada del ciclo de adentro. Se repite una vez por cada valor de i." };
-    } else {
-      res = { ok: false, msg: "No coincide. ¿Cuántas veces se evalúa j < m en una vuelta de afuera? ¿Cuántas vueltas de afuera hay?" };
-    }
-    return res;
+  /* Una opción cuyo valor repite el de otra ya puesta se descarta. */
+  function sinRepetidos(lista, tope) {
+    var vistos = {};
+    var sal = [];
+    lista.forEach(function (o) {
+      if (!vistos[o.valor] && o.valor >= 0 && sal.length < tope) { vistos[o.valor] = true; sal.push(o); }
+    });
+    return sal;
+  }
+
+  /* Opciones de la predicción: cuántas veces se evalúa j < m. */
+  function opciones(params) {
+    var n = params.n, m = params.m;
+    return sinRepetidos([
+      { valor: n * (m + 1), clave: "correcta", razon: "Correcto: " + (n * (m + 1)) + " evaluaciones. Cada una de las " + n + " vueltas de afuera evalúa j < m " + (m + 1) + " veces: " + m + " ciertas y la que sale." },
+      { valor: n * m, clave: "sinFalla", razon: "Faltan " + n + ": en cada vuelta de afuera el ciclo de adentro también tiene su evaluación que falla, y hay " + n + " vueltas." },
+      { valor: n * m + 1, clave: "unaSola", razon: "La evaluación que falla no ocurre una sola vez: j vuelve a 0 en cada vuelta de afuera, y el ciclo de adentro sale " + n + " veces." },
+      { valor: (n + 1) * (m + 1), clave: "unaMas", razon: "En la última evaluación de i < n, que da falso, no se entra al ciclo: el de adentro corre " + n + " veces, no " + (n + 1) + "." },
+      { valor: m + 1, clave: "unaPasada", razon: "Eso es una sola pasada del ciclo de adentro. Se repite una vez por cada valor de i." }
+    ], 4);
   }
 
   var RAZONES = {
@@ -102,7 +105,7 @@ var EJERCICIO = (function () {
   };
 
   return { codigo: CODIGO, simular: simular, conteos: conteos, T: T, FORMULAS: FORMULAS,
-    evaluar: evaluar, RAZONES: RAZONES, RAZONES_FIJO: RAZONES_FIJO };
+    opciones: opciones, RAZONES: RAZONES, RAZONES_FIJO: RAZONES_FIJO };
 })();
 
 if (typeof module !== "undefined") {
@@ -149,7 +152,7 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) { return EJERCICIO.evaluar(valor, params.n, params.m); });
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto", EJERCICIO.opciones);
 
     function conectar(id, ver, razones, alAcertar) {
       Array.prototype.forEach.call(document.querySelectorAll("#" + id + " button"), function (b) {

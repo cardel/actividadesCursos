@@ -95,26 +95,23 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
+    Motor.opcionesNumericas("opciones-fact", "veredicto", function (params) {
       var N = params.n;
       var esperado = EJERCICIO.factorialDe(N);
-      if (valor === esperado) {
-        return { ok: true, msg: "Correcto: fact(" + N + ") = " + esperado +
-          ". Ahora ejecute y fíjese en la pareja (i, ans) de cada chequeo." };
-      }
-      if (valor === N * (N - 1)) {
-        return { ok: false, msg: "Multiplicó solo los dos últimos factores. El " +
-          "ciclo acumula todos: 1 · 2 · … · N." };
-      }
-      if (valor === Math.pow(2, N)) {
-        return { ok: false, msg: "Eso sería duplicar en cada vuelta. Aquí el " +
-          "factor cambia: en la vuelta con i = k se multiplica por k." };
-      }
-      if (valor === N) {
-        return { ok: false, msg: "Ese es el número de vueltas. ans acumula el " +
-          "producto de todas." };
-      }
-      return { ok: false, msg: "No coincide. Recuerde: N! = 1 · 2 · … · N." };
+      var lista = [{ valor: esperado, clave: "correcta", razon: "Correcto: fact(" + N + ") = " + esperado +
+        ". Ahora ejecute y fíjese en la pareja (i, ans) de cada chequeo." }];
+      var cand = [
+        { valor: N * (N - 1), clave: "dos", razon: "Multiplicó solo los dos últimos factores. El ciclo acumula todos: 1 · 2 · … · N." },
+        { valor: Math.pow(2, N), clave: "potencia", razon: "Eso sería duplicar en cada vuelta. Aquí el factor cambia: en la vuelta con i = k se multiplica por k." },
+        { valor: N, clave: "vueltas", razon: "Ese es el número de vueltas. ans acumula el producto de todas." },
+        { valor: esperado / N, clave: "sinultimo", razon: "Eso deja por fuera el último factor: la vuelta con i = N también multiplica." }
+      ];
+      cand.forEach(function (o) {
+        var repetido = false;
+        lista.forEach(function (x) { if (x.valor === o.valor) { repetido = true; } });
+        if (!repetido && lista.length < 4) { lista.push(o); }
+      });
+      return lista;
     });
 
     document.getElementById("rango-n").addEventListener("input", function (ev) {

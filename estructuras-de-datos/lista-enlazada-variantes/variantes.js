@@ -174,39 +174,69 @@ if (typeof module !== "undefined") {
       document.getElementById("detalle-escrituras").style.display = "block";
     }
 
-    document.getElementById("btn-escrituras").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-escrituras");
-      var dadas = {
-        simple: parseInt(document.getElementById("pred-simple").value, 10),
-        doble: parseInt(document.getElementById("pred-doble").value, 10),
-        circular: parseInt(document.getElementById("pred-circular").value, 10),
-        corto: parseInt(document.getElementById("pred-corto").value, 10)
-      };
-      var todas = ["simple", "doble", "circular", "corto"].every(function (k) {
-        return dadas[k] === E[k].escrituras;
+    function unicas(lista) {
+      var vistos = {};
+      return lista.filter(function (o) {
+        var ya = vistos[String(o.valor)] === true;
+        vistos[String(o.valor)] = true;
+        return !ya;
       });
-      if (todas) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: " + E.simple.escrituras + ", " + E.doble.escrituras +
-          ", " + E.circular.escrituras + " y " + E.corto.escrituras +
-          ". Las cuatro son Θ(1), porque ninguna depende del tamaño, y aun así la última " +
-          "escribe más del doble que la primera: ese es el precio del campo anterior y del círculo. " +
-          "insertar es el mismo código en las dos circulares, y con p = 0 el lado corto no llega a caminar.";
+    }
+    var aciertos = { simple: false, doble: false, circular: false, corto: false };
+    function acierto(clave) {
+      aciertos[clave] = true;
+      if (aciertos.simple && aciertos.doble && aciertos.circular && aciertos.corto) {
         logradas.escrituras = true; revisar();
         pintarDetalle();
-      } else if (dadas.doble === 3) {
-        ver.className = "veredicto mal";
-        ver.textContent = "En la rama p == 0 de la doble hay cuatro asignaciones y las cuatro se ejecutan: dejar nuevo->anterior en NULL también escribe un puntero.";
-      } else if (dadas.circular === 4 || dadas.corto === 4) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Las cuatro líneas del empalme son las que entran el nodo a la cadena, y después se ejecuta el if de p == 0, que mueve la cabeza: una más.";
-      } else if (dadas.circular === dadas.simple) {
-        ver.className = "veredicto mal";
-        ver.textContent = "No pueden ser iguales: la simple deja un solo enlace por nodo y el círculo mantiene dos, y además no tiene NULL que marque el principio.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "Escriba la rama que toma cada implementación con p = 0 sobre una lista no vacía y cuente las asignaciones de puntero, incluida la de cabeza.";
       }
+    }
+    function pregunta(clave, razones) {
+      var idCaja = "opciones-esc-" + clave;
+      var idVer = "veredicto-esc-" + clave;
+      Motor.opcionesNumericas(idCaja, idVer, function () {
+        var correcta = E[clave].escrituras;
+        var lista = [{ valor: correcta, clave: "correcta", razon: razones.bien }];
+        razones.otras.forEach(function (o) {
+          lista.push({ valor: o[0], clave: "v" + o[0], razon: o[1] });
+        });
+        return unicas(lista);
+      });
+      document.getElementById(idCaja).addEventListener("click", function () {
+        if (document.getElementById(idVer).className.indexOf("bien") >= 0) { acierto(clave); }
+      });
+    }
+
+    pregunta("simple", {
+      bien: "Correcto: " + E.simple.escrituras + ", nuevo->siguiente y cabeza. Θ(1): no depende del tamaño.",
+      otras: [
+        [1, "Falta una: nuevo->siguiente = cabeza y cabeza = nuevo son dos asignaciones distintas, y las dos se ejecutan."],
+        [3, "La simple no tiene el campo anterior: no hay una tercera asignación que contar."],
+        [4, "Cuatro son las de la doble, que además mantiene el campo anterior en los dos nodos que toca."]
+      ]
+    });
+    pregunta("doble", {
+      bien: "Correcto: " + E.doble.escrituras + ". En la rama p == 0 de la doble las cuatro asignaciones se ejecutan: dejar nuevo->anterior en NULL también escribe un puntero.",
+      otras: [
+        [3, "En la rama p == 0 de la doble hay cuatro asignaciones y las cuatro se ejecutan: dejar nuevo->anterior en NULL también escribe un puntero."],
+        [2, "Dos son las de la simple. La doble también tiene que escribir el anterior del nodo nuevo y el anterior de la vieja cabeza."],
+        [5, "Cinco son las de la circular: la doble tiene NULL en los extremos y no necesita reescribir el enlace del último."]
+      ]
+    });
+    pregunta("circular", {
+      bien: "Correcto: " + E.circular.escrituras + ". Las cuatro líneas del empalme entran el nodo a la cadena y después se ejecuta el if de p == 0, que mueve la cabeza. Aun así sigue siendo Θ(1), y escribe más del doble que la simple: ese es el precio del campo anterior y del círculo.",
+      otras: [
+        [4, "Las cuatro líneas del empalme son las que entran el nodo a la cadena, y después se ejecuta el if de p == 0, que mueve la cabeza: una más."],
+        [2, "No pueden ser iguales a la simple: la simple deja un solo enlace por nodo y el círculo mantiene dos, y además no tiene NULL que marque el principio."],
+        [3, "Eso cuenta solo los dos campos del nodo nuevo y cabeza. El empalme también reescribe el siguiente del último y el anterior de la cabeza."]
+      ]
+    });
+    pregunta("corto", {
+      bien: "Correcto: " + E.corto.escrituras + ". insertar es el mismo código que en la circular, y con p = 0 el lado corto no llega a caminar.",
+      otras: [
+        [4, "Las cuatro líneas del empalme son las que entran el nodo a la cadena, y después se ejecuta el if de p == 0, que mueve la cabeza: una más."],
+        [3, "El lado corto solo cambia nodoEn, que con p = 0 no se llama: el empalme sigue siendo de cuatro líneas más la de cabeza."],
+        [6, "nodoEn no escribe punteros y con p = 0 ni siquiera se llama: no suma asignaciones."]
+      ]
     });
   })();
 }

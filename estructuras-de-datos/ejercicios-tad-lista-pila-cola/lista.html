@@ -35,11 +35,12 @@
     <div class="prediccion">
       <span>queda:</span>
       <input type="text" id="pred-correcto" placeholder="2 ..." style="width:9rem">
-      <span>eliminaciones:</span>
-      <input type="number" id="pred-correcto-elim" placeholder="?">
       <button id="btn-correcto" class="primario">Comprobar</button>
     </div>
     <div id="veredicto-correcto" class="veredicto"></div>
+    <p class="nota" style="margin-bottom:0.2rem">Llamadas a <code>eliminar</code>:</p>
+    <div class="opciones" id="opciones-elim"></div>
+    <div id="veredicto-elim" class="veredicto"></div>
   </div>
 
   <div class="carta">
@@ -52,11 +53,12 @@
     <div class="prediccion">
       <span>unión:</span>
       <input type="text" id="pred-union" placeholder="1 2 ..." style="width:10rem">
-      <span>comparaciones:</span>
-      <input type="number" id="pred-union-comp" placeholder="?">
       <button id="btn-union" class="primario">Comprobar</button>
     </div>
     <div id="veredicto-union" class="veredicto"></div>
+    <p class="nota" style="margin-bottom:0.2rem">Comparaciones del ciclo principal:</p>
+    <div class="opciones" id="opciones-comp"></div>
+    <div id="veredicto-comp" class="veredicto"></div>
   </div>
 
   <div class="carta" id="carta-cierre" style="display:none">
@@ -67,6 +69,7 @@
     mismo esqueleto con distinta decisión en cada comparación.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="lista.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

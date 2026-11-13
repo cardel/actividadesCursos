@@ -105,22 +105,52 @@ if (typeof document !== "undefined") (function () {
     document.getElementById("ver-k").textContent = k;
     document.getElementById("pregunta-n").textContent = num(n);
     document.getElementById("pregunta-k").textContent = k;
-    document.getElementById("veredicto").className = "veredicto";
     pintarBarra();
     pintarTabla();
     pintarChips();
+    if (ctlUltimo) { ctlUltimo.refrescar(); }
   }
 
-  function explicar(bien, real, dicho) {
+  var ctlUltimo = null;
+
+  /* El ultimo hilo recibe paso mas el residuo; las otras son lo que sale al
+     olvidar el residuo, al redondear hacia arriba o al leer otra cantidad. */
+  function opcionesUltimo() {
     var t = tamanos(n, k);
-    var residuo = n - Math.floor(n / k) * k;
-    var cuenta = "paso = " + num(n) + " / " + k + " = " + num(Math.floor(n / k)) +
+    var real = t[t.length - 1];
+    var paso = Math.floor(n / k);
+    var residuo = n - paso * k;
+    var cuenta = "paso = " + num(n) + " / " + k + " = " + num(paso) +
       " entero; los trozos quedan de " + t.join(", ") + ". " +
       (residuo ? "El residuo, " + residuo + (residuo === 1 ? " elemento" : " elementos") +
         ", se lo lleva el último hilo, y por eso termina de último."
        : "La división es exacta y ningún hilo carga de más.");
-    if (bien) { return "Sí: " + num(real) + ". " + cuenta; }
-    return "El último hilo recibe " + num(real) + ", no " + num(dicho) + ". " + cuenta;
+    var lista = [{ valor: num(real), clave: "correcta",
+      razon: "Sí: " + num(real) + ". " + cuenta }];
+    var cands = [
+      { v: paso, c: "paso", r: num(paso) + " es el paso, lo que recibe cada hilo " +
+        "que no es el último. El último, además, se lleva el residuo. " + cuenta },
+      { v: Math.ceil(n / k), c: "techo", r: num(Math.ceil(n / k)) + " sería redondear " +
+        "n/k hacia arriba para todos, pero el código divide entero y deja el " +
+        "residuo al último. " + cuenta },
+      { v: residuo, c: "residuo", r: num(residuo) + " es solo el residuo; el último " +
+        "hilo lo recibe además de su paso. " + cuenta },
+      { v: n - paso, c: "resto", r: num(n - paso) + " es todo menos un trozo: " +
+        "cuenta los elementos de los otros hilos juntos, no los del último. " + cuenta },
+      { v: paso + 1, c: "mas1", r: num(paso + 1) + " sería repartir un elemento de más " +
+        "al último; recibe el residuo completo, que es " + residuo + ". " + cuenta },
+      { v: n - 1, c: "casi", r: num(n - 1) + " le da casi todo al último hilo; " +
+        "el reparto es por pasos de " + num(paso) + ". " + cuenta },
+      { v: k, c: "hilos", r: k + " es el número de hilos, no una cantidad de " +
+        "elementos. " + cuenta }
+    ];
+    cands.forEach(function (x) {
+      var repetido = lista.some(function (o) { return o.valor === num(x.v); });
+      if (!repetido && lista.length < 4) {
+        lista.push({ valor: num(x.v), clave: x.c, razon: x.r });
+      }
+    });
+    return lista;
   }
 
   var RAZONES = {
@@ -146,10 +176,7 @@ if (typeof document !== "undefined") (function () {
   document.querySelectorAll("[data-k]").forEach(function (b) {
     b.addEventListener("click", function () { k = parseInt(b.dataset.k, 10); pintar(); });
   });
-  Motor.conectarPrediccion(
-    { entrada: "prediccion", boton: "btn-comprobar", veredicto: "veredicto" },
-    function () { var t = tamanos(n, k); return t[t.length - 1]; },
-    explicar);
+  ctlUltimo = Motor.opcionesNumericas("opciones-ultimo", "veredicto", opcionesUltimo);
   Motor.conectarOpciones("opciones-memoria", "veredicto-memoria", RAZONES);
 
   pintarMedido();

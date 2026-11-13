@@ -125,6 +125,74 @@ var RAZONES_MULTISTAGE = {
     "kilobytes contra el gigabyte que pesa traer el compilador adentro."
 };
 
+/* Quita las opciones que repiten el valor de otra, la correcta primero. */
+function sinRepetidas(lista) {
+  var vistas = {};
+  return lista.filter(function (o) {
+    var k = String(o.valor);
+    var nueva = !vistas[k];
+    vistas[k] = true;
+    return nueva;
+  });
+}
+
+/* Las opciones del porcentaje que ocupa la base. */
+function opcionesBase() {
+  var real = porcentajeBase();
+  return sinRepetidas([
+    { valor: fmt(real, 0) + " %", clave: "correcta", razon: explicarBase(true, real) },
+    { valor: fmt(propio() / IMAGEN.total * 100, 0) + " %", clave: "propio",
+      razon: "Ese es el porcentaje de lo propio, " + fmt(propio(), 0) + " MB de " +
+        IMAGEN.total + ", no el de la base. La pregunta es por los " + IMAGEN.base +
+        " MB de <code>python:3.12-slim</code>." },
+    { valor: fmt(CAPA_DEBIAN / IMAGEN.total * 100, 0) + " %", clave: "debian",
+      razon: "Esos " + fmt(CAPA_DEBIAN, 1) + " MB son solo la capa de Debian, la más pesada " +
+        "de la base. La base entera suma " + IMAGEN.base + " MB, con el intérprete de Python " +
+        "encima." }
+  ]);
+}
+
+/* Las opciones de cuantas veces cabe la imagen pequena en la grande. */
+function opcionesFactor() {
+  var real = vecesLaPequena(masGrande().mb);
+  var grande = masGrande();
+  var alpine = GO.filter(function (g) { return g.variante === "alpine"; })[0];
+  var distroless = GO.filter(function (g) { return g.variante === "distroless"; })[0];
+  return sinRepetidas([
+    { valor: fmt(real, 0), clave: "correcta", razon: explicarFactor(true, real) },
+    { valor: fmt(grande.mb, 0), clave: "megas",
+      razon: "Ese es el tamaño de la grande en megabytes, no el cociente. Falta dividirlo " +
+        "entre los " + fmt(masPequena().mb, 2) + " MB de la pequeña." },
+    { valor: fmt(grande.mb / alpine.mb, 0), clave: "alpine",
+      razon: "Ese es el cociente contra <code>alpine</code>, de " + fmt(alpine.mb, 1) + " MB. " +
+        "La más pequeña es <code>" + masPequena().variante + "</code>, con " +
+        fmt(masPequena().mb, 2) + " MB." },
+    { valor: fmt(grande.mb / distroless.mb, 0), clave: "distroless",
+      razon: "Ese es el cociente contra <code>distroless</code>, de " +
+        fmt(distroless.mb, 1) + " MB. La más pequeña es <code>" + masPequena().variante +
+        "</code>, con " + fmt(masPequena().mb, 2) + " MB." }
+  ]);
+}
+
+/* Las opciones de cuantas veces mas grande es python:3.12 que su variante slim. */
+function opcionesSlim() {
+  var real = razonSlim();
+  var completa = base("python:3.12");
+  return sinRepetidas([
+    { valor: fmt(real, 0), clave: "correcta", razon: explicarSlim(true, real) },
+    { valor: fmt(completa / base("debian:bookworm-slim"), 0), clave: "debian",
+      razon: "Ese es el cociente contra <code>debian:bookworm-slim</code>. La pregunta " +
+        "compara la completa con <code>python:3.12-slim</code>, de " +
+        fmt(base("python:3.12-slim")) + " MB." },
+    { valor: fmt(completa / base("alpine:3.20"), 0), clave: "alpine",
+      razon: "Ese es el cociente contra <code>alpine</code>, que ni siquiera trae Python. La " +
+        "comparación es entre las dos variantes de la misma versión del intérprete." },
+    { valor: fmt(completa - base("python:3.12-slim"), 0), clave: "resta",
+      razon: "Eso es la diferencia en megabytes, no cuántas veces más grande. Una razón es " +
+        "un cociente: " + fmt(completa) + " entre " + fmt(base("python:3.12-slim")) + "." }
+  ]);
+}
+
 /* ---------- pintado y conexiones ---------- */
 
 function textoTamano(mb) {
@@ -201,19 +269,13 @@ function iniciar() {
   pintarGo();
   pintarBases();
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-base", boton: "btn-base", veredicto: "ver-base" },
-    porcentajeBase, explicarBase);
-  document.getElementById("btn-base").addEventListener("click", destapar);
+  Motor.opcionesNumericas("op-base", "ver-base", opcionesBase);
+  document.getElementById("op-base").addEventListener("click", destapar);
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-factor", boton: "btn-factor", veredicto: "ver-factor" },
-    function () { return vecesLaPequena(masGrande().mb); }, explicarFactor);
-  document.getElementById("btn-factor").addEventListener("click", destapar);
+  Motor.opcionesNumericas("op-factor", "ver-factor", opcionesFactor);
+  document.getElementById("op-factor").addEventListener("click", destapar);
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-slim", boton: "btn-slim", veredicto: "ver-slim" },
-    razonSlim, explicarSlim);
+  Motor.opcionesNumericas("op-slim", "ver-slim", opcionesSlim);
 
   Motor.conectarOpciones("op-descarga", "ver-descarga", RAZONES_DESCARGA);
   Motor.conectarOpciones("op-multistage", "ver-multistage", RAZONES_MULTISTAGE);

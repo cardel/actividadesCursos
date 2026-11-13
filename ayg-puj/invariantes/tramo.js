@@ -318,23 +318,58 @@ if (typeof module !== "undefined") {
       alPintar: alPintar
     });
 
-    Motor.prediccionNumerica(function (valor, params) {
-      var A = params.A;
-      var esperado = EJERCICIO.maxTramos(A, A.length, true);
-      var total = EJERCICIO.S(A, 0, A.length);
-      var r;
-      if (valor === esperado) {
-        r = { ok: true, msg: "Correcto: el mejor tramo suma " + esperado +
-          ". Ahora ejecute y siga la terna (i, suma, mejor) chequeo a chequeo." };
-      } else if (valor === total) {
-        r = { ok: false, msg: "Esa es la suma de todo el arreglo. El tramo puede " +
-          "empezar y terminar donde convenga." };
-      } else {
-        r = { ok: false, msg: "No coincide. Pruebe en el papel cada inicio y " +
-          "cada fin, y quédese con la suma mayor; el tramo vacío vale 0." };
-      }
-      return r;
-    });
+    Motor.opcionesNumericas("opciones-prediccion", "veredicto",
+      function (params) {
+        function sinRepetir(lista, maximo) {
+          var vistos = [];
+          var salida = [];
+          var t = 0;
+          while (t < lista.length && salida.length < maximo) {
+            if (vistos.indexOf(lista[t].valor) < 0) {
+              vistos.push(lista[t].valor);
+              salida.push(lista[t]);
+            }
+            t = t + 1;
+          }
+          return salida;
+        }
+        var A = params.A;
+        var esperado = EJERCICIO.maxTramos(A, A.length, true);
+        var total = EJERCICIO.S(A, 0, A.length);
+        var noVacio = EJERCICIO.maxTramos(A, A.length, false);
+        var positivos = 0;
+        var absolutos = 0;
+        var mayorElem = A[0];
+        var t = 0;
+        while (t < A.length) {
+          absolutos = absolutos + Math.abs(A[t]);
+          if (A[t] > 0) { positivos = positivos + A[t]; }
+          if (A[t] > mayorElem) { mayorElem = A[t]; }
+          t = t + 1;
+        }
+        var lista = [
+          { valor: esperado, clave: "correcta",
+            razon: "Correcto: el mejor tramo suma " + esperado + ". Ahora " +
+              "ejecute y siga la terna (i, suma, mejor) chequeo a chequeo." },
+          { valor: total, clave: "total",
+            razon: "Esa es la suma de todo el arreglo. El tramo puede empezar " +
+              "y terminar donde convenga." },
+          { valor: noVacio, clave: "no-vacio",
+            razon: "Ese es el mejor tramo con al menos un elemento. Aquí el " +
+              "tramo vacío cuenta y vale 0, de modo que ningún tramo " +
+              "negativo puede ganarle." },
+          { valor: positivos, clave: "positivos",
+            razon: "Esa es la suma de todos los positivos, como si el tramo " +
+              "pudiera saltarse los negativos. Un tramo es contiguo." },
+          { valor: mayorElem, clave: "un-elemento",
+            razon: "Ese es el mayor elemento, un tramo de una sola posición. " +
+              "Un tramo más largo puede sumar más." },
+          { valor: absolutos, clave: "absolutos",
+            razon: "Esa es la suma ignorando los signos. Los negativos restan: " +
+              "el tramo solo suma lo que realmente hay en él." }
+        ];
+        return sinRepetir(lista, 4);
+      });
 
     function cargar(n) {
       actual = n;

@@ -109,6 +109,72 @@ var RAZONES_DIAGNOSTICO = {
     "del anfitrión."
 };
 
+/* Quita las opciones que repiten el valor de otra, la correcta primero. */
+function sinRepetidas(lista) {
+  var vistas = {};
+  return lista.filter(function (o) {
+    var k = String(o.valor);
+    var nueva = !vistas[k];
+    vistas[k] = true;
+    return nueva;
+  });
+}
+
+/* Las opciones del disco del tercer contenedor, en megabytes. */
+function opcionesTercero() {
+  var real = discoDelSiguienteContenedor();
+  return sinRepetidas([
+    { valor: fmt(real) + " MB", clave: "correcta", razon: explicarTercero(true, real) },
+    { valor: fmt(IMAGEN.discoMb, 1) + " MB", clave: "copia",
+      razon: "Eso es lo que costaría si cada contenedor copiara la imagen. Las capas se " +
+        "comparten en modo lectura: los " + fmt(IMAGEN.discoMb, 1) + " MB se descargaron " +
+        "una vez y el tercero solo agrega su capa escribible, vacía al arrancar." },
+    { valor: fmt(IMAGEN.contenidoMb, 1) + " MB", clave: "comprimida",
+      razon: "Son los " + fmt(IMAGEN.contenidoMb, 1) + " MB del contenido comprimido, que " +
+        "viajan una vez al descargar. Un contenedor nuevo no vuelve a bajarlos ni a " +
+        "desempacarlos." },
+    { valor: fmt(discoSiCopiara(3), 1) + " MB", clave: "triple",
+      razon: "Es lo que ocuparían tres contenedores si cada uno trajera su copia de la " +
+        "imagen. Con capas compartidas, el tercero no suma nada a lo que ya había." }
+  ]);
+}
+
+/* Las opciones de los nucleos que dice cpu.max. */
+function opcionesCpu() {
+  var real = nucleosDelCgroup();
+  return sinRepetidas([
+    { valor: fmt(real, 1) + " núcleos", clave: "correcta", razon: explicarCpu(true, real) },
+    { valor: fmt(CGROUP.periodo / CGROUP.cuota, 1) + " núcleos", clave: "inversa",
+      razon: "Está dividido al revés: " + fmt(CGROUP.periodo) + " entre " + fmt(CGROUP.cuota) +
+        ". Los núcleos son la cuota entre el periodo, y una cuota mayor que el periodo " +
+        "significa más de un núcleo." },
+    { valor: fmt(ANFITRION.nproc) + " núcleos", clave: "nproc",
+      razon: "Esos son los núcleos del anfitrión, lo que responde <code>nproc</code> dentro " +
+        "del contenedor porque lee <code>/proc</code>. El límite del cgroup es otro número." },
+    { valor: fmt(CGROUP.cuota / 1000) + " núcleos", clave: "cuota",
+      razon: "Solo dividió la cuota entre mil y no la comparó con el periodo. " +
+        "<code>cpu.max</code> trae dos números: " + fmt(CGROUP.cuota) + " microsegundos de " +
+        "cuota por cada " + fmt(CGROUP.periodo) + " de periodo." }
+  ]);
+}
+
+/* Las opciones de memory.max en mebibytes. */
+function opcionesMem() {
+  var real = memoriaMib();
+  return sinRepetidas([
+    { valor: fmt(real) + " MiB", clave: "correcta", razon: explicarMem(true, real) },
+    { valor: fmt(CGROUP.memoriaBytes) + " MiB", clave: "bytes",
+      razon: "Ese es el número en bytes, sin convertir. Un mebibyte son 1024 por 1024 bytes." },
+    { valor: fmt(CGROUP.memoriaBytes / 1024) + " MiB", clave: "kib",
+      razon: "Dividió entre 1024 una sola vez: eso da kibibytes, no mebibytes. Falta la " +
+        "segunda división." },
+    { valor: fmt(CGROUP.memoriaBytes / 1000000) + " MiB", clave: "decimal",
+      razon: "Dividió entre un millón, que da megabytes decimales (" +
+        fmt(CGROUP.memoriaBytes / 1000000) + " MB). El mebibyte es 1024 por 1024 bytes, y " +
+        "por eso la cifra exacta es " + fmt(real) + "." }
+  ]);
+}
+
 /* ---------- pintado y conexiones ---------- */
 
 function filasLimites() {
@@ -153,20 +219,14 @@ function iniciar() {
   pintarChips();
   pintarLimites();
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-tercero", boton: "btn-tercero", veredicto: "ver-tercero" },
-    discoDelSiguienteContenedor, explicarTercero);
-  document.getElementById("btn-tercero").addEventListener("click", destapar);
+  Motor.opcionesNumericas("op-tercero", "ver-tercero", opcionesTercero);
+  document.getElementById("op-tercero").addEventListener("click", destapar);
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-cpu", boton: "btn-cpu", veredicto: "ver-cpu" },
-    nucleosDelCgroup, explicarCpu);
-  document.getElementById("btn-cpu").addEventListener("click", destapar);
+  Motor.opcionesNumericas("op-cpu", "ver-cpu", opcionesCpu);
+  document.getElementById("op-cpu").addEventListener("click", destapar);
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-mem", boton: "btn-mem", veredicto: "ver-mem" },
-    memoriaMib, explicarMem);
-  document.getElementById("btn-mem").addEventListener("click", destapar);
+  Motor.opcionesNumericas("op-mem", "ver-mem", opcionesMem);
+  document.getElementById("op-mem").addEventListener("click", destapar);
 
   Motor.conectarOpciones("op-arranque", "ver-arranque", RAZONES_ARRANQUE);
   Motor.conectarOpciones("op-analogia", "ver-analogia", RAZONES_ANALOGIA);

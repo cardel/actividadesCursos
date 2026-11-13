@@ -152,23 +152,82 @@ function iniciar() {
   pintarConsenso();
   pintarFichas();
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-ram", boton: "btn-ram", veredicto: "ver-ram" },
-    memoriaDelGrupo, explicarRam);
+  /* Dos opciones que se vean igual no pueden convivir: se descartan las
+     que repitan el valor de otra antes de devolver la lista. */
+  function sinRepetidos(lista) {
+    var vistos = {};
+    return lista.filter(function (o) {
+      var ya = vistos[o.valor];
+      vistos[o.valor] = true;
+      return !ya;
+    });
+  }
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-amdahl", boton: "btn-amdahl", veredicto: "ver-amdahl" },
-    function () { return amdahl(P, 10); }, explicarAmdahl);
-  document.getElementById("btn-amdahl").addEventListener("click", destapar);
+  Motor.opcionesNumericas("op-ram", "ver-ram", function () {
+    var real = memoriaDelGrupo();
+    return sinRepetidos([
+      { valor: fmt(real), clave: "correcta", razon: explicarRam(true, real) },
+      { valor: fmt(HORIZONTAL.memoriaGb), clave: "uno",
+        razon: "Esos son los gigabytes de un solo servidor. El conjunto tiene diez, y cada uno " +
+          "aporta su memoria." },
+      { valor: fmt(HORIZONTAL.maquinas + HORIZONTAL.memoriaGb), clave: "suma",
+        razon: "Eso suma el número de servidores con los gigabytes de cada uno. Diez servidores " +
+          "de 128 GB se multiplican: 10 × 128." },
+      { valor: fmt(VERTICAL.memoriaTb * GB_POR_TB), clave: "grande",
+        razon: "Ese es el terabyte de la máquina grande, convertido a gigabytes. La pregunta " +
+          "es por lo que suman los diez servidores chicos." }
+    ]);
+  });
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-techo", boton: "btn-techo", veredicto: "ver-techo" },
-    function () { return techoAmdahl(P); }, explicarTecho);
-  document.getElementById("btn-techo").addEventListener("click", destapar);
+  Motor.opcionesNumericas("op-amdahl", "ver-amdahl", function () {
+    var real = amdahl(P, 10);
+    return sinRepetidos([
+      { valor: fmt(real, 2), clave: "correcta", razon: explicarAmdahl(true, real) },
+      { valor: fmt(10), clave: "lineal",
+        razon: "Eso sería una aceleración lineal, que supone que todo el trabajo se reparte. " +
+          "El " + fmt((1 - P) * 100) + " % que no se paraleliza se queda en una sola máquina." },
+      { valor: fmt(P * 10, 2), clave: "producto",
+        razon: "Eso multiplica p por n, y esa no es la fórmula. En el denominador p se divide " +
+          "entre n, y la parte serial 1 − p se suma sin dividir." },
+      { valor: fmt(1 / (P + (1 - P) / 10), 2), clave: "invertida",
+        razon: "Eso intercambia p y 1 − p: trata el 5 % como lo que se reparte y el 95 % como " +
+          "lo serial. Lo que se divide entre n es la fracción paralelizable." }
+    ]);
+  });
+  document.getElementById("op-amdahl").addEventListener("click", destapar);
 
-  Motor.conectarPrediccion(
-    { entrada: "pred-consenso", boton: "btn-consenso", veredicto: "ver-consenso" },
-    function () { return nodosParaTolerar(2); }, explicarConsenso);
+  Motor.opcionesNumericas("op-techo", "ver-techo", function () {
+    var real = techoAmdahl(P);
+    return sinRepetidos([
+      { valor: fmt(real), clave: "correcta", razon: explicarTecho(true, real) },
+      { valor: fmt(P * 100), clave: "porcentaje",
+        razon: "Eso es p escrita como porcentaje, no una aceleración. Con n infinito el " +
+          "término p/n desaparece y queda 1 / (1 − p)." },
+      { valor: fmt((1 - P) * 100), clave: "serial",
+        razon: "Eso lee el 5 % serial como 5 veces. El límite es el inverso de esa fracción: " +
+          "1 / 0,05." },
+      { valor: fmt(amdahl(P, 100), 1), clave: "cien",
+        razon: "Esa es la aceleración con 100 máquinas. Todavía sube al agregar más; el techo " +
+          "es el valor al que se acerca sin tocarlo." }
+    ]);
+  });
+  document.getElementById("op-techo").addEventListener("click", destapar);
+
+  Motor.opcionesNumericas("op-consenso", "ver-consenso", function () {
+    var real = nodosParaTolerar(2);
+    return sinRepetidos([
+      { valor: fmt(real), clave: "correcta", razon: explicarConsenso(true, real) },
+      { valor: fmt(2 * 2), clave: "sin-uno",
+        razon: "Con cuatro nodos la mayoría es tres, y dos caídas dejan solo dos vivos. Es 2f, y la " +
+          "cuenta es 2f + 1: falta el nodo que rompe el empate." },
+      { valor: fmt(2 + 1), clave: "f-mas-uno",
+        razon: "Eso es f + 1: con tres nodos la mayoría es dos, así que solo se tolera una caída, " +
+          "no dos." },
+      { valor: fmt(3 * 2 + 1), clave: "bizantino",
+        razon: "Eso es 3f + 1, la cuenta para fallos bizantinos, donde un nodo miente. Para " +
+          "nodos que solo se caen basta 2f + 1." }
+    ]);
+  });
 
   Motor.conectarOpciones("op-vertical", "ver-vertical", RAZONES_VERTICAL);
   Motor.conectarOpciones("op-mecanismo", "ver-mecanismo", RAZONES_MECANISMO);

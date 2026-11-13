@@ -116,17 +116,36 @@ if (typeof document !== "undefined") (function () {
     }), 1);
   }
 
-  function explicar(bien, real, dicho) {
-    destapada = true;
-    pintarMedido();
-    var base = "En 10⁴ la versión con hilos todavía pierde: 4,0 contra 7,4 ms. " +
-      "En 10⁵ ya gana: 39,4 contra 16,2 ms. El cruce está entre 10⁴ y 10⁵, " +
-      "así que la primera fila por encima de 1 es 10⁵.";
-    if (bien) { return "Sí: 10⁵. " + base; }
-    if (dicho < 5) {
-      return "En 10^" + num(dicho) + " los hilos todavía pierden. " + base;
-    }
-    return "Cruza antes, en 10⁵. " + base;
+  function potenciaTexto(e) {
+    return "10" + String(e).split("").map(function (d) { return "⁰¹²³⁴⁵⁶⁷⁸⁹"[d]; }).join("");
+  }
+
+  function filaMedida(e) {
+    return MEDIDO.filter(function (m) { return m.e === e; })[0];
+  }
+
+  var BASE = "En 10⁴ la versión con hilos todavía pierde: 4,0 contra 7,4 ms. " +
+    "En 10⁵ ya gana: 39,4 contra 16,2 ms. El cruce está entre 10⁴ y 10⁵, " +
+    "así que la primera fila por encima de 1 es 10⁵.";
+
+  /* La primera fila donde los hilos ganan; las demas son lo que se contesta
+     al leer mal la tabla: una fila antes o una despues. */
+  function opcionesCruce() {
+    var buena = cruce(16, 1);
+    var lista = [{ valor: potenciaTexto(buena), clave: "correcta",
+      razon: "Sí: " + potenciaTexto(buena) + ". " + BASE }];
+    [buena - 1, buena - 2, buena + 1].forEach(function (e) {
+      var m = filaMedida(e);
+      if (!m || EXPONENTES.indexOf(e) < 0) { return; }
+      lista.push({ valor: potenciaTexto(e), clave: "e" + e,
+        razon: e < buena
+          ? "En " + potenciaTexto(e) + " los hilos todavía pierden: " +
+            num(m.sec, 1) + " ms secuencial contra " + num(m.par, 1) +
+            " con hilos. " + BASE
+          : "Cruza antes, en " + potenciaTexto(buena) + ". En " +
+            potenciaTexto(e) + " ya es una fila que gana, pero no la primera. " + BASE });
+    });
+    return lista;
   }
 
   var RAZONES = {
@@ -154,10 +173,11 @@ if (typeof document !== "undefined") (function () {
     pintarModelo();
     if (destapada) { pintarMedido(); }
   });
-  Motor.conectarPrediccion(
-    { entrada: "prediccion", boton: "btn-comprobar", veredicto: "veredicto" },
-    function () { return cruce(16, 1); },
-    explicar);
+  Motor.opcionesNumericas("opciones-primera-fila", "veredicto", opcionesCruce);
+  document.getElementById("opciones-primera-fila").addEventListener("click", function () {
+    destapada = true;
+    pintarMedido();
+  });
   Motor.conectarOpciones("opciones-maquina", "veredicto-maquina", RAZONES);
 
   pintarMedido();

@@ -115,9 +115,10 @@ if (typeof module !== "undefined") {
     function iguales(a, b) {
       return a.length === b.length && a.every(function (x, i) { return x === b[i]; });
     }
-    var logradas = { casillas: false, enteros: false, contenido: false };
+    var logradas = { casillas: false, inicio: false, n: false, contenido: false };
     function revisar() {
-      if (logradas.casillas && logradas.enteros && logradas.contenido) {
+      if (logradas.casillas && logradas.inicio && logradas.n &&
+          logradas.contenido) {
         document.getElementById("carta-cierre").style.display = "block";
       }
     }
@@ -215,26 +216,51 @@ if (typeof module !== "undefined") {
     });
     pintarVista();
 
-    document.getElementById("btn-enteros").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-enteros");
-      var a = parseInt(document.getElementById("pred-inicio").value, 10);
-      var b = parseInt(document.getElementById("pred-n").value, 10);
-      if (a === R.inicioFinal && b === R.nFinal) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: inicio = " + R.inicioFinal + " y n = " + R.nFinal +
-          ". Dos desencolar suben inicio de 0 a 2; n sube con los seis encolar y baja con los dos desencolar, así que queda en 6 - 2 = 4.";
-        logradas.enteros = true; revisar();
-      } else if (a === 0) {
-        ver.className = "veredicto mal";
-        ver.textContent = "inicio no vuelve a 0: cada desencolar lo adelanta una casilla y aquí hubo dos, sin que ningún encolar lo toque.";
-      } else if (b === 6) {
-        ver.className = "veredicto mal";
-        ver.textContent = "n es cuántos elementos hay, no cuántos entraron: los dos desencolar lo bajan.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "inicio solo lo mueve desencolar y n lo mueven las dos operaciones, una hacia arriba y la otra hacia abajo.";
-      }
+    // deja una sola opcion por valor: la correcta va primero y gana
+    function unicas(lista) {
+      var vistos = {};
+      return lista.filter(function (o) {
+        var nueva = !vistos[o.valor];
+        vistos[o.valor] = true;
+        return nueva;
+      });
+    }
+    // avisa cuando el estudiante pulsa la opcion correcta
+    function alAcertar(idOpciones, fn) {
+      document.getElementById(idOpciones).addEventListener("click", function (e) {
+        var b = e.target;
+        if (b && b.getAttribute && b.getAttribute("data-op") === "correcta") { fn(); }
+      });
+    }
+
+    var ENCOLARES = EJERCICIO.operaciones.filter(function (o) { return o.op === "encolar"; }).length;
+    var DESENCOLARES = EJERCICIO.operaciones.length - ENCOLARES;
+    Motor.opcionesNumericas("opciones-inicio", "veredicto-inicio", function () {
+      return unicas([
+        { valor: R.inicioFinal, clave: "correcta",
+          razon: "Correcto: inicio = " + R.inicioFinal + ". Solo desencolar lo mueve, una casilla por llamada, y hubo " + DESENCOLARES + "; ningún encolar lo toca." },
+        { valor: 0, clave: "cero",
+          razon: "inicio no vuelve a 0: cada desencolar lo adelanta una casilla y aquí hubo " + DESENCOLARES + ", sin que ningún encolar lo toque." },
+        { valor: R.nFinal, clave: "confunde-n",
+          razon: "Ese es el valor de n, no el de inicio. inicio cuenta cuántas casillas se adelantó el frente; n, cuántos elementos quedan." },
+        { valor: ENCOLARES, clave: "encolares",
+          razon: "Esos son los encolar. inicio no se mueve con ellos: escriben en (inicio + n) % CAPACIDAD y dejan inicio donde estaba." }
+      ]);
     });
+    Motor.opcionesNumericas("opciones-n", "veredicto-n", function () {
+      return unicas([
+        { valor: R.nFinal, clave: "correcta",
+          razon: "Correcto: n = " + R.nFinal + ". Sube con los " + ENCOLARES + " encolar y baja con los " + DESENCOLARES + " desencolar: " + ENCOLARES + " - " + DESENCOLARES + " = " + R.nFinal + "." },
+        { valor: ENCOLARES, clave: "entraron",
+          razon: "n es cuántos elementos hay, no cuántos entraron: los " + DESENCOLARES + " desencolar lo bajan." },
+        { valor: R.inicioFinal, clave: "confunde-inicio",
+          razon: "Ese es el valor de inicio, no el de n. n cuenta los elementos que quedan en la cola." },
+        { valor: EJERCICIO.capacidad, clave: "capacidad",
+          razon: "Esa es la CAPACIDAD. La cola no está llena: n es " + ENCOLARES + " - " + DESENCOLARES + ", y el assert (n < CAPACIDAD) se cumplió en cada encolar." }
+      ]);
+    });
+    alAcertar("opciones-inicio", function () { logradas.inicio = true; revisar(); });
+    alAcertar("opciones-n", function () { logradas.n = true; revisar(); });
 
     document.getElementById("btn-contenido").addEventListener("click", function () {
       var ver = document.getElementById("veredicto-contenido");

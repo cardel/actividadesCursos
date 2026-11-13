@@ -18,11 +18,7 @@
     <h2>1. El experimento</h2>
     <p style="margin-top:0">Compare 3n + 4 contra n². Al principio la recta
     gana. ¿Desde qué n se cumple 3n + 4 ≤ n² y no se vuelve a romper?</p>
-    <div class="prediccion">
-      <span>Primer n donde se cumple:</span>
-      <input type="number" id="prediccion-experimento" min="1" placeholder="su n">
-      <button id="btn-experimento" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-experimento"></div>
     <div id="veredicto-experimento" class="veredicto"></div>
     <div id="tabla-experimento" style="display:none">
       <div class="envoltura-tabla" style="margin-top:0.7rem">
@@ -81,6 +77,7 @@
   </div>
 
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="testigos.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

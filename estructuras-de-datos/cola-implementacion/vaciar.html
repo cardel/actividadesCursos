@@ -39,14 +39,12 @@
     (<code>cabeza</code> y <code>ultimo</code>), escribe una llamada a
     <code>desencolar</code>? El local <code>muerto</code> no cuenta.</p>
     <div class="codigo" id="codigo-desencolar"></div>
-    <div class="prediccion">
-      <span>con un solo elemento:</span>
-      <input type="number" id="pred-uno" placeholder="?">
-      <span>con varios:</span>
-      <input type="number" id="pred-varios" placeholder="?">
-      <button id="btn-escrituras" class="primario">Comprobar</button>
-    </div>
-    <div id="veredicto-escrituras" class="veredicto"></div>
+    <p>Con un solo elemento:</p>
+    <div class="opciones" id="opciones-uno"></div>
+    <div id="veredicto-uno" class="veredicto"></div>
+    <p>Con varios:</p>
+    <div class="opciones" id="opciones-varios"></div>
+    <div id="veredicto-varios" class="veredicto"></div>
   </div>
 
   <div class="carta">
@@ -54,11 +52,7 @@
     <p style="margin-top:0">Una cola con cuatro elementos recibe cuatro
     <code>desencolar</code> seguidos. ¿Cuántas escrituras de puntero de la
     clase se hacen en total?</p>
-    <div class="prediccion">
-      <span>total:</span>
-      <input type="number" id="pred-total" placeholder="?">
-      <button id="btn-total" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-total"></div>
     <div id="veredicto-total" class="veredicto"></div>
   </div>
 
@@ -72,6 +66,7 @@
     <code>desencolar</code> sigue siendo Θ(1).</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="vaciar.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

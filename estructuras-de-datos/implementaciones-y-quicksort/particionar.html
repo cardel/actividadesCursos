@@ -18,11 +18,7 @@
     <h2>1. Antes de correrlo: dónde queda el pivote</h2>
     <p style="margin-top:0">Sin seguir el ciclo, ¿qué valor de <code>q</code>
     devuelve la función?</p>
-    <div class="prediccion">
-      <span><code>q</code> =</span>
-      <input type="number" id="pred-q" placeholder="?">
-      <button id="btn-q" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-q"></div>
     <div id="veredicto-q" class="veredicto"></div>
   </div>
 
@@ -56,11 +52,7 @@
     <h2>3. El arreglo al terminar</h2>
     <p style="margin-top:0">¿Cómo queda <code>a[0..6]</code> después del último
     intercambio?</p>
-    <div class="prediccion">
-      <span>arreglo:</span>
-      <input type="text" id="pred-final" placeholder="3 8 1 ..." style="width:12rem">
-      <button id="btn-final" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-final"></div>
     <div id="veredicto-final" class="veredicto"></div>
   </div>
 
@@ -68,11 +60,7 @@
     <h2>4. Las llamadas a <code>intercambiar</code></h2>
     <p style="margin-top:0">Contando todas, también las que cambian una casilla
     consigo misma, ¿cuántas veces se llama a <code>intercambiar</code>?</p>
-    <div class="prediccion">
-      <span>intercambios:</span>
-      <input type="number" id="pred-intercambios" placeholder="?">
-      <button id="btn-intercambios" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-intercambios"></div>
     <div id="veredicto-intercambios" class="veredicto"></div>
   </div>
 
@@ -86,6 +74,7 @@
     <code>j</code> y el temporal de <code>intercambiar</code>: Θ(1).</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="particionar.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

@@ -82,16 +82,27 @@
     <h2>4. El grado y la aridad</h2>
     <p style="margin-top:0">Para tres nodos del árbol de la primera tarjeta, cuántos hijos tiene y
     cuántas aristas toca. Los dos números son distintos en todos los nodos menos en uno.</p>
-    <div id="tabla-grados"></div>
-    <div id="fb-grados" class="fb"></div>
-    <div class="fila-par">
-      <span class="rotulo">Aridad del árbol</span>
-      <input type="number" id="in-aridad" class="corto" placeholder="0">
-      <span class="fb" id="fb-aridad"></span>
-    </div>
-    <div class="botones" style="margin-top:0.7rem">
-      <button id="btn-grados" class="primario">Comprobar</button>
-    </div>
+    <div class="pregunta" id="rot-gc-0"></div>
+    <div class="opciones" id="opciones-gc-0"></div>
+    <div id="veredicto-gc-0" class="veredicto"></div>
+    <div class="pregunta" id="rot-gs-0"></div>
+    <div class="opciones" id="opciones-gs-0"></div>
+    <div id="veredicto-gs-0" class="veredicto"></div>
+    <div class="pregunta" id="rot-gc-1"></div>
+    <div class="opciones" id="opciones-gc-1"></div>
+    <div id="veredicto-gc-1" class="veredicto"></div>
+    <div class="pregunta" id="rot-gs-1"></div>
+    <div class="opciones" id="opciones-gs-1"></div>
+    <div id="veredicto-gs-1" class="veredicto"></div>
+    <div class="pregunta" id="rot-gc-2"></div>
+    <div class="opciones" id="opciones-gc-2"></div>
+    <div id="veredicto-gc-2" class="veredicto"></div>
+    <div class="pregunta" id="rot-gs-2"></div>
+    <div class="opciones" id="opciones-gs-2"></div>
+    <div id="veredicto-gs-2" class="veredicto"></div>
+    <div class="pregunta">Aridad del árbol</div>
+    <div class="opciones" id="opciones-aridad"></div>
+    <div id="veredicto-aridad" class="veredicto"></div>
   </div>
 
   <div class="carta">
@@ -99,23 +110,17 @@
     <p style="margin-top:0">Cada nodo guarda dos punteros, igual que en un árbol binario. Leyendo
     <code>hijoIzq</code> como hijo izquierdo y <code>hermanoDer</code> como hijo derecho, lo que hay en
     memoria es otro árbol, y las profundidades no son las mismas.</p>
-    <div class="fila-par">
-      <span class="rotulo" id="rot-prof-gen">Profundidad en el árbol de aridad libre</span>
-      <input type="number" id="in-prof-gen" class="corto" placeholder="0">
-      <span class="fb" id="fb-prof-gen"></span>
-    </div>
-    <div class="fila-par">
-      <span class="rotulo" id="rot-prof-bin">Profundidad en el árbol binario</span>
-      <input type="number" id="in-prof-bin" class="corto" placeholder="0">
-      <span class="fb" id="fb-prof-bin"></span>
-    </div>
-    <div class="fila-par">
-      <span class="rotulo">Altura del árbol binario</span>
-      <input type="number" id="in-alt-bin" class="corto" placeholder="0">
-      <span class="fb" id="fb-alt-bin"></span>
-    </div>
+    <div class="pregunta" id="rot-prof-gen">Profundidad en el árbol de aridad libre</div>
+    <div class="opciones" id="opciones-prof-gen"></div>
+    <div id="veredicto-prof-gen" class="veredicto"></div>
+    <div class="pregunta" id="rot-prof-bin">Profundidad en el árbol binario</div>
+    <div class="opciones" id="opciones-prof-bin"></div>
+    <div id="veredicto-prof-bin" class="veredicto"></div>
+    <div class="pregunta">Altura del árbol binario</div>
+    <div class="opciones" id="opciones-alt-bin"></div>
+    <div id="veredicto-alt-bin" class="veredicto"></div>
     <div class="botones" style="margin-top:0.7rem">
-      <button id="btn-binario" class="primario">Comprobar las tres</button>
+      <button id="btn-binario" class="primario">Ver el árbol binario</button>
     </div>
     <div class="dibujo" id="panel-binario"></div>
     <div class="leyenda" id="pie-binario"></div>

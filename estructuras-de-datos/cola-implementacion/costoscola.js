@@ -91,25 +91,38 @@ if (typeof module !== "undefined") {
       contador: "El contador dice cuántos elementos hay, no dónde está el último nodo. Deja tamano() y vacia() en Θ(1) y no cambia nada en encolar, que es la operación que recorre."
     });
 
-    document.getElementById("btn-tocados").addEventListener("click", function () {
-      var ver = document.getElementById("veredicto-tocados");
+    // deja una sola opcion por valor: la correcta va primero y gana
+    function unicas(lista) {
+      var vistos = {};
+      return lista.filter(function (o) {
+        var nueva = !vistos[o.valor];
+        vistos[o.valor] = true;
+        return nueva;
+      });
+    }
+    // avisa cuando el estudiante pulsa la opcion correcta
+    function alAcertar(idOpciones, fn) {
+      document.getElementById(idOpciones).addEventListener("click", function (e) {
+        var b = e.target;
+        if (b && b.getAttribute && b.getAttribute("data-op") === "correcta") { fn(); }
+      });
+    }
+
+    Motor.opcionesNumericas("opciones-tocados", "veredicto-tocados", function () {
       var esperado = EJERCICIO.tocadosConUltimo(EJERCICIO.n);
-      var dado = parseInt(document.getElementById("pred-tocados").value, 10);
-      if (dado === esperado) {
-        ver.className = "veredicto bien";
-        ver.textContent = "Correcto: " + esperado +
-          ". Encolar escribe dos punteros y desencolar otro, siempre los de los extremos. Ningún elemento intermedio se corre ni se visita, y por eso el total no depende de n: con 40 o con 400 000 sigue siendo " + esperado + ".";
-        logradas.tocados = true; revisar();
-      } else if (dado === EJERCICIO.tocadosSinUltimo(EJERCICIO.n)) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Esos " + EJERCICIO.tocadosSinUltimo(EJERCICIO.n) + " son los de la enlazada simple, que camina hasta el final en cada encolar. La que guarda el último llega ahí por el puntero.";
-      } else if (dado === EJERCICIO.n || dado === 2 * EJERCICIO.n) {
-        ver.className = "veredicto mal";
-        ver.textContent = "Las escrituras de puntero de los extremos no tocan elementos: lo que se cuenta es cuántos elementos se corren o cuántos nodos se visitan de paso.";
-      } else {
-        ver.className = "veredicto mal";
-        ver.textContent = "Pregúntese cuántos nodos visita un encolar de esta versión y cuántos elementos corre un desencolar.";
-      }
+      var sinUltimo = EJERCICIO.tocadosSinUltimo(EJERCICIO.n);
+      return unicas([
+        { valor: esperado, clave: "correcta",
+          razon: "Correcto: " + esperado +
+            ". Encolar escribe dos punteros y desencolar otro, siempre los de los extremos. Ningún elemento intermedio se corre ni se visita, y por eso el total no depende de n: con 40 o con 400 000 sigue siendo " + esperado + "." },
+        { valor: sinUltimo, clave: "simple",
+          razon: "Esos " + sinUltimo + " son los de la enlazada simple, que camina hasta el final en cada encolar. La que guarda el último llega ahí por el puntero." },
+        { valor: EJERCICIO.n, clave: "uno-por-elemento",
+          razon: "Las escrituras de puntero de los extremos no tocan elementos: lo que se cuenta es cuántos elementos se corren o cuántos nodos se visitan de paso. Aquí no se visita ni se corre ninguno." },
+        { valor: 2 * EJERCICIO.n, clave: "dos-por-elemento",
+          razon: "Eso cuenta cada encolar y cada desencolar como un elemento tocado. Escribir un puntero de un extremo no toca ningún elemento." }
+      ]);
     });
+    alAcertar("opciones-tocados", function () { logradas.tocados = true; revisar(); });
   })();
 }

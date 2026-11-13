@@ -216,7 +216,7 @@ if (typeof module !== "undefined") {
 } else {
   (function () {
     var SVGNS = "http://www.w3.org/2000/svg";
-    var estado = { lineas: [], res: null, k: 0 };
+    var estado = { lineas: [], res: null, k: 0, pesoOK: false };
     var CASOS = {
       base: "caso base: los dos pesos están en la línea",
       izq: "recursivo: se lee el submóvil izquierdo",
@@ -404,6 +404,7 @@ if (typeof module !== "undefined") {
       var zonaLeer = document.getElementById("zona-leer");
       var zonaVolver = document.getElementById("zona-volver");
       var aviso = document.getElementById("aviso-tarde");
+      grupoPeso.refrescar();
       marcarCodigo(paso);
       pintarArbol();
       pintarPila();
@@ -463,7 +464,7 @@ if (typeof module !== "undefined") {
 
     function avanzar() {
       estado.k = estado.k + 1;
-      document.getElementById("peso").value = "";
+      estado.pesoOK = false;
       document.getElementById("eq-si").checked = false;
       document.getElementById("eq-no").checked = false;
       pintar();
@@ -473,8 +474,8 @@ if (typeof module !== "undefined") {
       var paso = estado.res.pasos[estado.k];
       if (paso !== undefined && paso.tipo === "leer") {
         if (caso === paso.caso) {
-          veredicto("bien", "Correcto. " + explicar(paso));
           avanzar();
+          veredicto("bien", "Correcto. " + explicar(paso));
         } else if (paso.caso === "base") {
           veredicto("mal", "Mire los pesos Wl y Wr, el primero y el tercero: ninguno es 0, así que en los dos extremos cuelga un objeto.");
         } else {
@@ -483,21 +484,46 @@ if (typeof module !== "undefined") {
       }
     }
 
+    var grupoPeso = Motor.opcionesNumericas("opciones-peso", "veredicto", function () {
+      var paso = estado.res ? estado.res.pasos[estado.k] : undefined;
+      var lista = [];
+      if (paso !== undefined && paso.tipo === "volver") {
+        var lectura = null;
+        estado.res.pasos.forEach(function (p) {
+          if (p.tipo === "leer" && p.nodo === paso.nodo) { lectura = p; }
+        });
+        lista.push({ valor: paso.peso, clave: "correcta", razon: "Correcto. " + explicar(paso) });
+        var cand = [
+          { valor: lectura ? lectura.valores[0] + lectura.valores[2] : paso.peso, clave: "ceros", razon: "Sumó los pesos de la línea tal como aparecen: un 0 es un submóvil, y cuenta el peso que devolvió su llamada, no el 0 de la línea." },
+          { valor: paso.wl * paso.dl + paso.wr * paso.dr, clave: "momentos", razon: "Eso suma los productos peso por distancia. El peso devuelto es la suma de lo que cuelga de los dos extremos, sin las distancias." },
+          { valor: paso.wl, clave: "izquierdo", razon: "Ese es solo el peso del extremo izquierdo. Se devuelve wl + wr." },
+          { valor: paso.wr, clave: "derecho", razon: "Ese es solo el peso del extremo derecho. Se devuelve wl + wr." }
+        ];
+        cand.forEach(function (o) {
+          var repetido = false;
+          lista.forEach(function (x) { if (x.valor === o.valor) { repetido = true; } });
+          if (!repetido && lista.length < 4) { lista.push(o); }
+        });
+      }
+      return lista;
+    });
+    document.getElementById("opciones-peso").addEventListener("click", function (e) {
+      var b = e.target;
+      if (b && b.getAttribute && b.getAttribute("data-op") === "correcta") { estado.pesoOK = true; }
+    });
+
     function comprobarVuelta() {
       var paso = estado.res.pasos[estado.k];
-      var w = parseInt(document.getElementById("peso").value, 10);
       var si = document.getElementById("eq-si").checked;
       var no = document.getElementById("eq-no").checked;
       if (paso !== undefined && paso.tipo === "volver") {
-        if (isNaN(w) || (!si && !no)) {
-          veredicto("mal", "Escriba el peso y marque si está en equilibrio.");
-        } else if (w !== paso.peso) {
-          veredicto("mal", "El peso no es " + w + ". Es la suma de lo que cuelga de los dos extremos; si un extremo era un submóvil, cuenta el peso que devolvió su llamada, no el 0 de la línea.");
+        if (!estado.pesoOK || (!si && !no)) {
+          veredicto("mal", "Escoja el peso y marque si está en equilibrio.");
         } else if (si !== paso.equilibrio) {
           veredicto("mal", "El peso está bien. Para el equilibrio compare Wl·Dl con Wr·Dr usando esos pesos, y recuerde que también deben estar en equilibrio los submóviles que cuelgan.");
         } else {
-          veredicto("bien", "Correcto. " + explicar(paso));
           avanzar();
+          veredicto("bien", "Correcto. " + explicar(paso));
         }
       }
     }
@@ -505,8 +531,8 @@ if (typeof module !== "undefined") {
     function revelar() {
       var paso = estado.res.pasos[estado.k];
       if (paso !== undefined) {
-        veredicto("mal", explicar(paso));
         avanzar();
+        veredicto("mal", explicar(paso));
       }
     }
 
@@ -528,6 +554,7 @@ if (typeof module !== "undefined") {
         estado.lineas = r.lineas;
         estado.res = s;
         estado.k = 0;
+        estado.pesoOK = false;
         document.getElementById("veredicto").className = "veredicto";
         document.getElementById("carta-cierre").style.display = "none";
         pintar();

@@ -15,7 +15,7 @@
   bits: la luz de la habitación <code>i</code> es el bit <code>i - 1</code>, y se
   nombra con <code>1 &lt;&lt; i - 1</code>. Para preguntar por una luz se usa
   <code>&amp;</code>; para prenderla o apagarla, <code>^</code>. En cada escenario
-  se calcula el resultado, en decimal y en binario de cuatro cifras, antes de comprobar.</p>
+  se calcula el resultado, antes de escoger entre las opciones.</p>
 
   <div class="carta">
     <h2>Escenario <span id="num">1</span> de <span id="total">10</span></h2>
@@ -23,15 +23,14 @@
     <p id="enunciado" style="margin:0.3rem 0"></p>
     <p style="margin:0.3rem 0"><code class="exp" id="expresion"></code></p>
     <div class="prediccion">
-      <label>Decimal <input type="number" id="dec" class="corto" step="1"></label>
-      <label>Binario <input type="text" id="bin" class="corto" maxlength="4" placeholder="0000"></label>
-      <button id="btn-comprobar" class="primario">Comprobar</button>
       <button id="btn-sig">Siguiente</button>
     </div>
+    <div class="opciones" id="opciones-mascara"></div>
     <div id="veredicto" class="veredicto"></div>
     <div class="nota">Aciertos: <span id="aciertos">0</span> de los escenarios comprobados: <span id="hechos">0</span>.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="mascaras.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

@@ -48,21 +48,37 @@ var EJERCICIO = (function () {
     return { ok: false, txt: t };
   }
 
-  function fbHoja(h, valor) {
+  /* Opciones para la excentricidad de la hoja h: la correcta y los valores
+     que daria quien se equivoca de una manera concreta. */
+  function opcionesHoja(h) {
     var p = vecino(h), e = ECC[h], ep = ECC[p];
-    if (valor === e) {
-      return { ok: true, txt: "Bien: " + NOM[h] + " está a " + e + " del más lejano. Y su vecino " +
-        NOM[p] + " está a " + ep + ", uno menos, que es justo lo que dice la cuenta." };
+    var lista = [
+      { valor: e, clave: "correcta",
+        razon: "Bien: " + NOM[h] + " está a " + e + " del más lejano. Y su vecino " +
+          NOM[p] + " está a " + ep + ", uno menos, que es justo lo que dice la cuenta." },
+      { valor: ep, clave: "vecino",
+        razon: "Esa es la de " + NOM[p] + ", el vecino. La hoja siempre paga un paso más para salir, así que la suya es " + e + "." },
+      { valor: ep - 1, clave: "menos",
+        razon: "Restó en vez de sumar. Desde " + NOM[h] + " todo camino arranca pasando por " +
+          NOM[p] + ", y desde ahí lo más lejano queda a " + ep + ": la hoja está más lejos, no más cerca." },
+      { valor: e + 1, clave: "mas",
+        razon: "Se pasó de la cuenta. Desde " + NOM[h] + " se sale por " + NOM[p] +
+          ", y como la excentricidad de " + NOM[p] + " es " + ep + ", la de la hoja es " + e + "." }
+    ];
+    return unicas(lista);
+  }
+
+  /* Nunca dos botones con el mismo valor: queda la primera que lo trae. */
+  function unicas(lista) {
+    var vistos = [], r = [], i = 0;
+    while (i < lista.length) {
+      if (lista[i].valor >= 0 && vistos.indexOf(lista[i].valor) < 0) {
+        vistos.push(lista[i].valor);
+        r.push(lista[i]);
+      }
+      i = i + 1;
     }
-    if (valor === ep) {
-      return { ok: false, txt: "Esa es la de " + NOM[p] + ", el vecino. La hoja siempre paga un paso más para salir, así que la suya es " + e + "." };
-    }
-    if (valor === e - 1 || valor === e + 1) {
-      return { ok: false, txt: "Cerca. Es " + e + ": desde " + NOM[h] + " todo camino arranca pasando por " +
-        NOM[p] + ", y desde ahí lo más lejano queda a " + ep + "." };
-    }
-    return { ok: false, txt: "Es " + e + ". Desde " + NOM[h] + " se sale por " + NOM[p] + ", y como la excentricidad de " +
-      NOM[p] + " es " + ep + ", la de la hoja es " + (ep + 1) + "." };
+    return r;
   }
 
   function tabla() {
@@ -81,7 +97,7 @@ var EJERCICIO = (function () {
   }
 
   return { NOM: NOM, G: G, GRADO: GRADO, ECC: ECC, MED: MED, POS: POS, ARISTAS: ARISTAS,
-           hojas: hojas, vecino: vecino, fbDescartar: fbDescartar, fbHoja: fbHoja, tabla: tabla };
+           hojas: hojas, vecino: vecino, fbDescartar: fbDescartar, opcionesHoja: opcionesHoja, tabla: tabla };
 })();
 
 if (typeof module !== "undefined") { module.exports = EJERCICIO; }
@@ -127,23 +143,17 @@ if (typeof document !== "undefined") {
         "La excentricidad de <b>" + E.NOM[p] + "</b> es <b>" + E.ECC[p] +
         "</b>. Sin volver a recorrer el árbol, diga la de su hoja vecina.";
       document.getElementById("rot-hoja").textContent = "ε(" + E.NOM[hojaActual] + ")";
-      document.getElementById("in-hoja").value = "";
-      document.getElementById("fb-hoja").textContent = "";
-      document.getElementById("fb-hoja").className = "fb";
     }
 
     casillas();
     pintar();
     pedirHoja();
 
+    var opciones = Motor.opcionesNumericas("opciones-hoja", "veredicto-hoja",
+      function () { return E.opcionesHoja(hojaActual); });
+
     document.getElementById("btn-descartar").addEventListener("click", function () {
       var r = E.fbDescartar(marcados), d = document.getElementById("fb-descartar");
-      d.textContent = r.txt;
-      d.className = "fb " + (r.ok ? "bien" : "mal");
-    });
-    document.getElementById("btn-hoja").addEventListener("click", function () {
-      var val = parseInt(document.getElementById("in-hoja").value, 10);
-      var r = E.fbHoja(hojaActual, val), d = document.getElementById("fb-hoja");
       d.textContent = r.txt;
       d.className = "fb " + (r.ok ? "bien" : "mal");
     });
@@ -151,6 +161,7 @@ if (typeof document !== "undefined") {
       idxHoja = (idxHoja + 1) % E.hojas().length;
       hojaActual = E.hojas()[idxHoja];
       pedirHoja();
+      opciones.refrescar();
     });
     document.getElementById("btn-ver").addEventListener("click", function () {
       document.getElementById("tabla-ecc").innerHTML = E.tabla();

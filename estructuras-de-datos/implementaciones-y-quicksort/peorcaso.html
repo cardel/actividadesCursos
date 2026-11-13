@@ -28,11 +28,8 @@
 
   <div class="carta">
     <h2>2. La cuenta de A</h2>
-    <div class="prediccion">
-      <span>comparaciones con A:</span>
-      <input type="number" id="pred-cuenta" placeholder="?">
-      <button id="btn-cuenta" class="primario">Comprobar</button>
-    </div>
+    <div><b>¿Cuántas comparaciones hace con A?</b></div>
+    <div class="opciones" id="opciones-cuenta"></div>
     <div id="veredicto-cuenta" class="veredicto"></div>
   </div>
 
@@ -53,11 +50,7 @@
     <code>a[(ini + fin) / 2]</code> con <code>a[fin]</code>, y
     <code>particionar</code> queda igual. ¿Cuántas comparaciones hace ahora
     sobre A?</p>
-    <div class="prediccion">
-      <span>comparaciones:</span>
-      <input type="number" id="pred-medio" placeholder="?">
-      <button id="btn-medio" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-medio"></div>
     <div id="veredicto-medio" class="veredicto"></div>
   </div>
 
@@ -85,6 +78,7 @@
     cualquier entrada.</div>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="peorcaso.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

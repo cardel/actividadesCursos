@@ -10,7 +10,7 @@ y cada respuesta equivocada dice por qué no.
 ### [El techo de una optimización](techo.html){ target=_blank rel=noopener }
 
 Un programa de 20 segundos repartido en cuatro funciones. Antes de mover nada,
-escriba cuánto se gana si la función que pesa el 70 % queda al doble de
+elija cuánto se gana si la función que pesa el 70 % queda al doble de
 velocidad: la respuesta no es dos. Después dos perillas, la fracción que se
 toca y cuánto se acelera, para ver el techo que fija lo que no se toca. Cierra
 con la decisión que el perfil obliga a tomar: cuál función optimizar, y cuándo
@@ -21,7 +21,7 @@ no optimizar ninguna.
 ### [Reloj de pared y tiempo de CPU](relojes.html){ target=_blank rel=noopener }
 
 Un programa por tramos: lee un archivo, calcula, consulta un servicio y
-procesa con cuatro hilos. Escriba qué va a marcar `perf_counter` y qué va a
+procesa con cuatro hilos. Elija qué va a marcar `perf_counter` y qué va a
 marcar `process_time` al final, y luego véalos avanzar tramo por tramo. Las
 esperas suman reloj y no CPU; el tramo de cuatro hilos suma cuatro veces más
 CPU que reloj. Hay tres programas para escoger, entre ellos el `sleeper` y el

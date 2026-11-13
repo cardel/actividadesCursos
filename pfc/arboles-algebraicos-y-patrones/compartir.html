@@ -62,20 +62,14 @@
 
   <div class="carta">
     <h2>2. Prediga las dos cantidades para <code>val d = c insertar 7</code></h2>
-    <div class="prediccion">
-      <label for="pred-construidas">¿Cuántos <code>new NoVacio</code> se
-      evalúan?</label>
-      <input type="number" id="pred-construidas" min="0" max="20">
-      <button id="btn-construidas" class="primario">Comprobar</button>
-    </div>
+    <p style="margin-bottom:0.4rem">¿Cuántos <code>new NoVacio</code> se
+      evalúan?</p>
+    <div class="opciones" id="opciones-construidas"></div>
     <div class="veredicto" id="ver-construidas"></div>
-    <div class="prediccion" style="margin-top:1rem">
-      <label for="pred-compartidas">De los nodos <code>NoVacio</code> del
+    <p style="margin:1rem 0 0.4rem">De los nodos <code>NoVacio</code> del
       árbol <code>d</code>, ¿cuántos son los mismos objetos que ya estaban en
-      <code>c</code>?</label>
-      <input type="number" id="pred-compartidas" min="0" max="20">
-      <button id="btn-compartidas" class="primario">Comprobar</button>
-    </div>
+      <code>c</code>?</p>
+    <div class="opciones" id="opciones-compartidas"></div>
     <div class="veredicto" id="ver-compartidas"></div>
     <p class="nota">El 7 no está en <code>c</code>, y el sitio donde entra sale
     de las mismas comparaciones de <code>pertenece</code>.</p>
@@ -103,10 +97,7 @@
     <code>else this</code>: cuando el elemento coincide, devuelve el mismo
     nodo. ¿Cuántos <code>new NoVacio</code> se evalúan al calcular
     <code>c insertar 9</code>, con el 9 ya en el árbol?</p>
-    <div class="prediccion">
-      <input type="number" id="pred-nueve" min="0" max="20">
-      <button id="btn-nueve" class="primario">Comprobar</button>
-    </div>
+    <div class="opciones" id="opciones-nueve"></div>
     <div class="veredicto" id="ver-nueve"></div>
   </div>
 
@@ -149,6 +140,7 @@
     es otro objeto.</p>
   </div>
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="compartir.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

@@ -16,11 +16,8 @@
   <div class="carta">
     <h2>1. ¿Cuánto vale p + 1?</h2>
     <p style="margin-top:0">p es un <b>int *</b> y su valor es 2000.</p>
-    <div class="prediccion">
-      <span>p + 1 =</span>
-      <input type="number" id="prediccion-mas-uno" placeholder="dirección">
-      <button id="btn-mas-uno" class="primario">Comprobar</button>
-    </div>
+    <div><b>p + 1 =</b></div>
+    <div class="opciones" id="opciones-mas-uno"></div>
     <div id="veredicto-mas-uno" class="veredicto"></div>
   </div>
 
@@ -29,11 +26,8 @@
     <p style="margin-top:0">Con el arreglo del dibujo y <b>int *p = A + 1;</b>,
     ¿cuánto vale <b>*p + *(p + 2)</b>?</p>
     <div class="arreglo fila-arreglo" id="arreglo-cajas"></div>
-    <div class="prediccion">
-      <span>*p + *(p + 2) =</span>
-      <input type="number" id="prediccion-expresion" placeholder="su número">
-      <button id="btn-expresion" class="primario">Comprobar</button>
-    </div>
+    <div><b>*p + *(p + 2) =</b></div>
+    <div class="opciones" id="opciones-expresion"></div>
     <div id="veredicto-expresion" class="veredicto"></div>
     <div id="tabla-expresion" style="display:none">
       <div class="envoltura-tabla" style="margin-top:0.7rem">
@@ -65,6 +59,7 @@
   </div>
 
 </div>
+<script src="../../comun/motor.js"></script>
 <script src="aritmetica.js"></script>
 <script src="../../comun/volver.js"></script>
 </body>

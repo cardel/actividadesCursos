@@ -355,10 +355,26 @@ if (typeof document !== "undefined") (function () {
     semillaCorrida += 37;
     pintarCorridas();
   });
-  Motor.conectarPrediccion(
-    { entrada: "prediccion-maximo", boton: "btn-comprobar-maximo", veredicto: "veredicto-maximo" },
-    function () { return ESPERADO; },
-    explicarMaximo);
+  Motor.opcionesNumericas("opciones-maximo", "veredicto-maximo", function () {
+    var num = Motor.num;
+    var mejor = Math.max.apply(null, MEDIDO);
+    return [
+      { valor: num(ESPERADO), clave: "correcta",
+        razon: "Sí: como máximo " + num(ESPERADO) + ". Ese número sale solo si ningún hilo " +
+          "lee un saldo viejo. En las cinco corridas medidas el mejor caso fue " + num(mejor) +
+          ", un " + num(porcentaje(mejor), 1) + " % perdido. El saldo nunca pasa de " +
+          num(ESPERADO) + " porque no se hacen abonos de más: lo que desaparece son escrituras." },
+      { valor: num(ABONOS), clave: "uno",
+        razon: "Eso es lo que abona un solo hilo. Los dos abonan sobre el mismo saldo, así que " +
+          "el tope suma los dos: " + num(ESPERADO) + "." },
+      { valor: num(ESPERADO * 2), clave: "doble",
+        razon: "Eso contaría cada abono dos veces. Cada hilo hace " + num(ABONOS) +
+          " abonos de uno y ninguno suma de más." },
+      { valor: num(mejor), clave: "medido",
+        razon: "Ese es el mejor resultado de una corrida medida, no el máximo posible: el máximo " +
+          "es el que sale sin ninguna escritura perdida, " + num(ESPERADO) + "." }
+    ];
+  });
   Motor.conectarOpciones("opciones-arreglo", "veredicto-arreglo", RAZONES);
   document.querySelectorAll("#opciones-arreglo button").forEach(function (b) {
     b.addEventListener("click", function () {

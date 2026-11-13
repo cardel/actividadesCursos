@@ -25,11 +25,8 @@
         <tbody id="cuerpo-piezas"></tbody>
       </table>
     </div>
-    <div class="prediccion" style="margin-top:0.6rem">
-      <span>¿Cuántas horas al año queda caído el servicio completo?</span>
-      <input type="number" id="pred-serie" min="0" step="0.1" placeholder="horas">
-      <button id="btn-serie" class="primario">Comprobar</button>
-    </div>
+    <div style="margin-top:0.6rem"><b>¿Cuántas horas al año queda caído el servicio completo?</b></div>
+    <div class="opciones" id="op-serie"></div>
     <div id="ver-serie" class="veredicto"></div>
   </div>
 
@@ -37,11 +34,8 @@
     <h2>2. Una copia de la base de datos</h2>
     <p style="margin-top:0">Se agrega una segunda base de datos con el mismo 99,9 %, y el servicio
     usa la que esté viva. La pieza solo cae si caen las dos copias a la vez.</p>
-    <div class="prediccion">
-      <span>¿Cuántas horas al año queda caído ahora el servicio?</span>
-      <input type="number" id="pred-copia" min="0" step="0.1" placeholder="horas">
-      <button id="btn-copia" class="primario">Comprobar</button>
-    </div>
+    <div><b>¿Cuántas horas al año queda caído ahora el servicio?</b></div>
+    <div class="opciones" id="op-copia"></div>
     <div id="ver-copia" class="veredicto"></div>
     <div class="chips" id="chips-cadena" style="margin-top:0.7rem"></div>
     <div class="nota">La cuenta supone que las copias fallan por separado. Dos bases en el mismo
