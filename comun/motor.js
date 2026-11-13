@@ -234,6 +234,7 @@
     }
     repintarOpciones.push(pintar);
     pintar();
+    return { refrescar: pintar };
   }
 
   function limpiarVeredicto() {

@@ -69,6 +69,50 @@ var Motor = (function () {
     });
   }
 
+  /* Opciones de una pregunta numerica, pintadas desde el codigo. armar()
+     devuelve [{valor, clave, razon}] con clave "correcta" en la buena, y se
+     vuelve a llamar cada vez que alguien pida refrescar, de modo que sirve
+     donde la respuesta depende del estado de la pagina. El orden se gira una
+     cantidad que sale del id y del valor correcto, asi la correcta no cae
+     siempre en el mismo sitio ni se queda quieta al cambiar el estado.     */
+  function giroDe(texto) {
+    var h = 0, i;
+    for (i = 0; i < texto.length; i = i + 1) {
+      h = (h * 31 + texto.charCodeAt(i)) % 100003;
+    }
+    return h;
+  }
+
+  function opcionesNumericas(idOpciones, idVeredicto, armar) {
+    function pintar() {
+      var caja = document.getElementById(idOpciones);
+      var v = document.getElementById(idVeredicto);
+      if (!caja) { return; }
+      var lista = armar();
+      var buena = "";
+      lista.forEach(function (o) {
+        if (o.clave === "correcta") { buena = String(o.valor); }
+      });
+      var giro = giroDe(idOpciones + ":" + buena) % lista.length;
+      var ordenadas = lista.slice(giro).concat(lista.slice(0, giro));
+      caja.innerHTML = "";
+      if (v) { v.className = "veredicto"; v.innerHTML = ""; }
+      ordenadas.forEach(function (o) {
+        var b = document.createElement("button");
+        b.setAttribute("data-op", o.clave);
+        b.textContent = o.valor;
+        b.addEventListener("click", function () {
+          if (!v) { return; }
+          v.className = "veredicto " + (o.clave === "correcta" ? "bien" : "mal");
+          v.innerHTML = o.razon;
+        });
+        caja.appendChild(b);
+      });
+    }
+    pintar();
+    return { refrescar: pintar };
+  }
+
   /* filas: [{ rotulo, bloques: [{ inicio, fin, color, texto }] }]
      Los huecos entre bloques quedan vacios: es tiempo de espera.          */
   function pintarGantt(idCaja, filas, escala) {
@@ -106,6 +150,7 @@ var Motor = (function () {
   return {
     num: num, leerNumero: leerNumero, veredictoNumerico: veredictoNumerico,
     conectarPrediccion: conectarPrediccion, conectarOpciones: conectarOpciones,
+    opcionesNumericas: opcionesNumericas,
     pintarGantt: pintarGantt, pintarChips: pintarChips
   };
 })();
