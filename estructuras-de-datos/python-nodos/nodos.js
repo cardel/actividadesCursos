@@ -124,21 +124,15 @@ var EJERCICIO = (function () {
             { op: "pierde", texto: "Se pierde el nodo nuevo", msg: "El nuevo sí queda enlazado desde el anterior. Lo que se pierde es lo que venía después." }
           ,
             { op: "bien", texto: "Queda bien: hace lo mismo en cuatro líneas", msg: "La tercera línea ya cambió anterior.siguiente. La cuarta lee ese valor nuevo, no el viejo." }] },
-        { tipo: "respuesta", titulo: "Pasos de nodo_en",
+        { tipo: "opciones", titulo: "Pasos de nodo_en", columna: true, correcta: "bien",
           html: P.codigo(["# l es una Lista con 8 elementos", "suma = 0", "p = 0", "while p < l.tamano():", "    suma = suma + l.obtener(p)", "    p = p + 1"]) +
-            "<p>Cada <code>obtener(p)</code> llama a <code>nodo_en(p)</code>, que ejecuta <code>actual = actual.siguiente</code> p veces. ¿Cuántas veces se ejecuta esa línea en todo el ciclo? ¿Y si la lista tuviera 100 elementos?</p>",
-          campos: [
-            { rotulo: "con 8:", esperado: String(t8), ancho: "4rem" },
-            { rotulo: "con 100:", esperado: String(pasosObtener(100)), ancho: "5rem" }
-          ],
-          bien: "Correcto. 0 + 1 + ⋯ + 7 = 28, y en general n(n − 1)/2: recorrer así cuesta Θ(n²). Con un ciclo que avance actual = actual.siguiente una vez por elemento cuesta Θ(n).",
-          distractores: [
-            { valores: ["36", null], msg: "obtener(0) no camina: la cabeza ya es el nodo 0. La suma va de 0 a 7." },
-            { valores: ["8", null], msg: "Eso sería un paso por elemento. Cada obtener vuelve a empezar desde la cabeza." },
-            { valores: [null, "5050"], msg: "El último obtener es el de p = 99, que camina 99 pasos: la suma llega hasta 99, no hasta 100." },
-            { valores: [null, "100"], msg: "Cada obtener(p) empieza desde la cabeza y camina p pasos." }
-          ],
-          otro: "obtener(p) camina p pasos: sume p para p = 0, 1, …, n − 1, que da n(n − 1)/2." },
+            "<p>Cada <code>obtener(p)</code> llama a <code>nodo_en(p)</code>, que ejecuta <code>actual = actual.siguiente</code> p veces. ¿Cuántas veces se ejecuta esa línea en todo el ciclo con 8 elementos, y cuántas con 100?</p>",
+          opciones: [
+            { op: "bien", texto: t8 + " con 8 y " + pasosObtener(100) + " con 100", msg: "Correcto. 0 + 1 + ⋯ + 7 = 28, y en general n(n − 1)/2: recorrer así cuesta Θ(n²). Con un ciclo que avance actual = actual.siguiente una vez por elemento cuesta Θ(n)." },
+            { op: "hasta-n", texto: "36 con 8 y 5050 con 100", msg: "La suma no llega hasta n: obtener(0) no camina, porque la cabeza ya es el nodo 0, y el último obtener es el de p = n − 1. Va de 0 a 7 y de 0 a 99." },
+            { op: "lineal", texto: "8 con 8 y 100 con 100", msg: "Eso sería un paso por elemento. Cada obtener vuelve a empezar desde la cabeza y camina p pasos." },
+            { op: "mitad", texto: t8 + " con 8 y 5050 con 100", msg: "Con 8 está bien. Con 100 el último obtener es el de p = 99, que camina 99 pasos: la suma llega hasta 99, no hasta 100." }
+          ] },
         { tipo: "opciones", titulo: "Sin delete", columna: true, correcta: "nadie",
           html: P.codigo(["def desapilar(self):", "    assert not self.vacia()", "    self.cima = self.cima.siguiente", "    self.n = self.n - 1"]) +
             "<p>En C++ <code>desapilar</code> guarda el nodo en <code>muerto</code> y lo borra con <code>delete</code>. ¿Qué pasa en Python con el nodo que era la cima?</p>",

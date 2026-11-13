@@ -106,18 +106,16 @@ var EJERCICIO = (function () {
             { valores: ["[1, 4, 8, 18] 9 1"], msg: "popleft saca por la izquierda, donde estaba el 1, y pop por la derecha, donde estaba el 9." }
           ],
           otro: "Dibuje el deque de izquierda a derecha y actualícelo línea por línea." },
-        { tipo: "respuesta", titulo: "Mil personas con pop(0)",
+        { tipo: "opciones", titulo: "Mil personas con pop(0)", columna: true, correcta: "bien",
           html: P.codigo(["fila = list(range(1000))", "while len(fila) > 0:", "    persona = fila.pop(0)"]) +
             "<p>Cada <code>pop(0)</code> corre una casilla a la izquierda todas las que quedan detrás. ¿Cuántos movimientos hace el ciclo en total?</p>",
-          campos: [{ rotulo: "movimientos:", esperado: String(mov), ancho: "7rem" }],
-          bien: "Correcto. 999 + 998 + ⋯ + 1 + 0 = 999 · 1000 / 2 = 499500. Con deque y popleft son 0: nada se corre.",
-          distractores: [
-            { valores: ["500500"], msg: "Ese es 1 + 2 + ⋯ + 1000. El primer pop(0) corre 999, no 1000: la que sale no se mueve." },
-            { valores: ["1000000"], msg: "Es del orden de n², pero la cuenta exacta es la mitad: cada vez quedan menos." },
-            { valores: ["1000"], msg: "Ese sería el número de llamadas. Cada llamada corre lo que queda detrás." },
-            { valores: ["0"], msg: "Eso vale para deque.popleft. Una list corre las casillas." }
-          ],
-          otro: "La primera llamada corre 999 casillas, la segunda 998, y así hasta la última. Sume." },
+          opciones: [
+            { op: "llamadas", texto: "1000", msg: "Ese sería el número de llamadas. Cada llamada corre lo que queda detrás." },
+            { op: "cuadrado", texto: "1000000", msg: "Es del orden de n², pero la cuenta exacta es la mitad: cada vez quedan menos." },
+            { op: "cero", texto: "0", msg: "Eso vale para deque.popleft. Una list corre las casillas." },
+            { op: "bien", texto: String(mov), msg: "Correcto. 999 + 998 + ⋯ + 1 + 0 = 999 · 1000 / 2 = 499500. Con deque y popleft son 0: nada se corre." },
+            { op: "uno-mas", texto: "500500", msg: "Ese es 1 + 2 + ⋯ + 1000. El primer pop(0) corre 999, no 1000: la que sale no se mueve." }
+          ] },
         { tipo: "opciones", titulo: "Una cola en Θ(1)", columna: true, correcta: "deque",
           html: "<p>¿Qué par de operaciones hace una cola, con el primero que entra como el primero que sale, en Θ(1) cada una?</p>",
           opciones: [

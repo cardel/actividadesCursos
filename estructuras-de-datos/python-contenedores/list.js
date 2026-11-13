@@ -96,33 +96,32 @@ var EJERCICIO = (function () {
         { tipo: "pasos", titulo: "Diez append sobre una lista vacía",
           html: "<p>Se agregan " + DIEZ.join(", ") + ", uno por uno. Las casillas en punteado son capacidad sin usar; las azules, las referencias que se copian al arreglo nuevo.</p>",
           pasos: pasosDiez() },
-        { tipo: "respuesta", titulo: "Cuarenta append",
+        { tipo: "opciones", titulo: "Cuarenta append", columna: true, correcta: "bien",
           html: P.codigo(CODIGO_CUARENTA) + "<p>La capacidad crece como en la tarjeta anterior: 4, 8, 16, 24, y de ahí en adelante en un octavo del tamaño, redondeado a múltiplo de 4. ¿Qué imprime?</p>",
-          campos: [
-            { rotulo: "capacidad:", esperado: String(c40.cap), ancho: "4rem" },
-            { rotulo: "cambios:", esperado: String(c40.cambios), ancho: "4rem" }
-          ],
-          bien: "Correcto. La capacidad pasa por 4, 8, 16, 24, 32 y 40: seis arreglos distintos, y con 40 elementos el último está lleno. Si cada cambio copia lo que había, son 0 + 4 + 8 + 16 + 24 + 32 = " + c40.copiadas + " referencias para 40 append: menos de tres por llamada.",
-          distractores: [
-            { valores: [String(d40.cap), null], msg: "Así crecería un arreglo que duplica su tamaño. CPython agrega un octavo más unas casillas: después de 16 viene 24, no 32." },
-            { valores: ["40", "5"], msg: "La capacidad está bien. Cuente también el primer cambio: de 0 a 4 casillas con el primer append." },
-            { valores: ["40", "40"], msg: "No cambia en cada append: casi todas caben en la capacidad de sobra." }
-          ],
-          otro: "Escriba la sucesión de capacidades desde 0 hasta llegar a 40 o más, y cuente cuántas hay después del 0." },
+          opciones: [
+            { op: "todos", texto: "capacidad " + c40.cap + ", 40 cambios", msg: "No cambia en cada append: casi todas caben en la capacidad de sobra." },
+            { op: "dobla", texto: "capacidad " + d40.cap + ", " + d40.cambios + " cambios", msg: "Así crecería un arreglo que duplica su tamaño. CPython agrega un octavo más unas casillas: después de 16 viene 24, no 32." },
+            { op: "bien", texto: "capacidad " + c40.cap + ", " + c40.cambios + " cambios", msg: "Correcto. La capacidad pasa por 4, 8, 16, 24, 32 y 40: seis arreglos distintos, y con 40 elementos el último está lleno. Si cada cambio copia lo que había, son 0 + 4 + 8 + 16 + 24 + 32 = " + c40.copiadas + " referencias para 40 append: menos de tres por llamada." },
+            { op: "falta", texto: "capacidad " + c40.cap + ", " + (c40.cambios - 1) + " cambios", msg: "La capacidad está bien. Cuente también el primer cambio: de 0 a 4 casillas con el primer append." }
+          ] },
         { tipo: "respuesta", titulo: "Lo que se corre",
-          html: P.codigo(CODIGO_MOVER) + "<p>Escriba lo que imprime y cuántas referencias se movieron de casilla en total, sin contar las que se escriben nuevas.</p>",
+          html: P.codigo(CODIGO_MOVER) + "<p>Escriba lo que imprime.</p>",
           campos: [
-            { rotulo: "imprime:", esperado: mv.lista, ancho: "13rem" },
-            { rotulo: "movidas:", esperado: String(mv.mov), ancho: "4rem" }
+            { rotulo: "imprime:", esperado: mv.lista, ancho: "13rem" }
           ],
-          bien: "Correcto. insert(2, 25) corre las 4 de la derecha; pop(0) corre las 6 que quedan detrás; pop() y el insert al final no corren nada. Son 10 movimientos.",
+          bien: "Correcto. insert(2, 25) deja [10, 20, 25, 30, 40, 50, 60]; pop(0) quita el 10, pop() el 60, y el 70 entra al final.",
           distractores: [
-            { valores: [null, "4"], msg: "pop(0) también corre: las 6 casillas que quedan detrás de la primera bajan un lugar." },
-            { valores: [null, "11"], msg: "Insertar en la posición len(l) es lo mismo que append: no hay nada a la derecha que correr." },
-            { valores: [null, "17"], msg: "pop() quita la última casilla y no mueve las demás." },
-            { valores: ["[10, 20, 25, 30, 40, 50, 70]", null], msg: "pop(0) quitó el 10 y pop() el 60 antes de agregar el 70." }
+            { valores: ["[10, 20, 25, 30, 40, 50, 70]"], msg: "pop(0) quitó el 10 y pop() el 60 antes de agregar el 70." }
           ],
-          otro: "Lleve la lista después de cada línea y, en cada operación, cuente cuántas casillas quedan a la derecha de donde se inserta o se quita." },
+          otro: "Lleve la lista después de cada línea." },
+        { tipo: "opciones", titulo: "Cuántas se movieron", columna: true, correcta: "bien",
+          html: P.codigo(CODIGO_MOVER) + "<p>En el mismo programa, ¿cuántas referencias se movieron de casilla en total, sin contar las que se escriben nuevas?</p>",
+          opciones: [
+            { op: "solo-insert", texto: "4", msg: "pop(0) también corre: las 6 casillas que quedan detrás de la primera bajan un lugar." },
+            { op: "bien", texto: String(mv.mov), msg: "Correcto. insert(2, 25) corre las 4 de la derecha; pop(0) corre las 6 que quedan detrás; pop() y el insert al final no corren nada. Son 10 movimientos." },
+            { op: "final", texto: "11", msg: "Insertar en la posición len(l) es lo mismo que append: no hay nada a la derecha que correr." },
+            { op: "pop", texto: "17", msg: "pop() quita la última casilla y no mueve las demás." }
+          ] },
         { tipo: "opciones", titulo: "Armar una lista de n números", columna: true, correcta: "append",
           html: "<p>Tres maneras de guardar los números del 0 al n − 1 en orden. ¿Cuál cuesta Θ(n) en total?</p>" +
             P.codigo(["# A", "l = []", "for x in range(n):", "    l.append(x)", "", "# B", "l = []", "for x in range(n - 1, -1, -1):", "    l.insert(0, x)", "", "# C", "l = []", "for x in range(n):", "    l = l + [x]"]),
