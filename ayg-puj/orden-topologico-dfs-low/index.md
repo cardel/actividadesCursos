@@ -1,11 +1,8 @@
 # Ejercicios · AyG PUJ · Orden topologico dfs low
 
-Ocho ejercicios para el navegador, organizados por los temas de la sesión y en
-el mismo orden; el último junta los cortes sobre la red de un campus. Ninguno
-usa los grafos de las diapositivas: ni el plan de estudios, ni el dirigido de
-ocho vértices donde se traza Tarjan, ni los tres triángulos de los cortes, ni
-los grafos de los ocho ejercicios propuestos. Los temas y las técnicas son los
-mismos; los grafos, los vértices y los números son otros.
+Once ejercicios para el navegador, organizados por los temas de la sesión y en
+el mismo orden; uno junta los cortes sobre la red de un campus. Los grafos,
+los vértices y los números son otros que los de las diapositivas del curso.
 
 ## Orden topológico con la profundidad
 
@@ -121,6 +118,21 @@ diamante con una arista de regreso, la muestra del enunciado, uno donde cada
 nodo es su propia raíz y uno con el ciclo lejos del primer nodo.
 
 - Enunciado y envío: <https://vjudge.net/problem/UVA-11686>
+
+## Los tipos de arista
+
+### [los tipos de arista, dirigido y no dirigido](aristas.html){ target=_blank rel=noopener }
+
+El recorrido en profundidad corre paso a paso, con el código a la vista, y
+antes de pintar cada arista se predice su tipo: de árbol, de retroceso, de
+avance o cruzada en el grafo dirigido, y en el no dirigido de árbol, de
+retroceso, la vuelta al padre o la que ya se clasificó desde el otro extremo.
+Cada respuesta equivocada dice qué se miró mal: el color de `v`, la
+comparación de `d[u]` con `d[v]` o quién es el padre. Una tabla lleva el
+estado, `d` y `f` de cada vértice. Tres grafos: uno dirigido de cinco
+vértices, el mismo sin direcciones y uno dirigido de ocho vértices con dos
+árboles en el bosque, donde los cuatro tipos aparecen más de una vez. Al
+terminar se pregunta cuántas aristas de retroceso hubo.
 
 ## Problemas de juez
 

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Los tipos de arista de la profundidad, en grafos dirigidos y no dirigidos</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  #panel-grafo { text-align: center; margin: 0.4rem 0; }
+  .viva { font-family: ui-monospace, monospace; background: var(--codigo-fondo); border-radius: 8px; padding: 0.3rem 0.6rem; display: inline-block; word-break: break-word; }
+  .mensaje { min-height: 3.2rem; font-size: 0.9rem; background: var(--ambar-suave); border-radius: 8px; padding: 0.4rem 0.6rem; }
+  .leyenda span { white-space: nowrap; margin-right: 0.8rem; }
+  .etiquetas { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; }
+  .etiquetas button { min-width: 7.5rem; font-weight: 600; }
+  .caja-pregunta { border: 2px solid #7b3fa0; border-radius: 10px; padding: 0.6rem 0.8rem; margin: 0.6rem 0; }
+  .caja-pregunta p { margin: 0; }
+  td.estado-gris { background: #aeb5bf; font-weight: 600; }
+  td.estado-negro { background: #24292f; color: #ffffff; font-weight: 600; }
+  .tipo-arbol { color: #1f5fa8; font-weight: 600; }
+  .tipo-retroceso { color: #b3261e; font-weight: 600; }
+  .tipo-avance { color: #2e7d32; font-weight: 600; }
+  .tipo-cruzada { color: #c77c0e; font-weight: 600; }
+  .tipo-padre, .tipo-ya { color: #6b7280; }
+  #ver-vistas { font-size: 0.9rem; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Los tipos de arista de la profundidad</h1>
+  <p class="intro">Cada vez que el recorrido en profundidad mira una arista
+  <code>(u, v)</code>, el color de <code>v</code> decide el tipo. Si
+  <code>v</code> está blanco, la arista lo descubre y es de árbol; si está
+  gris, <code>v</code> sigue en la pila de llamadas, es ancestro de
+  <code>u</code> y la arista es de retroceso; si está negro, la arista es de
+  avance cuando <code>d[u] &lt; d[v]</code> y cruzada en el otro caso. En un
+  grafo no dirigido cada arista aparece en las dos listas, y la segunda vez
+  hay que reconocerla. El reloj suma uno al descubrir un vértice y uno al
+  terminarlo, y arranca en 1.</p>
+
+  <div class="carta">
+    <h2>1. El recorrido, arista por arista</h2>
+    <div class="presets" id="presets"></div>
+    <div id="panel-grafo"></div>
+    <div class="nota leyenda" style="text-align:center">
+      <span><b style="color:#1f5fa8">━━</b> árbol</span>
+      <span><b style="color:#b3261e">┅┅</b> retroceso (R)</span>
+      <span><b style="color:#2e7d32">━</b> avance (A)</span>
+      <span><b style="color:#c77c0e">━</b> cruzada (C)</span>
+      <span><b style="color:#7b3fa0">━</b> la que se mira ahora</span>
+      <span>vértices: blanco, gris, negro, con <code>d/f</code> encima</span>
+    </div>
+    <div class="caja-pregunta">
+      <p id="texto-pregunta"></p>
+      <div class="etiquetas" id="etiquetas-dirigido"></div>
+      <div class="etiquetas" id="etiquetas-no-dirigido"></div>
+      <div id="veredicto-tipo" class="veredicto"></div>
+      <div class="progreso" id="cuenta-pred" style="margin-top:0.4rem"></div>
+    </div>
+    <div class="panel-doble">
+      <div class="codigo" id="panel-codigo"></div>
+      <div class="estado">
+        <div class="chips" id="chips"></div>
+        <div>Pila de llamadas: <span class="viva" id="ver-pila">vacía</span></div>
+        <div class="mensaje" id="ver-msg"></div>
+        <div class="progreso">Paso <span id="ver-paso">0</span> de <span id="ver-total">0</span></div>
+        <div class="botones">
+          <button id="btn-paso" class="primario">Un paso</button>
+          <button id="btn-auto">Auto</button>
+          <button id="btn-fin">Al final</button>
+          <button id="btn-reiniciar">Reiniciar</button>
+        </div>
+      </div>
+    </div>
+    <div class="envoltura-tabla" style="margin-top:0.8rem">
+      <table>
+        <thead><tr><th>Vértice</th><th>Estado</th><th>d</th><th>f</th></tr></thead>
+        <tbody id="cuerpo-vertices"></tbody>
+      </table>
+    </div>
+    <div style="margin-top:0.6rem">Aristas en el orden en que se miran: <span id="ver-vistas"></span></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Al terminar el recorrido</h2>
+    <p class="nota" id="espera-final" style="margin-top:0">La pregunta se abre cuando el recorrido del grafo termina.</p>
+    <div id="caja-final">
+      <div style="margin-bottom:0.3rem"><b>¿Cuántas aristas de retroceso dejó el recorrido? ¿Hay ciclo?</b></div>
+      <div class="opciones" id="opciones-retroceso"></div>
+      <div id="veredicto-retroceso" class="veredicto"></div>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Para llevarse</h2>
+    <p style="margin-top:0">En un grafo no dirigido el recorrido nunca deja una
+    arista cruzada ni una de avance. Demuéstrelo: suponga que al mirar
+    <code>u–v</code> el vértice <code>v</code> ya está negro y explique por qué
+    esa arista ya se había mirado desde <code>v</code>, con <code>u</code> gris.
+    Después tome el grafo dirigido de ocho vértices, cambie la lista del 0 por
+    <code>[4, 2, 1]</code> y prediga, antes de trazarlo, qué aristas cambian de
+    tipo y cuántas de retroceso quedan.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="aristas.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
