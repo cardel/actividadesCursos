@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Variables de tipo</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Variables de tipo</h1>
+  <p class="intro">Cada <code>?</code> se convierte en una incógnita: una variable de tipo con su número y un contenedor que se llena a lo sumo una vez. Tres bloques: qué es el TAD, cuándo dos partes del programa llevan la misma variable y qué pasa cuando dos usos le piden tipos distintos. Los tipos de esta página se midieron con <code>type-of-program</code>.</p>
+
+  <div class="alerta">
+    El interpretador imprime cada variable con su número serial,
+    <code>tvar10</code> o <code>tvar34</code>, y ese número depende del orden
+    en que se pidieron las variables: el contador no se reinicia entre
+    programas, así que el mismo programa medido dos veces imprime números
+    distintos. En esta página las variables libres se escriben
+    <code>t1</code>, <code>t2</code> y <code>t3</code>, y lo que se pregunta es
+    cuáles posiciones comparten variable, no qué número le tocó a cada una.
+  </div>
+
+  <div id="bloques"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Resueltos</h2>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Programa</th><th>Tipo</th></tr></thead>
+        <tbody>
+          <tr><td><code>proc (? x) x</code></td><td><code>(t1 -&gt; t1)</code></td></tr>
+          <tr><td><code>proc (? x, ? y) x</code></td><td><code>(t1 * t2 -&gt; t1)</code>: nadie menciona a <code>y</code></td></tr>
+          <tr><td><code>proc (? f, ? x) (f x)</code></td><td><code>((t1 -&gt; t2) * t1 -&gt; t2)</code></td></tr>
+          <tr><td><code>proc (? f, ? x) (f (f x))</code></td><td><code>((t1 -&gt; t1) * t1 -&gt; t1)</code></td></tr>
+          <tr><td><code>proc (? f) proc (? x) (f (f x))</code></td><td><code>((t1 -&gt; t1) -&gt; (t1 -&gt; t1))</code></td></tr>
+          <tr><td><code>proc (? f, ? g) proc (? x) (f (g x))</code></td><td><code>((t2 -&gt; t3) * (t1 -&gt; t2) -&gt; (t1 -&gt; t3))</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="nota">La ecuación de la aplicación es la que iguala dos posiciones: el parámetro del operador con el argumento que recibe. Aplicar un procedimiento a su propio resultado iguala su entrada con su salida.</div>
+
+    <h2 class="ejercicio-abierto">Un ejercicio más</h2>
+    <p>Escriba un programa cuyo tipo sea <code>((t1 * t2 -&gt; t1) * t2 -&gt; (t1 -&gt; t1))</code> y otro cuyo tipo lleve exactamente tres variables libres distintas. Mida los dos con <code>type-of-program</code> y escriba, para cada uno, qué ecuación obliga a cada repetición de una variable. Después busque un programa de tres parámetros que el chequeo de ocurrencia rechace, y diga qué variable aparece dentro de su propio tipo.</p>
+  </div>
+
+</div>
+<script src="../comun/motor-decisiones.js"></script>
+
+<script src="variables.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

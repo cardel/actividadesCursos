@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reglas de generación de ecuaciones · FLP inferencia de tipos</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Reglas de generación de ecuaciones</h1>
+  <p class="intro">Tipar un programa de INFERRED es escribir el sistema de ecuaciones que genera y resolverlo (EOPL §7.4). Aquí se escribe el sistema: cada bloque muestra un programa, nombra sus variables de tipo y pregunta qué ecuación aporta cada parte. Se empieza por un programa de una sola ecuación y se llega a uno de cinco. Los sistemas y los tipos de esta página se midieron con <code>type-of-program</code>.</p>
+
+  <div class="alerta">
+    Las variables de tipo se escriben <code>t1</code>, <code>t2</code>, … El
+    interpretador las imprime como <code>tvar1</code>, <code>tvar7</code> y las
+    numera en el orden en que las fue pidiendo, así que el número de una misma
+    variable cambia entre corridas y no hay que acertarlo. Lo que importa es
+    cuál es cuál dentro del programa.
+  </div>
+
+  <div class="alerta">
+    Dos reglas escriben las ecuaciones. La de la aplicación, que vale también
+    para las primitivas, escribe una sola por aplicación, siempre de la forma
+    <code>tipo del operador = (tipos de los operandos -&gt; variable fresca del
+    resultado)</code>, y la variable fresca pasa a ser el tipo de la aplicación.
+    La del <code>if</code> escribe dos: la prueba contra <code>bool</code> y las
+    dos ramas una contra otra. Las ocho primitivas tienen tipo fijo:
+    <code>+</code>, <code>-</code> y <code>*</code> son
+    <code>(int * int -&gt; int)</code>; <code>add1</code> y <code>sub1</code>,
+    <code>(int -&gt; int)</code>; <code>&lt;</code> y <code>&gt;</code>,
+    <code>(int * int -&gt; bool)</code>; y <code>zero?</code>,
+    <code>(int -&gt; bool)</code>.
+  </div>
+
+  <div id="bloques"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Resueltos</h2>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Programa</th><th>Ecuaciones</th><th>Tipo</th></tr></thead>
+        <tbody>
+          <tr><td><code>proc (? x) add1(x)</code></td><td>1</td><td><code>(int -&gt; int)</code></td></tr>
+          <tr><td><code>proc (? x) if x then 1 else 2</code></td><td>2</td><td><code>(bool -&gt; int)</code></td></tr>
+          <tr><td><code>proc (? f, ? x) (f x)</code></td><td>1</td><td><code>((t2 -&gt; t3) * t2 -&gt; t3)</code></td></tr>
+          <tr><td><code>proc (? p, ? n) if (p n) then add1(n) else 0</code></td><td>4</td><td><code>((int -&gt; bool) * int -&gt; int)</code></td></tr>
+          <tr><td><code>proc (? f, ? x) if zero?(x) then (f x) else add1(x)</code></td><td>5</td><td><code>((int -&gt; int) * int -&gt; int)</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="nota">El conjunto de ecuaciones es lo que determina el tipo; el orden en que se recogen, no. El interpretador tipa la prueba, después la rama del else y después la del then, y por eso una ecuación puede llegar con un lado ya resuelto por otra anterior.</div>
+
+    <h2 class="ejercicio-abierto">Un ejercicio más</h2>
+    <p>Escriba un programa de INFERRED que genere exactamente tres ecuaciones, que una de ellas relacione dos variables de tipo entre sí y que el tipo inferido deje por lo menos una variable sin resolver. Entregue el programa, el nombre que le da a cada variable de tipo, las tres ecuaciones y el tipo que resulta. Que no sea ninguno de los cinco de la tabla.</p>
+  </div>
+
+</div>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="ecuaciones.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

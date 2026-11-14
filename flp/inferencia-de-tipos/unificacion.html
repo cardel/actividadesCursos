@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unificación · FLP inferencia de tipos</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Unificación</h1>
+  <p class="intro">El sistema de ecuaciones ya está escrito; aquí se resuelve. Cada ítem presenta un par de tipos por unificar y pregunta qué queda asignado, o por qué no hay solución. Se empieza por dos tipos atómicos y se termina en el chequeo de ocurrencia. Cada par de esta página se midió llamando a <code>check-equal-type!</code> sobre los tipos construidos, y los contenidos que se reportan son los de los contenedores después de la llamada.</p>
+
+  <div class="alerta">
+    Las variables de tipo se escriben <code>t1</code>, <code>t2</code>, … El
+    interpretador las imprime como <code>tvar1</code>, <code>tvar12</code> y las
+    numera en el orden en que las fue pidiendo, así que el número de una misma
+    variable cambia entre corridas. En los mensajes de error de abajo el número
+    que aparece es el de la corrida en que se midieron.
+  </div>
+
+  <div class="alerta">
+    Una variable de tipo es un par de número serial y contenedor, y es de
+    asignación única: el contenedor arranca vacío y se llena a lo sumo una vez.
+    Unificar no devuelve una sustitución aparte, escribe en esos contenedores, y
+    escribe a medida que avanza. Los tres errores que reporta son
+    <code>Type mismatch</code>, dos tipos atómicos distintos o un atómico contra
+    un procedimiento; <code>Different numbers of arguments</code>, dos
+    procedimientos de aridades distintas; y <code>Can't unify</code>, el chequeo
+    de ocurrencia.
+  </div>
+
+  <div id="bloques"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Resueltos</h2>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Par</th><th>Resultado</th></tr></thead>
+        <tbody>
+          <tr><td><code>int</code> y <code>int</code></td><td>éxito, sin asignar nada</td></tr>
+          <tr><td><code>bool</code> y <code>t1</code></td><td>éxito; <code>t1 = bool</code></td></tr>
+          <tr><td><code>(t1 * int -&gt; t2)</code> y <code>(bool * t3 -&gt; t1)</code></td><td>éxito; <code>t1 = bool</code>, <code>t2 = bool</code>, <code>t3 = int</code></td></tr>
+          <tr><td><code>(t1 -&gt; t1)</code> y <code>(int -&gt; bool)</code></td><td>Type mismatch; <code>t1</code> ya quedó con <code>int</code></td></tr>
+          <tr><td><code>(int -&gt; int)</code> y <code>(int * int -&gt; t1)</code></td><td>Different numbers of arguments; <code>t1</code> sigue vacía</td></tr>
+          <tr><td><code>t1</code> y <code>(t2 -&gt; t2)</code></td><td>éxito; <code>t1 = (t2 -&gt; t2)</code>, <code>t2</code> vacía</td></tr>
+          <tr><td><code>t1</code> y <code>(t1 -&gt; t2)</code></td><td>chequeo de ocurrencia</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="nota">Una variable queda llena en cuanto su par se unifica, aunque la unificación aborte más adelante por otro componente. La aridad es la excepción: se cuenta antes de tocar ningún componente.</div>
+
+    <h2 class="ejercicio-abierto">Un ejercicio más</h2>
+    <p>Construya un par de tipos que falle por chequeo de ocurrencia donde la variable esté a tres niveles de profundidad dentro del otro tipo, y escriba un programa de INFERRED cuyo sistema genere ese par. Entregue el par, el programa, la ecuación de la que sale y el mensaje con que aborta el chequeo. Que no sea <code>proc (? x) (x x)</code> ni uno de los pares de la tabla.</p>
+  </div>
+
+</div>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="unificacion.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

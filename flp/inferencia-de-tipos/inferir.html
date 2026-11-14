@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ejemplos de inferencia</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Ejemplos de inferencia</h1>
+  <p class="intro">Veinte programas, y para cada uno la pregunta es qué tipo infiere el interpretador. Primero los que quedan cerrados, donde las primitivas alcanzan a llenar todos los huecos; después los que dejan variables libres, los <code>letrec</code> y los dos que no tipan. Los tipos, los valores y los mensajes de error se midieron con <code>type-of-program</code> y <code>eval-program</code>.</p>
+
+  <div class="alerta">
+    El lenguaje es INFERRED (EOPL §7.3). Las primitivas son
+    <code>+(e,e)</code>, <code>-(e,e)</code>, <code>*(e,e)</code>,
+    <code>add1(e)</code>, <code>sub1(e)</code>, <code>&lt;(e,e)</code>,
+    <code>&gt;(e,e)</code> y <code>zero?(e)</code>, y van antes del paréntesis
+    y con comas; la aplicación lleva paréntesis y va sin comas,
+    <code>(f 3)</code>. El ambiente inicial está vacío. Una variable libre en
+    el tipo del resultado se escribe aquí <code>t1</code>: el interpretador la
+    imprime como <code>tvar5</code> o <code>tvar58</code>, con el número que le
+    tocó en esa corrida.
+  </div>
+
+  <div id="bloques"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Resueltos</h2>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Programa</th><th>Tipo</th></tr></thead>
+        <tbody>
+          <tr><td><code>proc (? x) sub1(x)</code></td><td><code>(int -&gt; int)</code></td></tr>
+          <tr><td><code>proc (? x) if x then 1 else 2</code></td><td><code>(bool -&gt; int)</code></td></tr>
+          <tr><td><code>proc (? x) proc (? y) +(x, y)</code></td><td><code>(int -&gt; (int -&gt; int))</code></td></tr>
+          <tr><td><code>proc (? x, ? y) +(x, (y x))</code></td><td><code>(int * (int -&gt; int) -&gt; int)</code></td></tr>
+          <tr><td><code>letrec ? fact (? n) = … in (fact 5)</code></td><td><code>int</code></td></tr>
+          <tr><td><code>proc (? f, ? x) (f +(1,x) zero?(x))</code></td><td><code>((int * bool -&gt; t1) * int -&gt; t1)</code></td></tr>
+          <tr><td><code>proc (? x) (x x)</code></td><td>falla: la variable aparece dentro de su propio tipo</td></tr>
+          <tr><td><code>proc (? f, ? x) (f (x 1) zero?(x))</code></td><td>falla: <code>x</code> sería procedimiento e <code>int</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="nota">Dos fuentes llenan los huecos: las primitivas, que traen tipos escritos de antemano, y la aplicación, que iguala el parámetro del operador con el argumento. Lo que ninguna de las dos restringe se queda como variable, y el programa tipa igual.</div>
+
+    <h2 class="ejercicio-abierto">Un ejercicio más</h2>
+    <p>Escriba cuatro programas: uno que tipe a <code>bool</code> sin usar <code>true</code> ni <code>false</code>, uno cuyo tipo sea <code>((bool -&gt; int) * bool -&gt; int)</code>, uno cuyo tipo lleve una variable libre que aparezca tres veces y uno que el interpretador rechace por el chequeo de ocurrencia. Mida los cuatro, copie lo que imprime cada uno, y para los dos últimos escriba de qué aplicación sale la ecuación que los explica.</p>
+  </div>
+
+</div>
+<script src="../comun/motor-decisiones.js"></script>
+
+<script src="inferir.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Del chequeo a la inferencia</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Del chequeo a la inferencia</h1>
+  <p class="intro">La anotación de tipo deja de ser obligatoria: donde iba <code>int</code> o <code>bool</code> se puede escribir <code>?</code>, y el interpretador deduce el tipo que falta. Dos bloques: qué pone el interpretador en cada hueco, y qué le pasa al mismo programa escrito de las dos formas. Los tipos y los mensajes de error de esta página se midieron con <code>type-of-program</code>.</p>
+
+  <div class="alerta">
+    El lenguaje es INFERRED (EOPL §7.3): números, variables, <code>true</code> y
+    <code>false</code>, las primitivas antes del paréntesis y con comas
+    (<code>+(e,e)</code>, <code>-(e,e)</code>, <code>*(e,e)</code>,
+    <code>add1(e)</code>, <code>sub1(e)</code>, <code>&lt;(e,e)</code>,
+    <code>&gt;(e,e)</code>, <code>zero?(e)</code>),
+    <code>if e then e else e</code>, <code>let id = e … in e</code>,
+    <code>proc (otipo id, …) cuerpo</code>,
+    <code>letrec otipo nombre(otipo id, …) = e … in e</code> y la aplicación
+    <code>(rator rand …)</code>, que va sin comas. Cada <code>otipo</code> es
+    un tipo escrito o el signo <code>?</code>. Dos primitivas del lenguaje
+    anotado no están aquí: <code>and</code> desapareció y <code>==</code> no
+    existía. El ambiente inicial está vacío, así que toda variable se liga con
+    <code>let</code>, <code>letrec</code> o <code>proc</code>.
+  </div>
+
+  <div id="bloques"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Resueltos</h2>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Programa</th><th>Tipo</th></tr></thead>
+        <tbody>
+          <tr><td><code>proc (int x) add1(x)</code></td><td><code>(int -&gt; int)</code></td></tr>
+          <tr><td><code>proc (? x) add1(x)</code></td><td><code>(int -&gt; int)</code>: el mismo</td></tr>
+          <tr><td><code>proc (bool x) add1(x)</code></td><td>falla: <code>int</code> contra <code>bool</code></td></tr>
+          <tr><td><code>letrec ? fact (int n) = … in fact</code></td><td><code>(int -&gt; int)</code>: hueco y anotación juntos</td></tr>
+          <tr><td><code>let f = proc (? x) x in let y = (f 5) in f</code></td><td><code>(int -&gt; int)</code>: lo fijó el uso</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="nota">Un <code>?</code> es un hueco, y el interpretador lo llena con una incógnita que los usos van restringiendo. Un tipo escrito es una restricción más, de modo que una anotación equivocada rechaza el programa igual que antes.</div>
+
+    <h2 class="ejercicio-abierto">Un ejercicio más</h2>
+    <p>Tome el <code>letrec</code> de <code>fact</code> y escríbalo en cuatro versiones: con los dos tipos anotados, con los dos en <code>?</code>, y con cada uno de los dos en <code>?</code> por separado. Mida las cuatro con <code>type-of-program</code> y copie lo que imprime cada una. Después busque una quinta versión que solo difiera en una anotación y que el interpretador rechace, y escriba el mensaje con que la rechaza.</p>
+  </div>
+
+</div>
+<script src="../comun/motor-decisiones.js"></script>
+
+<script src="del-chequeo.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
