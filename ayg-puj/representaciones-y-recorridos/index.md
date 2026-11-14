@@ -4,8 +4,8 @@ Siete ejercicios para el navegador, uno por cada tema de la sesión y en el
 mismo orden en que se dieron. Ninguno usa los programas ni los grafos de las
 diapositivas: aquí aparecen $H_1$, no dirigido de seis vértices y siete
 aristas, y $H_2$, dirigido, más un tercero para el caso del vértice al que no
-se llega. Un octavo, al final de la lista, es un problema de juez completo con
-su propio código.
+se llega. Al final de la lista van problemas de juez completos, cada uno con su
+propio código.
 
 La mecánica cambia de uno a otro a propósito. En unos hay que predecir un
 número antes de ejecutar; en otros, recorrer paso a paso y leer los
@@ -126,6 +126,18 @@ un nodo con dos vecinos, y la respuesta puede salir negativa. Consultar
 `indice[nodo]` sin revisar corta en Python y en C++ imprime un número falso.
 
 - Enunciado y envío: <https://vjudge.net/problem/UVA-336>
+
+### [dos colores en el juez](bicoloring.html){ target=_blank rel=noopener }
+
+**UVa 10004, Bicoloring.** El código de `bipartito` corre sobre los tres casos de
+la muestra y dos más: un ciclo de seis nodos, que sí se pinta, y un camino que
+termina en un triángulo. En cada paso se escoge el color del vecino o qué pasa
+con la arista, al final se predice la salida, `BICOLORABLE.` o
+`NOT BICOLORABLE.`, y después cuántas veces corrió la línea que mira cada
+vecino. Una tarjeta aparte muestra qué deja sin color la llamada sola desde el
+nodo 0 cuando el grafo viene en dos pedazos.
+
+- Enunciado y envío: <https://vjudge.net/problem/UVA-10004>
 
 ## Plantear antes de programar
 
