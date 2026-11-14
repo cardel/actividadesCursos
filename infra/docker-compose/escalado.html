@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tres réplicas de web, y lo que falta después</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Tres réplicas de web, y lo que falta después</h1>
+  <p class="intro">El archivo es el de la sesión: <code>web</code> se construye y declara
+  <code>ports: ["8080:5000"]</code>, <code>db</code> monta el volumen <code>pgdata</code> y
+  <code>cache</code> solo existe dentro de la red. Pedir tres réplicas de <code>web</code>
+  cuesta una bandera. Lo que viene después es contar qué queda arriba, ver con qué choca la
+  orden y decidir qué hace falta para que esas réplicas sirvan tráfico.</p>
+
+  <div class="carta">
+    <h2>1. Escalado con <code>--scale</code></h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">#</span><span class="txt">Levantar 3 replicas del servicio "web"</span></div>
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker compose up -d --scale web=3</span></div>
+    </div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">Con los tres servicios del archivo,
+    ¿cuántos contenedores quedan en marcha?</p>
+    <div class="opciones" id="op-total"></div>
+    <div id="ver-total" class="veredicto"></div>
+    <div class="chips" id="chips-escala" style="margin-top:0.7rem"></div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">¿Cómo se llaman las réplicas de
+    <code>web</code> en la columna <code>NAME</code> de <code>docker compose ps</code>?</p>
+    <div class="opciones" id="op-nombres">
+      <button data-op="hash">Cada una con un identificador al azar, porque dos contenedores no pueden llevar el mismo nombre</button>
+      <button data-op="correcta"><code>proyecto-web-1</code>, <code>proyecto-web-2</code> y <code>proyecto-web-3</code>: proyecto, servicio y número de réplica</button>
+      <button data-op="uno">Las tres <code>proyecto-web-1</code>, porque el nombre es del servicio y las réplicas lo comparten</button>
+      <button data-op="tarea"><code>web.1</code>, <code>web.2</code> y <code>web.3</code>, con el servicio y el número de la réplica</button>
+    </div>
+    <div id="ver-nombres" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. El puerto del anfitrión</h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num"></span><span class="txt">services:</span></div>
+      <div class="linea bloque-1"><span class="num"></span><span class="txt">  web:</span></div>
+      <div class="linea bloque-1"><span class="num"></span><span class="txt">    build: ./app</span></div>
+      <div class="linea bloque-2"><span class="num"></span><span class="txt">    ports: ["8080:5000"]</span></div>
+    </div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">Con ese bloque tal como está, ¿qué pasa
+    al pedir <code>--scale web=3</code>?</p>
+    <div class="opciones" id="op-puerto-fijo">
+      <button data-op="turnos">Las tres arrancan y el anfitrión reparte por turnos entre ellas lo que entre por el 8080</button>
+      <button data-op="rango">Las tres arrancan y Compose les da el 8081 y el 8082 a las dos que llegan después</button>
+      <button data-op="caidas">Las tres arrancan, pero solo la primera atiende y las otras dos se quedan reiniciando</button>
+      <button data-op="correcta">La orden falla: las tres pedirían el 8080 del anfitrión y ese puerto lo tiene una sola</button>
+    </div>
+    <div id="ver-puerto-fijo" class="veredicto"></div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">¿Qué cambio hace que
+    <code>web=3</code> sí levante y el sistema siga alcanzable desde fuera?</p>
+    <div class="opciones" id="op-arreglo">
+      <button data-op="correcta">Quitarle el puerto del anfitrión a <code>web</code> y publicar el 8080 en un balanceador que quede delante</button>
+      <button data-op="restart">Levantar las réplicas de una en una con <code>restart</code>, para que no pidan el puerto a la vez</button>
+      <button data-op="host">Pasar <code>web</code> a la red del anfitrión, donde cada réplica tiene su propia dirección y su propio 8080</button>
+      <button data-op="depends">Agregar <code>depends_on</code> entre las réplicas, para que cada una espere a que la anterior suelte el puerto</button>
+    </div>
+    <div id="ver-arreglo" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. El límite de Compose plano</h2>
+    <p style="margin-top:0">Sin el puerto fijo la orden pasa, y <code>docker compose
+    ps</code> muestra las tres réplicas en marcha.</p>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">¿Qué queda sin resolver con eso?</p>
+    <div class="opciones" id="op-limite">
+      <button data-op="volumen">Las tres comparten el volumen de la base y se pisan los datos al escribir a la vez</button>
+      <button data-op="dns">Las réplicas no se ven entre sí, porque cada una queda aislada en su propia red</button>
+      <button data-op="correcta">Nadie reparte las peticiones entre ellas: hace falta un balanceador delante o Swarm</button>
+      <button data-op="archivo">Cada réplica necesita su propio bloque en el <code>compose.yml</code> para contar como un servicio más</button>
+    </div>
+    <div id="ver-limite" class="veredicto"></div>
+    <div class="nota">Correr varias copias y repartir el tráfico entre ellas son dos trabajos
+    distintos. Compose hace el primero; el segundo se lo deja a NGINX o HAProxy delante, o se
+    pasa a Swarm, donde el balanceo viene con el servicio.</div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Reemplazo tras editar el archivo</h2>
+    <p style="margin-top:0">Con las tres réplicas de <code>web</code> arriba más
+    <code>db</code> y <code>cache</code>, se edita el bloque de <code>web</code> en el
+    <code>compose.yml</code> y se vuelve a correr <code>docker compose up -d</code>.</p>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">¿Cuántos contenedores recrea esa
+    pasada?</p>
+    <div class="opciones" id="op-recreados"></div>
+    <div id="ver-recreados" class="veredicto"></div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">Y <code>db</code> y <code>cache</code>,
+    ¿qué les pasa mientras tanto?</p>
+    <div class="opciones" id="op-resto">
+      <button data-op="recreados">Se recrean también, porque <code>web</code> depende de ellos y la dependencia los arrastra</button>
+      <button data-op="correcta">Siguen en marcha sin que nadie los toque: su bloque no cambió y la pasada los respeta</button>
+      <button data-op="parados">Se paran mientras <code>web</code> se recrea y vuelven a arrancar cuando termina</button>
+      <button data-op="volumen">Se recrean sin perder datos, porque el volumen se vuelve a montar en el contenedor nuevo</button>
+    </div>
+    <div id="ver-resto" class="veredicto"></div>
+  </div>
+  <div class="carta">
+    <h2>5. Para resolver en la máquina</h2>
+    <p style="margin-top:0">Quite el mapeo de puertos del servicio web, levántelo con tres réplicas y ponga delante un contenedor de <code>nginx</code> que reparta entre las tres. Mire en el log de cada réplica cuántas peticiones le tocaron, y diga qué le falta a ese montaje para que una réplica caída deje de recibir tráfico.</p>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="escalado.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

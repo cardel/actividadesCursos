@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El ciclo del día a día con Compose</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>El ciclo del día a día con Compose</h1>
+  <p class="intro">El sistema de la sesión tiene tres servicios: <code>web</code>, que se
+  construye y publica el 8080, <code>db</code> con su volumen <code>pgdata</code> y
+  <code>cache</code>, que no declara ninguno. Las órdenes del ciclo no pesan lo mismo: unas
+  solo miran, otras mueven los contenedores y dos los borran. Lo que decide si un dato
+  reaparece al levantar otra vez es dónde estaba escrito.</p>
+
+  <div class="carta">
+    <h2>1. Las órdenes del ciclo</h2>
+    <p style="margin-top:0">Cuatro efectos posibles. <b>Solo mira</b>: informa y no cambia
+    nada. <b>Crea y arranca</b>: pone en marcha lo que falte. <b>Para o reinicia</b>: los
+    contenedores siguen existiendo. <b>Borra</b>: el contenedor desaparece y el siguiente
+    arranque hace otro.</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Orden</th><th>Qué efecto tiene</th><th>Por qué</th></tr></thead>
+        <tbody id="cuerpo-ordenes"></tbody>
+      </table>
+    </div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-reiniciar-ordenes">Empezar de nuevo</button>
+      <span class="progreso" id="progreso-ordenes"></span>
+    </div>
+    <div class="chips" id="chips-ordenes" style="margin-top:0.7rem"></div>
+    <div class="alerta" id="nota-ordenes" hidden>De las nueve órdenes, dos borran contenedores
+    y una sola se lleva además los volúmenes. Esa es la que hay que escribir con cuidado.</div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Qué sobrevive a <code>docker compose down</code></h2>
+    <p style="margin-top:0">Antes de bajar el sistema se deja una marca en la base: una tabla
+    y dos filas.</p>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker compose exec -T db psql -U postgres -d demo \</span></div>
+      <div class="linea bloque-1"><span class="num"></span><span class="txt">  -c "CREATE TABLE visitas_log (id serial PRIMARY KEY, marca timestamptz DEFAULT now());"</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">CREATE TABLE</span></div>
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker compose exec -T db psql -U postgres -d demo \</span></div>
+      <div class="linea bloque-1"><span class="num"></span><span class="txt">  -c "INSERT INTO visitas_log DEFAULT VALUES; INSERT INTO visitas_log DEFAULT VALUES;"</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">INSERT 0 1</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">INSERT 0 1</span></div>
+      <div class="linea bloque-2"><span class="num">$</span><span class="txt">docker compose down</span></div>
+      <div class="linea bloque-2"><span class="num">$</span><span class="txt">docker volume ls | grep proyecto</span></div>
+      <div class="linea bloque-2"><span class="num"></span><span class="txt">local     proyecto_pgdata</span></div>
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker compose up -d</span></div>
+    </div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">Con el sistema arriba otra vez,
+    ¿qué devuelve <code>SELECT count(*) FROM visitas_log</code>?</p>
+    <div class="opciones" id="op-filas"></div>
+    <div id="ver-filas" class="veredicto"></div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">Y el primer <code>curl -s
+    localhost:8080</code> de esta vuelta, que antes del <code>down</code> iba en
+    <code>{"db_ok":true,"visitas":2}</code>, ¿con qué valor de <code>visitas</code>
+    contesta?</p>
+    <div class="opciones" id="op-contador"></div>
+    <div id="ver-contador" class="veredicto"></div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">¿Por qué las filas de la tabla siguen
+    ahí si el contenedor de <code>db</code> es otro?</p>
+    <div class="opciones" id="op-por-que">
+      <button data-op="imagen">Porque PostgreSQL escribe los datos en la capa de la imagen, y la imagen no se borra con el <code>down</code></button>
+      <button data-op="contenedor">Porque <code>down</code> para los contenedores sin borrarlos, y al levantar otra vez aparecen los mismos</button>
+      <button data-op="correcta">Porque el volumen <code>proyecto_pgdata</code> tiene nombre propio y el <code>down</code> no borra volúmenes</button>
+      <button data-op="red">Porque la red <code>app-net</code> se rehace con el mismo nombre y el contenedor vuelve a su sitio</button>
+    </div>
+    <div id="ver-por-que" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. La bandera que sí borra: <code>down -v</code></h2>
+    <p style="margin-top:0">Los tres datos del sistema y lo que hace con cada uno un
+    <code>docker compose down -v</code> en lugar del <code>down</code> a secas.</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Dato</th><th>Dónde vive</th><th>Tras <code>down</code> y <code>up</code></th><th>Con <code>-v</code></th><th>Por qué</th></tr></thead>
+        <tbody id="cuerpo-datos"></tbody>
+      </table>
+    </div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-reiniciar-datos">Empezar de nuevo</button>
+      <span class="progreso" id="progreso-datos"></span>
+    </div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">¿Qué cuesta que el contador de
+    <code>visitas</code> también sobreviva a bajar el sistema?</p>
+    <div class="opciones" id="op-redis">
+      <button data-op="depends">Poner <code>depends_on</code> entre <code>cache</code> y <code>db</code>, para que el contador se guarde junto con los datos de la base</button>
+      <button data-op="stop">Usar <code>stop</code> y <code>start</code> en vez de <code>down</code>, así el contenedor de Redis no se recrea</button>
+      <button data-op="imagen">Cambiar <code>redis:7-alpine</code> por una imagen que escriba en disco, porque esa solo trabaja en memoria</button>
+      <button data-op="correcta">Declararle un volumen a <code>cache</code>: la línea <code>volumes: [redisdata:/data]</code> y su entrada en <code>volumes</code></button>
+    </div>
+    <div id="ver-redis" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. El nombre del proyecto</h2>
+    <p style="margin-top:0">La columna <code>NAME</code> de <code>docker compose ps</code> trae
+    <code>proyecto-cache-1</code>, <code>proyecto-db-1</code> y <code>proyecto-web-1</code>, y
+    <code>docker volume ls</code> lista el volumen como <code>proyecto_pgdata</code>.</p>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">¿De dónde sale el
+    <code>proyecto-</code> de esos tres nombres?</p>
+    <div class="opciones" id="op-prefijo">
+      <button data-op="correcta">Del nombre de la carpeta donde está el <code>compose.yml</code>, que Compose toma como nombre del proyecto</button>
+      <button data-op="servicio">Del nombre del servicio en el archivo, que Compose repite al principio y al final del nombre</button>
+      <button data-op="imagen">Del nombre de la imagen que quedó al construir <code>web</code> con <code>build: ./app</code></button>
+      <button data-op="red">Del nombre de la red del archivo, que Compose usa para agrupar los contenedores que la comparten</button>
+    </div>
+    <div id="ver-prefijo" class="veredicto"></div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">Con ese sistema arriba, en la misma
+    máquina se corre <code>docker compose -p staging up -d</code> sobre el mismo archivo.
+    ¿Qué queda en la máquina?</p>
+    <div class="opciones" id="op-dos-copias">
+      <button data-op="mismos">Los mismos contenedores con otro nombre: el sistema queda igual, solo renombrado</button>
+      <button data-op="correcta">Un segundo juego de contenedores, red y volúmenes, con <code>staging</code> por delante</button>
+      <button data-op="rama">El archivo de la rama <code>staging</code> del repositorio, que es lo que <code>-p</code> escoge</button>
+      <button data-op="perfil">Solo los servicios marcados con el perfil <code>staging</code> dentro del archivo</button>
+    </div>
+    <div id="ver-dos-copias" class="veredicto"></div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">Si de esa segunda copia se levanta solo
+    la base, con <code>docker compose -p staging up -d db</code>, ¿cuántas líneas devuelve
+    <code>docker volume ls | grep pgdata</code>?</p>
+    <div class="opciones" id="op-volumenes"></div>
+    <div id="ver-volumenes" class="veredicto"></div>
+    <div class="nota">El nombre del proyecto va delante de los contenedores, de la red y de los
+    volúmenes, así que dos copias del mismo archivo conviven sin pisarse los datos. Y por eso
+    un <code>down -v</code> borra el volumen del proyecto en que se corre y no el del otro.</div>
+  </div>
+  <div class="carta">
+    <h2>5. Para resolver en la máquina</h2>
+    <p style="margin-top:0">Levante el proyecto, deje una fila en la base, bájelo con <code>docker compose down</code> y vuélvalo a levantar con <code>-p</code> y otro nombre de proyecto. Diga por qué la fila no aparece en el segundo, y qué habría que escribir en el archivo para que los dos compartieran el mismo volumen.</p>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="operacion.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

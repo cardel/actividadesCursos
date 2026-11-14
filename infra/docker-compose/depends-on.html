@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>depends_on y healthchecks</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1><code>depends_on</code> y healthchecks</h1>
+  <p class="intro">Una lista de dependencias ordena la creación de los contenedores, y eso no es
+  lo mismo que esperar a que el servicio atienda. Diga qué condición pide cada caso, qué fija
+  cada clave del healthcheck y cuánto tarda la base en quedar marcada como caída.</p>
+
+  <div class="carta">
+    <h2>1. Las tres condiciones de <code>depends_on</code></h2>
+    <p style="margin-top:0">Para cada caso, elija la condición que lo resuelve.</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Caso</th><th>Condición</th><th>Respuesta</th></tr></thead>
+        <tbody id="cuerpo-condiciones"></tbody>
+      </table>
+    </div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-reiniciar-condiciones">Empezar de nuevo</button>
+      <span class="progreso" id="progreso-condiciones"></span>
+    </div>
+    <div class="chips" id="chips-condiciones" style="margin-top:0.7rem"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. <code>depends_on</code> a secas</h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">1</span><span class="txt">  web:</span></div>
+      <div class="linea bloque-1"><span class="num">2</span><span class="txt">    build: ./app</span></div>
+      <div class="linea bloque-1"><span class="num">3</span><span class="txt">    depends_on:</span></div>
+      <div class="linea bloque-1"><span class="num">4</span><span class="txt">      - db</span></div>
+      <div class="linea bloque-1"><span class="num">5</span><span class="txt">      - cache</span></div>
+    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">¿Qué garantiza esa lista escrita así, sin
+    condición?</p>
+    <div class="opciones" id="op-garantiza">
+      <button data-op="atiende">Que <code>web</code> no arranca hasta que la base y el cache estén atendiendo en su puerto</button>
+      <button data-op="correcta">Que Compose crea los contenedores de <code>db</code> y <code>cache</code> antes que el de <code>web</code></button>
+      <button data-op="reintento">Que <code>web</code> reintenta la conexión a la base hasta que alguna de las dos le contesta</button>
+      <button data-op="reinicio">Que si la base se cae más tarde, Compose vuelve a arrancar <code>web</code> detrás de ella</button>
+    </div>
+    <div id="ver-garantiza" class="veredicto"></div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">Con ese archivo, el primer
+    <code>curl</code> después de <code>docker compose up -d --build</code> a veces devuelve
+    error de conexión. ¿De dónde sale?</p>
+    <div class="opciones" id="op-primer-curl">
+      <button data-op="no-creado">El contenedor de la base no llegó a crearse, porque la lista no lo nombra como Compose espera</button>
+      <button data-op="dns">La red tarda en crearse y el nombre <code>db</code> todavía no resuelve a ninguna dirección</button>
+      <button data-op="volumen">El volumen <code>pgdata</code> viene vacío la primera vez y la base hay que inicializarla a mano</button>
+      <button data-op="correcta">PostgreSQL tarda unos segundos en aceptar conexiones, y <code>web</code> ya está atendiendo</button>
+    </div>
+    <div id="ver-primer-curl" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. El healthcheck de <code>pg_isready</code></h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">1</span><span class="txt">  db:</span></div>
+      <div class="linea bloque-1"><span class="num">2</span><span class="txt">    image: postgres:16</span></div>
+      <div class="linea bloque-2"><span class="num">3</span><span class="txt">    healthcheck:</span></div>
+      <div class="linea bloque-2"><span class="num">4</span><span class="txt">      test: ["CMD-SHELL", "pg_isready -U postgres -d demo"]</span></div>
+      <div class="linea bloque-2"><span class="num">5</span><span class="txt">      interval: 3s</span></div>
+      <div class="linea bloque-2"><span class="num">6</span><span class="txt">      timeout: 2s</span></div>
+      <div class="linea bloque-2"><span class="num">7</span><span class="txt">      retries: 10</span></div>
+      <div class="linea bloque-2"><span class="num">8</span><span class="txt">      start_period: 5s</span></div>
+    </div>
+    <p style="margin-top:0.7rem">Empareje cada clave con lo que fija.</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Qué fija</th><th>Clave</th><th>Respuesta</th></tr></thead>
+        <tbody id="cuerpo-claves"></tbody>
+      </table>
+    </div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-reiniciar-claves">Empezar de nuevo</button>
+      <span class="progreso" id="progreso-claves"></span>
+    </div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">La base arranca y nunca llega a atender.
+    Contando un sondeo cada <code>interval</code> y los <code>retries</code> que hacen falta,
+    ¿cuántos segundos pasan desde que acaba el <code>start_period</code> hasta que el servicio
+    queda marcado como caído?</p>
+    <div class="opciones" id="op-unhealthy"></div>
+    <div id="ver-unhealthy" class="veredicto"></div>
+    <div class="chips" id="chips-unhealthy" style="margin-top:0.7rem"></div>
+    <div class="nota">Mientras ese estado no cambie, quien declaró
+    <code>condition: service_healthy</code> sigue esperando, y por eso el valor de
+    <code>interval</code> decide lo que tarda el proyecto entero en levantarse.</div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Las dos salidas al problema</h2>
+    <p style="margin-top:0;margin-bottom:0.3rem">La primera salida vive en el YAML: un
+    <code>healthcheck</code> en el servicio y <code>condition: service_healthy</code> en quien
+    depende. La segunda envuelve el arranque en un guion de espera, del tipo
+    <code>wait-for-it.sh</code>, que sondea el puerto antes de lanzar el proceso. ¿Cuándo hace
+    falta la segunda?</p>
+    <div class="opciones" id="op-salidas">
+      <button data-op="muchos">Cuando el proyecto encadena más de dos servicios, porque el YAML solo sabe esperar a uno</button>
+      <button data-op="puerto">Cuando el servicio del que se depende no publica su puerto en el anfitrión con <code>ports</code></button>
+      <button data-op="correcta">Cuando la imagen del servicio no trae con qué sondearse, así que no hay orden que poner en <code>test</code></button>
+      <button data-op="siempre">Siempre, porque ninguna condición del YAML espera a que el otro servicio atienda de verdad</button>
+    </div>
+    <div id="ver-salidas" class="veredicto"></div>
+    <div class="codigo" style="margin-top:0.9rem">
+      <div class="linea bloque-1"><span class="num">1</span><span class="txt">  migrate:</span></div>
+      <div class="linea bloque-1"><span class="num">2</span><span class="txt">    image: postgres:16</span></div>
+      <div class="linea bloque-1"><span class="num">3</span><span class="txt">    depends_on: { db: { condition: ... } }</span></div>
+      <div class="linea bloque-1"><span class="num">4</span><span class="txt">    command: psql -h db -U postgres -d demo -c "CREATE TABLE ..."</span></div>
+      <div class="linea bloque-2"><span class="num">5</span><span class="txt">  web:</span></div>
+      <div class="linea bloque-2"><span class="num">6</span><span class="txt">    image: nginx:alpine</span></div>
+      <div class="linea bloque-2"><span class="num">7</span><span class="txt">    depends_on:</span></div>
+      <div class="linea bloque-2"><span class="num">8</span><span class="txt">      db:      { condition: ... }</span></div>
+      <div class="linea bloque-2"><span class="num">9</span><span class="txt">      migrate: { condition: ... }</span></div>
+    </div>
+    <p style="margin-top:0.7rem">Complete la cadena: diga qué espera cada servicio del otro.</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Quién espera a quién</th><th>Qué espera</th><th>Respuesta</th></tr></thead>
+        <tbody id="cuerpo-cadena"></tbody>
+      </table>
+    </div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-reiniciar-cadena">Empezar de nuevo</button>
+      <span class="progreso" id="progreso-cadena"></span>
+    </div>
+    <div class="alerta" id="nota-cadena" hidden>La fila de <code>web</code> y
+    <code>migrate</code> es la que se escribe mal con más frecuencia. Un contenedor que corre su
+    orden y sale nunca va a reportarse healthy, de modo que pedirle
+    <code>service_healthy</code> deja al proyecto esperando a algo que ya pasó.</div>
+  </div>
+
+  <div class="carta">
+    <h2>5. Para resolver en la máquina</h2>
+    <p style="margin-top:0">Quite el bloque <code>healthcheck</code> de <code>db</code> y deje
+    los <code>depends_on</code> con sus condiciones tal como están. Levante el proyecto, anote
+    qué contesta Compose y diga qué cambio deja la cadena en pie sin reponer ese bloque. Después
+    vuelva a ponerlo con <code>interval: 30s</code> y mida con <code>docker compose up</code>
+    cuánto tarda <code>web</code> en arrancar.</p>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="depends-on.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

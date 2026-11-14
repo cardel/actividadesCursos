@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anatomía del compose.yml</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Anatomía del <code>compose.yml</code></h1>
+  <p class="intro">El archivo tiene cuatro secciones de raíz y, dentro de cada servicio, claves
+  que se parecen a dos de ellas sin ser lo mismo. Ahí está el error que más se comete. Diga qué
+  va en cada sección, qué línea es una referencia y cuántos contenedores salen de tres
+  servicios.</p>
+
+  <div class="carta">
+    <h2>1. Las cuatro secciones de raíz</h2>
+    <p style="margin-top:0">Para cada cosa que hay que declarar, elija la sección donde va. Una
+    de las filas no corresponde a ninguna de las cuatro.</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Qué se declara</th><th>Sección</th><th>Respuesta</th></tr></thead>
+        <tbody id="cuerpo-secciones"></tbody>
+      </table>
+    </div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-reiniciar-secciones">Empezar de nuevo</button>
+      <span class="progreso" id="progreso-secciones"></span>
+    </div>
+    <div class="chips" id="chips-secciones" style="margin-top:0.7rem"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Referencia en el servicio, definición en la raíz</h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">1</span><span class="txt">services:</span></div>
+      <div class="linea bloque-1"><span class="num">2</span><span class="txt">  web:</span></div>
+      <div class="linea bloque-1"><span class="num">3</span><span class="txt">    build: ./app</span></div>
+      <div class="linea bloque-1"><span class="num">4</span><span class="txt">    ports: ["8080:5000"]</span></div>
+      <div class="linea bloque-1"><span class="num">5</span><span class="txt">    networks: [app-net]</span></div>
+      <div class="linea bloque-1"><span class="num">6</span><span class="txt">  db:</span></div>
+      <div class="linea bloque-1"><span class="num">7</span><span class="txt">    image: postgres:16</span></div>
+      <div class="linea bloque-1"><span class="num">8</span><span class="txt">    volumes: [pgdata:/var/lib/postgresql/data]</span></div>
+      <div class="linea bloque-1"><span class="num">9</span><span class="txt">    networks: [app-net]</span></div>
+      <div class="linea bloque-2"><span class="num">10</span><span class="txt">volumes: { pgdata: {} }</span></div>
+      <div class="linea bloque-2"><span class="num">11</span><span class="txt">networks: { app-net: {} }</span></div>
+    </div>
+    <p style="margin-top:0.7rem">Cuatro de esas líneas hablan de la misma red y del mismo
+    volumen. Diga cuál referencia y cuál define.</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Línea</th><th>Qué es</th><th>Respuesta</th></tr></thead>
+        <tbody id="cuerpo-papeles"></tbody>
+      </table>
+    </div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-reiniciar-papeles">Empezar de nuevo</button>
+      <span class="progreso" id="progreso-papeles"></span>
+    </div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">Alguien borra las líneas 10 y 11 y deja
+    las listas de los servicios como están. ¿Qué pasa con <code>docker compose up -d</code>?</p>
+    <div class="opciones" id="op-falta-raiz">
+      <button data-op="crea">Levanta igual, porque la lista del servicio ya le dice a Docker que cree la red y el volumen con ese nombre</button>
+      <button data-op="correcta">No levanta: los servicios referencian una red y un volumen que el archivo no define en ninguna parte</button>
+      <button data-op="anonimo">Levanta, y el volumen queda anónimo, de modo que el primer <code>docker compose down</code> se lleva los datos</button>
+      <button data-op="sin-red">Levanta sin red propia, así que los servicios arrancan pero dejan de encontrarse por su nombre</button>
+    </div>
+    <div id="ver-falta-raiz" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Un servicio es una imagen con N réplicas</h2>
+    <p style="margin-top:0;margin-bottom:0.3rem">El archivo de arriba, con <code>cache</code>
+    agregado, declara tres servicios y ninguna línea de réplicas. ¿Cuántos contenedores aparecen
+    en <code>docker compose ps</code> tras <code>docker compose up -d</code>?</p>
+    <div class="opciones" id="op-contenedores"></div>
+    <div id="ver-contenedores" class="veredicto"></div>
+    <div class="codigo" style="margin-top:0.9rem">
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker compose ps</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">NAME               IMAGE            SERVICE   STATUS</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">proyecto-cache-1   redis:7-alpine   cache     Up 14 seconds</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">proyecto-db-1      postgres:16      db        Up 14 seconds</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">proyecto-web-1     proyecto-web     web       Up 14 seconds</span></div>
+    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">Los tres nombres terminan en
+    <code>1</code>. ¿Qué dice ese número?</p>
+    <div class="opciones" id="op-sufijo">
+      <button data-op="orden">El orden en que Compose los fue arrancando, que lo fija <code>depends_on</code></button>
+      <button data-op="version">La versión del <code>compose.yml</code>, que sigue en 1 mientras nadie edite el archivo</button>
+      <button data-op="recreado">Las veces que ese contenedor se ha recreado desde que el proyecto se levantó por primera vez</button>
+      <button data-op="correcta">El número de réplica del servicio, que sin declarar nada es 1</button>
+    </div>
+    <div id="ver-sufijo" class="veredicto"></div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">En el archivo de los healthchecks,
+    <code>db</code> y <code>migrate</code> declaran los dos <code>image: postgres:16</code>, y
+    <code>migrate</code> además un <code>command</code> con el <code>psql</code> de la
+    migración. ¿Son el mismo servicio?</p>
+    <div class="opciones" id="op-misma-imagen">
+      <button data-op="correcta">Son dos: cada entrada bajo <code>services</code> trae su propio contenedor y su configuración</button>
+      <button data-op="junta">Compose los junta en uno, porque lo que define a un servicio es la imagen con que se corre</button>
+      <button data-op="replica">El segundo queda como una réplica del primero, y por eso no hace falta repetir la imagen</button>
+      <button data-op="retag">Hay que retiquetar la imagen del segundo, porque dos servicios no pueden declarar la misma</button>
+    </div>
+    <div id="ver-misma-imagen" class="veredicto"></div>
+    <div class="chips" id="chips-replicas" style="margin-top:0.7rem"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Para resolver en la máquina</h2>
+    <p style="margin-top:0">Escriba desde cero un <code>compose.yml</code> con un servicio de
+    <code>nginx:alpine</code> que publique el 8080, monte un volumen nombrado en
+    <code>/usr/share/nginx/html</code> y entre a una red propia, con las secciones de raíz que
+    eso pida. Levántelo, compruebe con <code>docker volume ls</code> y <code>docker network
+    ls</code> qué nombres les puso Compose, y diga de dónde sale la primera parte de cada
+    nombre.</p>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="anatomia.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

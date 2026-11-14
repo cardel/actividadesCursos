@@ -430,6 +430,14 @@ abrirlas desde el sitio de notas, porque el enlace de vuelta usa el referente.
 
 | Tema | Actividad | Qué pide |
 |---|---|---|
+| `docker-compose` | [`anatomia`](infra/docker-compose/anatomia.html) | las cuatro secciones de raíz y la referencia sin definición |
+|  | [`de-run-a-compose`](infra/docker-compose/de-run-a-compose.html) | qué clave reemplaza a cada bandera y qué publica puerto |
+|  | [`depends-on`](infra/docker-compose/depends-on.html) | las tres condiciones y lo que no espera por sí solo |
+|  | [`escalado`](infra/docker-compose/escalado.html) | tres réplicas, el puerto que choca y nadie que reparta |
+|  | [`operacion`](infra/docker-compose/operacion.html) | el ciclo del día a día y qué sobrevive a down |
+|  | [`rolling`](infra/docker-compose/rolling.html) | seis réplicas, dos por lote, y el lote que no sirve |
+|  | [`servicios-replicas`](infra/docker-compose/servicios-replicas.html) | el 3/3, el reparto entre nodos y el puerto del servicio |
+|  | [`swarm-cluster`](infra/docker-compose/swarm-cluster.html) | manager y worker, y lo que informa un nodo solo |
 | `docker-imagenes` | [`buenas-practicas`](infra/docker-imagenes/buenas-practicas.html) | seis problemas de un Dockerfile y el archivo corregido |
 |  | [`capas-cache`](infra/docker-imagenes/capas-cache.html) | las capas y dónde se rompe la caché |
 |  | [`ciclo-vida`](infra/docker-imagenes/ciclo-vida.html) | el ciclo de vida y la parada ordenada |

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>De docker run a un compose.yml</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>De <code>docker run</code> a un <code>compose.yml</code></h1>
+  <p class="intro">Cinco órdenes levantan la aplicación de tres piezas, en un orden que no está
+  escrito en ninguna parte. El mismo sistema cabe en un archivo. Diga qué clave recoge cada
+  bandera, qué dice la columna de puertos y qué prueba cada dato de las dos peticiones.</p>
+
+  <div class="carta">
+    <h2>1. De cada bandera a su clave</h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker network create app-net</span></div>
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker volume create pgdata</span></div>
+      <div class="linea bloque-2"><span class="num">$</span><span class="txt">docker run -d --name db --network app-net \</span></div>
+      <div class="linea bloque-2"><span class="num"></span><span class="txt">  -e POSTGRES_PASSWORD=ejemplo -v pgdata:/var/lib/postgresql/data postgres:16</span></div>
+      <div class="linea bloque-2"><span class="num">$</span><span class="txt">docker run -d --name cache --network app-net redis:7-alpine</span></div>
+      <div class="linea bloque-2"><span class="num">$</span><span class="txt">docker run -d --name web --network app-net -p 8080:5000 \</span></div>
+      <div class="linea bloque-2"><span class="num"></span><span class="txt">  -e DB_HOST=db -e DB_PASSWORD=ejemplo mi-app:1.0</span></div>
+    </div>
+    <p style="margin-top:0.7rem">Para cada pieza de esas órdenes, elija la clave del
+    <code>compose.yml</code> que la recoge.</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>En la orden</th><th>Clave</th><th>Dónde queda</th></tr></thead>
+        <tbody id="cuerpo-banderas"></tbody>
+      </table>
+    </div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-reiniciar-banderas">Empezar de nuevo</button>
+      <span class="progreso" id="progreso-banderas"></span>
+    </div>
+    <div class="chips" id="chips-banderas" style="margin-top:0.7rem"></div>
+    <div class="nota">El archivo queda en la carpeta del proyecto y todas sus rutas se resuelven
+    desde ahí, de modo que <code>build: ./app</code> apunta a la carpeta con el
+    <code>Dockerfile</code>.</div>
+  </div>
+
+  <div class="carta">
+    <h2>2. El contador de las dos peticiones</h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker compose up -d --build</span></div>
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">curl -s localhost:8080</span></div>
+      <div class="linea bloque-1"><span class="num"></span><span class="txt">{"db_ok":true,"visitas":1}</span></div>
+      <div class="linea bloque-2"><span class="num">$</span><span class="txt">curl -s localhost:8080</span></div>
+    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">El endpoint hace
+    <code>cache.incr("visitas")</code> y devuelve el valor. ¿Qué trae
+    <code>visitas</code> en la segunda petición?</p>
+    <div class="opciones" id="op-segunda"></div>
+    <div id="ver-segunda" class="veredicto"></div>
+    <div class="codigo" style="margin-top:0.9rem">
+      <div class="linea bloque-3"><span class="num">$</span><span class="txt">docker compose down</span></div>
+      <div class="linea bloque-3"><span class="num">$</span><span class="txt">docker compose up -d</span></div>
+      <div class="linea bloque-3"><span class="num">$</span><span class="txt">curl -s localhost:8080</span></div>
+    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">Y después de bajar y volver a levantar el
+    sistema, ¿con qué valor contesta?</p>
+    <div class="opciones" id="op-tras-down"></div>
+    <div id="ver-tras-down" class="veredicto"></div>
+    <div class="chips" id="chips-contador" style="margin-top:0.7rem"></div>
+    <div class="nota">La tabla <code>visitas_log</code> de PostgreSQL sí conserva sus dos filas
+    tras el <code>down</code>, porque la base monta el volumen <code>pgdata</code> y
+    <code>docker volume ls</code> lo sigue listando.</div>
+  </div>
+
+  <div class="carta">
+    <h2>3. La columna de puertos de <code>docker compose ps</code></h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker compose ps --format 'table {{.Service}}\t{{.Status}}\t{{.Ports}}'</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">SERVICE   STATUS          PORTS</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">cache     Up 14 seconds   6379/tcp</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">db        Up 14 seconds   5432/tcp</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">web       Up 14 seconds   0.0.0.0:8080-&gt;5000/tcp, [::]:8080-&gt;5000/tcp</span></div>
+    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem"><code>cache</code> y <code>db</code>
+    aparecen sin dirección delante del puerto. ¿Por qué?</p>
+    <div class="opciones" id="op-puertos">
+      <button data-op="arranque">Están arriba pero todavía no escuchan, y la dirección delante del puerto aparece cuando el proceso acabe de arrancar</button>
+      <button data-op="host">Usan la red del anfitrión, y ahí el puerto no necesita dirección delante</button>
+      <button data-op="correcta">El puerto está expuesto dentro de <code>app-net</code> y no en el anfitrión, y <code>web</code> lleva dirección porque declaró <code>8080:5000</code></button>
+      <button data-op="oculta">Compose esconde la dirección de los servicios internos, aunque el puerto queda publicado en el anfitrión igual que el de <code>web</code></button>
+    </div>
+    <div id="ver-puertos" class="veredicto"></div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">Entonces, ¿quién alcanza el 5432 de la
+    base?</p>
+    <div class="opciones" id="op-cinco-cuatro-tres-dos">
+      <button data-op="correcta">Cualquier contenedor de <code>app-net</code>, que llega a <code>db:5432</code> por el nombre del servicio</button>
+      <button data-op="nadie">Nadie, porque sin una entrada <code>ports</code> el puerto queda cerrado también para los demás servicios de la red</button>
+      <button data-op="anfitrion">Cualquiera desde el anfitrión, que para eso la columna lista el 5432 entre los puertos del servicio</button>
+      <button data-op="depends">Solo <code>web</code>, que es el único servicio que nombra a la base en su <code>depends_on</code></button>
+    </div>
+    <div id="ver-cinco-cuatro-tres-dos" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Qué prueba cada dato</h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">curl -s localhost:8080</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">{"db_ok":true,"visitas":1}</span></div>
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">curl -s localhost:8080</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">{"db_ok":true,"visitas":2}</span></div>
+      <div class="linea bloque-2"><span class="num">$</span><span class="txt">docker compose logs --tail 3 web</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">web-1  |  * Running on http://127.0.0.1:5000</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">web-1  |  * Running on http://172.19.0.4:5000</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">web-1  | 172.19.0.1 - - [09/Sep/2026 00:57:39] "GET / HTTP/1.1" 200 -</span></div>
+    </div>
+    <p style="margin-top:0.7rem">Cada dato de ahí demuestra una cosa distinta. Empareje.</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Dato</th><th>Qué demuestra</th><th>Respuesta</th></tr></thead>
+        <tbody id="cuerpo-pruebas"></tbody>
+      </table>
+    </div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-reiniciar-pruebas">Empezar de nuevo</button>
+      <span class="progreso" id="progreso-pruebas"></span>
+    </div>
+    <div class="alerta" id="nota-pruebas" hidden>Las dos direcciones del log son de la misma red
+    y no dicen lo mismo. <code>172.19.0.4</code> es la del contenedor de <code>web</code>, donde
+    Flask quedó escuchando; <code>172.19.0.1</code> es la puerta de enlace, y por ahí entra todo
+    lo que viene del anfitrión.</div>
+  </div>
+
+  <div class="carta">
+    <h2>5. Para resolver en la máquina</h2>
+    <p style="margin-top:0">Dele a <code>cache</code> un volumen propio en el
+    <code>compose.yml</code>, levante el sistema, pida dos veces el endpoint y repita el
+    <code>down</code> y el <code>up -d</code>. Diga qué número de la respuesta cambia respecto a
+    la corrida de arriba, cuál se queda igual y qué pasa con los dos si en lugar de
+    <code>down</code> se usa <code>down -v</code>.</p>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="de-run-a-compose.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

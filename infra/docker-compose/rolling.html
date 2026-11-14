@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La actualización por lotes y la vuelta atrás</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>La actualización por lotes y la vuelta atrás</h1>
+  <p class="intro">Seis réplicas cambian de imagen de dos en dos. Las líneas de
+  <code>update_config</code> deciden cuántos lotes salen, cuánto se espera entre ellos, cuántas
+  réplicas atienden mientras entra cada lote y qué pasa si el lote nuevo no sirve.</p>
+
+  <div class="carta">
+    <h2>1. Lotes y espera</h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">1</span><span class="txt">deploy:</span></div>
+      <div class="linea bloque-1"><span class="num">2</span><span class="txt">  replicas: 6</span></div>
+      <div class="linea bloque-2"><span class="num">3</span><span class="txt">  update_config:</span></div>
+      <div class="linea bloque-2"><span class="num">4</span><span class="txt">    parallelism: 2          # 2 replicas por lote</span></div>
+      <div class="linea bloque-2"><span class="num">5</span><span class="txt">    delay: 5s               # espera entre lotes</span></div>
+      <div class="linea bloque-2"><span class="num">6</span><span class="txt">    order: start-first</span></div>
+      <div class="linea bloque-2"><span class="num">7</span><span class="txt">    failure_action: rollback</span></div>
+      <div class="linea bloque-2"><span class="num">8</span><span class="txt">    monitor: 10s</span></div>
+      <div class="linea bloque-2"><span class="num">9</span><span class="txt">    max_failure_ratio: 0.34</span></div>
+    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">¿Cuántos lotes salen para cambiar la
+    imagen de las seis réplicas?</p>
+    <div class="opciones" id="op-lotes"></div>
+    <div id="ver-lotes" class="veredicto"></div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">¿Cuántos segundos suman las esperas entre
+    esos lotes?</p>
+    <div class="opciones" id="op-espera"></div>
+    <div id="ver-espera" class="veredicto"></div>
+    <div class="chips" id="chips-lotes" style="margin-top:0.7rem"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Las réplicas activas, lote por lote</h2>
+    <p style="margin-top:0">Con <code>order: start-first</code> y la imagen cambiando de
+    <code>nginx:1.25-alpine</code> a <code>nginx:1.27-alpine</code>, diga cuántas réplicas hay
+    activas en cada momento.</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Momento</th><th>Activas</th><th>Por qué</th></tr></thead>
+        <tbody id="cuerpo-traza"></tbody>
+      </table>
+    </div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-reiniciar-traza">Empezar de nuevo</button>
+      <span class="progreso" id="progreso-traza"></span>
+    </div>
+    <div class="chips" id="chips-traza" style="margin-top:0.7rem"></div>
+    <div class="alerta" id="nota-traza" hidden>La columna nunca baja de seis, y eso es lo que se
+    compró: ninguna petición se queda sin réplica que la atienda. El pico de ocho es el precio, y
+    hay que tener máquina para esa pareja de más.</div>
+  </div>
+
+  <div class="carta">
+    <h2>3. <code>start-first</code> frente a <code>stop-first</code></h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">1</span><span class="txt">order: start-first   # las 6 replicas siguen activas en cada lote</span></div>
+      <div class="linea bloque-2"><span class="num">2</span><span class="txt">order: stop-first    # quedan 4 activas mientras entra el lote</span></div>
+    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">¿Qué cuesta <code>order:
+    start-first</code>?</p>
+    <div class="opciones" id="op-costo">
+      <button data-op="tiempo">El doble de tiempo, porque cada lote arranca y después para</button>
+      <button data-op="correcta">Capacidad para una pareja más: el pico llega a 8 réplicas</button>
+      <button data-op="nada">Nada, es el orden por omisión y no cambia el costo</button>
+      <button data-op="hueco">Dejar el servicio sin atender mientras entra el lote</button>
+    </div>
+    <div id="ver-costo" class="veredicto"></div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">Con <code>order: stop-first</code>,
+    ¿cuántas réplicas quedan atendiendo mientras entra cada lote?</p>
+    <div class="opciones" id="op-stop-first"></div>
+    <div id="ver-stop-first" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Cuando el lote nuevo no sirve</h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker stack deploy -c stack.v2.yml rolling</span></div>
+    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">El segundo lote arranca y sus réplicas no
+    quedan healthy, por encima de <code>max_failure_ratio: 0.34</code> dentro de la ventana de
+    <code>monitor: 10s</code>. ¿Qué hace Swarm?</p>
+    <div class="opciones" id="op-fallo">
+      <button data-op="reintenta">Reintenta el mismo lote hasta que las réplicas queden healthy</button>
+      <button data-op="pausa">Detiene la actualización y deja el servicio con las dos versiones vivas</button>
+      <button data-op="correcta">Vuelve solo a la imagen anterior, por parejas y con 3 s entre ellas</button>
+      <button data-op="entero">Baja el servicio y lo levanta completo con la imagen anterior</button>
+    </div>
+    <div id="ver-fallo" class="veredicto"></div>
+    <div class="codigo" style="margin-top:0.9rem">
+      <div class="linea bloque-2"><span class="num">1</span><span class="txt">      rollback_config:</span></div>
+      <div class="linea bloque-2"><span class="num">2</span><span class="txt">        parallelism: 2</span></div>
+      <div class="linea bloque-2"><span class="num">3</span><span class="txt">        delay: 3s</span></div>
+    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">¿Cuántos segundos suman las esperas de esa
+    vuelta atrás?</p>
+    <div class="opciones" id="op-espera-rollback"></div>
+    <div id="ver-espera-rollback" class="veredicto"></div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">La imagen no declara
+    <code>HEALTHCHECK</code> y el servicio tampoco. ¿Qué mide entonces el
+    <code>monitor</code>?</p>
+    <div class="opciones" id="op-monitor">
+      <button data-op="vivo">Que el contenedor siga vivo a los 10 s, que ya basta para saberlo</button>
+      <button data-op="puerto">Que el puerto 80 acepte conexiones durante los 10 s</button>
+      <button data-op="rollback">Nada, y por eso el rollback automático se dispara siempre</button>
+      <button data-op="correcta">Nada que diga si la versión sirve: da por buena la que arranque</button>
+    </div>
+    <div id="ver-monitor" class="veredicto"></div>
+    <div class="nota">La vuelta atrás también se pide a mano, con <code>docker service rollback
+    rolling_web</code>, y usa el mismo <code>rollback_config</code>.</div>
+  </div>
+  <div class="carta">
+    <h2>5. Para resolver en la máquina</h2>
+    <p style="margin-top:0">Despliegue el stack con seis réplicas y <code>parallelism: 1</code>, lance la actualización y cuente con <code>docker service ps</code> cuántas tareas conviven en cada momento. Compare el tiempo total con el de <code>parallelism: 2</code> y diga qué se gana y qué se arriesga al subir ese número.</p>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="rolling.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

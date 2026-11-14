@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tres réplicas, tres nodos, un puerto</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Tres réplicas, tres nodos, un puerto</h1>
+  <p class="intro">Una orden crea el servicio y el clúster hace el resto: cuenta las réplicas,
+  las reparte entre los nodos y publica un puerto que no pertenece a ninguno. Lo último es lo
+  que Compose plano no puede imitar.</p>
+
+  <div class="carta">
+    <h2>1. La columna REPLICAS</h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker service create --name web --replicas 3 --publish 8080:80 nginx:alpine</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">verify: Waiting 1 seconds to verify that tasks are stable...</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">verify: Service 6cai30zq7r89l6w9hcts1xppr converged</span></div>
+      <div class="linea bloque-2"><span class="num">$</span><span class="txt">docker service ls</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">ID             NAME      MODE         REPLICAS   IMAGE          PORTS</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">6cai30zq7r89   web       replicated   3/3        nginx:alpine   *:8080-&gt;80/tcp</span></div>
+    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">¿Qué cuentan los dos números de
+    <code>3/3</code>?</p>
+    <div class="opciones" id="op-replicas">
+      <button data-op="nodos">Las réplicas pedidas sobre los nodos del clúster</button>
+      <button data-op="correcta">Las que están activas sobre las que se pidieron</button>
+      <button data-op="cupo">Las tareas corriendo sobre las que caben en el nodo</button>
+      <button data-op="stack">Las réplicas de este servicio sobre las del stack</button>
+    </div>
+    <div id="ver-replicas" class="veredicto"></div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">Mientras una de las tareas todavía
+    arranca, ¿qué se lee en esa columna?</p>
+    <div class="opciones" id="op-arranque">
+      <button data-op="pedidas"><code>3/3</code>: la columna cuenta las pedidas, y las tres ya se pidieron</button>
+      <button data-op="aviso"><code>3/3</code>, y que falta una solo se ve en <code>service ps</code></button>
+      <button data-op="correcta"><code>2/3</code>: hay dos activas y el servicio no ha convergido</button>
+      <button data-op="vacia">Queda vacía mientras el servicio no haya convergido</button>
+    </div>
+    <div id="ver-arranque" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. El servicio y la tarea</h2>
+    <p style="margin-top:0"><code>docker service ls</code> habla del servicio;
+    <code>docker service ps</code> baja al nivel de la tarea. Diga dónde se lee cada dato.</p>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Qué se quiere saber</th><th>Dónde se lee</th><th>Respuesta</th></tr></thead>
+        <tbody id="cuerpo-ordenes"></tbody>
+      </table>
+    </div>
+    <div class="botones" style="margin-top:0.6rem">
+      <button id="btn-reiniciar-ordenes">Empezar de nuevo</button>
+      <span class="progreso" id="progreso-ordenes"></span>
+    </div>
+    <div class="nota">La frontera es útil cuando algo va mal: el servicio dice cuántas faltan y
+    la tarea dice en qué nodo se quedó la que falta.</div>
+  </div>
+
+  <div class="carta">
+    <h2>3. El reparto entre los nodos</h2>
+    <div class="codigo">
+      <div class="linea bloque-1"><span class="num">$</span><span class="txt">docker service ps web --format 'table {{.Name}}\t{{.Node}}\t{{.CurrentState}}'</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">NAME      NODE             CURRENT STATE</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">web.1     nodo3            Running 15 seconds ago</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">web.2     cardel-desktop   Running 13 seconds ago</span></div>
+      <div class="linea"><span class="num"></span><span class="txt">web.3     nodo2            Running 15 seconds ago</span></div>
+    </div>
+    <p style="margin-top:0.7rem;margin-bottom:0.3rem">La orden no dijo en qué nodo poner cada
+    réplica. ¿Quién decidió ese reparto?</p>
+    <div class="opciones" id="op-reparto">
+      <button data-op="alfabetico">El orden alfabético de los nombres de nodo</button>
+      <button data-op="bandera">La bandera <code>--replicas 3</code>, que pone una por nodo cuando hay tres</button>
+      <button data-op="correcta">El planificador del líder, que las reparte entre los nodos</button>
+      <button data-op="local">El nodo donde se corrió la orden, que se queda con la primera</button>
+    </div>
+    <div id="ver-reparto" class="veredicto"></div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem"><code>web.2</code> quedó en
+    <code>cardel-desktop</code>, que es el manager. ¿Es un problema?</p>
+    <div class="opciones" id="op-manager">
+      <button data-op="correcta">No: un manager también ejecuta tareas, y aquí le tocó una</button>
+      <button data-op="prohibido">Sí, un manager no ejecuta tareas y esa réplica no va a arrancar</button>
+      <button data-op="azar">Es un descuido del planificador: debió irse a un worker</button>
+      <button data-op="lider">No, y de hecho el líder se queda siempre con la segunda réplica</button>
+    </div>
+    <div id="ver-manager" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Un puerto del servicio, no de la réplica</h2>
+    <p style="margin-top:0;margin-bottom:0.3rem">La columna <code>PORTS</code> dice
+    <code>*:8080-&gt;80/tcp</code>. Se pide <code>http://nodo2:8080/</code> y en ese nodo la
+    réplica es <code>web.3</code>. ¿Qué contesta?</p>
+    <div class="opciones" id="op-puerto-servicio">
+      <button data-op="manager">Da error: el 8080 solo quedó publicado en el nodo manager</button>
+      <button data-op="refused">Da <code>connection refused</code> si no se publica en cada nodo</button>
+      <button data-op="local">Responde, y siempre la atiende <code>web.3</code>, la de ese nodo</button>
+      <button data-op="correcta">Responde, y la atiende alguna de las tres réplicas</button>
+    </div>
+    <div id="ver-puerto-servicio" class="veredicto"></div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">El mismo servicio en Compose plano:
+    <code>docker compose up -d --scale web=3</code> con <code>ports: 8080:80</code>. ¿Qué
+    pasa?</p>
+    <div class="opciones" id="op-scale">
+      <button data-op="turnos">Arrancan las tres y Compose reparte las peticiones por turnos entre ellas</button>
+      <button data-op="correcta">Arranca una y las otras dos fallan: el 8080 del anfitrión ya está tomado</button>
+      <button data-op="auto">Arrancan las tres y Compose les asigna 8081 y 8082 por su cuenta</button>
+      <button data-op="comparten">Arrancan las tres y comparten el puerto, que atiende la última en subir</button>
+    </div>
+    <div id="ver-scale" class="veredicto"></div>
+    <p style="margin-top:0.9rem;margin-bottom:0.3rem">Si el servicio se queda en Compose plano
+    y hay que repartir tráfico real entre varias réplicas, ¿qué hace falta?</p>
+    <div class="opciones" id="op-balanceo">
+      <button data-op="rango">Un rango de puertos en <code>ports</code>, de <code>8080-8082:80</code></button>
+      <button data-op="overlay">Una red <code>overlay</code>, que ya reparte entre los contenedores</button>
+      <button data-op="nada">Nada: Compose reparte solo entre las réplicas del mismo servicio</button>
+      <button data-op="correcta">Un balanceador delante de las tres, como NGINX o HAProxy</button>
+    </div>
+    <div id="ver-balanceo" class="veredicto"></div>
+    <div class="nota">De ahí que el puerto sea la diferencia que más se nota al pasar a Swarm:
+    el servicio publica una vez y el clúster entero contesta, sin que nadie monte un
+    balanceador a mano ni invente un puerto por réplica.</div>
+  </div>
+  <div class="carta">
+    <h2>5. Para resolver en la máquina</h2>
+    <p style="margin-top:0">Cree un servicio de <code>nginx:alpine</code> con dos réplicas y súbalo a tres con <code>docker service scale</code>. Siga con <code>docker service ps</code> en qué estado va cada tarea mientras converge, y después baje a una y diga cuál se quedó y por qué el puerto publicado responde igual durante todo el cambio.</p>
+  </div>
+</div>
+<script src="../comun/motor.js"></script>
+<script src="servicios-replicas.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
