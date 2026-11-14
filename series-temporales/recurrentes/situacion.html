@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La pandemia dentro de la ventana</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>La pandemia dentro de la ventana</h1>
+  <p class="intro">De marzo de 2020 a noviembre de 2021 la serie de pasajeros se cae y luego se recupera. Una red recurrente que pronostica un mes de 2022 o de 2023 recibe en su ventana algunos de esos meses. ¿Cuánto de ese choque llega a su estado final? ¿Cuánto tiempo lo arrastra? La respuesta cambia entre la RNN y la LSTM, y de ella depende cómo se preparan los datos.</p>
+  <p class="intro">La página pasa cada ventana de la serie por las dos celdas de una neurona de <em>La RNN paso a paso</em> (<code>u = 0,8</code>) y <em>La celda LSTM paso a paso</em> (<code>b<sub>f</sub> = 3</code>). Después repite la cuenta con los pasos que vienen de la pandemia puestos en 0, que en la escala de la red es una diferencia promedio. La <b>huella</b> es lo que cambia <code>h<sub>12</sub></code> entre las dos cuentas: cuánto del choque llega a lo que recibe la capa lineal.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Mueva el mes que se pronostica</h2>
+    <div class="controles">
+      <label for="mes">mes que se pronostica</label>
+      <input type="range" id="mes" min="0" max="1" value="0">
+      <span class="valor-n" id="mes-valor"></span>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <div class="figura" id="franja"></div>
+    <div class="envoltura-tabla" id="tabla"></div>
+    <div class="figura" id="figura"></div>
+    <p class="nota">Todo se calcula en la página con la serie del curso. Un paso cuenta como distorsionado cuando su mes o el mismo mes del año anterior cae entre marzo de 2020 y noviembre de 2021, porque la diferencia con hace 12 meses usa los dos. Los pesos de las celdas son los del ejemplo, no los de una red entrenada: muestran cómo se propaga el choque, no cuánto se equivoca el pronóstico.</p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div id="situaciones"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Lo que deja la situación</h2>
+    <div class="nota" id="cierre-texto"></div>
+    <h3>Ejercicio abierto</h3>
+    <p>Una estación mide cada hora el nivel de un río, y la lluvia de la cuenca alta tarda unas 72 horas en llegar. El sensor falla a veces y deja tramos en 0. Escriba los pasos del ETL que dejaría antes de armar las ventanas: qué marca, qué rellena y con qué, y qué columna agrega. Diga qué red probaría primero, contra qué línea base la compararía y qué cifra de esta página usa para justificarlo.</p>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["pandemia", "cambio"] });</script>
+<script src="datos.js"></script>
+<script src="pronostico.js"></script>
+<script src="celdas.js"></script>
+<script src="situacion.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

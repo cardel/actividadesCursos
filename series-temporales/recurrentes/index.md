@@ -42,6 +42,17 @@ memoria sobrevive los doce pasos y cuándo se borra, cuánto cuestan las
 compuertas en pesos y cómo le fue en el *backtest*. Cierra con la RNN y la
 LSTM lado a lado.
 
+## Una situación del curso
+
+### [La pandemia dentro de la ventana](situacion.html){ target=_blank rel=noopener }
+
+Cada ventana de la serie, de 2020 a 2024, pasa por la RNN y la LSTM de las
+actividades anteriores, con y sin los pasos que toca la pandemia. Se trata de
+ver hasta cuándo llega el choque a la diferencia con hace 12 meses, cuánto lo
+arrastra cada red y qué se hace en los datos con un choque o con un sensor
+que falla. Cierra con tres decisiones: una estación de un río, un sensor en
+cero y la serie de pasajeros.
+
 ## Recurrentes
 
 ### [Ventana y memoria](memoria.html){ target=_blank rel=noopener }
