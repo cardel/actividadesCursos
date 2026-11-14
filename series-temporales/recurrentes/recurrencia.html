@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La RNN paso a paso</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>La RNN paso a paso</h1>
+  <p class="intro">Una red recurrente lee la ventana un mes a la vez. En cada paso recibe dos cosas: el mes de ese paso, <code>x<sub>t</sub></code>, y su propia salida del paso anterior, <code>h<sub>t−1</sub></code>. Con las dos calcula <code>h<sub>t</sub> = tanh(w x<sub>t</sub> + u h<sub>t−1</sub> + b)</code>, y ese <code>h<sub>t</sub></code> vuelve a entrar en el paso siguiente. Por eso se llama recurrente: la salida de un paso es entrada del siguiente, y la misma cuenta, con los mismos <code>w</code>, <code>u</code> y <code>b</code>, se repite en los doce pasos. Al final, <code>h<sub>12</sub></code> pasa por una capa lineal que da el pronóstico.</p>
+  <p class="intro">Esta página hace las cuentas de una RNN de una neurona sobre la ventana de enero de 2025. Es la misma ventana de las cuentas a mano del deck, con <code>w = 0,5</code> y <code>b = 0,1</code>. Usted mueve <code>u</code>, el peso con que el estado anterior entra a cada paso.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Recorra los doce pasos</h2>
+    <div class="controles">
+      <label>u</label>
+      <span class="selector" id="u">
+        <button data-valor="0.3">0,3</button>
+        <button data-valor="0.8" class="elegido">0,8</button>
+        <button data-valor="0.95">0,95</button>
+        <button data-valor="1.2">1,2</button>
+      </span>
+    </div>
+    <div class="controles">
+      <label for="paso">paso</label>
+      <input type="range" id="paso" min="1" max="12" value="1">
+      <span class="valor-n" id="paso-valor"></span>
+      <label><input type="checkbox" id="reves"> leer la ventana al revés</label>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <div class="figura" id="cadena"></div>
+    <div class="envoltura-tabla" id="tabla"></div>
+    <div class="figura" id="figura"></div>
+    <p class="nota">Todo se calcula en la página. <code>x<sub>t</sub></code> es la diferencia con hace 12 meses del paso t, estandarizada con la media y la desviación de la red: (diferencia − <span id="media"></span>) / <span id="desv"></span>. La última columna es el producto de <code>u (1 − h<sub>k</sub>²)</code> desde el paso t + 1 hasta el 12: de cada unidad que el estado tenía en el paso t, cuánto sigue en <code>h<sub>12</sub></code>. El gradiente del entrenamiento vuelve por ese mismo camino, multiplicado por los mismos factores.</p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Ventajas y limitaciones de la RNN</h2>
+    <div id="cierre-tabla" class="envoltura-tabla"></div>
+    <div class="nota" id="cierre-texto"></div>
+    <h3>Ejercicio abierto</h3>
+    <p>Con <code>u = 0,8</code>, cambie a mano el valor del paso 1 de la ventana por 2 y repita las cuentas de los doce pasos. ¿Cuánto se mueve <code>h<sub>12</sub></code>? Haga lo mismo con el paso 11. ¿Qué dice la diferencia entre los dos cambios sobre qué meses recuerda la red?</p>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["cambio", "estacional"] });</script>
+<script src="datos.js"></script>
+<script src="pronostico.js"></script>
+<script src="celdas.js"></script>
+<script src="recurrencia.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La celda LSTM paso a paso</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>La celda LSTM paso a paso</h1>
+  <p class="intro">Una LSTM también lee la ventana un mes a la vez y también recibe su salida anterior, <code>h<sub>t−1</sub></code>, pero lleva además una memoria, <code>c<sub>t</sub></code>, que pasa de un paso al otro por un camino propio. Tres compuertas deciden en cada paso qué pasa con esa memoria. Cada una es una sigmoide de <code>x<sub>t</sub></code> y <code>h<sub>t−1</sub></code>, un número entre 0 y 1:</p>
+  <ul class="intro">
+    <li><code>f<sub>t</sub></code>, de olvido: qué fracción de <code>c<sub>t−1</sub></code> se conserva.</li>
+    <li><code>i<sub>t</sub></code>, de entrada: qué fracción del candidato <code>g<sub>t</sub> = tanh(w x<sub>t</sub> + u h<sub>t−1</sub> + b)</code> se escribe. <code>g<sub>t</sub></code> es la misma cuenta de la RNN.</li>
+    <li><code>o<sub>t</sub></code>, de salida: qué fracción de la memoria sale como <code>h<sub>t</sub></code>.</li>
+  </ul>
+  <p class="intro">Con ellas, <code>c<sub>t</sub> = f<sub>t</sub> c<sub>t−1</sub> + i<sub>t</sub> g<sub>t</sub></code> y <code>h<sub>t</sub> = o<sub>t</sub> tanh(c<sub>t</sub>)</code>. Esta página hace las cuentas de una celda de una neurona sobre la misma ventana de enero de 2025 de <em>La RNN paso a paso</em>. Cada compuerta suma <code>0,5 x<sub>t</sub> + 0,5 h<sub>t−1</sub></code> más su sesgo, y <code>g<sub>t</sub></code> usa <code>w = 0,5</code>, <code>u = 0,8</code> y <code>b = 0,1</code>. Son pesos elegidos para la cuenta, no entrenados. Usted mueve <code>b<sub>f</sub></code>, el sesgo de la compuerta de olvido.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Recorra los doce pasos</h2>
+    <div class="controles">
+      <label>b<sub>f</sub></label>
+      <span class="selector" id="bf">
+        <button data-valor="-3">−3</button>
+        <button data-valor="0">0</button>
+        <button data-valor="1">1</button>
+        <button data-valor="3" class="elegido">3</button>
+      </span>
+    </div>
+    <div class="controles">
+      <label for="paso">paso</label>
+      <input type="range" id="paso" min="1" max="12" value="1">
+      <span class="valor-n" id="paso-valor"></span>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <div class="figura" id="cadena"></div>
+    <div class="envoltura-tabla" id="tabla"></div>
+    <div class="figura" id="figura"></div>
+    <p class="nota">Todo se calcula en la página. La última columna es el producto de <code>f<sub>k</sub></code> desde el paso t + 1 hasta el 12: de cada unidad que la memoria tenía en el paso t, cuánto sigue en <code>c<sub>12</sub></code> por el camino de la memoria. El gradiente vuelve por ese camino multiplicado por las mismas <code>f</code>. En la RNN, el factor de cada paso es <code>u (1 − h²)</code>.</p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>RNN y LSTM, lado a lado</h2>
+    <div id="cierre-tabla" class="envoltura-tabla"></div>
+    <div class="nota" id="cierre-texto"></div>
+    <h3>Ejercicio abierto</h3>
+    <p>Suponga una serie diaria en que lo que define el pronóstico de hoy pasó hace 60 días, con una ventana de 60 pasos. Con los factores de esta página, estime cuánto del paso 1 llegaría al paso 60 en una RNN con <code>u = 0,8</code> y en una LSTM con <code>b<sub>f</sub> = 3</code>. ¿En cuál de las dos series, esa o la de pasajeros, esperaría que la LSTM le gane a la RNN?</p>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["cambio", "estacional"] });</script>
+<script src="datos.js"></script>
+<script src="pronostico.js"></script>
+<script src="celdas.js"></script>
+<script src="compuertas.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
