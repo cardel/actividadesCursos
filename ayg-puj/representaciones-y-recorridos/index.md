@@ -139,6 +139,18 @@ nodo 0 cuando el grafo viene en dos pedazos.
 
 - Enunciado y envío: <https://vjudge.net/problem/UVA-10004>
 
+### [guardias en los cruces](guardias.html){ target=_blank rel=noopener }
+
+**UVa 11080, Place the Guards.** El código de `guardias` pinta cada pedazo de la
+ciudad con dos colores y suma el menos usado. Corre sobre las dos entradas de la
+muestra y tres casos más: una estrella desbalanceada, un cruce aislado y tres
+pedazos donde sumar siempre el primer color da de más. En cada paso se escoge el
+color del cruce o qué pasa con la calle, al cerrar cada pedazo cuántos guardias
+aporta y al final la salida. Una tarjeta aparte pregunta cuánto cuesta con el tope
+del enunciado y qué mínimo habría sin la regla de los dos extremos.
+
+- Enunciado y envío: <https://vjudge.net/problem/UVA-11080>
+
 ## Plantear antes de programar
 
 ### [dos colores](colores.html){ target=_blank rel=noopener }

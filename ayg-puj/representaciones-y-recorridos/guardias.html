@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UVa 11080, Place the Guards: dos colores por pedazo y el menor</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/planteo.css">
+<style>
+.dibujo { text-align: center; margin: 0.4rem 0; }
+.dibujo text { pointer-events: none; }
+.leyenda-g { text-align: center; font-size: 0.82rem; color: var(--gris); margin: 0.1rem 0 0.4rem; }
+.pila { font-family: ui-monospace, Consolas, monospace; font-size: 0.86rem; border: 1px solid var(--borde); border-radius: 8px; padding: 0.35rem 0.6rem; background: var(--codigo-fondo); margin: 0.4rem 0; }
+.pila .rot { font-family: system-ui, sans-serif; font-size: 0.78rem; color: var(--gris); display: block; margin-bottom: 0.15rem; }
+.pila .marco { display: block; padding: 0.05rem 0.3rem; border-radius: 4px; }
+.pila .marco.tope { background: var(--resalte); font-weight: 700; }
+.pila .choque { color: var(--rojo); font-weight: 700; }
+.color-azul, .color-azul:hover { background: #bcd4ec; color: #15416f; border-color: #6b97c4; }
+.color-naranja, .color-naranja:hover { background: #f9d3ae; color: #7a4310; border-color: #d8964f; }
+pre.entrada { font-family: ui-monospace, Consolas, monospace; font-size: 0.86rem; background: var(--codigo-fondo); border: 1px solid var(--borde); border-radius: 8px; padding: 0.35rem 0.6rem; margin: 0.4rem 0; white-space: pre; max-height: 14rem; overflow: auto; }
+.lado { display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-start; }
+.lado > div { flex: 1 1 14rem; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>UVa 11080, Place the Guards: dos colores por pedazo y el menor</h1>
+  <p class="intro">El código de <code>guardias</code> corre sobre las dos entradas de la muestra y sobre tres casos más.
+  En cada paso usted decide el color del cruce o qué pasa con la calle; al cerrar cada pedazo, cuántos guardias aporta;
+  y al final del caso, qué número se imprime. Una respuesta equivocada dice qué se miró mal y se puede volver a intentar.<br>
+  Enunciado y envío: <a href="https://vjudge.net/problem/UVA-11080" target="_blank" rel="noopener">https://vjudge.net/problem/UVA-11080</a>. La página pide cuenta para ver el enunciado.</p>
+
+  <div class="carta" id="parte-1">
+    <h2>1. Lo que pide el juez</h2>
+    <div class="enunciado">Una ciudad tiene v cruces, numerados de 0 a v − 1, con 1 ≤ v ≤ 200, y e calles, con
+    0 ≤ e ≤ 10000; cada calle une dos cruces y se recorre en los dos sentidos. Se ponen guardias en algunos cruces. Un
+    guardia vigila su cruce, las calles que salen de él y los cruces del otro extremo de esas calles. Cada cruce y cada
+    calle tienen que quedar vigilados, y ninguna calle puede tener guardias en sus dos extremos. Por cada caso se imprime
+    el menor número de guardias que lo logra, o <code>-1</code> si no se puede. La entrada empieza con el número T de
+    casos; cada caso trae la línea <code>v e</code> y luego e líneas <code>f t</code>.</div>
+    <div class="lado">
+      <div><p style="margin:0.2rem 0">Entrada de muestra</p><pre class="entrada" id="p-entrada"></pre></div>
+      <div><p style="margin:0.2rem 0">Salida de muestra</p><pre class="entrada">2
+-1</pre></div>
+    </div>
+    <div id="preguntas"></div>
+    <div class="ayudas"><button type="button" id="abrir-partes">Ya hice las preguntas: abrir la corrida</button></div>
+  </div>
+
+  <div class="carta espera" id="parte-2">
+    <h2>2. El código sobre cada caso</h2>
+    <p class="aviso-espera">Se abre al terminar las preguntas.</p>
+    <div class="cuerpo">
+      <div class="presets" id="casos"></div>
+      <div class="lado">
+        <div><p style="margin:0.2rem 0">Entrada del caso</p><pre class="entrada" id="r-entrada"></pre></div>
+        <div class="dibujo" id="r-grafo"></div>
+      </div>
+      <p class="leyenda-g">Borde negro: el cruce <code>u</code> de la llamada de arriba. Calle ámbar: la que se está mirando.
+      Calle roja: un choque. Al acertar la salida, los cruces cuadrados son los que llevan guardia.</p>
+      <div class="instruccion" id="r-instruccion"></div>
+      <div class="decision" id="r-decision"></div>
+      <div class="decision oculto" id="r-opciones"></div>
+      <div class="veredicto" id="r-veredicto"></div>
+      <div class="pila" id="r-pila"></div>
+      <div class="codigo" id="panel-codigo"></div>
+      <div class="ayudas">
+        <button type="button" id="r-ayuda">Hacer este paso por mí</button>
+        <button type="button" id="r-fin">Ir al final del caso</button>
+        <button type="button" id="r-reinicio">Volver a empezar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="carta espera" id="parte-3">
+    <h2>3. Lo que cuesta y dónde deja de servir</h2>
+    <p class="aviso-espera">Se abre al terminar las preguntas.</p>
+    <div class="cuerpo">
+      <p style="margin-top:0">Con el tope del enunciado, v = 200 y e = 10000, ¿cuántas veces corre en total la línea 5,
+      <code>if color[v] == -1</code>?</p>
+      <div class="decision" id="c-opciones"></div>
+      <div class="veredicto" id="c-veredicto"></div>
+      <p>Los dos colores dan el mínimo porque la regla obliga a que cada calle tenga exactamente un extremo con guardia.
+      En esta ciudad de dos centros unidos, cada uno con tres puntas, el código imprime 4. Si la regla no existiera y solo
+      se pidiera que todo quede vigilado, ¿cuál sería el mínimo de guardias?</p>
+      <div class="lado">
+        <div><pre class="entrada" id="l-entrada"></pre></div>
+        <div class="dibujo" id="l-grafo"></div>
+      </div>
+      <div class="decision" id="l-opciones"></div>
+      <div class="veredicto" id="l-veredicto"></div>
+      <div class="ayudas"><button type="button" id="l-ver">Ver el reparto del código</button></div>
+    </div>
+  </div>
+
+  <div class="carta espera" id="carta-cierre">
+    <h2>4. Para resolver sin ayuda</h2>
+    <p class="aviso-espera">Se abre al terminar las preguntas.</p>
+    <div class="cuerpo">
+      <p style="margin-top:0">Escriba la entrada de un caso con v = 9 y tres pedazos, uno de ellos un cruce aislado, cuya
+      salida sea 4 y en el que sumar los cruces azules de cada pedazo dé 6. Diga qué <code>cuenta</code> deja cada pedazo y
+      qué calle, agregada a su entrada, cambia la salida a <code>-1</code>.</p>
+    </div>
+  </div>
+</div>
+<script src="../comun/grafo-svg.js"></script>
+<script src="../comun/planteo.js"></script>
+<script src="../../comun/motor.js"></script>
+<script src="guardias.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
