@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El tipo de una expresión compuesta</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>El tipo de una expresión compuesta</h1>
+  <p class="intro">Seis expresiones y una pregunta para cada una: qué responde el chequeador. Dos de las seis las rechaza, y en una de esas dos la diferencia con la que sí pasa es un solo paréntesis. Los tipos y los mensajes de rechazo de esta página se midieron con <code>type-of-program</code>.</p>
+
+  <div class="alerta">
+    El lenguaje es CHECKED (EOPL §7.1). Las primitivas van antes del paréntesis
+    y con comas (<code>+(e,e)</code>, <code>-(e,e)</code>, <code>*(e,e)</code>,
+    <code>&lt;(e,e)</code>, <code>&gt;(e,e)</code>, <code>zero?(e)</code>), la
+    aplicación va sin comas (<code>(rator rand …)</code>), y el tipo de un
+    procedimiento se escribe con los tipos de sus parámetros separados por
+    <code>*</code>, una flecha y el tipo del resultado. El ambiente inicial
+    está vacío, así que toda variable que aparezca tiene que estar ligada en la
+    expresión.
+  </div>
+
+  <div id="bloques"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Resueltos</h2>
+    <div class="envoltura-tabla">
+      <table>
+        <thead><tr><th>Expresión</th><th>Qué responde</th></tr></thead>
+        <tbody>
+          <tr><td><code>&gt;(7, 6)</code></td><td><code>bool</code>: la primitiva está aplicada</td></tr>
+          <tr><td>el <code>if</code> con <code>(t 4)</code> de prueba</td><td><code>int</code></td></tr>
+          <tr><td>las dos ramas que entregan un procedimiento</td><td><code>(int * (bool -&gt; int) -&gt; (bool -&gt; int))</code></td></tr>
+          <tr><td>la rama del <code>then</code> aplicada</td><td><code>(int * int -&gt; int)</code></td></tr>
+          <tr><td>la misma sin aplicar</td><td>la rechaza: <code>(int -&gt; int) != int</code></td></tr>
+          <tr><td>el <code>if t then y else t</code></td><td>la rechaza: <code>int != bool</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="nota">Las dos últimas fallan por la misma comparación de la regla del condicional, la que exige que las dos ramas coincidan, y ninguna de las dos falla por la prueba.</div>
+
+    <h2 class="ejercicio-abierto">Un ejercicio más</h2>
+    <p>Tome la cuarta expresión, la que el chequeador acepta con tipo <code>(int * int -&gt; int)</code>, y cámbiele una sola cosa para que el tipo pase a ser <code>(int * int -&gt; bool)</code>, sin que deje de usar el condicional. Después escriba una expresión que el chequeador rechace por la primera comparación de la regla del condicional, la de la prueba, y no por la segunda. Compruebe las dos con <code>type-of-program</code> y copie lo que imprime.</p>
+  </div>
+
+</div>
+<script src="../comun/motor-decisiones.js"></script>
+
+<script src="expresiones.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

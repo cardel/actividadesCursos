@@ -54,3 +54,12 @@ La regla del condicional y la de la aplicación, con los tipos ya calculados,
 de modo que lo que se escribe es la regla. La de la aplicación comprueba tres
 cosas distintas y una de ellas, el número de argumentos, el evaluador no la
 hace.
+
+## El tipo de una expresión compuesta
+
+### [Qué tipo tiene la expresión](expresiones.html){ target=_blank rel=noopener }
+
+Seis expresiones para decir qué responde el chequeador. Dos las rechaza, y
+entre la que acepta y una de las que rechaza la única diferencia es un
+paréntesis: con él la rama del condicional es una aplicación que entrega un
+entero, y sin él es un procedimiento que no coincide con la otra rama.
