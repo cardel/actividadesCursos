@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diciembre de 2025: qué modelo usar</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Diciembre de 2025: qué modelo usar</h1>
+  <p class="intro">Es noviembre de 2025 y una aerolínea tiene que decidir cuántos vuelos programa en diciembre, el mes con más pasajeros en promedio. Pide un pronóstico del total de pasajeros del país para diciembre, a un mes, y quiere saber también qué modelo usar el año siguiente.</p>
+  <p class="intro">Hay seis candidatos de la tabla del curso: el estacional ingenuo, dos medias ponderadas con pesos a mano, el Transformer con y sin codificación de posición, y la regresión lineal sobre la diferencia con hace 12 meses. Primero se predice cuál queda más cerca, después se comprueba con lo observado y al final se elige con el <i>backtest</i>.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Compruebe con diciembre de 2025</h2>
+    <p>La ventana es la diferencia con hace 12 meses, en millones, de diciembre de 2024 a noviembre de 2025. Cada pronóstico es diciembre de 2024 más la diferencia que pronostica el modelo.</p>
+    <div class="envoltura-tabla" id="ventana"></div>
+    <div class="controles">
+      <label>modelo</label>
+      <span class="selector" id="modelo">
+        <button data-valor="estacional" class="elegido">estacional ingenuo</button>
+        <button data-valor="ultimo">a mano: último mes</button>
+        <button data-valor="tres">a mano: tres últimos</button>
+        <button data-valor="transformer">Transformer</button>
+        <button data-valor="sinPosicion">Transformer sin posición</button>
+        <button data-valor="lineal">regresión lineal</button>
+      </span>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <p id="pregunta-error"></p>
+    <div class="opciones" id="op-error"></div>
+    <div class="veredicto" id="ver-error"></div>
+    <div class="figura" id="barras"></div>
+    <p class="nota">Las medias ponderadas y los errores se calculan en la página con la serie del curso. Los pronósticos del Transformer y de la regresión lineal vienen de PyTorch y de scikit-learn, entrenados con los meses hasta noviembre de 2025 con el mismo código del notebook, y se calcularon fuera de la página.</p>
+  </div>
+
+  <div class="carta">
+    <h2>3. Elija con el backtest</h2>
+    <div class="envoltura-tabla" id="tabla"></div>
+    <p class="nota">El <i>backtest</i> común: 13 orígenes, de febrero de 2024 a febrero de 2025, cada uno con 12 meses de pronóstico, 156 pronósticos por modelo. Las filas del Transformer son las de la semilla 2026.</p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Lo que deja la decisión</h2>
+    <div id="cierre-tabla" class="envoltura-tabla"></div>
+    <div class="nota" id="cierre-texto"></div>
+    <h3>Ejercicio abierto</h3>
+    <p>La aerolínea insiste en usar el Transformer porque acertó diciembre. Escriba en cinco líneas qué le respondería, con las cifras de esta página, y proponga una prueba que la convenza: qué meses compararía, con qué métrica y qué resultado le haría cambiar de modelo.</p>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["estacional", "cambio"] });</script>
+<script src="../../comun/motor.js"></script>
+<script src="datos.js"></script>
+<script src="../recurrentes/pronostico.js"></script>
+<script src="atencion.js"></script>
+<script src="situacion.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

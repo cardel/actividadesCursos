@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parámetros contra 110 meses</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Parámetros contra 110 meses</h1>
+  <p class="intro">El Transformer de la sesión encadena cinco piezas: <code>nn.Linear(1, d)</code> lleva cada mes a <i>d</i> números; la atención tiene cuatro matrices de <i>d</i> × <i>d</i> con sesgo (consulta, clave, valor y la que junta los cabezales); dos <code>nn.Linear</code>, de <i>d</i> a <i>a</i> y de <i>a</i> a <i>d</i>; dos <code>LayerNorm</code> con 2<i>d</i> números cada una, y <code>nn.Linear(d, 1)</code> a la salida. En PyTorch, <i>d</i> es <code>d_model</code>, <i>a</i> es <code>dim_feedforward</code> y los cabezales son <code>nhead</code>.</p>
+  <p class="intro">La serie del curso tiene 110 meses. Con los meses hasta diciembre de 2024, la diferencia con hace 12 meses y ventanas de 12 pasos, quedan 72 ventanas: 24 se guardan para la validación y 48 entrenan la red. La página cuenta los parámetros de cada variante y los pone al lado del <i>backtest</i>.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Cuente los parámetros</h2>
+    <div class="controles">
+      <label>d_model</label>
+      <span class="selector" id="d">
+        <button data-valor="8">8</button>
+        <button data-valor="16" class="elegido">16</button>
+        <button data-valor="32">32</button>
+      </span>
+      <label>nhead</label>
+      <span class="selector" id="cabezas">
+        <button data-valor="1">1</button>
+        <button data-valor="2" class="elegido">2</button>
+        <button data-valor="4">4</button>
+      </span>
+      <label>dim_feedforward</label>
+      <span class="selector" id="ancho">
+        <button data-valor="32" class="elegido">32</button>
+        <button data-valor="64">64</button>
+      </span>
+    </div>
+    <div class="envoltura-tabla" id="piezas"></div>
+    <p class="lectura" id="lectura"></p>
+    <p id="pregunta-atencion"></p>
+    <div class="opciones" id="op-atencion"></div>
+    <div class="veredicto" id="ver-atencion"></div>
+    <p id="pregunta-ventana"></p>
+    <div class="opciones" id="op-ventana"></div>
+    <div class="veredicto" id="ver-ventana"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Al lado de los otros modelos</h2>
+    <div class="figura" id="barras"></div>
+    <div class="envoltura-tabla" id="tabla"></div>
+    <p class="nota">Los parámetros se cuentan en la página. El MAPE es del <i>backtest</i> común, 13 orígenes y 12 meses, con el pronóstico promedio de cinco semillas, calculado con PyTorch fuera de la página con el mismo código del notebook; las variantes sin MAPE no se pasaron por el <i>backtest</i>.</p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Ventajas y limitaciones del tamaño</h2>
+    <div id="cierre-tabla" class="envoltura-tabla"></div>
+    <div class="nota" id="cierre-texto"></div>
+    <h3>Ejercicio abierto</h3>
+    <p>Diseñe un Transformer con menos parámetros que ventanas de entrenamiento. Escriba <code>d_model</code>, <code>nhead</code> y <code>dim_feedforward</code>, cuente sus parámetros pieza por pieza y diga qué le quitaría a la red esa reducción frente a la de la sesión.</p>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["pandemia", "cambio"] });</script>
+<script src="../../comun/motor.js"></script>
+<script src="datos.js"></script>
+<script src="../recurrentes/pronostico.js"></script>
+<script src="atencion.js"></script>
+<script src="tamano.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

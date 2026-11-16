@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La posición y los pesos que aprende la red</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>La posición y los pesos que aprende la red</h1>
+  <p class="intro">La atención compara meses por sus números: si se barajan los meses de la ventana, los pesos se barajan con ellos y la suma da lo mismo. Para que la red sepa qué mes va primero, a los 16 números de cada mes se les suma una fila de una tabla fija de senos y cosenos, la <b>codificación de posición</b>. La columna <i>c</i> par lleva sen(<i>p</i> ω<sub>c</sub>) y la siguiente cos(<i>p</i> ω<sub>c</sub>), con ω<sub>c</sub> = 10 000<sup>−c/16</sup> y <i>p</i> el paso menos 1.</p>
+  <p class="intro">La segunda parte mira un Transformer de una capa ya entrenado con la serie del curso hasta noviembre de 2024, con la tabla y sin ella: qué pesos pone el último mes de la ventana sobre los doce pasos, y qué pasa al barajar la ventana.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. La tabla de senos y cosenos</h2>
+    <div class="controles">
+      <label for="paso">paso</label>
+      <input type="range" id="paso" min="1" max="12" value="2">
+      <span class="valor-n" id="paso-n"></span>
+    </div>
+    <div class="figura" id="tabla-pos"></div>
+    <div class="envoltura-tabla" id="fila"></div>
+    <p id="pregunta-seno"></p>
+    <div class="opciones" id="op-seno"></div>
+    <div class="veredicto" id="ver-seno"></div>
+    <p class="nota">La tabla se calcula en la página. Rojo es +1, azul es −1 y blanco es 0; cada fila es un paso de la ventana.</p>
+  </div>
+
+  <div class="carta">
+    <h2>3. Los pesos que aprendió la red</h2>
+    <div class="controles">
+      <label for="mes">mes que se pronostica</label>
+      <input type="range" id="mes" min="0" max="11" value="11">
+      <span class="valor-n" id="mes-n"></span>
+      <label>red</label>
+      <span class="selector" id="red">
+        <button data-valor="con" class="elegido">con posición</button>
+        <button data-valor="sin">sin posición</button>
+      </span>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <div class="figura" id="barras"></div>
+    <p class="nota">Los pesos y los pronósticos vienen de PyTorch, con el mismo código del notebook de la sesión, calculados fuera de la página: el promedio de los dos cabezales para el último paso de la ventana. Las dos redes se entrenaron con los meses hasta noviembre de 2024, así que de enero a noviembre la red ya vio el mes y solo diciembre es un pronóstico.</p>
+  </div>
+
+  <div class="carta">
+    <h2>4. Baraje la ventana de diciembre de 2024</h2>
+    <p>Los once primeros pasos cambian de lugar y noviembre se queda en el paso 12.</p>
+    <div class="controles">
+      <label>ventana</label>
+      <span class="selector" id="orden">
+        <button data-valor="0" class="elegido">en orden</button>
+        <button data-valor="1">barajada</button>
+      </span>
+    </div>
+    <p class="lectura" id="lectura-barajar"></p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Ventajas y limitaciones de la posición</h2>
+    <div id="cierre-tabla" class="envoltura-tabla"></div>
+    <div class="nota" id="cierre-texto"></div>
+    <h3>Ejercicio abierto</h3>
+    <p>Con 12 pasos, de la columna 8 en adelante la tabla casi no cambia. Proponga otra forma de escribir la posición de cada mes con pocos números, que distinga los 12 pasos y que diga también qué mes del año es. Escriba la fila de diciembre y la de enero con su propuesta y explique qué ganaría la red frente a la tabla de senos y cosenos.</p>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["cambio", "estacional"] });</script>
+<script src="../../comun/motor.js"></script>
+<script src="datos.js"></script>
+<script src="../recurrentes/pronostico.js"></script>
+<script src="atencion.js"></script>
+<script src="posicion.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

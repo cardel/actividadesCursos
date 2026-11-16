@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La atención paso a paso</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>La atención paso a paso</h1>
+  <p class="intro">Una media ponderada de la ventana usa los mismos pesos en todas las ventanas. La <b>autoatención</b> los calcula con los números de cada ventana. Cada mes lleva tres vectores: una <b>consulta</b> (lo que busca el mes que pronostica), una <b>clave</b> (lo que ofrece cada mes) y un <b>valor</b> (lo que aporta a la suma). El puntaje de un mes con otro es consulta por clave, dividido por la raíz de 2; <code>softmax</code> vuelve los puntajes de una fila pesos que suman 1, y la salida es la suma de los valores por sus pesos.</p>
+  <p class="intro">Los cuatro meses son agosto, septiembre, octubre y noviembre de 2024, los pasos 9 a 12 de la ventana que pronostica diciembre. Cada mes es una fila (z, p): su diferencia con hace 12 meses, en millones, y su posición en la ventana. La clave es la fila tal cual, el valor es la diferencia, y la consulta multiplica la diferencia por el control <i>valor</i> y la posición por el control <i>posición</i>.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Haga la cuenta de un mes</h2>
+    <div class="controles">
+      <label for="valor">valor</label>
+      <input type="range" id="valor" min="0" max="8" step="0.5" value="1">
+      <span class="valor-n" id="valor-n"></span>
+      <label for="posicion">posición</label>
+      <input type="range" id="posicion" min="0" max="8" step="0.5" value="4">
+      <span class="valor-n" id="posicion-n"></span>
+    </div>
+    <div class="controles">
+      <label>el mes que consulta</label>
+      <span class="selector" id="consulta">
+        <button data-valor="0">agosto</button>
+        <button data-valor="1">septiembre</button>
+        <button data-valor="2">octubre</button>
+        <button data-valor="3" class="elegido">noviembre</button>
+      </span>
+    </div>
+    <div class="envoltura-tabla" id="tabla"></div>
+    <p class="lectura" id="lectura"></p>
+    <div class="controles">
+      <span class="selector" id="ver">
+        <button data-valor="no" class="elegido">ocultar la cuenta</button>
+        <button data-valor="si">mostrar la cuenta</button>
+      </span>
+    </div>
+    <div class="figura" id="mapa"></div>
+    <p class="nota">Todo se calcula en la página con la serie del curso. Con la cuenta a la vista aparecen los puntajes, los pesos, la salida y el mapa de calor: la fila del mes que consulta tiene borde rojo y cada fila del mapa suma 1.</p>
+  </div>
+
+  <div class="carta">
+    <h2>3. Calcule antes de mostrar la cuenta</h2>
+    <p>Con los controles como estén, para el mes que consulta, con la consulta y las claves de la tabla. Las opciones se recalculan al mover un control.</p>
+    <p id="pregunta-puntaje"></p>
+    <div class="opciones" id="op-puntaje"></div>
+    <div class="veredicto" id="ver-puntaje"></div>
+    <p id="pregunta-peso"></p>
+    <div class="opciones" id="op-peso"></div>
+    <div class="veredicto" id="ver-peso"></div>
+    <p id="pregunta-salida"></p>
+    <div class="opciones" id="op-salida"></div>
+    <div class="veredicto" id="ver-salida"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Baraje los meses</h2>
+    <p>Agosto, septiembre y octubre cambian de lugar y noviembre se queda al final. La posición es del lugar en la ventana, no del mes: al barajar, cada mes toma la posición del lugar que ocupa.</p>
+    <div class="controles">
+      <label>orden</label>
+      <span class="selector" id="orden">
+        <button data-valor="orden" class="elegido">ago, sep, oct, nov</button>
+        <button data-valor="barajado">oct, ago, sep, nov</button>
+      </span>
+      <label>posición en la fila</label>
+      <span class="selector" id="conpos">
+        <button data-valor="si" class="elegido">con posición</button>
+        <button data-valor="no">en ceros</button>
+      </span>
+    </div>
+    <p class="lectura" id="lectura-barajar"></p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Ventajas y limitaciones de la atención</h2>
+    <div id="cierre-tabla" class="envoltura-tabla"></div>
+    <div class="nota" id="cierre-texto"></div>
+    <h3>Ejercicio abierto</h3>
+    <p>Busque a mano un par de valores de los controles con el que noviembre ponga más de la mitad de su peso en octubre. Escriba la consulta de noviembre, los cuatro puntajes y los cuatro pesos, y diga qué tendría que pasar con la diferencia de octubre para que ese peso baje.</p>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["cambio", "transformaciones"] });</script>
+<script src="../../comun/motor.js"></script>
+<script src="../recurrentes/pronostico.js"></script>
+<script src="atencion.js"></script>
+<script src="calculo.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
