@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Núcleo y filtros</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Núcleo y filtros</h1>
+  <p class="intro">La <code>Conv1d</code> del curso pasa varios filtros por la ventana de 12 meses, aplica ReLU al mapa y junta todas sus casillas con una capa lineal. Dos controles: el <b>núcleo</b>, cuántos meses ve cada filtro, y el número de <b>filtros</b>. Con núcleo k cada filtro deja 12 − k + 1 casillas; con núcleo 12 deja una sola y cada filtro ve la ventana entera. El objetivo es la diferencia con hace 12 meses.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Elija núcleo y filtros</h2>
+    <div class="controles">
+      <label>núcleo</label>
+      <span class="selector" id="nucleo">
+        <button data-valor="3" class="elegido">3</button>
+        <button data-valor="6">6</button>
+        <button data-valor="12">12</button>
+      </span>
+      <label>filtros</label>
+      <span class="selector" id="filtros">
+        <button data-valor="1">1</button>
+        <button data-valor="4">4</button>
+        <button data-valor="8" class="elegido">8</button>
+        <button data-valor="16">16</button>
+      </span>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <div class="figura" id="figura"></div>
+    <p class="nota">Cada posición entrena una <code>Conv1d</code> con la semilla 2026 y los meses hasta diciembre de 2024, y pronostica 2025 mes a mes. Los pronósticos vienen de PyTorch, con el mismo código del notebook de la sesión, calculados fuera de la página; el MAE y los parámetros se calculan aquí. El MAPE del backtest promedia cinco semillas en 13 orígenes.</p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Las doce posiciones</h2>
+    <div id="cierre-tabla" class="envoltura-tabla"></div>
+    <div class="nota" id="cierre-texto"></div>
+    <h3>Ejercicio abierto</h3>
+    <p>Elija núcleo y filtros sin mirar el backtest, solo con una validación temporal dentro del entrenamiento, y escriba la regla que usó. Después compare su elección con la casilla de menor MAPE de la tabla. ¿Cuánto se pierde por no haber mirado la prueba?</p>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["cambio", "muestra"] });</script>
+<script src="datos.js"></script>
+<script src="../recurrentes/pronostico.js"></script>
+<script src="convolucion.js"></script>
+<script src="nucleo.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

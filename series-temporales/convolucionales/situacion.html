@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sobre qué modelo vale un híbrido</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Sobre qué modelo vale un híbrido</h1>
+  <p class="intro">Un híbrido pone una red a pronosticar el residuo de un modelo base. La red solo puede aprender algo si el residuo de un mes dice algo del siguiente: si es ruido, no hay patrón que copiar. Antes de entrenar nada, eso se mira en la autocorrelación del residuo.</p>
+  <p class="intro">La página compara el residuo de tres modelos de la tabla del curso, ajustados con los meses hasta diciembre de 2024: el estacional ingenuo, el SARIMA(0,1,0)(0,1,1)<sub>12</sub> y la regresión lineal sobre la diferencia con hace 12 meses. Usted elige el modelo base, mira su residuo y su correlograma, y con eso decide.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Mire el residuo de cada modelo</h2>
+    <div class="controles">
+      <label>modelo base</label>
+      <span class="selector" id="base">
+        <button data-valor="estacional" class="elegido">estacional ingenuo</button>
+        <button data-valor="sarima">SARIMA</button>
+        <button data-valor="lineal">regresión lineal</button>
+      </span>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <div class="figura" id="residuo"></div>
+    <div class="figura" id="correlograma"></div>
+    <p class="nota">El residuo del estacional ingenuo se calcula en la página: es <code>y(t) − y(t − 12)</code>, en millones. Los residuos del SARIMA y de la regresión lineal vienen de statsmodels y scikit-learn, calculados fuera de la página con el código de la sesión; la autocorrelación y la banda ±1,96/√n se calculan aquí.</p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div id="situaciones"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Lo que deja la situación</h2>
+    <div class="nota" id="cierre-texto"></div>
+    <h3>Ejercicio abierto</h3>
+    <p>Arme el híbrido con la regresión lineal como base y una <code>Conv1d</code> sobre su residuo, páselo por el backtest del curso y agregue la fila a la tabla. Antes de correrlo, escriba qué MAPE espera y por qué, con la cifra de esta página que usa para decirlo.</p>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["estacional", "cambio"] });</script>
+<script src="datos.js"></script>
+<script src="../recurrentes/pronostico.js"></script>
+<script src="convolucion.js"></script>
+<script src="situacion.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

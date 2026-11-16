@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El híbrido paso a paso</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>El híbrido paso a paso</h1>
+  <p class="intro">Un modelo híbrido junta dos modelos. El primero, aquí el SARIMA(0,1,0)(0,1,1)<sub>12</sub> de la sesión 5, da el pronóstico base. En cada mes de entrenamiento deja un <b>residuo</b>: lo observado menos lo que el SARIMA esperaba. El segundo, un MLP con una capa oculta de 16 neuronas, aprende a pronosticar ese residuo con sus 12 meses anteriores. El pronóstico del híbrido es la suma: base más residuo pronosticado.</p>
+  <p class="intro">La página parte de diciembre de 2024 y pronostica los doce meses de 2025. Usted recorre los meses y ve cada pieza de la suma junto a lo que pasó.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Lo que dejó el SARIMA</h2>
+    <p>Residuos del SARIMA ajustado hasta diciembre de 2024, en millones. En rojo, los 13 primeros, que se dejan fuera.</p>
+    <div class="figura" id="residuos"></div>
+    <p class="lectura" id="lectura-residuos"></p>
+  </div>
+
+  <div class="carta">
+    <h2>3. Recorra 2025 mes a mes</h2>
+    <div class="controles">
+      <label for="mes">mes de 2025</label>
+      <input type="range" id="mes" min="1" max="12" value="1">
+      <span class="valor-n" id="mes-valor"></span>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <div class="figura" id="flujo"></div>
+    <div class="figura" id="figura"></div>
+    <div class="envoltura-tabla" id="tabla"></div>
+    <p class="nota">El pronóstico del SARIMA y el residuo que pronostica el MLP vienen de statsmodels y PyTorch, con el mismo código del notebook de la sesión, calculados fuera de la página. La suma, el error y el MAE se calculan aquí.</p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Ventajas y limitaciones del híbrido</h2>
+    <div id="cierre-tabla" class="envoltura-tabla"></div>
+    <div class="nota" id="cierre-texto"></div>
+    <h3>Ejercicio abierto</h3>
+    <p>Con los números de la tabla de la parte 3, calcule cuánto tendría que haber pronosticado la red en cada mes para que el híbrido acertara 2025 exacto. ¿Cuántos de esos doce números podría haber sacado la red de los residuos de 2024? Mire la gráfica de la parte 2 antes de responder.</p>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["estacional", "pandemia"] });</script>
+<script src="datos.js"></script>
+<script src="../recurrentes/pronostico.js"></script>
+<script src="convolucion.js"></script>
+<script src="hibrido.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

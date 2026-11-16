@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El filtro paso a paso</title>
+<link rel="stylesheet" href="../comun/estilo.css">
+<link rel="stylesheet" href="../comun/ejercicios.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>El filtro paso a paso</h1>
+  <p class="intro">Una red convolucional lee la ventana con un <b>filtro</b>: unos pocos pesos, aquí tres, que se ponen sobre tres pasos seguidos de la ventana. En cada posición el filtro multiplica cada paso por su peso y suma los tres productos. Después se corre un paso y repite la cuenta con los mismos pesos. Cada suma va a una casilla del <b>mapa de características</b>. Con 12 pasos y un filtro de 3, el mapa tiene 10 casillas.</p>
+  <p class="intro">La ventana es la diferencia con hace 12 meses, en millones, de los doce meses anteriores al mes que se pronostica. Usted elige los pesos del filtro, la ventana, el paso con que salta el filtro y la posición. La última parte muestra cómo un filtro aprende sus pesos.</p>
+
+  <div id="contexto"></div>
+
+  <div id="antes"></div>
+
+  <div class="carta">
+    <h2>2. Recorra la ventana con el filtro</h2>
+    <div class="controles">
+      <label>pesos</label>
+      <span class="selector" id="pesos">
+        <button data-valor="media" class="elegido">media: ⅓, ⅓, ⅓</button>
+        <button data-valor="cambio">cambio: −1, 0, 1</button>
+        <button data-valor="ultimo">último: 0, 0, 1</button>
+      </span>
+    </div>
+    <div class="controles">
+      <label>ventana</label>
+      <span class="selector" id="mes">
+        <button data-valor="2025-01" class="elegido">enero de 2025</button>
+        <button data-valor="2025-03">marzo de 2025</button>
+      </span>
+      <label>paso</label>
+      <span class="selector" id="paso">
+        <button data-valor="1" class="elegido">1</button>
+        <button data-valor="2">2</button>
+      </span>
+    </div>
+    <div class="controles">
+      <label for="posicion">posición</label>
+      <input type="range" id="posicion" min="1" max="10" value="1">
+      <span class="valor-n" id="posicion-valor"></span>
+    </div>
+    <p class="lectura" id="lectura"></p>
+    <div class="figura" id="dibujo"></div>
+    <div class="envoltura-tabla" id="tabla"></div>
+    <p class="nota">Todo se calcula en la página con la serie del curso. Cada paso de la ventana es <code>y(t) − y(t − 12)</code> en millones, redondeado a tres decimales, el mismo número de las diapositivas. La media de tres meses con pesos de ⅓ es la columna <code>media_3</code> de la tabla supervisada.</p>
+  </div>
+
+  <div class="carta">
+    <h2>3. Un filtro que aprende sus pesos</h2>
+    <p>Un filtro de tres pesos arranca con pesos al azar (semilla 2026) y se entrena con Adam para copiar la media de tres meses en todas las ventanas de la serie. Mueva las épocas.</p>
+    <div class="controles">
+      <label for="epoca">época</label>
+      <input type="range" id="epoca" min="0" max="40" value="0">
+      <span class="valor-n" id="epoca-valor"></span>
+    </div>
+    <p class="lectura" id="lectura-aprende"></p>
+    <div class="figura" id="dibujo-aprende"></div>
+    <p class="nota">Los pesos de cada época vienen de PyTorch, con el mismo código del notebook de la sesión; el mapa se calcula en la página con esos pesos sobre la ventana de enero de 2025.</p>
+  </div>
+
+  <div id="despues"></div>
+
+  <div class="carta" id="carta-cierre" style="display:none">
+    <h2>Ventajas y limitaciones del filtro</h2>
+    <div id="cierre-tabla" class="envoltura-tabla"></div>
+    <div class="nota" id="cierre-texto"></div>
+    <h3>Ejercicio abierto</h3>
+    <p>Diseñe a mano un filtro de tres pesos cuyo mapa sea grande cuando la diferencia sube dos meses seguidos y cercano a cero cuando se queda quieta. Escriba sus pesos, calcule el mapa de la ventana de enero de 2025 y diga en qué posición queda el valor más alto y qué meses cubre.</p>
+  </div>
+</div>
+<script src="../comun/serie.js"></script>
+<script src="../comun/series.js"></script>
+<script src="../comun/grafica.js"></script>
+<script src="../comun/motor-decisiones.js"></script>
+<script src="../comun/contexto.js"></script>
+<script>Contexto.mostrar("contexto", { claves: ["cambio", "transformaciones"] });</script>
+<script src="datos.js"></script>
+<script src="../recurrentes/pronostico.js"></script>
+<script src="convolucion.js"></script>
+<script src="filtro.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
