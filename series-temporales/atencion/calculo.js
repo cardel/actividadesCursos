@@ -132,6 +132,7 @@
     var r = A.cabezal(1, 4, con, orden), rotulos = (orden || [0, 1, 2, 3]).map(function (k) { return A.NOMBRES[k]; });
     document.getElementById("lectura-barajar").innerHTML = "Con valor 1 y posición 4. Pesos de noviembre sobre " + rotulos.join(", ") + ": " +
       r.pesos[3].map(c3).join("; ") + ". Salida de noviembre: <b>" + c3(r.salida[3]) + "</b>.";
+    document.getElementById("mapa-barajar").innerHTML = A.mapa(r.pesos, rotulos, 3);
   }
 
   cValor.addEventListener("input", function () { estado.valor = Number(cValor.value); dibujar(); });
