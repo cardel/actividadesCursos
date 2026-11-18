@@ -49,8 +49,8 @@
   hubiera paralelismo, y es el costo secuencial. La profundidad <code>D</code>
   mide la cadena más larga de operaciones que tienen que ir una después de
   otra, suponiendo núcleos de sobra, y es el tiempo mínimo al que se puede
-  aspirar. Sumar ocho enteros sirve para separarlos: el mismo resultado, las
-  mismas sumas, dos órdenes con profundidades distintas.</p>
+  aspirar. Sumar ocho enteros los separa. El resultado es el mismo y las sumas
+  son las mismas; lo que cambia con el orden es la profundidad.</p>
 
   <div class="carta">
     <h2>1. Cuántas sumas hay que hacer</h2>
@@ -119,7 +119,8 @@
     <h2>5. Qué cambia al poner más núcleos</h2>
     <p style="margin-top:0">Cada suma cuesta una unidad de tiempo y un nivel no
     empieza hasta que el anterior termina. Con <code>P</code> núcleos, un nivel
-    de <code>k</code> sumas independientes toma tantas rondas como quepan.</p>
+    de <code>k</code> sumas independientes se hace en rondas de
+    <code>P</code>.</p>
     <div class="presets" id="nucleos"></div>
     <div id="barras-tiempo" style="margin-top:0.7rem"></div>
     <p class="lectura" id="lectura-nucleos"></p>

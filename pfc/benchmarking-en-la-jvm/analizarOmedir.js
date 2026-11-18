@@ -138,7 +138,7 @@
         "Se puede medir cuánto tarda, y el número de sumas no se lee de ningún reloj: dos máquinas que tardan tiempos muy distintos hacen exactamente las mismas sumas.")
     },
     {
-      expr: "¿Cuántos milisegundos tarda sumarArray sobre un arreglo de 10^8 enteros en este portátil, con esta JVM?",
+      expr: "¿Cuántos milisegundos tarda sumarArray sobre un arreglo de cien millones de enteros en este portátil, con esta JVM?",
       opciones: par("medicion",
         "La pregunta nombra la máquina, la JVM y la entrada, y la respuesta es un número con ruido que hay que estimar corriendo el bloque varias veces.",
         "El análisis no entrega milisegundos. De una cota de crecimiento no sale un tiempo concreto: faltan la velocidad del procesador, la memoria y el estado en que está la JVM.",
@@ -152,7 +152,7 @@
         null)
     },
     {
-      expr: "Al pasar la entrada de 10^7 a 10^8 elementos, ¿el tiempo crece por diez o por cien?",
+      expr: "Al pasar la entrada de diez millones a cien millones de elementos, ¿el tiempo crece por diez o por cien?",
       opciones: par("analisis",
         "El factor lo fija el orden de crecimiento: lineal crece por diez y cuadrático por cien. La respuesta llega antes de tener la máquina.",
         null,
@@ -181,8 +181,8 @@
       expr: "Dos integrantes implementaron la suma del arreglo, uno en un ciclo de cola y el otro en árbol con parallel. ¿Qué parte de la discusión resuelve el análisis que ya hicieron?",
       cierre: "Que la versión en árbol tiene paralelismo disponible y el ciclo no, y que esa diferencia crece con n. El análisis dice que hay algo que ganar, no cuánto se gana aquí.",
       opciones: [
-        { txt: "que la versión en árbol reparte el mismo trabajo en muchos menos pasos en secuencia, y que esa ventaja crece con n", correcta: true, larga: true },
         { txt: "que la versión en árbol va a terminar antes que el ciclo en la máquina del equipo", fallo: "El análisis no habla de esta máquina. Dice que hay paralelismo disponible, y que la implementación lo aproveche depende del sobrecosto de parallel, del umbral y de los núcleos que haya.", larga: true },
+        { txt: "que la versión en árbol reparte el mismo trabajo en muchos menos pasos en secuencia, y que esa ventaja crece con n", correcta: true, larga: true },
         { txt: "que las dos versiones son equivalentes, porque las dos hacen las mismas sumas y quedan en el mismo orden de crecimiento", fallo: "Las dos tienen el mismo trabajo y el mismo orden de crecimiento, y ahí se queda corto el análisis secuencial: no distingue cuáles de esas sumas pueden ocurrir al mismo tiempo.", larga: true }
       ]
     },
@@ -190,9 +190,9 @@
       expr: "Midieron una vez la secuencial y una vez la paralela, el speedup salió 0,8 y hay que decidir qué hacer con la versión paralela.",
       cierre: "Volver a medir las dos, con calentamiento y varias repeticiones, y comparar valores que resistan el atípico. Con los diez tiempos de arriba, dos corridas del mismo programa dan speedup entre 0,20 y 4,95, así que un 0,8 de una sola pareja de medidas no decide nada.",
       opciones: [
-        { txt: "repetir las dos medidas con calentamiento y varias repeticiones antes de decidir", correcta: true, larga: true },
         { txt: "descartar la versión paralela, porque un speedup por debajo de 1 significa que repartir salió más caro que no repartir", fallo: "Eso es lo que significaría si el 0,8 fuera confiable. Con una sola medición de cada lado, el mismo programa comparado consigo mismo habría dado entre 0,20 y 4,95 en estos diez tiempos.", larga: true },
         { txt: "quedarse con la paralela y dejar la medición de lado, porque el análisis no depende de la máquina y ya dijo que hay paralelismo", fallo: "El análisis dice que hay paralelismo disponible, no que esta implementación lo aproveche. Para eso está la medición, que es la que confirma o desmiente la predicción.", larga: true },
+        { txt: "repetir las dos medidas con calentamiento y varias repeticiones antes de decidir", correcta: true, larga: true },
         { txt: "repetir solo la medición de la paralela, que es la sospechosa", fallo: "El speedup es un cociente y los dos tiempos son variables aleatorias. Medir bien un lado y mal el otro deja el resultado igual de incierto.", larga: true }
       ]
     }
@@ -471,12 +471,9 @@
 
   /* ---- items de opcion ----------------------------------------------- */
 
-  function rotar(lista, giro) {
-    var corte = giro % lista.length;
-    return lista.slice(corte).concat(lista.slice(0, corte));
-  }
-
-  function construirItems(idCaja, lista, prefijo, fijas) {
+  /* El sitio de la correcta esta repartido en el arreglo de cada item, asi que
+     las opciones se pintan en el orden en que estan escritas. */
+  function construirItems(idCaja, lista, prefijo) {
     var caja = document.getElementById(idCaja);
     lista.forEach(function (item, indice) {
       var contenedor = document.createElement("div");
@@ -488,8 +485,7 @@
       expr.textContent = item.expr;
       ops.className = "opciones";
       ver.className = "veredicto";
-      var mostradas = fijas ? item.opciones : rotar(item.opciones, indice + 1);
-      mostradas.forEach(function (o) {
+      item.opciones.forEach(function (o) {
         var b = document.createElement("button");
         b.textContent = o.txt;
         if (o.larga) { b.className = "larga"; }
@@ -533,8 +529,8 @@
   construirRazones();
   construirBarras();
   construirResumen();
-  construirItems("clasificar", CLASIFICAR, "clasificar-", true);
-  construirItems("decidir", DECIDIR, "decidir-", false);
+  construirItems("clasificar", CLASIFICAR, "clasificar-");
+  construirItems("decidir", DECIDIR, "decidir-");
 
   opcionesTrabajo = Motor.opcionesNumericas("opciones-trabajo", "veredicto-trabajo", armarTrabajo);
   opcionesRazon = Motor.opcionesNumericas("opciones-razon", "veredicto-razon", armarRazon);

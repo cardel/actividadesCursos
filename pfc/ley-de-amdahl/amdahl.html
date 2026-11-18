@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ley de Amdahl: el techo que pone la parte secuencial</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .codigo { max-height: none; }
+  .item { border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem; }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.93rem; font-weight: 700; color: var(--azul);
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button { font-size: 0.88rem; min-width: 4rem; }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 18rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .item .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  #presets button { font-size: 0.83rem; }
+  .formula {
+    font-size: 1.05rem; text-align: center; margin: 0.6rem 0;
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace; color: var(--azul);
+  }
+  .barra-fila .rotulo { width: 5.5rem; font-family: ui-monospace, monospace; }
+  td.resaltada { background: var(--ambar-suave); font-weight: 700; }
+  td.pend { font-weight: 700; }
+  .chip { font-size: 0.86rem; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Ley de Amdahl: el techo que pone la parte secuencial</h1>
+  <p class="intro">Ningún programa se reparte completo. Si una fracción f es
+  inherentemente secuencial y el resto se divide entre P núcleos sin pérdidas,
+  el tiempo pasa de una unidad a f + (1 - f)/P y el speedup es su inverso. De
+  esa cuenta sale una consecuencia incómoda: el primer término no depende de P,
+  así que la curva se aplana en 1/f y ningún número de núcleos la cruza. La
+  página calcula la tabla desde la fórmula y termina en la decisión que la
+  fórmula obliga a tomar, con las cifras del programa de la sesión.</p>
+
+  <div class="carta">
+    <h2>1. La cuenta, línea por línea</h2>
+    <p style="margin-top:0">El tiempo de la versión secuencial se toma como
+    unidad, de modo que f es a la vez una fracción y un tiempo. El paso a paso
+    reparte esa unidad en lo que se queda igual y lo que se divide.</p>
+    <div class="presets" id="presets"></div>
+    <div class="panel-doble" style="margin-top:0.8rem">
+      <div class="codigo" id="panel-codigo"></div>
+      <div class="estado">
+        <div class="chips" id="chips"></div>
+        <div class="progreso">paso <b id="ver-paso">0</b> de <b id="ver-total">0</b></div>
+        <div class="botones">
+          <button id="btn-paso">Paso</button>
+          <button id="btn-auto">Auto</button>
+          <button id="btn-fin">Al final</button>
+          <button id="btn-reiniciar">Reiniciar</button>
+        </div>
+      </div>
+    </div>
+    <p class="nota" id="pie-cuenta"></p>
+    <p class="nota">La línea 3 es la única donde aparece P. Subir el número de
+    núcleos encoge ese término y deja intacto el de la línea 2.</p>
+  </div>
+
+  <div class="carta">
+    <h2>2. La tabla, calculada desde la fórmula</h2>
+    <div class="formula">S<sub>P</sub> = 1 / (f + (1 - f)/P)&nbsp;&nbsp;&nbsp;
+    S<sub>∞</sub> = 1/f</div>
+    <div class="envoltura-tabla" id="tabla-amdahl"></div>
+    <div class="prediccion">
+      <span><b>La celda del preset escogido está tapada. ¿Cuánto vale ese
+      speedup?</b></span>
+    </div>
+    <div class="opciones" id="opciones-speedup"></div>
+    <div id="veredicto-speedup" class="veredicto"></div>
+    <p class="nota">Cada fila cambia la fracción secuencial y cada columna el
+    número de núcleos. La última columna es el límite con todos los núcleos que
+    se quieran.</p>
+  </div>
+
+  <div class="carta">
+    <h2>3. El techo</h2>
+    <div id="curva"></div>
+    <p class="nota" id="pie-curva"></p>
+    <div id="techo"></div>
+    <div class="progreso" id="marcador-techo"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Dos formas de subir el speedup</h2>
+    <p style="margin-top:0">Hay dos maneras de mover la cuenta: cambiar P, que
+    divide a 1 - f, o cambiar f, que mueve los dos términos a la vez. Las
+    cifras de las dos están en la tabla de arriba.</p>
+    <div id="ventaja"></div>
+    <div class="progreso" id="marcador-ventaja"></div>
+  </div>
+
+  <div class="carta">
+    <h2>5. Comprar núcleos o reescribir la parte serial</h2>
+    <p style="margin-top:0">La suma paralela del arreglo de diez millones de
+    elementos tardó 42 ms en su versión secuencial y 15 ms con cuatro hilos en
+    la máquina de la sesión. Su parte serial es la suma que sigue a cada
+    parallel, más partir el arreglo. Con el speedup medido y P = 4 se puede
+    despejar qué fracción del programa es esa parte, y con ella decidir dónde
+    conviene gastar el esfuerzo.</p>
+    <div class="envoltura-tabla" id="tabla-decision"></div>
+    <div id="decision" style="margin-top:0.8rem"></div>
+    <div class="progreso" id="marcador-decision"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>6. Para resolver por su cuenta</h2>
+    <p style="margin-top:0">Un programa tarda 80 segundos y un perfilador
+    reporta que 12 de esos segundos se van en leer el archivo de entrada, que
+    se recorre en orden y no se reparte. Calcule f, el techo y el speedup con
+    ocho núcleos. Después averigüe a cuánto habría que bajar el tiempo de
+    lectura para que esos mismos ocho núcleos alcancen un speedup de 5.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="amdahl.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

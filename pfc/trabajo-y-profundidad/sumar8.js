@@ -226,9 +226,9 @@
       cierre: "D = 2 + 2 + 1 = 5. Sin parallel no hay nada que ocurra al tiempo, de modo que la profundidad se suma igual que el trabajo.",
       opciones: [
         { txt: "3", fallo: "Ese es max(2, 2) + 1. El máximo entra solo cuando hay parallel, y aquí los dos cuadrados se evalúan uno tras otro." },
-        { txt: "5", correcta: true },
         { txt: "4", fallo: "Falta la suma final, que también está en la cadena: hasta que los dos cuadrados no terminen no se puede sumar." },
-        { txt: "2", fallo: "Esa es la profundidad de una rama. La expresión incluye la otra rama y la suma que las junta." }
+        { txt: "2", fallo: "Esa es la profundidad de una rama. La expresión incluye la otra rama y la suma que las junta." },
+        { txt: "5", correcta: true }
       ]
     },
     {
@@ -251,8 +251,8 @@
       opciones: [
         { txt: "10", fallo: "Esa es la regla del caso secuencial. Con parallel la profundidad pasa de suma a máximo, y de ahí sale la ganancia." },
         { txt: "4", fallo: "Ese es el lado rápido. La expresión no entrega su par de valores hasta que el lado lento también termina." },
-        { txt: "5", fallo: "El promedio de los dos no es el tiempo de ninguno. Lo que se espera es al más lento, que tarda 6." },
-        { txt: "6", correcta: true }
+        { txt: "6", correcta: true },
+        { txt: "5", fallo: "El promedio de los dos no es el tiempo de ninguno. Lo que se espera es al más lento, que tarda 6." }
       ]
     },
     {
@@ -263,8 +263,8 @@
       opciones: [
         { txt: "8", fallo: "Esa cuenta es max(3 + 5, 2): suma a y b. El parallel de dentro también es un máximo, porque esos dos lados van al tiempo." },
         { txt: "10", fallo: "Esa es la suma de las tres profundidades. Con dos parallel anidados no queda ninguna suma de profundidades." },
-        { txt: "2", fallo: "Esa es la rama más corta. La expresión termina cuando terminan las tres, de modo que manda la más larga." },
-        { txt: "5", correcta: true }
+        { txt: "5", correcta: true },
+        { txt: "2", fallo: "Esa es la rama más corta. La expresión termina cuando terminan las tres, de modo que manda la más larga." }
       ]
     },
     {
@@ -274,9 +274,9 @@
       cierre: "D = max(4, 4) + 1 = 5. Es el paso que da segmentRec en cada nivel: las dos mitades al tiempo y una suma más al volver.",
       opciones: [
         { txt: "9", fallo: "Esa es la cuenta del trabajo, 4 + 4 + 1. La profundidad toma el máximo de las dos mitades porque van al tiempo." },
+        { txt: "5", correcta: true },
         { txt: "8", fallo: "Esa suma las dos mitades, como si corrieran una después de la otra. parallel las pone a la vez, y después queda la suma final." },
-        { txt: "4", fallo: "Falta la suma final. s1 + s2 no puede empezar hasta que las dos mitades terminen, así que está en la cadena más larga." },
-        { txt: "5", correcta: true }
+        { txt: "4", fallo: "Falta la suma final. s1 + s2 no puede empezar hasta que las dos mitades terminen, así que está en la cadena más larga." }
       ]
     }
   ];
@@ -300,9 +300,9 @@
       pregunta: "¿Conviene lanzar tareas para esta suma?",
       cierre: "No. Lo que está en juego son siete sumas de enteros, y lanzar y esperar una tarea cuesta bastante más que eso. El orden en árbol rinde cuando n crece o cuando cada operación es costosa.",
       opciones: [
+        { txt: "no: lanzar y esperar tareas cuesta más que las siete sumas que se reparten", correcta: true, larga: true },
         { txt: "sí: el tope ya pasa del doble, y no depende del tamaño de la entrada", fallo: "El tope sí depende del tamaño: es W/D, y con n = 1024 llega a 102,3. Con ocho enteros lo que se gana cabe en el costo de crear una tarea.", larga: true },
         { txt: "no: el orden en árbol hace más trabajo, porque guarda resultados intermedios", fallo: "Los dos órdenes hacen siete sumas y los dos guardan resultados intermedios. Reordenar no agrega trabajo, redistribuye dependencias.", larga: true },
-        { txt: "no: lanzar y esperar tareas cuesta más que las siete sumas que se reparten", correcta: true, larga: true },
         { txt: "sí: el árbol baja W de 7 a 3, así que hay menos operaciones que hacer", fallo: "W es 7 en los dos órdenes, y la traza las cuenta una por una. Lo que baja a 3 es la profundidad, que es el tiempo con núcleos de sobra.", larga: true }
       ]
     }
@@ -411,7 +411,8 @@
       return;
     }
     if (e.terminado) {
-      pie.textContent = "Orden " + actual.orden + ": " + hechas +
+      var rotulo = actual.orden === "árbol" ? "en árbol" : "secuencial";
+      pie.textContent = "Orden " + rotulo + ": " + hechas +
         " sumas, resultado " + actual.res + ", W = " + hechas + " y D = " +
         actual.d + ". La cadena más larga pasa por " + actual.d + " sumas.";
       return;

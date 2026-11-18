@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calentamiento de la JVM y los tres warmers</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .item { border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem; }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-size: 0.95rem; font-weight: 600; color: var(--azul);
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .opciones button { font-size: 0.88rem; min-width: 4rem; }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 18rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .item .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  .pregunta { margin-top: 0.8rem; font-weight: 600; }
+  .linea-codigo {
+    background: var(--codigo-fondo); border: 1px solid var(--borde);
+    border-radius: 8px; padding: 0.4rem 0.6rem; margin: 0.6rem 0;
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.86rem; overflow-x: auto; white-space: pre;
+  }
+  #etapas td, #warmers td, #comparacion td { font-size: 0.86rem; }
+  td.pend { font-weight: 700; color: var(--gris); }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Calentamiento de la JVM y los tres warmers</h1>
+  <p class="intro">Una medición tiene salida continua y aleatoria: cada
+  ejecución del mismo bloque da un valor distinto. Parte de esa variación no es
+  ruido sino estado, porque la JVM atraviesa cuatro etapas desde que arranca y
+  solo en la última el tiempo se repite. Las dos corridas de abajo son diez
+  repeticiones de <code>measure</code> sobre la suma de un arreglo de 10<sup>8</sup>
+  enteros, una sin calentamiento y otra con el warmer adaptativo.</p>
+
+  <div class="carta">
+    <h2>1. Diez repeticiones del mismo bloque</h2>
+    <p style="margin-top:0">Las dos corridas miden el mismo bloque sobre el
+    mismo arreglo y se diferencian solo en la línea que mide.</p>
+    <div class="presets" id="presets"></div>
+    <div class="linea-codigo" id="linea-codigo"></div>
+    <div id="barras"></div>
+    <div class="envoltura-tabla" id="resumen" style="margin-top:0.7rem"></div>
+    <div class="pregunta">¿Cuánto promedian las diez repeticiones de la corrida
+    que está a la vista?</div>
+    <div class="opciones" id="opciones-media"></div>
+    <div id="veredicto-media" class="veredicto"></div>
+    <p class="nota">Las dos primeras barras van en otro color. Cambie de
+    corrida y compare cuánto se despegan del resto en cada una.</p>
+  </div>
+
+  <div class="carta">
+    <h2>2. Por qué las dos primeras están desfasadas</h2>
+    <div class="envoltura-tabla" id="etapas"></div>
+    <p class="nota" id="factor-primera"></p>
+    <div id="desfase"></div>
+    <div class="pregunta">En la corrida sin calentamiento, ¿cuánto promedian las
+    ocho repeticiones de la tercera en adelante?</div>
+    <div class="opciones" id="opciones-estable"></div>
+    <div id="veredicto-estable" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Lo que gana el calentamiento</h2>
+    <div class="envoltura-tabla" id="comparacion"></div>
+    <div class="pregunta">¿Cuánto baja la media de las diez al envolver
+    <code>measure</code> con el warmer adaptativo?</div>
+    <div class="opciones" id="opciones-ganancia"></div>
+    <div id="veredicto-ganancia" class="veredicto"></div>
+    <div id="que-hace" style="margin-top:0.8rem"></div>
+    <p class="nota" id="nota-frio"></p>
+  </div>
+
+  <div class="carta">
+    <h2>4. Descartar el peor diez por ciento</h2>
+    <p style="margin-top:0">Una pausa del recolector, un cambio de hilo o una
+    compactación de caché infla una medición. Tras medir N veces se ordenan los
+    tiempos, se descarta el peor diez por ciento y se promedia el resto: en
+    Scala, <code>sorted</code>, <code>dropRight</code> y la suma entre el
+    tamaño, sin <code>var</code> y sin <code>while</code>.</p>
+    <div class="pregunta">Sobre las diez mediciones sin calentamiento, ¿qué
+    valor queda al descartar el peor diez por ciento y promediar el resto?</div>
+    <div class="opciones" id="opciones-descarte"></div>
+    <div id="veredicto-descarte" class="veredicto"></div>
+    <p class="nota" id="nota-descarte"></p>
+  </div>
+
+  <div class="carta">
+    <h2>5. Los tres warmers</h2>
+    <p style="margin-top:0">Un warmer es la estrategia de calentamiento:
+    cuántas veces ejecutar el bloque antes de medir y cuándo dar la JVM por
+    estable. El adaptativo deja fuera del informe justamente el arranque en
+    frío, de modo que medirlo pide el que no calienta.</p>
+    <div class="envoltura-tabla" id="warmers"></div>
+    <div id="sintaxis" style="margin-top:0.8rem"></div>
+    <div id="escoger"></div>
+  </div>
+
+  <div class="carta">
+    <h2>6. Decidir si vale la pena repartir</h2>
+    <p style="margin-top:0">Tres señales de alerta antes de paralelizar:
+    entrada pequeña, donde el sobrecosto de <code>parallel</code> supera la
+    ganancia; fracción serial alta, donde el tope lo pone la parte que no se
+    reparte; y operación de costo despreciable, donde no hay tiempo que
+    ahorrar. La regla práctica es medir el secuencial primero.</p>
+    <p class="nota" id="nota-situacion"></p>
+    <div id="decidir"></div>
+  </div>
+
+  <p class="progreso" id="marcador"></p>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>7. Para resolver por su cuenta</h2>
+    <p style="margin-top:0">Mida la misma función dos veces sobre la misma
+    entrada, una con <code>Warmer.Zero</code> y otra con
+    <code>new Warmer.Default</code>, diez repeticiones cada una. Reporte de
+    cada corrida las dos primeras mediciones y la media de las diez, y diga
+    cuál de las dos describe lo que vive quien abre la aplicación una sola vez
+    y cuál describe un servicio que atiende peticiones todo el día. Repita
+    subiendo el tamaño de la entrada y determine a partir de qué tamaño la
+    diferencia entre las dos corridas deja de notarse.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="calentamiento.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

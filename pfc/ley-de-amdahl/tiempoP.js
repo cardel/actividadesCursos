@@ -243,14 +243,14 @@
         ", y la estimación baja de " + num(estimacion(NV, 4)) + " a " +
         num(estimacion(NV, 8)) + ". D(e) no se mueve: sigue valiendo " + DV + ".",
       opciones: [
-        { txt: "W(e)/P se parte en dos y la estimación pasa de " +
-            num(estimacion(NV, 4)) + " a " + num(estimacion(NV, 8)),
-          correcta: true, larga: true },
-        { txt: "la estimación se parte en dos, de " + num(estimacion(NV, 4)) + " a " +
-            num(estimacion(NV, 4) / 2),
+        { txt: "la estimación entera se parte en dos, de " +
+            num(estimacion(NV, 4)) + " a " + num(estimacion(NV, 4) / 2),
           fallo: "Lo que se parte en dos es W(e)/P. El otro término, D(e) = " + DV +
             ", entra completo en las dos cuentas, así que la estimación baja menos que " +
             "a la mitad.", larga: true },
+        { txt: "W(e)/P se parte en dos y la estimación pasa de " +
+            num(estimacion(NV, 4)) + " a " + num(estimacion(NV, 8)),
+          correcta: true, larga: true },
         { txt: "D(e) se parte en dos, porque con el doble de núcleos el árbol tiene la " +
             "mitad de niveles",
           fallo: "Los niveles los pone el tamaño de la entrada: con " + NV +
@@ -266,9 +266,9 @@
         num(estimacion(NV, 32) - estimacion(NV, 64)) + ". Cada núcleo nuevo recibe un " +
         "trozo más pequeño de W(e), así que doblar vale menos cada vez que se dobla.",
       opciones: [
-        { txt: "pasar de 2 a 4, que ahorra " +
+        { txt: "pasar de P = 2 a P = 4, que ahorra " +
             num(estimacion(NV, 2) - estimacion(NV, 4)) + " contra " +
-            num(estimacion(NV, 32) - estimacion(NV, 64)) + " del otro salto",
+            num(estimacion(NV, 32) - estimacion(NV, 64)) + " que ahorra el otro salto",
           correcta: true, larga: true },
         { txt: "pasar de 32 a 64, porque entran 32 núcleos nuevos y en el otro salto " +
             "solo entran 2",
@@ -306,21 +306,23 @@
         "el trabajo repartido, y de ahí que el tope del speedup con cuatro núcleos " +
         "quede del orden de " + P7 + ".",
       opciones: [
-        { txt: "W(e)/P, que son " + entero(WP7) + " contra " + D7 + " de D(e)",
-          correcta: true, larga: true },
         { txt: "D(e), porque es la cota que no se puede cruzar por muchos núcleos que " +
             "se agreguen",
           fallo: "D(e) no se cruza, y con esta entrada vale " + D7 + " niveles frente " +
             "a " + entero(WP7) + " del otro término. Una cota que queda tan abajo no " +
             "es la que decide el tiempo.", larga: true },
-        { txt: "los dos por igual, porque la estimación los suma",
+        { txt: "los dos por igual, porque la estimación suma los dos términos sin " +
+            "ponderar ninguno",
           fallo: "Sumarlos no los hace pesar igual. Uno aporta " + entero(WP7) +
             " y el otro " + D7 + ", así que el segundo cambia la suma en menos de una " +
             "milésima.", larga: true },
         { txt: "D(e), porque la profundidad crece con n igual que el trabajo",
           fallo: "Las dos crecen con n, a ritmos distintos: el trabajo es del orden de " +
             "n y la profundidad del orden de log2 n, que con " + entero(N7) +
-            " elementos da " + D7 + ".", larga: true }
+            " elementos da " + D7 + ".", larga: true },
+        { txt: "W(e)/P, que vale " + entero(WP7) + " contra los " + D7 +
+            " niveles de D(e), unas " + entero(RAZON7) + " veces más",
+          correcta: true, larga: true }
       ]
     },
     {
@@ -331,19 +333,20 @@
         "así que los " + MEDIDO.t1 + " ms contra " + MEDIDO.tp + " ms medidos quedan " +
         "por debajo de ese mejor caso y nunca por encima.",
       opciones: [
-        { txt: "que la estimación marca el mejor caso y la medida queda por debajo",
-          correcta: true, larga: true },
         { txt: "que la estimación está mal planteada y el tope real de este programa " +
             "es " + num(S7) + " para cualquier P",
           fallo: "Con ocho o con dieciséis núcleos la medida da otra cifra, así que " +
             num(S7) + " no es un tope del programa: es lo que dieron " + P7 +
             " núcleos en una máquina.", larga: true },
+        { txt: "que la estimación marca el mejor caso y la medida queda por debajo",
+          correcta: true, larga: true },
         { txt: "que W(e) quedó corto y el algoritmo hace más de " + entero(W7) +
             " operaciones",
           fallo: "Las sumas que combinan resultados son " + entero(W7) + " para " +
             entero(N7) + " elementos, y esa cuenta sale del código. Lo que la " +
             "estimación deja fuera no son operaciones del algoritmo.", larga: true },
-        { txt: "que la máquina no le entregó los " + P7 + " núcleos al programa",
+        { txt: "que la máquina no le entregó los " + P7 + " núcleos al programa " +
+            "durante toda la medida",
           fallo: "Con los cuatro núcleos dedicados la medida se queda corta igual, " +
             "porque la estimación no cobra nada por repartir ni por esperar y " +
             "ejecutarlo sí lo cobra.", larga: true }
@@ -616,8 +619,8 @@
 
   construirPresets();
   construirTablaSegment();
-  construirItems("ventaja", VENTAJA, "ventaja", 1);
-  construirItems("situacion", SITUACION, "situacion", 2);
+  construirItems("ventaja", VENTAJA, "ventaja", 0);
+  construirItems("situacion", SITUACION, "situacion", 0);
   Motor.iniciar({
     codigo: CODIGO,
     simular: simular,

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trabajo y profundidad en escala: el mismo W con otra D</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .item { border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem; }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.93rem; font-weight: 700; color: var(--azul);
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button { font-size: 0.88rem; min-width: 4rem; }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 18rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .item .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  #presets-n button, #presets-p button, #presets-limite button { font-size: 0.83rem; }
+  pre.codigo {
+    padding: 0.6rem 0.8rem; margin: 0.4rem 0 0.8rem;
+    white-space: pre; line-height: 1.45;
+  }
+  tr.fila-sel td { background: var(--azul-suave); font-weight: 700; }
+  .lectura { margin: 0.6rem 0 0.2rem; }
+  .lectura b { color: var(--azul); }
+  .formula {
+    font-size: 1rem; text-align: center; margin: 0.5rem 0;
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace; color: var(--azul);
+  }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Trabajo y profundidad en escala: el mismo W con otra D</h1>
+  <p class="intro">Sumar n enteros cuesta n - 1 sumas en cualquier orden, de
+  modo que el trabajo no se mueve. Lo que se mueve es la profundidad: la cadena
+  las pone una tras otra y el árbol las agrupa por niveles. De esa diferencia
+  sale el speedup tope, W dividido por D, que cambia con n. El valor de n se
+  escoge en la primera tarjeta y lo usan también el cuadro y la cuenta con
+  núcleos.</p>
+
+  <div class="carta">
+    <h2>1. Los niveles del árbol</h2>
+    <p style="margin-top:0">La página reduce la lista
+    <code>1, 2, ..., n</code> sumando por parejas y cuenta lo que hizo: las
+    sumas de cada nivel y cuántos niveles necesitó.</p>
+    <div class="presets" id="presets-n"></div>
+    <div id="niveles" style="margin-top:0.7rem"></div>
+    <p class="lectura" id="lectura-niveles"></p>
+  </div>
+
+  <div class="carta">
+    <h2>2. El mismo trabajo en escala</h2>
+    <div class="envoltura-tabla" id="cuadro"></div>
+    <p class="nota" style="margin-top:0.5rem">La última fila es la lectura
+    general: el trabajo crece con n y la profundidad del árbol con
+    <code>log2 n</code>.</p>
+    <div style="margin-top:0.6rem"><b id="pregunta-tope"></b></div>
+    <div class="opciones" id="opciones-tope-n"></div>
+    <div id="veredicto-tope" class="veredicto"></div>
+    <p class="nota">Cada fila se llena al calcular su tope. Cambie el valor de
+    n arriba para pasar a la siguiente.</p>
+    <div class="progreso" id="marcador-topes"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Qué gana el árbol cuando n crece</h2>
+    <div id="crecimiento"></div>
+    <div class="progreso" id="marcador-crecimiento"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Con un número fijo de núcleos el tope no se alcanza</h2>
+    <p style="margin-top:0">La profundidad supone tantos núcleos como haga
+    falta. Con <code>P</code> núcleos, un nivel de <code>k</code> sumas
+    independientes se hace en rondas de <code>P</code>, y un nivel no empieza
+    hasta que el anterior termina.</p>
+    <div class="presets" id="presets-p"></div>
+    <p class="lectura" id="lectura-nucleos"></p>
+    <p class="nota" id="nota-nucleos"></p>
+    <div id="limitaciones" style="margin-top:0.8rem"></div>
+    <div class="progreso" id="marcador-limitaciones"></div>
+  </div>
+
+  <div class="carta">
+    <h2>5. segmentRec con un umbral</h2>
+    <pre class="codigo" id="codigo-segment"></pre>
+    <p style="margin-top:0">El umbral corta la recursión: por debajo de
+    <code>limite</code> el segmento se suma de corrido. Con un arreglo de 1024
+    elementos, el árbol de particiones tiene altura
+    <code>log2(1024 / limite)</code>, y una hoja de <code>limite</code>
+    elementos agrega <code>limite - 1</code> sumas encadenadas.</p>
+    <div class="formula">D = log2(n / limite) + (limite - 1)</div>
+    <div class="presets" id="presets-limite"></div>
+    <div class="envoltura-tabla" id="cuadro-umbral" style="margin-top:0.7rem"></div>
+    <p class="lectura" id="lectura-umbral"></p>
+    <p class="nota">El trabajo es 1023 sumas en toda la tabla, porque cada
+    elemento entra una sola vez.</p>
+    <div id="umbral" style="margin-top:0.8rem"></div>
+    <div class="progreso" id="marcador-umbral"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>6. Para resolver por su cuenta</h2>
+    <p style="margin-top:0">Un arreglo tiene 2<sup>20</sup> elementos. Con la
+    cuenta de la tarjeta anterior, halle el umbral más grande, potencia de dos,
+    con el que el speedup tope todavía pase de 1000, y escriba las dos cifras
+    que lo sostienen. Después implemente <code>segmentRecPar</code>, mida el
+    tiempo con ese umbral y con el doble y el cuádruple, y diga si el orden de
+    los tiempos medidos coincide con el orden de los topes calculados.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="escala.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
