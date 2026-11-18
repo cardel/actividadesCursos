@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ejercicios · AyG PUJ · Tres formas de contestar lo mismo</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Tres formas de contestar lo mismo</h1>
+  <p class="intro">Sumar un rango y cambiar una posición se pueden resolver recorriendo el arreglo, con
+  un arreglo de prefijos o con el árbol de segmentos. Las tres contestan igual y cuestan distinto. Aquí
+  se reparte la faena y la página cuenta casillas.</p>
+
+  <div class="carta">
+    <h2>1. Las tres</h2>
+    <div class="columnas">
+      <div>
+        <h3>recorrer el arreglo</h3>
+        <pre class="codigo-fijo">def consulta_recorrido(A, ql, qr):
+    suma = 0
+    for i in range(ql, qr + 1):
+        suma = suma + A[i]
+    return suma
+
+
+def cambio_recorrido(A, i, valor):
+    A[i] = valor</pre>
+        <p class="nota">La consulta lee una casilla por posición del rango. El cambio escribe una.</p>
+      </div>
+      <div>
+        <h3>arreglo de prefijos</h3>
+        <pre class="codigo-fijo">def armar_prefijos(A):
+    P = [0] * (len(A) + 1)
+    for i in range(len(A)):
+        P[i + 1] = P[i] + A[i]
+    return P
+
+
+def consulta_prefijos(P, ql, qr):
+    return P[qr + 1] - P[ql]
+
+
+def cambio_prefijos(A, P, i, valor):
+    A[i] = valor
+    for k in range(i, len(A)):
+        P[k + 1] = P[k] + A[k]</pre>
+        <p class="nota">La consulta es una resta, dos lecturas. El cambio deja mal todas las sumas desde
+        esa posición y hay que rehacerlas.</p>
+      </div>
+    </div>
+    <h3 style="text-align:left">árbol de segmentos</h3>
+    <pre class="codigo-fijo">S = build(A)              # escribe una casilla por vértice
+query(S, ql, qr)          # visita los vértices que el rango abre
+update(S, i, valor)       # reescribe la hoja y sus ancestros</pre>
+    <p class="nota">Las dos cuentas del árbol no salen de una fórmula: la página recorre la recursión y
+    cuenta los vértices, igual que en las otras dos actividades.</p>
+  </div>
+
+  <div class="carta">
+    <h2>2. El reparto</h2>
+    <div class="presets" id="presets"><span class="rot">Repartos:</span></div>
+    <div class="fila-n">
+      <label for="campo-n">Posiciones del arreglo</label>
+      <input class="corta" type="number" id="campo-n" min="2" max="1000000" step="1">
+      <label for="campo-consultas">Consultas</label>
+      <input class="corta" type="number" id="campo-consultas" min="0" max="100000" step="1">
+      <label for="campo-cambios">Cambios</label>
+      <input class="corta" type="number" id="campo-cambios" min="0" max="100000" step="1">
+      <button id="btn-recalcular" class="primario">Recalcular</button>
+    </div>
+    <p class="nota" id="ver-faena"></p>
+  </div>
+
+  <div class="carta">
+    <h2>3. Antes de ver la tabla</h2>
+    <p class="pregunta" style="margin-top:0">Cuántas casillas mira el árbol de segmentos en este reparto,
+    contando la construcción.</p>
+    <div class="opciones" id="opciones-arbol"></div>
+    <div id="veredicto-arbol" class="veredicto"></div>
+    <p class="pregunta">Y cuántas mira el arreglo de prefijos.</p>
+    <div class="opciones" id="opciones-prefijos"></div>
+    <div id="veredicto-prefijos" class="veredicto"></div>
+    <p class="pregunta">Cuál de las tres mira menos casillas con este reparto.</p>
+    <div class="opciones" id="opciones-ganador"></div>
+    <div id="veredicto-ganador" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Las cuentas</h2>
+    <div class="envoltura-tabla" id="tabla-costos"></div>
+    <p class="nota" id="ver-cruces"></p>
+    <p class="nota">Mueva las posiciones del arreglo dejando el reparto quieto: el total del recorrido y
+    el de los prefijos crecen con N y el del árbol casi no se mueve. Con pocas posiciones el árbol
+    pierde, porque construirlo cuesta más de lo que ahorra.</p>
+  </div>
+
+  <div id="rondas"></div>
+
+  <div class="carta">
+    <h2>10. Para llevarse</h2>
+    <p style="margin-top:0">Con 100 000 posiciones y 1 000 consultas, encuentre a mano la cantidad de
+    cambios desde la cual el árbol le gana al arreglo de prefijos, y compruébela en la tabla. Después
+    diga qué pasa con ese número si el rango de cada consulta fuera siempre de dos posiciones.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="lib.js"></script>
+<script src="tres-formas.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ejercicios · AyG PUJ · La consulta y sus tres casos</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>La consulta y sus tres casos</h1>
+  <p class="intro">Un solo árbol, construido una vez, y cinco rangos distintos. Mientras
+  <code>query_rec</code> corre, cada vértice se pinta con el caso que le tocó: el que se abre, el que
+  devuelve su valor y el que se descarta. Lo que queda encendido es lo que la consulta miró.</p>
+
+  <div class="carta">
+    <h2>1. El arreglo y el rango</h2>
+    <div class="presets" id="presets"><span class="rot">Consulta:</span></div>
+    <div id="ver-arreglo"></div>
+    <div class="marcador">
+      <span><b id="ver-rango"></b></span>
+      <span>a mano: <b id="ver-suma-mano"></b></span>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Antes de abrir el árbol</h2>
+    <p class="pregunta" style="margin-top:0">Qué devuelve <code>query</code> con este rango.</p>
+    <div class="opciones" id="opciones-resultado"></div>
+    <div id="veredicto-resultado" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. La consulta, vértice por vértice</h2>
+    <div class="panel-doble">
+      <div class="codigo" id="panel-codigo"></div>
+      <div class="estado">
+        <div class="chips" id="chips"></div>
+        <div class="progreso">Paso <span id="ver-paso">0</span> de <span id="ver-total">0</span></div>
+        <div class="botones">
+          <button id="btn-paso" class="primario">Un paso</button>
+          <button id="btn-auto">Auto</button>
+          <button id="btn-fin">Al final</button>
+          <button id="btn-reiniciar">Reiniciar</button>
+        </div>
+        <div class="tira"><span class="rot">Llamadas abiertas</span><span id="ver-pila"></span></div>
+        <div class="tira"><span class="rot">Sumado hasta ahora</span><span id="ver-acumulado">0</span></div>
+        <div class="tira"><span class="rot">Devuelve</span><span id="ver-total-query">–</span></div>
+      </div>
+    </div>
+    <div class="dibujo" id="panel-arbol"></div>
+    <div class="casos">
+      <span><i class="solapado"></i> solapado: baja a los dos hijos</span>
+      <span><i class="contenido"></i> contenido: devuelve su valor</span>
+      <span><i class="disjunto"></i> disjunto: devuelve 0</span>
+      <span><i class="apagado"></i> nadie lo mira</span>
+    </div>
+    <div class="leyenda">Cada caja lleva su segmento arriba y el valor que guarda abajo. Encima de los
+    que ya respondieron queda lo que aportaron.</div>
+  </div>
+
+  <div class="carta">
+    <h2>4. La suma final</h2>
+    <div class="envoltura-tabla" id="tabla-aportes"></div>
+    <p class="nota">Los vértices que devuelven sin bajar son los que arman la respuesta. En ámbar, los
+    que aportan el neutro de la suma.</p>
+  </div>
+
+  <div class="carta">
+    <h2>5. Cuántos vértices se abren</h2>
+    <p class="pregunta" style="margin-top:0">Cuántos vértices visita esta consulta.</p>
+    <div class="opciones" id="opciones-visitados"></div>
+    <div id="veredicto-visitados" class="veredicto"></div>
+    <div class="marcador">
+      <span>visitados: <b id="ver-visitados">0</b></span>
+      <span>de los <b id="ver-del-arbol"></b> del árbol</span>
+      <span>abiertos: <b id="ver-abiertos">0</b></span>
+      <span>posiciones del rango: <b id="ver-largo"></b></span>
+    </div>
+    <p class="nota">Los abiertos son los que llaman a sus dos hijos. Cuente cuántos hay por nivel en el
+    dibujo: por abajo nunca son más de dos, y de ahí sale el costo logarítmico.</p>
+  </div>
+
+  <div id="rondas"></div>
+
+  <div class="carta">
+    <h2>11. Para llevarse</h2>
+    <p style="margin-top:0">Sobre este mismo árbol, encuentre un rango de cuatro posiciones que se
+    conteste con dos vértices y otro de cuatro que necesite seis. Diga qué tienen de distinto los
+    bordes de cada uno.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="lib.js"></script>
+<script src="consulta.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ejercicios · AyG PUJ · La construcción del árbol</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>La construcción, vértice por vértice</h1>
+  <p class="intro">Tres arreglos y el mismo <code>build_rec</code>. El árbol se llena mientras el código
+  corre, y al lado quedan las <code>4 * N</code> casillas que <code>build</code> reservó, para ver
+  cuántas reciben un valor. El número que acompaña a cada línea es el de su archivo.</p>
+
+  <div class="carta">
+    <h2>1. El arreglo</h2>
+    <div class="presets" id="presets"><span class="rot">Arreglo:</span></div>
+    <div id="ver-arreglo"></div>
+    <div class="marcador">
+      <span>N = <b id="ver-n"></b></span>
+      <span>casillas reservadas: <b id="ver-reserva-n"></b></span>
+      <span>vértices del árbol: <b id="ver-vertices"></b></span>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Antes de arrancar</h2>
+    <p class="pregunta" style="margin-top:0">De las casillas que <code>build</code> reservó, cuántas
+    reciben un valor.</p>
+    <div class="opciones" id="opciones-escritas"></div>
+    <div id="veredicto-escritas" class="veredicto"></div>
+    <p class="pregunta">Y qué valor queda en el hijo derecho de la raíz, el vértice 2.</p>
+    <div class="opciones" id="opciones-derecho"></div>
+    <div id="veredicto-derecho" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Ejecute el código</h2>
+    <div class="panel-doble">
+      <div class="codigo" id="panel-codigo"></div>
+      <div class="estado">
+        <div class="chips" id="chips"></div>
+        <div class="progreso">Paso <span id="ver-paso">0</span> de <span id="ver-total">0</span></div>
+        <div class="botones">
+          <button id="btn-paso" class="primario">Un paso</button>
+          <button id="btn-auto">Auto</button>
+          <button id="btn-fin">Al final</button>
+          <button id="btn-reiniciar">Reiniciar</button>
+        </div>
+        <div class="tira"><span class="rot">Llamadas abiertas</span><span id="ver-pila"></span></div>
+        <div class="tira"><span class="rot">Valores escritos</span><span id="ver-escritas"></span>
+          <span>de <span id="ver-total-escritas"></span></span></div>
+        <div class="tira"><span class="rot">Raíz al terminar</span><span id="ver-raiz">–</span></div>
+      </div>
+    </div>
+    <div class="dibujo" id="panel-arbol"></div>
+    <div class="casos">
+      <span><i class="solapado"></i> llamada abierta, sin valor todavía</span>
+      <span><i class="contenido"></i> valor escrito</span>
+      <span><i class="apagado"></i> la recursión no ha llegado</span>
+    </div>
+    <div class="leyenda">Cada caja lleva su segmento arriba y su valor abajo. El recuadro grueso es el
+    vértice de la llamada en curso.</div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Las casillas que sobran</h2>
+    <div class="reserva" id="panel-reserva"></div>
+    <div class="leyenda">Las <code>4 * N</code> casillas de <code>tree</code>, en orden. Verde: escritas.
+    Rojo: índices por debajo del mayor que nadie usa.</div>
+    <div class="marcador">
+      <span>mayor índice que se toca: <b id="ver-mayor"></b></span>
+      <span>primera reserva que alcanzaría: <b id="ver-alcanza"></b></span>
+      <span>casillas en 0: <b id="ver-sobran"></b></span>
+      <span>huecos en el medio: <b id="ver-huecos"></b></span>
+    </div>
+    <p class="nota" id="ver-dosn"></p>
+    <p class="pregunta">Cuántas casillas de la reserva se quedan en el 0 con que nacieron.</p>
+    <div class="opciones" id="opciones-sobran"></div>
+    <div id="veredicto-sobran" class="veredicto"></div>
+  </div>
+
+  <div id="rondas"></div>
+
+  <div class="carta">
+    <h2>9. Para llevarse</h2>
+    <p style="margin-top:0">Encuentre el N más pequeño, mayor que 1, para el que una reserva de
+    <code>3 * N</code> casillas no alcanza. Escriba el índice que se sale y el segmento de ese vértice.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="lib.js"></script>
+<script src="construir.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

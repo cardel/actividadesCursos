@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ejercicios · AyG PUJ · Potenciómetros, UVa 12086</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Potenciómetros</h1>
+  <p class="intro">UVa 12086 pide exactamente las dos operaciones de la sesión sobre una fila de
+  resistencias, y la única traducción que hay que hacer es la de los índices. Aquí corre una sesión de
+  seis acciones: cada medida se predice antes de verla y cada cambio muestra la rama que reescribe.</p>
+
+  <div class="carta">
+    <h2>1. El problema</h2>
+    <p style="margin-top:0">Una fila de <code>N</code> resistencias, numeradas desde 1. Después llegan
+    acciones, una por línea, hasta la palabra <code>END</code>:</p>
+    <ul>
+      <li><code>S x r</code> pone la resistencia <code>x</code> en <code>r</code> ohmios.</li>
+      <li><code>M x y</code> mide la resistencia del tramo de <code>x</code> a <code>y</code>, que en
+      serie es la suma, y la imprime.</li>
+    </ul>
+    <p>UVa 12086, Potentiometers, <code>https://vjudge.net/problem/UVA-12086</code>. La página pide
+    cuenta para ver el enunciado y para enviar.</p>
+    <p class="nota">Tres cosas del formato: el caso cierra con la palabra <code>END</code> y no con un
+    número, la acción llega como palabra antes de sus dos enteros, y un <code>N</code> de 0 termina la
+    entrada. La lectura en C++ queda así:</p>
+    <pre class="codigo-fijo">int n;
+while (scanf("%d", &amp;n) == 1 &amp;&amp; n != 0) {
+    for (int i = 0; i &lt; n; i++) {
+        int r;
+        scanf("%d", &amp;r);          // r va a la posicion i del arreglo
+    }
+    char accion[8];
+    scanf("%s", accion);
+    while (accion[0] != 'E') {
+        int x, y;
+        scanf("%d %d", &amp;x, &amp;y);
+        if (accion[0] == 'S') {
+            // poner la resistencia x en y
+        } else {
+            // medir de x a y
+        }
+        scanf("%s", accion);
+    }
+}</pre>
+  </div>
+
+  <div class="carta">
+    <h2>2. El caso</h2>
+    <p style="margin-top:0">Seis resistencias, <code>[4, 1, 7, 2, 5, 3]</code>, y estas acciones:</p>
+    <div class="tira" id="ver-acciones"></div>
+    <p class="nota">En ámbar las que escriben. El árbol se construye una vez, antes de la primera
+    acción, y de ahí en adelante ninguna acción lo vuelve a armar.</p>
+  </div>
+
+  <div id="acciones-cartas"></div>
+
+  <div class="carta">
+    <h2>9. La salida del caso</h2>
+    <p class="pregunta" style="margin-top:0">Con las cuatro medidas contestadas, esto es lo que el
+    programa imprime.</p>
+    <div class="botones"><button id="btn-salida" class="primario">Ver la salida</button></div>
+    <div id="ver-salida"></div>
+    <p class="nota">Entre dos casos va una línea en blanco, y el encabezado numera el caso.</p>
+  </div>
+
+  <div class="carta">
+    <h2>10. Un caso grande</h2>
+    <div class="fila-n">
+      <label for="campo-n">Resistencias</label>
+      <input class="corta" type="number" id="campo-n" min="2" max="1000000" step="1">
+      <label for="campo-acciones">Acciones</label>
+      <input class="corta" type="number" id="campo-acciones" min="2" max="200000" step="1">
+      <button id="btn-costos" class="primario">Contar casillas</button>
+    </div>
+    <p class="nota" id="ver-costos"></p>
+    <p class="nota">Suba las resistencias dejando las acciones quietas: lo que crece es el recorrido, y
+    el total del árbol se mueve apenas, porque solo crece la construcción.</p>
+  </div>
+
+  <div id="rondas"></div>
+
+  <div class="carta">
+    <h2>15. Para llevarse</h2>
+    <p style="margin-top:0">Partiendo del arreglo de este caso, escriba dos acciones <code>S</code> que
+    dejen la medida <code>M 1 6</code> en 30, y anote en qué queda cada ancestro de las dos hojas que
+    tocó. Después cuente cuántas casillas de <code>tree</code> quedaron distintas en total y diga por
+    qué no son el doble de las que mueve un cambio solo.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="lib.js"></script>
+<script src="potenciometros.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

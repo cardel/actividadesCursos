@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ejercicios · AyG PUJ · La actualización sube por los ancestros</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>La actualización sube por los ancestros</h1>
+  <p class="intro">Un cambio en una posición del arreglo baja hasta su hoja y vuelve a subir reescribiendo
+  lo que encuentra. En morado queda la rama, con el valor de antes y el de después en cada vértice que
+  cambia; el resto del árbol se queda como estaba.</p>
+
+  <div class="carta">
+    <h2>1. El cambio</h2>
+    <div class="presets" id="presets"><span class="rot">Escribir:</span></div>
+    <div id="ver-arreglo"></div>
+    <div class="marcador">
+      <span><b id="ver-cambio"></b></span>
+      <span>valor que había: <b id="ver-viejo"></b></span>
+      <span>diferencia: <b id="ver-delta"></b></span>
+    </div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Antes de bajar</h2>
+    <p class="pregunta" style="margin-top:0">En qué queda la raíz después del cambio.</p>
+    <div class="opciones" id="opciones-raiz"></div>
+    <div id="veredicto-raiz" class="veredicto"></div>
+    <p class="pregunta">Y cuántas casillas de <code>tree</code> quedan con un valor distinto.</p>
+    <div class="opciones" id="opciones-cuantos"></div>
+    <div id="veredicto-cuantos" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Ejecute el código</h2>
+    <div class="panel-doble">
+      <div class="codigo" id="panel-codigo"></div>
+      <div class="estado">
+        <div class="chips" id="chips"></div>
+        <div class="progreso">Paso <span id="ver-paso">0</span> de <span id="ver-total">0</span></div>
+        <div class="botones">
+          <button id="btn-paso" class="primario">Un paso</button>
+          <button id="btn-auto">Auto</button>
+          <button id="btn-fin">Al final</button>
+          <button id="btn-reiniciar">Reiniciar</button>
+        </div>
+        <div class="tira"><span class="rot">Llamadas abiertas</span><span id="ver-pila"></span></div>
+        <div class="tira"><span class="rot">Escoge</span><span id="ver-rama">–</span></div>
+        <div class="tira"><span class="rot">Reescritos</span><span id="ver-escritos">0</span>
+          <span>de <span id="ver-del-camino"></span></span></div>
+        <div class="tira"><span class="rot">Raíz al terminar</span><span id="ver-raiz">–</span></div>
+      </div>
+    </div>
+    <div class="dibujo" id="panel-arbol"></div>
+    <div class="casos">
+      <span><i class="solapado"></i> la llamada va bajando</span>
+      <span><i class="camino"></i> valor reescrito, con el de antes al lado</span>
+      <span><i class="apagado"></i> intacto</span>
+    </div>
+    <div class="leyenda">La escritura ocurre de abajo hacia arriba: la hoja en la línea 40 y cada ancestro
+    en la línea 47, al volver de su llamada.</div>
+  </div>
+
+  <div class="carta">
+    <h2>4. La rama, vértice por vértice</h2>
+    <div class="envoltura-tabla" id="tabla-camino"></div>
+    <p class="nota">La columna de la diferencia es la misma en toda la rama: la posición que cambió
+    aparece una vez en cada uno de esos segmentos.</p>
+  </div>
+
+  <div id="rondas"></div>
+
+  <div class="carta">
+    <h2>9. Para llevarse</h2>
+    <p style="margin-top:0">Escriba dos cambios seguidos sobre este arreglo que dejen la raíz igual a 37
+    sin que ninguna hoja vuelva a su valor original. Diga qué vértices quedan distintos al final.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="lib.js"></script>
+<script src="actualizar.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

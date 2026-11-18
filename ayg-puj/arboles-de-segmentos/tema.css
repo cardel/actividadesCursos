@@ -1,0 +1,54 @@
+/* Piezas visuales propias de los ejercicios de árboles de segmentos.
+   Los colores de los tres casos de la consulta son los mismos aquí y en el
+   dibujo del árbol: azul se abre, verde se devuelve, ámbar se descarta. */
+.dibujo { text-align: center; margin: 0.5rem 0 0.2rem; overflow-x: auto; }
+.leyenda { font-size: 0.85rem; color: var(--gris); text-align: center; }
+.pregunta { margin: 0.3rem 0 0.2rem; font-weight: 600; }
+.oculto { display: none; }
+
+.casos { display: flex; gap: 0.5rem 1rem; flex-wrap: wrap; justify-content: center;
+         font-size: 0.85rem; margin: 0.4rem 0 0.1rem; }
+.casos span { display: inline-flex; align-items: center; gap: 0.35rem; }
+.casos i { width: 1rem; height: 1rem; border-radius: 4px; border: 2px solid; display: inline-block; }
+.casos i.solapado  { background: #e3edf8; border-color: #1f5fa8; }
+.casos i.contenido { background: #d7ecd9; border-color: #2e7d32; }
+.casos i.disjunto  { background: #fdf1dc; border-color: #c77c0e; }
+.casos i.camino    { background: #f1e7f8; border-color: #7b3fa0; }
+.casos i.apagado   { background: #f6f7f9; border-color: #ccd3dc; border-style: dashed; }
+
+.opcion { display: block; width: 100%; text-align: left; margin: 0.3rem 0; }
+.opcion.elegida { border-color: var(--azul); background: var(--azul-suave); }
+
+.tira { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: baseline; margin: 0.3rem 0;
+        font-family: ui-monospace, monospace; font-size: 0.9rem; }
+.tira .rot { font-family: system-ui, sans-serif; color: var(--gris); font-size: 0.85rem; min-width: 9rem; }
+.par { border: 1px solid var(--borde); border-radius: 6px; padding: 0.1rem 0.45rem; background: #fff; }
+.par.hecho { background: #d7ecd9; border-color: var(--verde); }
+.par.ahora { background: var(--azul-suave); border-color: var(--azul); font-weight: 700; }
+.par.cero { background: var(--ambar-suave); border-color: var(--ambar); }
+
+/* La reserva de 4N casillas: se ve cuántas se escriben y hasta dónde llegan. */
+.reserva { display: flex; gap: 2px; flex-wrap: wrap; margin: 0.5rem 0 0.2rem; }
+.ranura { width: 20px; height: 20px; border-radius: 3px; border: 1px dashed var(--borde);
+          background: transparent; font-size: 0.6rem; color: var(--gris);
+          display: flex; align-items: center; justify-content: center; }
+.ranura.llena { background: #d7ecd9; border: 1px solid var(--verde); color: #17521a; font-weight: 700; }
+.ranura.nueva { background: #f1e7f8; border: 1px solid #7b3fa0; color: #4f2370; font-weight: 700; }
+.ranura.hueco { border-style: solid; border-color: #e7b4ad; background: var(--rojo-suave); }
+
+.marcador { display: flex; gap: 1.2rem; flex-wrap: wrap; align-items: baseline; margin: 0.5rem 0 0.2rem; }
+.marcador b { color: var(--azul); }
+.codigo-fijo { background: var(--codigo-fondo); border: 1px solid var(--borde); border-radius: 8px;
+               padding: 0.5rem 0.7rem; margin: 0.4rem 0; font-family: ui-monospace, monospace;
+               font-size: 0.8rem; overflow-x: auto; }
+
+table.cuentas td.destaca { background: #d7ecd9; font-weight: 700; color: #17521a; }
+table.cuentas td.pierde { color: var(--gris); }
+table.aportes td.cero { background: var(--ambar-suave); }
+table.aportes td.suma { background: #d7ecd9; font-weight: 700; }
+input.corta { width: 5.5rem; padding: 0.3rem 0.5rem; border: 1px solid var(--borde);
+              border-radius: 6px; font-size: 1rem; font-family: ui-monospace, monospace; }
+
+.columnas { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; align-items: start; }
+@media (max-width: 760px) { .columnas { grid-template-columns: 1fr; } }
+.columnas h3 { font-size: 0.9rem; margin: 0 0 0.2rem; color: var(--gris); font-weight: 600; text-align: center; }
