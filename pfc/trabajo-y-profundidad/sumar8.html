@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trabajo y profundidad: sumar ocho enteros en dos órdenes</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .codigo { max-height: none; }
+  .item { border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem; }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.93rem; font-weight: 700; color: var(--azul);
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .datos { font-size: 0.86rem; font-family: ui-monospace, monospace; color: var(--tinta); }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button { font-size: 0.88rem; min-width: 4rem; }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 18rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .item .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  #presets button, #nucleos button { font-size: 0.83rem; }
+  .cuentas { display: flex; gap: 0.6rem; flex-wrap: wrap; font-size: 0.85rem; }
+  .cuentas span {
+    background: var(--codigo-fondo); border: 1px solid var(--borde);
+    border-radius: 999px; padding: 0.15rem 0.6rem;
+  }
+  .cuentas b { color: var(--azul); }
+  .formula {
+    font-size: 1rem; text-align: center; margin: 0.5rem 0;
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace; color: var(--azul);
+  }
+  .lectura { margin: 0.6rem 0 0.2rem; }
+  .lectura b { color: var(--azul); }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Trabajo y profundidad: sumar ocho enteros en dos órdenes</h1>
+  <p class="intro">Dos números describen un programa paralelo. El trabajo
+  <code>W</code> cuenta todas las operaciones que hay que hacer, como si no
+  hubiera paralelismo, y es el costo secuencial. La profundidad <code>D</code>
+  mide la cadena más larga de operaciones que tienen que ir una después de
+  otra, suponiendo núcleos de sobra, y es el tiempo mínimo al que se puede
+  aspirar. Sumar ocho enteros sirve para separarlos: el mismo resultado, las
+  mismas sumas, dos órdenes con profundidades distintas.</p>
+
+  <div class="carta">
+    <h2>1. Cuántas sumas hay que hacer</h2>
+    <p style="margin-top:0">Hay que sumar los ocho enteros
+    <code>1, 2, 3, 4, 5, 6, 7, 8</code>, en cualquier orden, con una operación
+    que recibe dos valores y devuelve uno.</p>
+    <div><b>¿Cuántas sumas se hacen en total?</b></div>
+    <div class="opciones" id="opciones-w"></div>
+    <div id="veredicto-w" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>2. Los dos órdenes, paso a paso</h2>
+    <div class="presets" id="presets"></div>
+    <div class="panel-doble" style="margin-top:0.8rem">
+      <div class="codigo" id="panel-codigo"></div>
+      <div class="estado">
+        <div class="chips" id="chips"></div>
+        <div class="progreso">paso <b id="ver-paso">0</b> de <b id="ver-total">0</b></div>
+        <div class="botones">
+          <button id="btn-paso">Paso</button>
+          <button id="btn-auto">Auto</button>
+          <button id="btn-fin">Al final</button>
+          <button id="btn-reiniciar">Reiniciar</button>
+        </div>
+        <div class="cuentas">
+          <span>sumas hechas: <b id="cuenta-w">0</b></span>
+          <span>cadena más larga: <b id="cuenta-d">0</b></span>
+        </div>
+      </div>
+    </div>
+    <p class="nota" id="pie-traza"></p>
+    <p class="nota">El contador de cada línea dice cuántas veces se evaluó, así
+    que al final del recorrido se ve qué sumas entraron en cada orden. Las
+    cuatro primeras del árbol se escriben una debajo de otra y ninguna usa el
+    resultado de las otras tres.</p>
+  </div>
+
+  <div class="carta">
+    <h2>3. La profundidad de cada orden</h2>
+    <p style="margin-top:0">La profundidad supone paralelismo ilimitado: todo
+    lo que no dependa de nada más se hace al tiempo.</p>
+    <div><b>¿Cuánto vale D en el orden secuencial?</b></div>
+    <div class="opciones" id="opciones-d-sec"></div>
+    <div id="veredicto-d-sec" class="veredicto"></div>
+    <div style="margin-top:0.9rem"><b>¿Cuánto vale D en el orden en árbol?</b></div>
+    <div class="opciones" id="opciones-d-arbol"></div>
+    <div id="veredicto-d-arbol" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. Las reglas de composición</h2>
+    <div class="formula">W(f(e1, e2)) = W(e1) + W(e2) + W(f)</div>
+    <div class="formula">D(f(e1, e2)) = D(e1) + D(e2) + D(f)</div>
+    <div class="formula">W(parallel(e1, e2)) = W(e1) + W(e2) + c1</div>
+    <div class="formula">D(parallel(e1, e2)) = max(D(e1), D(e2)) + c2</div>
+    <p class="nota" style="margin-top:0">La única diferencia está en la última
+    línea: con <code>parallel</code> la profundidad pasa de suma a máximo. Las
+    constantes <code>c1</code> y <code>c2</code> son el costo de lanzar y
+    esperar, y en las preguntas que siguen no se cuentan.</p>
+    <div id="reglas"></div>
+    <div class="progreso" id="marcador-reglas"></div>
+  </div>
+
+  <div class="carta">
+    <h2>5. Qué cambia al poner más núcleos</h2>
+    <p style="margin-top:0">Cada suma cuesta una unidad de tiempo y un nivel no
+    empieza hasta que el anterior termina. Con <code>P</code> núcleos, un nivel
+    de <code>k</code> sumas independientes toma tantas rondas como quepan.</p>
+    <div class="presets" id="nucleos"></div>
+    <div id="barras-tiempo" style="margin-top:0.7rem"></div>
+    <p class="lectura" id="lectura-nucleos"></p>
+    <p class="nota" id="nota-nucleos"></p>
+    <div id="decisiones" style="margin-top:0.8rem"></div>
+    <div class="progreso" id="marcador-decisiones"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>6. Para resolver por su cuenta</h2>
+    <p style="margin-top:0">Escriba la función que multiplica los elementos de
+    una lista de ocho enteros en el orden en árbol, usando
+    <code>parallel</code> para cada par de mitades. Calcule su
+    <code>W</code> y su <code>D</code> con las reglas de composición, tomando
+    el producto como una operación de costo 1 y sin contar
+    <code>c1</code> ni <code>c2</code>. Después repita la cuenta para una lista
+    de 64 enteros y diga cuántas unidades de tiempo tarda en una máquina de dos
+    núcleos.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="sumar8.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

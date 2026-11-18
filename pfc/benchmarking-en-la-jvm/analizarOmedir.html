@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analizar o medir: qué responde cada herramienta</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .item { border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem; }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-size: 0.95rem; font-weight: 600; color: var(--azul);
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .opciones button { font-size: 0.88rem; min-width: 4rem; }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 18rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .item .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  .pregunta { margin-top: 0.8rem; font-weight: 600; }
+  .envoltura-tabla { max-height: 22rem; overflow-y: auto; }
+  td.pend { font-weight: 700; color: var(--gris); }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Analizar o medir: qué responde cada herramienta</h1>
+  <p class="intro">El análisis asintótico responde cómo escala el programa
+  cuando crecen la entrada o los recursos, y su respuesta sale del algoritmo:
+  es la misma en cualquier máquina. La evaluación comparativa responde qué
+  tiempo concreto toma el programa en esta máquina, con esta JVM y con esta
+  entrada, y su respuesta cambia con la plataforma. Las dos hacen falta: el
+  análisis predice qué pasa al doblar el problema o el hardware, y la medición
+  confirma o desmiente que la implementación cumpla esa predicción.</p>
+
+  <div class="carta">
+    <h2>1. Lo que el análisis cuenta, nivel por nivel</h2>
+    <p style="margin-top:0">Sumar un arreglo en árbol es sumar las parejas de
+    cada nivel y repetir con lo que queda. La tabla recorre esos niveles para
+    el tamaño escogido: cuántos valores entran, cuántas sumas ocurren en ese
+    nivel, todas al mismo tiempo, y cuántos valores pasan al siguiente. El
+    trabajo <b>W</b> es el total de la columna del medio y la profundidad
+    <b>D</b> es el número de niveles.</p>
+    <div class="presets" id="presets"></div>
+    <div class="envoltura-tabla" id="tabla-niveles" style="margin-top:0.7rem"></div>
+    <p class="nota" id="cuenta-niveles"></p>
+    <div class="pregunta">¿Cuántas sumas hace en total la versión en árbol con
+    ese tamaño?</div>
+    <div class="opciones" id="opciones-trabajo"></div>
+    <div id="veredicto-trabajo" class="veredicto"></div>
+    <p class="nota">Nada de esto se ejecutó. Al cambiar el tamaño, el análisis
+    vuelve a responder con dos números, y lo hace también para una entrada que
+    la máquina no alcanzaría a correr.</p>
+  </div>
+
+  <div class="carta">
+    <h2>2. Qué herramienta responde cada pregunta</h2>
+    <p style="margin-top:0">Seis preguntas de las que aparecen al cerrar un
+    taller. Para cada una, la herramienta que la responde.</p>
+    <div id="clasificar"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Lo que el análisis secuencial no distingue</h2>
+    <p style="margin-top:0">El ciclo de cola y la suma en árbol hacen las
+    mismas W sumas, así que el conteo de operaciones totales las deja en el
+    mismo orden de crecimiento. La diferencia está en el otro número: el ciclo
+    necesita el acumulador de la suma anterior para hacer la siguiente, de modo
+    que su profundidad es su trabajo entero, mientras el árbol termina en D
+    niveles.</p>
+    <div class="envoltura-tabla" id="tabla-razones"></div>
+    <div class="pregunta">¿Por cuánto se diferencian los pasos en secuencia de
+    las dos versiones con el tamaño escogido?</div>
+    <div class="opciones" id="opciones-razon"></div>
+    <div id="veredicto-razon" class="veredicto"></div>
+    <p class="nota">La última columna es el paralelismo disponible, lo que el
+    análisis secuencial no ve. Cambie de tamaño y compare las filas: el trabajo
+    se multiplica y la profundidad apenas crece.</p>
+  </div>
+
+  <div class="carta">
+    <h2>4. Una sola medición no es evidencia</h2>
+    <p style="margin-top:0">Una prueba tiene salida binaria:
+    <code>reverse(List(1,2,3)) == List(3,2,1)</code> cumple o no cumple. Una
+    medición tiene salida continua y aleatoria: cada ejecución da un valor
+    distinto. Estos son diez tiempos del mismo programa en la misma máquina,
+    sin nadie más usándola.</p>
+    <div id="barras"></div>
+    <div class="envoltura-tabla" id="resumen" style="margin-top:0.7rem"></div>
+    <p class="nota" id="factor-primera"></p>
+    <div class="pregunta">¿Qué valor queda al descartar el peor diez por ciento
+    y promediar el resto?</div>
+    <div class="opciones" id="opciones-descarte"></div>
+    <div id="veredicto-descarte" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>5. Decidir con las dos</h2>
+    <p style="margin-top:0">Un equipo del curso llega con dos versiones de la
+    suma del arreglo y una medición de cada una.</p>
+    <div id="decidir"></div>
+  </div>
+
+  <p class="progreso" id="marcador"></p>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>6. Para resolver por su cuenta</h2>
+    <p style="margin-top:0">Dos implementaciones de la misma función tienen el
+    mismo trabajo y la misma profundidad: una usa <code>List</code> y la otra
+    <code>Array</code>. Diseñe la medición que decidiría entre las dos. Escriba
+    cuántas repeticiones hace, qué valor reporta de ellas, qué registra de la
+    máquina y de la JVM para que otra persona pueda repetir el experimento, y
+    qué resultado lo haría cambiar de implementación.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="analizarOmedir.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

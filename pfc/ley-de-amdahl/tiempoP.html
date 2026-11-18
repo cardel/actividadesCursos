@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tiempo con P núcleos: las dos cotas y la estimación</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<style>
+  .codigo { max-height: none; }
+  .item { border-top: 1px dotted var(--borde); padding: 0.7rem 0 0.1rem; }
+  .item:first-child { border-top: none; padding-top: 0.2rem; }
+  .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.93rem; font-weight: 700; color: var(--azul);
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .pregunta { font-size: 0.86rem; color: var(--gris); margin-top: 0.15rem; }
+  .opciones button { font-size: 0.88rem; min-width: 4rem; }
+  .opciones button.larga {
+    font-size: 0.85rem; text-align: left;
+    white-space: normal; flex: 1 1 18rem; min-width: 0;
+  }
+  button.errada { border-color: var(--rojo); color: var(--rojo); background: var(--rojo-suave); }
+  button.acertada { border-color: var(--verde); color: var(--verde); background: var(--verde-suave); }
+  .item .veredicto { font-size: 0.88rem; margin-top: 0.35rem; }
+  .bloqueado { opacity: 0.45; pointer-events: none; }
+  #presets button { font-size: 0.83rem; }
+  .pista-barra { display: flex; }
+  .barra-fila .rotulo { width: 5.5rem; font-family: ui-monospace, monospace; }
+  .formula {
+    font-size: 1.05rem; text-align: center; margin: 0.6rem 0;
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace; color: var(--azul);
+  }
+  .cuentas { display: flex; gap: 0.6rem; flex-wrap: wrap; font-size: 0.85rem; }
+  .cuentas span {
+    background: var(--codigo-fondo); border: 1px solid var(--borde);
+    border-radius: 999px; padding: 0.15rem 0.6rem;
+  }
+  .cuentas b { color: var(--azul); }
+  .leyenda { font-size: 0.82rem; color: var(--gris); display: flex; gap: 0.9rem; flex-wrap: wrap; margin-top: 0.4rem; }
+  .leyenda i { display: inline-block; width: 0.8rem; height: 0.8rem; border-radius: 3px; margin-right: 0.3rem; vertical-align: -1px; }
+  .leyenda i.b1 { background: var(--azul); }
+  .leyenda i.b2 { background: var(--ambar); }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>Tiempo con P núcleos: las dos cotas y la estimación</h1>
+  <p class="intro">Repartir un cálculo entre P núcleos choca con dos límites a
+  la vez. Uno es el camino crítico, la cadena de operaciones que dependen una
+  de otra y se ejecutan en fila por mucho hardware que haya: el tiempo no baja
+  de D(e). El otro es el trabajo total, que hay que hacer completo y se reparte
+  entre P núcleos a lo sumo: el tiempo no baja de W(e)/P. De ahí sale la
+  estimación usual, D(e) + W(e)/P. La página corre la suma en árbol de un
+  arreglo y cuenta las dos cifras sobre el recorrido, y después las usa con el
+  número de núcleos del preset.</p>
+
+  <div class="carta">
+    <h2>1. De dónde salen W(e) y D(e)</h2>
+    <p style="margin-top:0">Cada hoja lee un elemento y cada nodo interno suma
+    los dos resultados de abajo. El contador de la línea 5 cuenta las sumas,
+    que son el trabajo, y el nivel del chip marca la profundidad del árbol de
+    llamadas.</p>
+    <div class="presets" id="presets"></div>
+    <div class="panel-doble" style="margin-top:0.8rem">
+      <div class="codigo" id="panel-codigo"></div>
+      <div class="estado">
+        <div class="chips" id="chips"></div>
+        <div class="progreso">paso <b id="ver-paso">0</b> de <b id="ver-total">0</b></div>
+        <div class="botones">
+          <button id="btn-paso">Paso</button>
+          <button id="btn-auto">Auto</button>
+          <button id="btn-fin">Al final</button>
+          <button id="btn-reiniciar">Reiniciar</button>
+        </div>
+        <div class="cuentas">
+          <span>sumas: <b id="cuenta-sumas">0</b></span>
+          <span>hojas: <b id="cuenta-hojas">0</b></span>
+          <span>nivel más profundo: <b id="cuenta-nivel">0</b></span>
+        </div>
+      </div>
+    </div>
+    <p class="nota" id="pie-arbol"></p>
+    <p class="nota">La suma de la línea 5 ocurre después de las dos llamadas
+    recursivas, porque necesita sus dos resultados. Esa espera es lo que hace
+    que el camino de la raíz a una hoja cuente como una cadena y no como
+    trabajo repartible.</p>
+  </div>
+
+  <div class="carta">
+    <h2>2. Las dos cotas y la estimación</h2>
+    <div class="formula">T<sub>P</sub> ≥ D(e)&nbsp;&nbsp;&nbsp;
+    T<sub>P</sub> ≥ W(e)/P&nbsp;&nbsp;&nbsp;
+    T<sub>P</sub> ≈ D(e) + W(e)/P</div>
+    <div id="cotas"></div>
+    <p class="nota" id="pie-cotas"></p>
+    <div class="prediccion">
+      <span><b>¿Cuál de las dos cotas manda con el preset escogido?</b></span>
+    </div>
+    <div class="opciones" id="opciones-cota"></div>
+    <div id="veredicto-cota" class="veredicto"></div>
+    <div class="prediccion">
+      <span><b>¿Cuánto vale la estimación D(e) + W(e)/P con ese preset?</b></span>
+    </div>
+    <div class="opciones" id="opciones-estimacion"></div>
+    <div id="veredicto-estimacion" class="veredicto"></div>
+  </div>
+
+  <div class="carta">
+    <h2>3. Lo que gana cada núcleo nuevo</h2>
+    <div id="escala"></div>
+    <div class="leyenda"><span><i class="b1"></i>D(e)</span><span><i class="b2"></i>W(e)/P</span></div>
+    <p class="nota" id="pie-escala"></p>
+    <div id="ventaja"></div>
+    <div class="progreso" id="marcador-ventaja"></div>
+  </div>
+
+  <div class="carta">
+    <h2>4. El piso que no se cruza</h2>
+    <div><b>Con el n del preset y todos los núcleos que se quieran agregar, ¿de
+    qué cifra no baja la estimación?</b></div>
+    <div class="opciones" id="opciones-piso"></div>
+    <div id="veredicto-piso" class="veredicto"></div>
+    <p class="nota" id="pie-piso"></p>
+  </div>
+
+  <div class="carta">
+    <h2>5. segmentRec con diez millones y cuatro núcleos</h2>
+    <p style="margin-top:0">Para sumar un arreglo de diez millones de
+    elementos, segmentRec reparte un trabajo del orden de n y su camino crítico
+    es del orden de log<sub>2</sub> n. Las dos primeras filas de la tabla salen
+    de esas dos formas, que coinciden con lo que cuenta el recorrido de arriba
+    en los tamaños pequeños; las últimas tres son las medidas de la sesión en
+    una máquina de cuatro núcleos.</p>
+    <div class="envoltura-tabla" id="tabla-segment"></div>
+    <div id="situacion" style="margin-top:0.8rem"></div>
+    <div class="progreso" id="marcador-situacion"></div>
+  </div>
+
+  <div class="carta bloqueado" id="carta-cierre">
+    <h2>6. Para resolver por su cuenta</h2>
+    <p style="margin-top:0">Tome la suma en árbol de un arreglo de 2<sup>20</sup>
+    elementos. Encuentre el menor número de núcleos con el que el término del
+    trabajo queda por debajo del término de la profundidad, y después el que
+    haría falta para conseguir lo mismo con 2<sup>30</sup> elementos.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="tiempoP.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>
