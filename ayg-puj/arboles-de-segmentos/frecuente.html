@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ejercicios · AyG PUJ · El valor más frecuente de un rango</title>
+<link rel="stylesheet" href="../../comun/estilo.css">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<div class="contenedor">
+  <a class="volver" href="#">← Volver a los ejercicios</a>
+  <h1>El valor más frecuente de un rango</h1>
+  <p class="intro">La consulta ya no pide una suma: pide cuántas veces aparece el valor que más se
+  repite. Como la secuencia llega ordenada, los valores iguales forman tramos seguidos, y el árbol
+  se levanta sobre los largos de esos tramos. Aquí corre la compresión del archivo de la sesión,
+  línea por línea, y después las cuatro consultas, cada una predicha antes de verla. El número que
+  acompaña a cada línea es el de su archivo.</p>
+
+  <div class="carta">
+    <h2>1. El problema</h2>
+    <p style="margin-top:0">Llega una secuencia de <code>N</code> enteros en orden no decreciente y
+    después <code>Q</code> consultas. Cada consulta trae dos posiciones <code>i</code> y
+    <code>j</code>, numeradas desde 1, y pide cuántas veces aparece el valor más frecuente entre
+    ellas.</p>
+    <p>UVa 11235, Frequent values, <code>https://vjudge.net/problem/UVA-11235</code>. La página pide
+    cuenta para ver el enunciado y para enviar.</p>
+    <div class="casos" style="justify-content:flex-start">
+      <span>Contar a mano el rango cuesta <b>O(N)</b> por consulta.</span>
+      <span>Con <b>N</b> y <b>Q</b> de cien mil, eso no alcanza.</span>
+    </div>
+    <p class="nota">Tres cosas del formato: un <code>N</code> de 0 termina la entrada, los valores
+    pueden ser negativos y las dos posiciones de cada consulta llegan desde 1. La lectura en C++
+    queda así:</p>
+    <pre class="codigo-fijo">int n, q;
+while (scanf("%d", &amp;n) == 1 &amp;&amp; n != 0) {
+    scanf("%d", &amp;q);
+    for (int k = 0; k &lt; n; k++) {
+        int x;
+        scanf("%d", &amp;x);           // x va a la posicion k del arreglo
+    }
+    for (int k = 0; k &lt; q; k++) {
+        int i, j;
+        scanf("%d %d", &amp;i, &amp;j);    // las posiciones llegan desde 1
+    }
+}</pre>
+  </div>
+
+  <div class="carta">
+    <h2>2. La secuencia y sus corridas</h2>
+    <p style="margin-top:0">Doce posiciones, numeradas desde 1 como en el enunciado:</p>
+    <div id="ver-arreglo"></div>
+    <p class="pregunta">Antes de mirar: en cuántas corridas se parte esta secuencia.</p>
+    <div class="opciones" id="opciones-cuantas"></div>
+    <div id="veredicto-cuantas" class="veredicto"></div>
+    <div class="tira" id="ver-corridas"></div>
+    <div class="marcador">
+      <span>corridas: <b id="ver-c"></b></span>
+      <span>vector de largos: <b id="ver-largos"></b></span>
+    </div>
+    <p class="nota">El árbol no se levanta sobre la secuencia sino sobre ese vector, con una
+    posición por corrida.</p>
+  </div>
+
+  <div class="carta">
+    <h2>3. Ejecute <code>comprimir</code></h2>
+    <div class="panel-doble">
+      <div class="codigo" id="panel-codigo"></div>
+      <div class="estado">
+        <div class="chips" id="chips"></div>
+        <div class="progreso">Paso <span id="ver-paso">0</span> de <span id="ver-total">0</span></div>
+        <div class="botones">
+          <button id="btn-paso" class="primario">Un paso</button>
+          <button id="btn-auto">Auto</button>
+          <button id="btn-fin">Al final</button>
+          <button id="btn-reiniciar">Reiniciar</button>
+        </div>
+        <div class="tira"><span class="rot">run_ini</span><span id="ver-ini"></span></div>
+        <div class="tira"><span class="rot">run_fin</span><span id="ver-fin"></span></div>
+        <div class="tira"><span class="rot">run_len</span><span id="ver-len"></span></div>
+        <div class="tira"><span class="rot">corridas cerradas</span><span id="ver-cuantas"></span></div>
+      </div>
+    </div>
+    <div id="ver-arreglo-paso"></div>
+    <div class="tira"><span class="rot">run_id</span><span id="ver-id"></span></div>
+    <p class="leyenda">En verde las posiciones que ya recibieron su corrida, en azul la posición
+    <code>i</code> del recorrido. Un punto en <code>run_id</code> es una posición que el ciclo de la
+    línea 48 todavía no escribió.</p>
+    <p class="nota">El recorrido llega hasta <code>n</code> para que la condición <code>i == n</code>
+    cierre la última corrida sin salirse del arreglo.</p>
+  </div>
+
+  <div class="carta">
+    <h2>4. El árbol de máximos sobre los largos</h2>
+    <div class="dibujo" id="arbol-largos"></div>
+    <div class="marcador">
+      <span>vértices: <b id="ver-vertices"></b></span>
+      <span>casillas reservadas: <b id="ver-reserva"></b></span>
+    </div>
+    <p class="pregunta">Qué queda en la raíz.</p>
+    <div class="opciones" id="opciones-raiz"></div>
+    <div id="veredicto-raiz" class="veredicto"></div>
+    <p class="nota">La operación es el máximo y su neutro es −∞, así que un vértice disjunto
+    devuelve −∞ y pierde cualquier comparación.</p>
+  </div>
+
+  <div id="consultas-cartas"></div>
+
+  <div class="carta">
+    <h2>9. La trampa de los extremos</h2>
+    <p class="nota" id="ver-trampa" style="margin-top:0"></p>
+    <div class="dibujo" id="arbol-trampa"></div>
+    <div class="casos">
+      <span><i class="solapado"></i> se abre</span>
+      <span><i class="contenido"></i> devuelve su valor</span>
+      <span><i class="disjunto"></i> se descarta con −∞</span>
+      <span><i class="apagado"></i> nadie lo mira</span>
+    </div>
+    <p class="leyenda">Lo que el árbol contesta de las corridas de los bordes es su largo completo, y
+    el rango solo se queda con un pedazo de cada una.</p>
+  </div>
+
+  <div class="carta">
+    <h2>10. La salida del caso</h2>
+    <p class="pregunta" style="margin-top:0">Con las cuatro consultas contestadas, esto es lo que el
+    programa imprime.</p>
+    <div class="botones"><button id="btn-salida" class="primario">Ver la salida</button></div>
+    <div id="ver-salida"></div>
+  </div>
+
+  <div class="carta">
+    <h2>11. Qué gana, en casillas leídas</h2>
+    <div class="fila-n">
+      <label for="campo-n">Posiciones</label>
+      <input class="corta" type="number" id="campo-n" min="4" max="1000000" step="1">
+      <label for="campo-q">Consultas</label>
+      <input class="corta" type="number" id="campo-q" min="1" max="200000" step="1">
+      <label for="campo-largo">Largo promedio de corrida</label>
+      <input class="corta" type="number" id="campo-largo" min="1" max="100000" step="1">
+      <button id="btn-conteos" class="primario">Contar casillas</button>
+    </div>
+    <p class="nota" id="ver-conteos"></p>
+    <p class="nota" id="ver-limite"></p>
+  </div>
+
+  <div class="carta">
+    <h2>12. Qué cuesta: sin orden y sin máximo</h2>
+    <p style="margin-top:0">Los mismos doce valores, revueltos:</p>
+    <div id="ver-desordenada"></div>
+    <p class="nota" id="ver-desorden"></p>
+    <p class="nota" id="ver-suma"></p>
+  </div>
+
+  <div id="rondas"></div>
+
+  <div class="carta">
+    <h2>18. Para llevarse</h2>
+    <p style="margin-top:0">Sobre esta misma secuencia, encuentre todas las consultas
+    <code>i j</code> con <code>i &lt; j</code> cuya respuesta sea 2 y diga cuántas son. Después
+    cambie un solo valor de la secuencia, dejándola ordenada, para que la consulta
+    <code>2 11</code> pase de 5 a 4, y anote en qué queda el vector de largos.</p>
+  </div>
+</div>
+<script src="../../comun/motor.js"></script>
+<script src="../comun/grafo-svg.js"></script>
+<script src="lib.js"></script>
+<script src="frecuente.js"></script>
+<script src="../../comun/volver.js"></script>
+</body>
+</html>

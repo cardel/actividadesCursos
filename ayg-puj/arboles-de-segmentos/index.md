@@ -1,6 +1,6 @@
 # Ejercicios · AyG PUJ · Árboles de segmentos
 
-Cinco ejercicios para el navegador, uno por tema de la sesión y en el mismo orden. Tres de ellos
+Seis ejercicios para el navegador, uno por tema de la sesión y en el mismo orden. Cuatro de ellos
 corren el código Python de la sesión línea por línea, con el árbol dibujado al lado.
 
 Ninguno usa el arreglo de las diapositivas ni sus consultas: otros valores, otros rangos y otra
@@ -40,17 +40,22 @@ toda la rama.
 Antes se predice en qué queda la raíz y cuántas casillas cambian. Las opciones separan los dos
 errores de siempre: sumar el valor nuevo sin quitar el viejo y escribir solo la hoja.
 
-## Qué gana y qué cuesta
+## El valor más frecuente de un rango
 
-### [Tres formas de contestar lo mismo](tres-formas.html){ target=_blank rel=noopener }
+### [Frequent values, UVa 11235](frecuente.html){ target=_blank rel=noopener }
 
-El mismo reparto de consultas y cambios, resuelto recorriendo el arreglo, con un arreglo de
-prefijos y con el árbol. Se escogen el tamaño y el reparto, y la página cuenta casillas: con 1 024
-posiciones y 1 000 consultas el árbol le gana al prefijo desde 51 cambios, y con 16 posiciones y esas
-mismas consultas no le gana con ningún número de cambios.
+Doce posiciones ordenadas que se parten en cinco corridas. `comprimir` corre línea por línea y se ve
+cómo se llenan los cuatro arreglos, con un punto en las posiciones a las que todavía no les tocó su
+corrida; el árbol de máximos se levanta después sobre el vector de largos, no sobre la secuencia.
 
-Las cinco preguntas del final son las limitaciones: qué guarda un vértice si la consulta pide el
-mínimo, el promedio y la mediana, por qué la resta no sirve y qué compra la memoria de más.
+Las cuatro consultas están escogidas para que el árbol se use de distinta manera: dos se contestan
+sin tocarlo, en una el medio aporta y pierde, y en la última el medio decide. La de la trampa es
+`6 11`, donde preguntarle al árbol por las corridas de los dos extremos devuelve 5 y la respuesta es
+4, porque de esa corrida de 5 el rango toma 4 posiciones.
+
+Las dos limitaciones salen con cifras de la página: con los mismos doce valores revueltos las
+corridas pasan de 5 a 12 y el método contesta 1 donde la respuesta es 5, y hay dos rangos con la
+misma suma y respuestas distintas, que es la razón de guardar un máximo y no una suma.
 
 ## El problema de la sesión
 
@@ -62,6 +67,18 @@ reescribe.
 
 Los números equivocados de cada medida son los tres que de verdad se dan: no restar uno, restarlo
 solo a un extremo y medir sobre el árbol de antes del último cambio.
+
+## Qué gana y qué cuesta
+
+### [Tres formas de contestar lo mismo](tres-formas.html){ target=_blank rel=noopener }
+
+El mismo reparto de consultas y cambios, resuelto recorriendo el arreglo, con un arreglo de
+prefijos y con el árbol. Se escogen el tamaño y el reparto, y la página cuenta casillas: con 1 024
+posiciones y 1 000 consultas el árbol le gana al prefijo desde 51 cambios, y con 16 posiciones y esas
+mismas consultas no le gana con ningún número de cambios.
+
+Las cinco preguntas del final son las limitaciones: qué guarda un vértice si la consulta pide el
+mínimo, el promedio y la mediana, por qué la resta no sirve y qué compra la memoria de más.
 
 ## Para resolver en papel
 
@@ -77,8 +94,14 @@ solo a un extremo y medir sobre el árbol de antes del último cambio.
    visita en total. Después argumente cuántos vértices pueden quedar en caso contenido en un mismo
    nivel, y por qué no pueden ser tres.
 
-4. UVa 12086, Potentiometers: `https://vjudge.net/problem/UVA-12086`. Es el árbol de la sesión sin
+4. UVa 11235, Frequent values: `https://vjudge.net/problem/UVA-11235`. Demuestre que el método de
+   las corridas responde bien, con la estructura de cuatro partes. Lo que hay que ver es que toda
+   posición del rango pertenece a una corrida, y que la cantidad de veces que aparece su valor
+   dentro del rango es el pedazo de uno de los dos extremos o el largo completo de una corrida de en
+   medio, que es lo que el árbol compara.
+
+5. UVa 12086, Potentiometers: `https://vjudge.net/problem/UVA-12086`. Es el árbol de la sesión sin
    nada encima, con `update` para la acción `S` y `query` para la `M`. Dos trampas: las resistencias
    vienen numeradas desde 1, así que a los dos extremos hay que restarles uno, y la salida lleva una
    línea en blanco entre casos pero no antes del primero. La página pide cuenta para ver el
-   enunciado y para enviar.
+   enunciado.

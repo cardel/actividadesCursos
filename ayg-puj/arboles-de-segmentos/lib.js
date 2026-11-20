@@ -590,7 +590,7 @@ var SEG = (function () {
     opciones.forEach(function (o) {
       var b = document.createElement("button");
       b.className = "opcion";
-      b.textContent = o.txt;
+      b.innerHTML = o.txt;
       b.addEventListener("click", function () {
         veredicto.className = "veredicto " + (o.ok ? "bien" : "mal");
         veredicto.innerHTML = o.fb;
